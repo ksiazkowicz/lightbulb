@@ -1,0 +1,45 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Lightbulb.svg</file>
+        <file>qml/AboutPage.qml</file>
+        <file>qml/AccountAddPage.qml</file>
+        <file>qml/AccountsPage.qml</file>
+        <file>qml/ChatsPage.qml</file>
+        <file>qml/MessagesPage.qml</file>
+        <file>qml/Notifications.qml</file>
+        <file>qml/RosterPage.qml</file>
+        <file>qml/SettingsPage.qml</file>
+        <file>qml/VCardPage.qml</file>
+        <file>qml/images/alarm.svg</file>
+        <file>qml/images/avatar.png</file>
+        <file>qml/images/bar_open_chats.png</file>
+        <file>qml/images/close_stop.svg</file>
+        <file>qml/images/connectivity.svg</file>
+        <file>qml/images/edit.svg</file>
+        <file>qml/images/message_mark.png</file>
+        <file>qml/images/message_num.png</file>
+        <file>qml/images/ok.svg</file>
+        <file>qml/images/presence-away.svg</file>
+        <file>qml/images/presence-busy.svg</file>
+        <file>qml/images/presence-chatty.svg</file>
+        <file>qml/images/presence-offline.svg</file>
+        <file>qml/images/presence-online.svg</file>
+        <file>qml/images/presence-xa.svg</file>
+        <file>qml/images/send_message.svg</file>
+        <file>qml/images/settings.svg</file>
+        <file>qml/Dialogs/AddContact.qml</file>
+        <file>qml/Dialogs/ChangeStatus.qml</file>
+        <file>qml/Dialogs/Info.qml</file>
+        <file>qml/Dialogs/QuerySubscribtion.qml</file>
+        <file>qml/Dialogs/RemoveAccount.qml</file>
+        <file>qml/Dialogs/RemoveContact.qml</file>
+        <file>qml/Dialogs/RenameContact.qml</file>
+        <file>qml/main.qml</file>
+        <file>qml/Dialogs/VibrationSettings.qml</file>
+        <file>qml/Dialogs/FileDialog.qml</file>
+        <file>qml/images/file.svg</file>
+        <file>qml/images/folder.svg</file>
+        <file>qml/Dialogs/SoundSettings.qml</file>
+        <file>qml/Banner.qml</file>
+    </qresource>
+</RCC>
