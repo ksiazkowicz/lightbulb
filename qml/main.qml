@@ -9,7 +9,6 @@ PageStackWindow {
     id: main
 
     showStatusBar:                   true
-
     platformInverted:                settings.gBool("ui","invertPlatform")
 
     property int                     globalUnreadCount: 0
@@ -22,9 +21,10 @@ PageStackWindow {
     property string                  accPort: ""
     property bool                    accManualHostPort: false
     property bool                    accDefault: false
+
     property int                     splitscreenY: 0
 
-    property string                  lastStatus: settings.gStr("behavior","lastStatusText") !== "false" ? settings.gStr("behavior","lastStatusText") : ""
+    property string                  lastStatus: settings.gStr("behavior","lastStatusText")
     property string nowEditing:      ""
     property string url:             ""
 
@@ -38,21 +38,10 @@ PageStackWindow {
     property string dialogText:      ""
     property string dialogName:      ""
 
-    Audio { id: sndEffect }
-    HapticsEffect {
-        id: hapticsEffect
-        attackIntensity: 0
-        attackTime: 250
-        fadeTime: 250
-        fadeIntensity: 0
-        running: false
-    }
-
     initialPage: RosterPage {}
 
     XmppClient {
         id: xmppClient
-
         onMessageReceived: {
             if( xmppClient.myBareJid != bareJidLastMsg ) {
                 globalUnreadCount++
@@ -69,7 +58,6 @@ PageStackWindow {
                 notifySndVibr("MsgRecv")
             }
         }
-
         onStatusChanged: {
             console.log( "XmppClient::onStatusChanged:" + status )
             main.statusChanged()
@@ -82,21 +70,13 @@ PageStackWindow {
                 notify.postHSWidget()
             }
         }
-
-        onVCardChanged: {
-            xmppVCard.vcard = xmppClient.vcard
-        }
-
+        onVCardChanged: { xmppVCard.vcard = xmppClient.vcard }
         onErrorHappened: {
             console.log("QML: Error: " + errorString )
             sb.text = "Error: "+errorString
             sb.open()
         }
-
-        onPresenceJidChanged: {
-            if (presenceBareJid == xmppClient.myBareJid ) notify.getStatusName();
-        }
-
+        onPresenceJidChanged: { if (presenceBareJid == xmppClient.myBareJid ) notify.getStatusName(); }
         onSubscriptionReceived: {
             if (settings.gBool("notifications","notifySubscription") == true) {
                 sb.text = "Subscription request from " + bareJid
@@ -109,21 +89,12 @@ PageStackWindow {
         }
     } //XmppClient
 
-    MeegIMSettings {
-        id: settings
-    }
-
-    XmppVCard {
-        id: xmppVCard
-    }
+    MeegIMSettings { id: settings }
+    XmppVCard { id: xmppVCard }
 
     Component.onCompleted: {
         initAccount()
         checkIfFirstRun()
-    }
-
-    FileModel {
-        id: fileModel
     }
 
     function changeAudioFile() {
@@ -136,6 +107,9 @@ PageStackWindow {
                     dialog.open();
                 }
             }
+
+    /************************( file selection dialog )*****************************/
+    FileModel { id: fileModel }
 
     function openFile( dirMode ) {
                 var component = Qt.createComponent("qrc:/qml/Dialogs/FileDialog.qml");
@@ -157,6 +131,8 @@ PageStackWindow {
     function directorySelected( dirPath) {
             console.debug("directoryAdded:" + dirPath);
     }
+
+    /************************( stuff to do when running this app )*****************************/
 
     function checkIfFirstRun() {
         if (!settings.gBool("main","not_first_run") || settings.gBool("main","build006")) {
@@ -216,20 +192,6 @@ PageStackWindow {
         }
 
     }
-
-    function notifySndVibr(how) {
-        if( settings.gBool("notifications","vibra"+how )) {
-            hapticsEffect.duration = settings.gInt("notifications","vibra"+how+"Duration" )
-            hapticsEffect.intensity = settings.gInt("notifications","vibra"+how+"Intensity" )/100
-            hapticsEffect.running = true
-        }
-        if( settings.gBool("notifications","sound"+how )) {
-            sndEffect.source = settings.gStr("notifications","sound"+how+"File" )
-            sndEffect.volume = settings.gInt("notifications","sound"+how+"Volume" )/100
-            sndEffect.play()
-        }
-    }
-
     property bool _existDefaultAccount: false
     function initAccount() {
         var accc=0
@@ -262,7 +224,8 @@ PageStackWindow {
             }
         }
     }
-    /**************( Dialog windows, menus and stuff... NOPE, JUST A LOADER :D )**************/
+
+    /****************************( Dialog windows, menus and stuff)****************************/
 
     Loader { id: dialog }
     ContextMenu {
@@ -277,11 +240,7 @@ PageStackWindow {
     /**************(* notify *)**************/
 
     Notifications { id: notify }
-    StatusBar {
-        id: sbar
-        x: 0
-        y: -main.y
-        platformInverted: false
+    StatusBar { id: sbar; x: 0; y: -main.y
         Rectangle {
                   anchors { left: parent.left; leftMargin: 6; verticalCenter: parent.verticalCenter }
                   width: sbar.width - 183; height: parent.height
@@ -298,9 +257,7 @@ PageStackWindow {
                     }
                     Rectangle{
                         width: 25
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        anchors.right: parent.right
+                        anchors { top: parent.top; bottom: parent.bottom; right: parent.right }
                         rotation: -90
 
                         gradient: Gradient{
@@ -313,26 +270,46 @@ PageStackWindow {
 
     }
 
+    function notifySndVibr(how) {
+        if( settings.gBool("notifications","vibra"+how )) {
+            hapticsEffect.duration = settings.gInt("notifications","vibra"+how+"Duration" )
+            hapticsEffect.intensity = settings.gInt("notifications","vibra"+how+"Intensity" )/100
+            hapticsEffect.running = true
+        }
+        if( settings.gBool("notifications","sound"+how )) {
+            sndEffect.source = settings.gStr("notifications","sound"+how+"File" )
+            sndEffect.volume = settings.gInt("notifications","sound"+how+"Volume" )/100
+            sndEffect.play()
+        }
+    }
+    Audio { id: sndEffect }
+    HapticsEffect {
+        id: hapticsEffect
+        attackIntensity: 0
+        attackTime: 250
+        fadeTime: 250
+        fadeIntensity: 0
+        running: false
+    }
+
     /***************( splitscreen input )***************/
     Item {
-    id: splitViewInput
+        id: splitViewInput
+        anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
 
-    anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
-
-    states: [
-        State {
-            name: "Visible"; when: inputContext.visible
-            PropertyChanges { target: splitViewInput; height: inputContext.height }
-            PropertyChanges { target: main; inputInProgress: true }
-            PropertyChanges { target: main; y: splitscreenY > 0 ? 0-splitscreenY : 0 }
-        },
-
-        State {
-            name: "Hidden"; when: !inputContext.visible
-            PropertyChanges { target: splitViewInput; }
-            PropertyChanges { target: main; inputInProgress: false }
-        }
-    ]
-}
+        states: [
+            State {
+                name: "Visible"; when: inputContext.visible
+                PropertyChanges { target: splitViewInput; height: inputContext.height }
+                PropertyChanges { target: main; inputInProgress: true }
+                PropertyChanges { target: main; y: splitscreenY > 0 ? 0-splitscreenY : 0 }
+            },
+            State {
+                name: "Hidden"; when: !inputContext.visible
+                PropertyChanges { target: splitViewInput; }
+                PropertyChanges { target: main; inputInProgress: false }
+            }
+        ]
+    }
 
 }
