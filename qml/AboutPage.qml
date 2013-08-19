@@ -4,6 +4,7 @@ import com.nokia.symbian 1.1
 
 Page {
     id: aboutPage
+    orientationLock: 1
     tools: toolBarLayout
 
     Component.onCompleted: {
@@ -11,7 +12,7 @@ Page {
     }
 
     Image {
-        id: image1
+        id: logo
         source: "qrc:/Lightbulb.svg"
         y: 32
         sourceSize.width: 128
@@ -25,86 +26,52 @@ Page {
     }
 
     Text {
-        id: text1
-        y: 176
-        color: main.platformInverted ? "black" : "white"
+        id: programName
+        color: platformStyle.colorNormalLight
         text: "Lightbulb 0.0.8"
-        anchors.horizontalCenterOffset: 0
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors { top: logo.bottom; topMargin: 5; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
         horizontalAlignment: Text.AlignHCenter
-        font.pixelSize: 25
+        font.pixelSize: platformStyle.fontSizeMedium*1.5
     }
 
     Text {
-        id: text2
-        y: 213
-        color: main.platformInverted ? "black" : "white"
+        id: myName
+        anchors { top: programName.bottom; horizontalCenterOffset: 2; horizontalCenter: parent.horizontalCenter }
+        color: platformStyle.colorNormalLight
         text: "Maciej Janiszewski (2013)"
-        anchors.horizontalCenterOffset: 2
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 19
+        font.pixelSize: platformStyle.fontSizeMedium
         horizontalAlignment: Text.AlignHCenter
     }
 
     Text {
-        id: text3
-        y: 236
-        color: main.platformInverted ? "black" : "white"
+        id: authorName
+        color: platformStyle.colorNormalLight
         text: "(pisarzk@gmail.com)"
-        anchors.horizontalCenterOffset: 0
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 15
+        anchors { top: myName.bottom; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
+        font.pixelSize: platformStyle.fontSizeSmall
         horizontalAlignment: Text.AlignHCenter
     }
 
     Text {
-        id: text4
-        x: 29
-        y: 425
-        color: main.platformInverted ? "black" : "white"
-        text: qsTr("Initially based on MeegIM. Using qxmpp 0.7.6")
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 15
-        horizontalAlignment: Text.AlignHCenter
-    }
-
-    Text {
-        id: text5
-        x: 89
-        y: 443
-        color: main.platformInverted ? "black" : "white"
-        text: qsTr("Made possible with Qt 4.7.4")
-        anchors.horizontalCenter: parent.horizontalCenter
-        font.pixelSize: 15
-        horizontalAlignment: Text.AlignHCenter
-    }
-
-    Text {
-        id: text6
-        y: 467
-        width: 304
-        height: 77
-        color: "red"
-        //text: qsTr("Software is provided as-is. Things gonna break, world is going to burn etc. I'm aware of that. I WARNED YOU!")
-        text: qsTr("UNOFFICIAL PRE-RELEASE BUILD! I hope you won't leak it, would you?")
-        anchors.horizontalCenter: parent.horizontalCenter
+        id: licenseStuff
+        width: parent.width
+        text: qsTr("This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under certain conditions. See GPL v3 license for details.")
+        anchors { top: niceInfo.bottom; topMargin: 80; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
         font.bold: true
         wrapMode: Text.WordWrap
-        font.pixelSize: 15
+        font.pixelSize: platformStyle.fontSizeSmall
         horizontalAlignment: Text.AlignHCenter
+        color: platformStyle.colorNormalLight
     }
 
     Text {
-        id: text7
-        y: 357
-        width: 304
-        height: 18
-        color: main.platformInverted ? "black" : "white"
+        id: niceInfo
+        color: platformStyle.colorNormalLight
         text: qsTr("During development of this software, no mobile device was harmed.")
-        anchors.horizontalCenterOffset: 1
-        anchors.horizontalCenter: parent.horizontalCenter
+        width: parent.width
+        anchors { top: authorName.bottom; topMargin: 80; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
         wrapMode: Text.WordWrap
-        font.pixelSize: 15
+        font.pixelSize: platformStyle.fontSizeSmall
         horizontalAlignment: Text.AlignHCenter
     }
 
@@ -113,9 +80,7 @@ Page {
         id: toolBarLayout
         ToolButton {
             iconSource: "toolbar-back"
-            onClicked: {
-                pageStack.replace( "qrc:/qml/./RosterPage.qml")
-            }
+            onClicked: { pageStack.replace( "qrc:/qml/RosterPage.qml") }
         }
     }
 }
