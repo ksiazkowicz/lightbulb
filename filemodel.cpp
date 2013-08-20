@@ -13,7 +13,7 @@ static QStringList getDrives() {
     QStringList drives;
     foreach( QFileInfo file, fileList ){
         if( /*file.isWritable() &&*/
-            /*file.filePath() != "Z:/" &&*/  file.filePath() != "D:/"  ){
+            file.filePath() != "Z:/" &&  file.filePath() != "D:/"  ){
             drives << file.filePath();
         }
     }

@@ -74,7 +74,9 @@ SOURCES += main.cpp \
     qmlrostermodel.cpp \
     lightbulbhswidget.cpp \
     globalnote.cpp \
-    filemodel.cpp
+    filemodel.cpp \
+    nativechaticon.cpp \
+    fileio.cpp
 
 
 HEADERS += MyXmppClient.h \
@@ -94,12 +96,13 @@ HEADERS += MyXmppClient.h \
     meegimsettings.h \
     qmlvcard.h \
     qmlrostermodel.h \
-    rosterxml.h \
     qhswidget.h \
     lightbulbhswidget.h \
     qmlclipboardadapter.h \
     globalnote.h \
-    filemodel.h
+    filemodel.h \
+    nativechaticon.h \
+    fileio.h
 
 OTHER_FILES += \
     README \
@@ -124,7 +127,8 @@ OTHER_FILES += \
     qml/Notifications.qml \
     qml/Dialogs/VibrationSettings.qml \
     qml/Dialogs/SoundSettings.qml \
-    qml/Banner.qml
+    qml/Banner.qml \
+    qml/ArchivePage.qml
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)

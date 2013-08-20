@@ -57,6 +57,7 @@ PageStackWindow {
                     notify.postGlobalNote(qsTr("New message from ") + getNameByJid(bareJidLastMsg) + qsTr(". You have ") + globalUnreadCount + qsTr(" unread messages."))
                 }
                 notifySndVibr("MsgRecv")
+                chatIcon.setChatIconStatus(1);
             }
         }
         onStatusChanged: {
@@ -242,6 +243,10 @@ PageStackWindow {
     Clipboard { id: clipboard }
 
     /**************(* notify *)**************/
+
+    /*ChatIcon {
+        id: chatIcon
+    }*/
 
     Notifications { id: notify }
     StatusBar { id: sbar; x: 0; y: -main.y

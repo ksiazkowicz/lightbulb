@@ -2,7 +2,6 @@
 #include <QDebug>
 #include <apgtask.h>
 #include <eikenv.h>
-#include <QMessageBox>
 
 const QString sw_type = "threerows";
 const QString sw_name = "Lightbulb";

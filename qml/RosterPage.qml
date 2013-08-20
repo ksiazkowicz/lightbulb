@@ -210,6 +210,12 @@ Page {
                 }
             }
             MenuItem {
+                text: qsTr("Archive")
+                onClicked: {
+                    main.pageStack.replace( "qrc:/qml/ArchivePage.qml" )
+                }
+            }
+            MenuItem {
                 text: qsTr("Subscribe")
                 onClicked: {dialogTitle = qsTr("Subscribed")
                     dialogText = qsTr("Sent request to ")+dialogName

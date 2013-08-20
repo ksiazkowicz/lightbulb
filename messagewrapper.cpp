@@ -1,6 +1,6 @@
 #include "messagewrapper.h"
 #include "MyXmppClient.h"
-#include "qmlxmppclient.h"
+//#include "qmlxmppclient.h"
 #include <QDebug>
 
 MessageWrapper::MessageWrapper(QObject *parent) : QObject(parent)
