@@ -856,7 +856,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         else if( !( xmppMsg.body().isEmpty() || xmppMsg.body().isNull()) )
         {
             msgWrapper->textMessage(xmppMsg);
-            archiveIncMessage(xmppMsg);
+            if (m_archiveIncMessage) { archiveIncMessage(xmppMsg); }
 
             QString jid = xmppMsg.from();
             if( jid.indexOf('/') >= 0 ) {
@@ -881,23 +881,25 @@ void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg )
     QString parameterString;
     QString bareJid;
     QString contactName;
+    QString body;
 
     bareJid = getBareJidByJid(xmppMsg.from());
     contactName = getNameByJid(bareJid);
+    body = xmppMsg.body();
 
-    qDebug() << "MyXmppClient::archiveIncMessage() does it's work";
 
     QDateTime currTime = QDateTime::currentDateTime();
 
     QDir archiveDir;
     archiveDir.mkpath(cacheIM->getContactCache(bareJid));
 
-    parameterString = contactName +  currTime.toString(" dd/MM/yyyy hh:mm:ss: ") + xmppMsg.body() + "\n";
-    qDebug() << parameterString;
+    parameterString = contactName +  currTime.toString(" dd/MM/yyyy hh:mm:ss: ") + body;
+    qDebug() << "archiveIncMessage() appending: " + parameterString;
     QString parameterFileString(cacheIM->getContactCache(bareJid) + "\\messages.txt");
     QFile parameterFile(parameterFileString);
     parameterFile.open(QFile::Append);
     QTextStream out(&parameterFile);
+    out.setCodec(QTextCodec::codecForName("UTF-8"));
     out << parameterString << endl;
     parameterFile.close();
 }

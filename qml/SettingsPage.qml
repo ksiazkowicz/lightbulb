@@ -447,14 +447,13 @@ Page {
                     CheckBox {
                         id: logStuff
                         text: qsTr("Archive incoming messages")
-                        //checked: settings.reconnectWhenError === true ? true : false
+                        checked: settings.gBool("behavior","archiveIncMessage")
                         platformInverted: main.platformInverted
-                        enabled: false
-                        /*onCheckedChanged: {
-                            console.log("Reconnect when error: checked="+checked)
-                            xmppClient.reconnectOnError = checked
-                            settings.reconnectWhenError = checked
-                        }*/
+                        onCheckedChanged: {
+                            console.log("Archive incoming messages: checked="+checked)
+                            xmppClient.archiveIncMessage = checked
+                            settings.sBool(checked,"behavior","archiveIncMessage")
+                        }
                     }
                     CheckBox {
                         id: enableWidget

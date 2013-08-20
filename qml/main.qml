@@ -96,6 +96,9 @@ PageStackWindow {
     Component.onCompleted: {
         initAccount()
         checkIfFirstRun()
+        xmppClient.keepAlive = settings.gInt("behavior", "keepAliveInterval")
+        xmppClient.reconnectOnError = settings.gBool("behavior", "reconnectOnError")
+        xmppClient.archiveIncMessage = settings.gBool("behavior", "archiveIncMessage")
     }
 
     function changeAudioFile() {

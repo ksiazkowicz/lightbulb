@@ -83,6 +83,7 @@ class MyXmppClient : public QObject
     Q_PROPERTY( QMLVCard* vcard READ getVCard NOTIFY vCardChanged )
     Q_PROPERTY( int keepAlive READ getKeepAlive WRITE setKeepAlive NOTIFY keepAliveChanged )
     Q_PROPERTY( bool reconnectOnError READ getReconnectOnError WRITE setReconnectOnError NOTIFY reconnectOnErrorChanged )
+    Q_PROPERTY( bool archiveIncMessage READ getArchiveIncMessage WRITE setArchiveIncMessage NOTIFY archiveIncMessageChanged )
 
     MyCache *cacheIM;
     MessageWrapper *msgWrapper;

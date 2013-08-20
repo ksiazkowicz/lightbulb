@@ -107,7 +107,7 @@ Page {
             }
             Image {
                 id: imgPresenceR
-                source: contactPicStatus
+                source: rosterLayoutAvatar ? contactPicStatus : ""
                 sourceSize.height: (wrapper.height/3) - 4
                 sourceSize.width: (wrapper.height/3) - 4
                 anchors { verticalCenter: parent.verticalCenter; right: parent.right; rightMargin: rosterLayoutAvatar ? 10 : 0 }
@@ -118,7 +118,7 @@ Page {
                 height: 1
                 anchors { top: parent.bottom; left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
                 color: main.textColor
-                opacity: 0.5
+                opacity: 0.2
             }
         } //Rectangle
     }
