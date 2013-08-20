@@ -51,7 +51,7 @@ Page {
                 anchors.top: parent.top
                 anchors.right: parent.right
                 anchors.rightMargin: 16
-                source: "bubble/incTriangle.png"
+                source: "qrc:/bubble/incTriangle.png"
                 width: 13
                 height: msgMy == true ? 0 : 13
             }
@@ -104,7 +104,7 @@ Page {
                 anchors.bottom: parent.bottom
                 anchors.left: parent.left
                 anchors.leftMargin: 16
-                source: "bubble/ownTriangle.png"
+                source: "qrc:/bubble/ownTriangle.png"
                 width: 13
                 height: msgMy == true ? 13 : 0
             }
