@@ -22,34 +22,6 @@ CommonDialog {
           width:parent.width; height:5;
       }
 
-
-      Row {
-          id: buttonsRow
-          height:upButton.height
-          width: parent.width
-          Button {
-            id: upButton
-            text: 'Up'
-            width: 70
-            height: parent.height
-            enabled: fileModel.canGoUp
-            onClicked: fileModel.goUp()
-          }
-          Button {
-            id: dirButton
-            text: fileModel.directory;
-            width: parent.width - upButton.width
-            height: parent.height
-            onClicked: {
-                if( dirMode ) {
-                    console.log("Directory selected: " + fileModel.currentDirectory() );
-                    filedialog.directorySelected(fileModel.currentDirectory());
-                    filedialog.accept();
-                }
-            }
-          }
-      }
-
       Flickable {
           width: parent.width-20
           height: 288
@@ -130,7 +102,40 @@ CommonDialog {
               }
           }
       }
-    }
+      Rectangle {
+          id: buttonsRow
+          height:upButton.height
+          width: parent.width
+          color: "transparent"
+          Row {
+              width: parent.width
+              height: upButton.height
+
+              Button {
+                id: upButton
+                text: 'Up'
+                width: 70
+                height: parent.height
+                enabled: fileModel.canGoUp
+                onClicked: fileModel.goUp()
+              }
+              Button {
+                id: dirButton
+                text: fileModel.directory;
+                width: parent.width - upButton.width
+                height: parent.height
+                onClicked: {
+                    if( dirMode ) {
+                        console.log("Directory selected: " + fileModel.currentDirectory() );
+                        filedialog.directorySelected(fileModel.currentDirectory());
+                        filedialog.accept();
+                    }
+                }
+              }
+          }
+      }
+
+   }
   ]
   onAccepted: { filedialog.destroy() }
   onRejected: { filedialog.destroy() }
