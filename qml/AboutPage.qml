@@ -27,17 +27,18 @@ Page {
 
     Text {
         id: programName
-        color: platformStyle.colorNormalLight
+        color: main.textColor
         text: "Lightbulb 0.0.8"
         anchors { top: logo.bottom; topMargin: 5; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
         horizontalAlignment: Text.AlignHCenter
         font.pixelSize: platformStyle.fontSizeMedium*1.5
+
     }
 
     Text {
         id: myName
         anchors { top: programName.bottom; horizontalCenterOffset: 2; horizontalCenter: parent.horizontalCenter }
-        color: platformStyle.colorNormalLight
+        color: main.textColor
         text: "Maciej Janiszewski (2013)"
         font.pixelSize: platformStyle.fontSizeMedium
         horizontalAlignment: Text.AlignHCenter
@@ -45,7 +46,7 @@ Page {
 
     Text {
         id: authorName
-        color: platformStyle.colorNormalLight
+        color: main.textColor
         text: "(pisarzk@gmail.com)"
         anchors { top: myName.bottom; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
         font.pixelSize: platformStyle.fontSizeSmall
@@ -61,12 +62,12 @@ Page {
         wrapMode: Text.WordWrap
         font.pixelSize: platformStyle.fontSizeSmall
         horizontalAlignment: Text.AlignHCenter
-        color: platformStyle.colorNormalLight
+        color: main.textColor
     }
 
     Text {
         id: niceInfo
-        color: platformStyle.colorNormalLight
+        color: main.textColor
         text: qsTr("During development of this software, no mobile device was harmed.")
         width: parent.width
         anchors { top: authorName.bottom; topMargin: 80; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }

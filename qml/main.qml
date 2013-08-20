@@ -10,6 +10,7 @@ PageStackWindow {
 
     showStatusBar:                   true
     platformInverted:                settings.gBool("ui","invertPlatform")
+    property string textColor:       platformInverted ? platformStyle.colorNormalDark : platformStyle.colorNormalLight
 
     property int                     globalUnreadCount: 0
     property bool                    inputInProgress: false

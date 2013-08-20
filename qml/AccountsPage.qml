@@ -35,7 +35,7 @@ Page {
                 text: accJid
                 font.pixelSize: 18
                 clip: true
-                color: main.platformInverted ? "black" : "white"
+                color: main.textColor
             }
             Switch {
                 id: switch1

@@ -40,14 +40,14 @@ Page {
 
             Image {
                 id: imgPresence
-                source: contactPicStatus
-                sourceSize.height: wrapper.height
-                sourceSize.width: wrapper.height
+                source: rosterLayoutAvatar ? (contactPicAvatar === "" ? "qrc:/qml/images/avatar.png" : contactPicAvatar) : contactPicStatus
+                sourceSize.height: wrapper.height-4
+                sourceSize.width: wrapper.height-4
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
-                anchors.leftMargin: 5
-                height: rosterItemHeight
-                width: rosterItemHeight
+                anchors.leftMargin: 10
+                height: rosterItemHeight-4
+                width: rosterItemHeight-4
                 Image {
                     id: imgUnreadMsg
                     source: showUnreadCount ? "images/message_num.png" : "images/message_mark.png"
@@ -78,18 +78,14 @@ Page {
             Text {
                     id: txtJid
                     property string contact: contactName
-                    anchors.left: imgPresence.right
-                    anchors.right: parent.right
-                    anchors.leftMargin: 5
-                    anchors.rightMargin: 5
-                    anchors.verticalCenter: parent.verticalCenter
+                    anchors { left: imgPresence.right; right: imgPresenceR.left; leftMargin: 10; rightMargin: 10; verticalCenter: parent.verticalCenter }
                     width: parent.width
-                    maximumLineCount: (75/20) > 1 ? (75/20) : 1
+                    maximumLineCount: (rosterItemHeight/22) > 1 ? (rosterItemHeight/22) : 1
                     text: (contactName === "" ? contactJid : contactName) + (showContactStatusText ? ("\n" + contactTextStatus) : "")
                     onLinkActivated: { main.url=link; linkContextMenu.open()}
                     wrapMode: Text.Wrap
-                    font.pixelSize: 16
-                    color: main.platformInverted ? "black" : "white"
+                    font.pixelSize: (showContactStatusText ? 16 : 0)
+                    color: main.textColor
             }
             MouseArea {
                 id: mouseAreaItem;
@@ -108,6 +104,21 @@ Page {
                     dialogName = contactName
                     contactMenu.open()
                 }
+            }
+            Image {
+                id: imgPresenceR
+                source: contactPicStatus
+                sourceSize.height: (wrapper.height/3) - 4
+                sourceSize.width: (wrapper.height/3) - 4
+                anchors { verticalCenter: parent.verticalCenter; right: parent.right; rightMargin: rosterLayoutAvatar ? 10 : 0 }
+                height: rosterLayoutAvatar ? (rosterItemHeight/3) - 4 : 0
+                width: rosterLayoutAvatar ? (rosterItemHeight/3) - 4 : 0
+            }
+            Rectangle {
+                height: 1
+                anchors { top: parent.bottom; left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
+                color: main.textColor
+                opacity: 0.5
             }
         } //Rectangle
     }

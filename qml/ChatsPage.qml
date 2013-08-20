@@ -70,7 +70,7 @@ Page {
                     clip: true
                     text: contactUnreadMsg != 0 ? (contactName === "" ? contactJid : contactName) + "\n" + (contactUnreadMsg==1 ? contactUnreadMsg + qsTr(" new message") : contactUnreadMsg + qsTr(" new messages") ) : (contactName === "" ? contactJid : contactName)
                     font.pixelSize: 16
-                    color: main.platformInverted ? "black" : "white"
+                    color: main.textColor
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
                 }

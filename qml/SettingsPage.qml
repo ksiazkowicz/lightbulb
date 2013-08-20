@@ -36,7 +36,7 @@ Page {
 
                     Text {
                         text: "Message received"
-                        color: main.platformInverted ? "black" : "white"
+                        color: main.textColor
                     }
                     Rectangle {
                         width: tabNotifications.width-20
@@ -110,7 +110,7 @@ Page {
                     //
                     Text {
                         text: "Message sent"
-                        color: main.platformInverted ? "black" : "white"
+                        color: main.textColor
                     }
                     Rectangle {
                         width: tabNotifications.width-20
@@ -164,7 +164,7 @@ Page {
 
                     Text {
                         text: "Connecting changed"
-                        color: main.platformInverted ? "black" : "white"
+                        color: main.textColor
                     }
                     CheckBox {
                         id: notifyOnline
@@ -203,7 +203,7 @@ Page {
 
                     Text {
                         text: "Subscription request"
-                        color: main.platformInverted ? "black" : "white"
+                        color: main.textColor
                     }
                     Rectangle {
                         width: tabNotifications.width-20
@@ -269,7 +269,7 @@ Page {
                     //
                     Text {
                         text: "Contact is typing"
-                        color: main.platformInverted ? "black" : "white"
+                        color: main.textColor
                     }
                     CheckBox {
                         id: notifyBoxTyping
@@ -306,6 +306,7 @@ Page {
                        onCheckedChanged: {
                           settings.sBool(checked,"ui", "invertPlatform")
                           main.platformInverted = checked
+                          main.textColor = checked ? platformStyle.colorNormalDark : platformStyle.colorNormalLight
                        }
                     }
                     CheckBox {
@@ -349,10 +350,19 @@ Page {
                           settings.sBool(checked,"ui", "showContactStatusText")
                        }
                     }
+                    CheckBox {
+                       id: rosterLayout
+                       text: qsTr("Show avatars (alternative layout)")
+                       platformInverted: main.platformInverted
+                       checked: settings.gBool("ui", "rosterLayoutAvatar")
+                       onCheckedChanged: {
+                          settings.sBool(checked,"ui", "rosterLayoutAvatar")
+                       }
+                    }
                     Text {
                         id: rosterItemHeightText
                         text: "Roster item height (" + rosterItemHeight.value + " px)"
-                        color: main.platformInverted ? "black" : "white"
+                        color: main.textColor
                     }
                     Row {
                         Slider {
@@ -403,7 +413,7 @@ Page {
                         text: qsTr("Keep alive interval (secs)")
                         font.pixelSize: 20
                         font.bold: true
-                        color: main.platformInverted ? "black" : "white"
+                        color: main.textColor
                     }
                     TextField {
                         id: tiKeepAlive

@@ -104,7 +104,7 @@ Page {
                         width: container.width
                         text: requestMyVCard ? "Me" : xmppClient.getNameByJid(bareJid)
                         wrapMode: Text.Wrap
-                        color: main.platformInverted ? "black" : "white"
+                        color: main.textColor
                     }
                     Row {
                         anchors { top: txtJid.bottom }
@@ -132,7 +132,7 @@ Page {
                 id: txtNickname
                 text: "<b>" + qsTr("Nickname") + "</b><br />" + vCardNickName
                 font.pixelSize: 18
-                color: main.platformInverted ? "black" : "white"
+                color: main.textColor
                 height: vCardNickName != "" ? 41 : 0
                 visible: vCardNickName != ""
             }
@@ -147,7 +147,7 @@ Page {
                 id: txtName
                 text: "<b>" + qsTr("Name") + "</b><br />" + vCardName
                 font.pixelSize: 18
-                color: main.platformInverted ? "black" : "white"
+                color: main.textColor
                 height: vCardName != "" ? 41 : 0
                 visible: vCardName != ""
             }
@@ -162,7 +162,7 @@ Page {
                 id: txtMiddleName
                 text: "<b>" + qsTr("Middle name") + "</b><br />" + vCardMiddleName
                 font.pixelSize: 18
-                color: main.platformInverted ? "black" : "white"
+                color: main.textColor
                 height: vCardMiddleName != "" ? 41 : 0
                 visible: vCardMiddleName != ""
             }
@@ -177,7 +177,7 @@ Page {
                 id: txtLastName
                 text: "<b>" + qsTr("Lastname") + "</b><br />" + vCardLastName
                 font.pixelSize: 18
-                color: main.platformInverted ? "black" : "white"
+                color: main.textColor
                 height: vCardLastName != "" ? 41 : 0
                 visible: vCardLastName != ""
             }
@@ -192,7 +192,7 @@ Page {
                 id: txtFullName
                 text: "<b>" + qsTr("Full name") + "</b><br />" + vCardFullName
                 font.pixelSize: 18
-                color: main.platformInverted ? "black" : "white"
+                color: main.textColor
                 height: vCardFullName != "" ? 41 : 0
                 visible: vCardFullName != ""
             }
@@ -207,7 +207,7 @@ Page {
                 id: txtEmail
                 text: "<b>" + qsTr("E-mail") + "</b><br />" + vCardEmail
                 font.pixelSize: 18
-                color: main.platformInverted ? "black" : "white"
+                color: main.textColor
                 height: vCardEmail != "" ? 41 : 0
                 visible: vCardEmail != ""
             }
@@ -222,7 +222,7 @@ Page {
                 id: txtBirthday
                 text: "<b>" + qsTr("Birthday") + "</b><br />" + vCardBirthday
                 font.pixelSize: 18
-                color: main.platformInverted ? "black" : "white"
+                color: main.textColor
                 height: vCardBirthday != "" ? 41 : 0
                 visible: vCardBirthday != ""
             }
@@ -237,7 +237,7 @@ Page {
                 id: txtUrl
                 text: "<b>" + qsTr("Website") + "</b><br /><a href=\"" + vCardUrl + "\">" + vCardUrl + "</a>"
                 font.pixelSize: 18
-                color: main.platformInverted ? "black" : "white"
+                color: main.textColor
                 wrapMode: Text.WrapAnywhere
                 width: parent.width
                 height: vCardUrl != "" ? ((txtUrl.lineCount+1)*18)+5 : 0
