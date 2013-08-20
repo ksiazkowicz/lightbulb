@@ -8,6 +8,8 @@
 
 #include <QDebug>
 #include <QCryptographicHash>
+#include <QFile>
+#include <QDir>
 
 QString MyXmppClient::myVersion = "0.0.8 Debug";
 
@@ -58,6 +60,7 @@ MyXmppClient::MyXmppClient() : QObject(0)
     m_contactName = "";
     m_reconnectOnError = false;
     m_keepAlive = 60;
+    m_archiveIncMessage = false;
 
     flVCardRequest = "";
     qmlVCard = new QMLVCard();
@@ -853,6 +856,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         else if( !( xmppMsg.body().isEmpty() || xmppMsg.body().isNull()) )
         {
             msgWrapper->textMessage(xmppMsg);
+            archiveIncMessage(xmppMsg);
 
             QString jid = xmppMsg.from();
             if( jid.indexOf('/') >= 0 ) {
@@ -870,6 +874,32 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         }
         qDebug() << "MessageWrapper::messageReceived(): xmppMsg.state():" << xmppMsg.state();
     }
+}
+
+void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg )
+{
+    QString parameterString;
+    QString bareJid;
+    QString contactName;
+
+    bareJid = getBareJidByJid(xmppMsg.from());
+    contactName = getNameByJid(bareJid);
+
+    qDebug() << "MyXmppClient::archiveIncMessage() does it's work";
+
+    QDateTime currTime = QDateTime::currentDateTime();
+
+    QDir archiveDir;
+    archiveDir.mkpath(cacheIM->getContactCache(bareJid));
+
+    parameterString = contactName +  currTime.toString(" dd/MM/yyyy hh:mm:ss: ") + xmppMsg.body() + "\n";
+    qDebug() << parameterString;
+    QString parameterFileString(cacheIM->getContactCache(bareJid) + "\\messages.txt");
+    QFile parameterFile(parameterFileString);
+    parameterFile.open(QFile::Append);
+    QTextStream out(&parameterFile);
+    out << parameterString << endl;
+    parameterFile.close();
 }
 
 QString MyXmppClient::getPicPresenceByJid(QString bareJid)

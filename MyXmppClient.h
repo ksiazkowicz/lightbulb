@@ -255,6 +255,15 @@ public :
             emit reconnectOnErrorChanged();
         }
     }
+
+    bool getArchiveIncMessage() const { return m_archiveIncMessage; }
+    void setArchiveIncMessage(bool arg)
+    {
+        if (m_archiveIncMessage != arg) {
+            m_archiveIncMessage = arg;
+            emit archiveIncMessageChanged();
+        }
+    }
 	
 signals:
     void versionChanged();
@@ -281,6 +290,7 @@ signals:
     void subscriptionReceived( const QString bareJid );
     void keepAliveChanged();
     void reconnectOnErrorChanged();
+    void archiveIncMessageChanged();
 
 public slots:
     void clientStateChanged( QXmppClient::State state );
@@ -315,6 +325,7 @@ private:
     QString m_resource;
     QString m_chatJid;
     QString m_contactName;
+    void archiveIncMessage( const QXmppMessage &xmppMsg );
 
     QString getPicPresence( const QXmppPresence &presence ) const;
     QString getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const;
@@ -322,6 +333,7 @@ private:
 
     int m_keepAlive;
     bool m_reconnectOnError;
+    bool m_archiveIncMessage;
 
     bool flSetPresenceWithoutAck;
 };

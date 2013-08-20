@@ -27,6 +27,7 @@ public:
 
     bool setAvatarCache( const QString &jid, const QByteArray &avatar ) const;
     QString getAvatarCache( const QString &jid ) const;
+    QString getContactCache( const QString &jid ) const;
 
     QString getMeegIMCachePath() const { return pathMeegIMCache; }
     QString getMeegIMHomePath() const { return pathMeegIMHome; }

@@ -88,4 +88,9 @@ QString MyCache::getAvatarCache(const QString &jid) const
     return QString("");
 }
 
+QString MyCache::getContactCache(const QString &jid) const
+{
+    QString contactJid = pathMeegIMHome + "\\" + QString("archive") + "\\" + jid;
+    return contactJid;
+}
 
