@@ -632,7 +632,6 @@ void MyXmppClient::typingStop(QString bareJid, QString resource) //Q_INVOKABLE
 
 void MyXmppClient::openChat( QString bareJid ) //Q_INVOKABLE
 {
-    if (m_archiveIncMessage) { appendConversationStart(bareJid); }
     RosterItemModel *itemRoster =  reinterpret_cast<RosterItemModel*>( listModelRoster->find( bareJid ) );
 
     RosterItemModel* item = reinterpret_cast<RosterItemModel*>( listModelChats->find( bareJid ) );
@@ -653,6 +652,7 @@ void MyXmppClient::openChat( QString bareJid ) //Q_INVOKABLE
 
     if (!item) {
         listModelChats->append( newItem );
+        if (m_archiveIncMessage) { appendConversationStart(bareJid); }
     };
 
     emit chatOpened( bareJid );
@@ -857,7 +857,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         else if( !( xmppMsg.body().isEmpty() || xmppMsg.body().isNull()) )
         {
             msgWrapper->textMessage(xmppMsg);
-            if (m_archiveIncMessage) { archiveIncMessage(xmppMsg); }
+            if (m_archiveIncMessage) { archiveIncMessage(xmppMsg, false); }
 
             QString jid = xmppMsg.from();
             if( jid.indexOf('/') >= 0 ) {
@@ -877,7 +877,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
     }
 }
 
-void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg )
+void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg, bool mine )
 {
     QString parameterString;
     QString bareJid;
@@ -885,7 +885,7 @@ void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg )
     QString body;
 
     bareJid = getBareJidByJid(xmppMsg.from());
-    contactName = getNameByJid(bareJid);
+    if (!mine) { contactName = getNameByJid(bareJid); } else { contactName = "Me"; }
     body = xmppMsg.body();
 
 
@@ -1006,6 +1006,11 @@ bool MyXmppClient::sendMyMessage(QString bareJid, QString resource, QString msgB
     xmppMsg.setBody( msgBody );
 
     this->messageReceivedSlot( xmppMsg );
+
+    xmppMsg.setFrom( jid_from );
+    xmppMsg.setTo( jid_to );
+
+    if (m_archiveIncMessage) { archiveIncMessage(xmppMsg, true); }
 
     return true;
 }
