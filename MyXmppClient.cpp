@@ -632,6 +632,7 @@ void MyXmppClient::typingStop(QString bareJid, QString resource) //Q_INVOKABLE
 
 void MyXmppClient::openChat( QString bareJid ) //Q_INVOKABLE
 {
+    if (m_archiveIncMessage) { appendConversationStart(bareJid); }
     RosterItemModel *itemRoster =  reinterpret_cast<RosterItemModel*>( listModelRoster->find( bareJid ) );
 
     RosterItemModel* item = reinterpret_cast<RosterItemModel*>( listModelChats->find( bareJid ) );
@@ -895,13 +896,35 @@ void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg )
 
     parameterString = contactName +  currTime.toString(" dd/MM/yyyy hh:mm:ss: ") + body;
     qDebug() << "archiveIncMessage() appending: " + parameterString;
-    QString parameterFileString(cacheIM->getContactCache(bareJid) + "\\messages.txt");
+    QString parameterFileString(cacheIM->getContactCache(bareJid) + "\\" + currTime.toString("d MMMM, yyyy") + ".txt");
     QFile parameterFile(parameterFileString);
     parameterFile.open(QFile::Append);
     QTextStream out(&parameterFile);
     out.setCodec(QTextCodec::codecForName("UTF-8"));
     out << parameterString << endl;
     parameterFile.close();
+}
+
+void MyXmppClient::appendConversationStart( QString bareJid )
+{
+    QString parameterString;
+
+    QDateTime currTime = QDateTime::currentDateTime();
+
+    QDir archiveDir;
+    archiveDir.mkpath(cacheIM->getContactCache(bareJid));
+
+    parameterString = " ******** ( Conversation started at " + currTime.toString("hh:mm:ss") + " ) ******** ";
+    qDebug() << "appendConversationStart() appending: " + parameterString;
+    QString parameterFileString(cacheIM->getContactCache(bareJid) + "\\" + currTime.toString("d MMMM, yyyy") + ".txt");
+    QFile parameterFile(parameterFileString);
+    parameterFile.open(QFile::Append);
+    QTextStream out(&parameterFile);
+    out.setCodec(QTextCodec::codecForName("UTF-8"));
+    out << parameterString << endl;
+    parameterFile.close();
+
+
 }
 
 QString MyXmppClient::getPicPresenceByJid(QString bareJid)

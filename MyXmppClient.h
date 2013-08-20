@@ -327,6 +327,7 @@ private:
     QString m_chatJid;
     QString m_contactName;
     void archiveIncMessage( const QXmppMessage &xmppMsg );
+    void appendConversationStart( QString bareJid );
 
     QString getPicPresence( const QXmppPresence &presence ) const;
     QString getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const;
