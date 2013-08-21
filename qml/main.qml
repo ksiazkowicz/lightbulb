@@ -100,6 +100,7 @@ PageStackWindow {
         xmppClient.keepAlive = settings.gInt("behavior", "keepAliveInterval")
         xmppClient.reconnectOnError = settings.gBool("behavior", "reconnectOnError")
         xmppClient.archiveIncMessage = settings.gBool("behavior", "archiveIncMessage")
+        if (settings.gBool("behavior","goOnlineOnStart")) { xmppClient.setMyPresence( XmppClient.Online, lastStatus ) }
     }
 
     function changeAudioFile() {

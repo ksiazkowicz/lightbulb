@@ -53,9 +53,8 @@ Page {
                            platformInverted: main.platformInverted
                        }
                        onClicked: {
-                           console.log("File Selected:" + fileModel.currentDirectory() + '\\' + caption);
                            filePath = fileModel.currentDirectory() + '\\' + caption;
-                           copyDialog.open();
+                           logText.visible = true;
                            myFile.source = filePath;
                            logText.text = myFile.read();
                        }
@@ -84,33 +83,32 @@ Page {
         }
     }
 
-    CommonDialog{
-        id: copyDialog
-        width: parent.width
-        height: parent.height
-        titleText: "Log"
-        privateCloseIcon: true
+    FileIO {
+            id: myFile
+            source: filePath
+            onError: console.log(msg)
+        }
 
-        FileIO {
-                id: myFile
-                source: filePath
-                onError: console.log(msg)
-            }
-
-        content: TextArea {
-                id: logText
-                anchors.fill: parent
-                wrapMode: Text.Wrap
-                font.pixelSize: 14
-                readOnly: true
-            }
-    }
+    TextArea {
+            id: logText
+            anchors { fill: parent; leftMargin: -10; rightMargin: -10; topMargin: -10; bottomMargin: -10 }
+            wrapMode: Text.Wrap
+            font.pixelSize: 16
+            readOnly: true
+            visible: false
+        }
 
     ToolBarLayout {
         id: toolBarLayout
         ToolButton {
             iconSource: "toolbar-back"
             onClicked: { pageStack.replace( "qrc:/qml/RosterPage.qml") }
+        }
+        ToolButton {
+            iconSource: "qrc:/qml/images/close_stop.svg"
+            enabled: logText.visible
+            opacity: enabled ? 1 : 0.2
+            onClicked: { logText.visible = false; }
         }
     }
 }

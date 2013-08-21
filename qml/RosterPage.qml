@@ -41,11 +41,9 @@ Page {
             Image {
                 id: imgPresence
                 source: rosterLayoutAvatar ? (contactPicAvatar === "" ? "qrc:/qml/images/avatar.png" : contactPicAvatar) : contactPicStatus
-                sourceSize.height: wrapper.height-4
-                sourceSize.width: wrapper.height-4
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.left: parent.left
-                anchors.leftMargin: 10
+                sourceSize.height: rosterItemHeight-4
+                sourceSize.width: rosterItemHeight-4
+                anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
                 height: rosterItemHeight-4
                 width: rosterItemHeight-4
                 Image {

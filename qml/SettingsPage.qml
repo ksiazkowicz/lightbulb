@@ -445,6 +445,16 @@ Page {
                         }
                     }
                     CheckBox {
+                        id: goOnlineOnStart
+                        text: qsTr("Go online on startup")
+                        checked: settings.gBool("behavior","goOnlineOnStart")
+                        platformInverted: main.platformInverted
+                        onCheckedChanged: {
+                            settings.sBool(checked,"behavior","goOnlineOnStart")
+                        }
+                    }
+
+                    CheckBox {
                         id: logStuff
                         text: qsTr("Archive incoming messages")
                         checked: settings.gBool("behavior","archiveIncMessage")
