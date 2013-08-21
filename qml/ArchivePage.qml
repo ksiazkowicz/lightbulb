@@ -50,6 +50,7 @@ Page {
                            id: mainText
                            text: caption.substr(0,caption.length-4)
                            width: container.width
+                           platformInverted: main.platformInverted
                        }
                        onClicked: {
                            console.log("File Selected:" + fileModel.currentDirectory() + '\\' + caption);
@@ -62,25 +63,26 @@ Page {
               }
             }
 
-            Item {
-                id:emptyList
-                width:parent.width;height:parent.height
-                visible: false
-                Connections {
-                  target: fileModel;
-                  onShowEmptyDir:{
-                      emptyList.visible = show;
-                  }
-                }
-
-                Label{
-                    anchors.centerIn: parent
-                    color:"white"
-                    text:"<h2>No logs here yet</h2>"
-                }
-            }
         }
      }
+
+    Item {
+        id:emptyList
+        anchors.fill: parent
+        visible: false
+        Connections {
+          target: fileModel;
+          onShowEmptyDir:{
+              emptyList.visible = show;
+          }
+        }
+
+        Label{
+            anchors.centerIn: parent
+            color:textColor
+            text:"<h2>No logs here yet</h2>"
+        }
+    }
 
     CommonDialog{
         id: copyDialog
@@ -95,21 +97,13 @@ Page {
                 onError: console.log(msg)
             }
 
-        content: Flickable {
-            width: parent.width-5
-            height: parent.height-5
-            anchors.horizontalCenter: parent.horizontalCenter
-            flickableDirection: Flickable.VerticalFlick
-
-            Text {
+        content: TextArea {
                 id: logText
                 anchors.fill: parent
                 wrapMode: Text.Wrap
-                font.pixelSize: 15
-                color: "white"
+                font.pixelSize: 14
+                readOnly: true
             }
-        }
-
     }
 
     ToolBarLayout {
