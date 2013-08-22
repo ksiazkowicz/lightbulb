@@ -56,8 +56,20 @@ PageStackWindow {
                 if (settings.gBool("notifications", "useGlobalNote") == true) {
                     notify.postGlobalNote(qsTr("New message from ") + getNameByJid(bareJidLastMsg) + qsTr(". You have ") + globalUnreadCount + qsTr(" unread messages."))
                 }
+                if (settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff") == true) {
+                    if (lock.isLocked()) {
+                        lock.unlockDevice()
+                        lock.lockDevice()
+                        lock.unlockDevice()
+                        lock.lockDevice()
+                        lock.unlockDevice()
+                        lock.lockDevice()
+                    }
+
+                }
+
                 notifySndVibr("MsgRecv")
-                chatIcon.setChatIconStatus(1);
+                //chatIcon.setChatIconStatus(1);
             }
         }
         onStatusChanged: {
@@ -248,6 +260,8 @@ PageStackWindow {
     /*ChatIcon {
         id: chatIcon
     }*/
+
+    Lock { id: lock }
 
     Notifications { id: notify }
     StatusBar { id: sbar; x: 0; y: -main.y

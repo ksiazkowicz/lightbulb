@@ -111,6 +111,16 @@ Page {
                               settings.sBool(checked,"notifications", "useGlobalNote")
                            }
                         }
+                    CheckBox {
+                           id: dontBLINK
+                           text: qsTr("Blink screen when locked")
+                           height: 64
+                           checked: settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff")
+                           platformInverted: main.platformInverted
+                           onCheckedChanged: {
+                              settings.sBool(checked,"notifications", "wibblyWobblyTimeyWimeyStuff")
+                           }
+                        }
                     //
                     Text {
                         text: "Message sent"
