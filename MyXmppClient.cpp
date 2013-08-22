@@ -11,7 +11,7 @@
 #include <QFile>
 #include <QDir>
 
-QString MyXmppClient::myVersion = "0.0.8";
+QString MyXmppClient::myVersion = "0.0.9 Debug";
 
 QString MyXmppClient::getBareJidByJid( const QString &jid )
 {
