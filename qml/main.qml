@@ -39,7 +39,7 @@ PageStackWindow {
     property string dialogText:      ""
     property string dialogName:      ""
 
-    initialPage: RosterPage {}
+    initialPage: RosterPage {}    
 
     XmppClient {
         id: xmppClient
@@ -320,6 +320,22 @@ PageStackWindow {
                 PropertyChanges { target: main; inputInProgress: false }
             }
         ]
+    }
+
+
+    /***************(uselessshit)**********/
+    Rectangle {
+        color: "black"
+        opacity: 0.5
+        anchors.fill: parent
+
+        visible: main.pageStack.busy ? true : false
+
+        BusyIndicator {
+            id: busyindicator1
+            anchors.centerIn: parent
+        }
+
     }
 
 }

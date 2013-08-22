@@ -69,7 +69,7 @@ Page {
                     main.accHost = accHost
                     main.accPort = accPort
                     main.accManualHostPort = accManualHostPort
-                    pageStack.replace( "qrc:/qml/AccountAddPage.qml" )
+                    pageStack.push( "qrc:/qml/AccountAddPage.qml" )
                 }
                 onClicked: {
                     wrapper.ListView.view.currentIndex = index
@@ -125,7 +125,8 @@ Page {
             iconSource: "toolbar-back"
             onClicked: {
                 main.initAccount()
-                pageStack.replace( "qrc:/qml/RosterPage.qml")
+                pageStack.pop()
+                statusBarText.text = "Contacts"
             }
         }
 
@@ -142,7 +143,7 @@ Page {
             iconSource: "images/edit.svg"
             onClicked: {
                 if( main.accJid != "" ) {
-                    pageStack.replace( "qrc:/qml/AccountAddPage.qml" )
+                    pageStack.push( "qrc:/qml/AccountAddPage.qml" )
                 }
             }
         }
@@ -156,7 +157,7 @@ Page {
                 main.accResource = ""
                 main.accHost = ""
                 main.accPort = ""
-                pageStack.replace( "qrc:/qml/AccountAddPage.qml" )
+                pageStack.push( "qrc:/qml/AccountAddPage.qml" )
             }
         }
     }

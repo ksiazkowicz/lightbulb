@@ -375,7 +375,8 @@ Page {
         ToolButton {
             iconSource: "toolbar-back"
             onClicked: {
-                pageStack.replace( "qrc:/qml/RosterPage.qml")
+                pageStack.pop()
+                statusBarText.text = "Contacts"
                 xmppClient.resetUnreadMessages( xmppClient.chatJid )
                 xmppClient.hideChat()
             }
@@ -392,7 +393,7 @@ Page {
         ToolButton {
             iconSource: "images/bar_open_chats.png"
             onClicked: {
-                pageStack.replace( "qrc:/qml/ChatsPage.qml")
+                pageStack.replace( "qrc:/qml/ChatsPage.qml" )
                 xmppClient.resetUnreadMessages( xmppClient.chatJid ) //cleans unread count for this JID
                 xmppClient.hideChat()
             }
@@ -438,7 +439,7 @@ Page {
                 text: qsTr("Close chat")
                 onClicked: {
                     xmppClient.closeChat( xmppClient.chatJid )
-                    pageStack.replace( "qrc:/qml/RosterPage.qml")
+                    pageStack.pop()
                 }
             }
             /*MenuItem {

@@ -94,7 +94,7 @@ Page {
                     xmppClient.contactName = contactName
                     main.globalUnreadCount = main.globalUnreadCount - contactUnreadMsg
                     notify.postHSWidget()
-                    main.pageStack.replace( "qrc:/qml/MessagesPage.qml" )
+                    main.pageStack.push( "qrc:/qml/MessagesPage.qml" )
                 }
 
                 onPressAndHold: {
@@ -165,11 +165,11 @@ Page {
             }
             MenuItem {
                 text: qsTr("Accounts")
-                onClicked: main.pageStack.replace( "qrc:/qml/AccountsPage.qml" )
+                onClicked: main.pageStack.push( "qrc:/qml/AccountsPage.qml" )
             }
             MenuItem {
                 text: qsTr("Settings")
-                onClicked: main.pageStack.replace( "qrc:/qml/SettingsPage.qml" )
+                onClicked: main.pageStack.push( "qrc:/qml/SettingsPage.qml" )
             }
 
             MenuItem {
@@ -177,12 +177,12 @@ Page {
                 onClicked: {if( xmppClient.stateConnect == XmppClient.Online )
                     {
                         main.requestMyVCard = true
-                        main.pageStack.replace( "qrc:/qml/VCardPage.qml" )
+                        main.pageStack.push( "qrc:/qml/VCardPage.qml" )
                     }}
             }
             MenuItem {
                 text: qsTr("About...")
-                onClicked: main.pageStack.replace( "qrc:/qml/AboutPage.qml" )
+                onClicked: main.pageStack.push( "qrc:/qml/AboutPage.qml" )
             }
         }
     }
@@ -204,13 +204,13 @@ Page {
                 text: qsTr("vCard")
                 onClicked: {
                     main.requestMyVCard = false
-                    main.pageStack.replace( "qrc:/qml/VCardPage.qml" )
+                    main.pageStack.push( "qrc:/qml/VCardPage.qml" )
                 }
             }
             MenuItem {
                 text: qsTr("Archive")
                 onClicked: {
-                    main.pageStack.replace( "qrc:/qml/ArchivePage.qml" )
+                    main.pageStack.push( "qrc:/qml/ArchivePage.qml" )
                 }
             }
             MenuItem {
@@ -280,7 +280,7 @@ Page {
             id: toolBarButtonChats
             iconSource: "images/bar_open_chats.png"
             smooth: true
-            onClicked: main.pageStack.replace( "qrc:/qml/ChatsPage.qml")
+            onClicked: main.pageStack.push( "qrc:/qml/ChatsPage.qml" )
             Image {
                 id: imgMarkUnread
                 source: "images/message_mark.png"

@@ -11,6 +11,10 @@ Page {
         statusBarText.text = "Settings"
     }
 
+    /********************************************************************************/
+
+    property bool shouldIreloadRoster: false
+
     /****************************************************/
     TabGroup {
         id: tabGroup
@@ -320,6 +324,7 @@ Page {
                                unreadCount.enabled = false;
                                unreadCount.checked = false;
                            } else unreadCount.enabled = true;
+                           shouldIreloadRoster = true;
                        }
                     }
                     CheckBox {
@@ -330,6 +335,7 @@ Page {
                        platformInverted: main.platformInverted
                        onCheckedChanged: {
                           settings.sBool(checked,"ui", "showUnreadCount")
+                          shouldIreloadRoster = true;
                        }
                     }
                     CheckBox {
@@ -339,6 +345,7 @@ Page {
                        checked: settings.gBool("ui", "hideOffline")
                        onCheckedChanged: {
                           settings.sBool(checked,"ui", "hideOffline")
+                          shouldIreloadRoster = true;
                        }
                     }
                     CheckBox {
@@ -348,6 +355,7 @@ Page {
                        checked: settings.gBool("ui", "showContactStatusText")
                        onCheckedChanged: {
                           settings.sBool(checked,"ui", "showContactStatusText")
+                          shouldIreloadRoster = true;
                        }
                     }
                     CheckBox {
@@ -357,6 +365,7 @@ Page {
                        checked: settings.gBool("ui", "rosterLayoutAvatar")
                        onCheckedChanged: {
                           settings.sBool(checked,"ui", "rosterLayoutAvatar")
+                          shouldIreloadRoster = true;
                        }
                     }
                     Text {
@@ -377,6 +386,7 @@ Page {
                             platformInverted: main.platformInverted
 
                             onValueChanged: {
+                                shouldIreloadRoster = true;
                                 settings.sInt(value,"ui", "rosterItemHeight")
                             }
                         }
@@ -491,7 +501,13 @@ Page {
         ToolButton {
             iconSource: "toolbar-back"
             onClicked: {
-                pageStack.replace( "qrc:/qml/RosterPage.qml" )
+                statusBarText.text = "Contacts"
+                if (shouldIreloadRoster) {
+                    pageStack.pop()
+                    pageStack.replace("qrc:/qml/RosterPage.qml")
+                } else {
+                    pageStack.pop()
+                }
             }
         }
         ButtonRow {

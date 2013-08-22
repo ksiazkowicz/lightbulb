@@ -255,7 +255,8 @@ Page {
         ToolButton {
             iconSource: "toolbar-back"
             onClicked: {
-                pageStack.replace( "qrc:/qml/RosterPage.qml" )
+                pageStack.pop()
+                statusBarText.text = "Contacts"
             }
         }/*
         ToolButton {

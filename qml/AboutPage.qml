@@ -28,7 +28,7 @@ Page {
     Text {
         id: programName
         color: main.textColor
-        text: "Lightbulb 0.0.8"
+        text: "Lightbulb 0.0.9"
         anchors { top: logo.bottom; topMargin: 5; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
         horizontalAlignment: Text.AlignHCenter
         font.pixelSize: platformStyle.fontSizeMedium*1.5
@@ -81,7 +81,8 @@ Page {
         id: toolBarLayout
         ToolButton {
             iconSource: "toolbar-back"
-            onClicked: { pageStack.replace( "qrc:/qml/RosterPage.qml") }
+            onClicked: { statusBarText.text = "Contacts"
+                pageStack.pop() }
         }
     }
 }

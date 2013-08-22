@@ -167,7 +167,8 @@ Page {
         ToolButton {
             iconSource: "toolbar-back"
             onClicked: {
-                pageStack.replace( "qrc:/qml/AccountsPage.qml" )
+                pageStack.pop()
+                statusBarText.text = "Accounts"
             }
         }
 

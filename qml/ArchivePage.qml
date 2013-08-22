@@ -102,7 +102,8 @@ Page {
         id: toolBarLayout
         ToolButton {
             iconSource: "toolbar-back"
-            onClicked: { pageStack.replace( "qrc:/qml/RosterPage.qml") }
+            onClicked: { statusBarText.text = "Contacts"
+                pageStack.pop() }
         }
         ToolButton {
             iconSource: "qrc:/qml/images/close_stop.svg"
