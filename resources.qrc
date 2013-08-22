@@ -41,5 +41,9 @@
         <file>qml/images/folder.svg</file>
         <file>qml/Dialogs/SoundSettings.qml</file>
         <file>qml/Banner.qml</file>
+        <file>qml/ArchivePage.qml</file>
+        <file>qml/bubble/incTriangle.png</file>
+        <file>qml/bubble/ownTriangle.png</file>
+        <file>qml/images/splash.png</file>
     </qresource>
 </RCC>
