@@ -184,7 +184,7 @@ Page {
             MenuItem {
                 text: qsTr("Facebook")
                 onClicked: {
-                    main.accJid = ""
+                    main.accJid = "@chat.facebook.com"
                     main.accPass = ""
                     main.accDefault = false
                     main.accManualHostPort = true
@@ -197,7 +197,7 @@ Page {
             MenuItem {
                 text: qsTr("Google Talk")
                 onClicked: {
-                    main.accJid = ""
+                    main.accJid = "@gmail.com"
                     main.accPass = ""
                     main.accDefault = false
                     main.accManualHostPort = true
