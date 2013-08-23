@@ -5,6 +5,8 @@ CommonDialog {
   id: filedialog
   property bool dirMode :false;
 
+  privateCloseIcon: true
+
   height: 400
 
   signal fileSelected(variant filePath);

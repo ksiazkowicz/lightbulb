@@ -220,12 +220,12 @@ Page {
         }
     }
     /*--------------------( Text input field )--------------------*/
-    TextField {
+    TextArea {
               id: txtMessage
               anchors.bottom: parent.bottom
               anchors.left: parent.left;
               anchors.right: parent.right;
-              height: 50
+              //height: text. > 1 ? 50 * text.lineCount : 50
               placeholderText: qsTr( "Tap here to enter message..." )
 
               onActiveFocusChanged: {
