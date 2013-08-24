@@ -1,6 +1,5 @@
 #include "MyXmppClient.h"
 
-#include "QXmppLogger.h"
 #include "QXmppRosterManager.h"
 #include "QXmppVersionManager.h"
 #include "QXmppConfiguration.h"
@@ -11,7 +10,7 @@
 #include <QFile>
 #include <QDir>
 
-QString MyXmppClient::myVersion = "0.0.9 Debug";
+QString MyXmppClient::myVersion = "0.0.9";
 
 QString MyXmppClient::getBareJidByJid( const QString &jid )
 {
@@ -24,8 +23,6 @@ QString MyXmppClient::getBareJidByJid( const QString &jid )
 
 MyXmppClient::MyXmppClient() : QObject(0)
 {
-    //QXmppLogger::getLogger()->setLoggingType(QXmppLogger::StdoutLogging);
-
     cacheIM = new MyCache(this);
     msgWrapper = new MessageWrapper(this);
 
@@ -61,6 +58,7 @@ MyXmppClient::MyXmppClient() : QObject(0)
     m_reconnectOnError = false;
     m_keepAlive = 60;
     m_archiveIncMessage = false;
+    accounts = 0;
 
     flVCardRequest = "";
     qmlVCard = new QMLVCard();
@@ -91,8 +89,6 @@ MyXmppClient::~MyXmppClient()
         delete xmppMessageReceiptManager;
     }*/
 }
-
-
 
 void MyXmppClient::initXmppClient()
 {

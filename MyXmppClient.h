@@ -326,6 +326,7 @@ private:
     QString m_resource;
     QString m_chatJid;
     QString m_contactName;
+    int accounts;
     void archiveIncMessage( const QXmppMessage &xmppMsg, bool mine );
     void appendConversationStart( QString bareJid );
 
