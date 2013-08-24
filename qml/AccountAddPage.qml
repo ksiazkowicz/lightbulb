@@ -42,6 +42,9 @@ Page {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: accAddPage.width - 10
                 placeholderText: qsTr("login@server.com")
+                onActiveFocusChanged: {
+                    main.splitscreenY = 0
+                }
             }
 
             Item {
@@ -63,6 +66,9 @@ Page {
                 height: 50
                 echoMode: TextInput.Password
                 placeholderText: qsTr("Password")
+                onActiveFocusChanged: {
+                    main.splitscreenY = 0
+                }
             }
 
             Item {
@@ -98,7 +104,7 @@ Page {
                 placeholderText: qsTr("(default: Lightbulb)")
 
                 onActiveFocusChanged: {
-                    main.splitscreenY = inputContext.height - (main.height - y - height - 18)
+                    main.splitscreenY = inputContext.height - (main.height - y) + 1.5*height
                 }
             }
 
@@ -137,7 +143,7 @@ Page {
                     placeholderText: "talk.google.com"
 
                     onActiveFocusChanged: {
-                        main.splitscreenY = inputContext.height - (main.height - somethingInteresting.y - somethingInteresting.height - 18)
+                        main.splitscreenY = inputContext.height - (main.height - somethingInteresting.y) + 1.5*somethingInteresting.height
                     }
                 }
                 TextField {
@@ -150,7 +156,7 @@ Page {
                    placeholderText: "5222"
 
                    onActiveFocusChanged: {
-                       main.splitscreenY = inputContext.height - (main.height - somethingInteresting.y - somethingInteresting.height - 18)
+                       main.splitscreenY = inputContext.height - (main.height - somethingInteresting.y) + 1.5*somethingInteresting.height
                    }
                 }
             }

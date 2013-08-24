@@ -444,7 +444,7 @@ Page {
                             tiKeepAlive.text = settings.gInt("behavior", "keepAliveInterval")
                         }
                         onActiveFocusChanged: {
-                            main.splitscreenY = inputContext.height - (main.height - y - height - 18)
+                            main.splitscreenY = 0
                         }
 
                         onTextChanged: {

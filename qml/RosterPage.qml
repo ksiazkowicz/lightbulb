@@ -245,7 +245,7 @@ Page {
         Behavior on height { SmoothedAnimation { velocity: 200 } }
 
         onActiveFocusChanged: {
-            main.splitscreenY = inputContext.height - (main.height - y - height - 18)
+            main.splitscreenY = inputContext.height - (main.height - y) + 1.5*height
         }
     }
 
