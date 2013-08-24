@@ -215,7 +215,7 @@ Page {
                     main.accDefault = false
                     main.accResource = ""
                     main.accHost = ""
-                    main.accPort = ""
+                    main.accPort = "5222"
                     pageStack.push( "qrc:/qml/AccountAddPage.qml" )
                 }
             }
