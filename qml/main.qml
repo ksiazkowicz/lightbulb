@@ -39,13 +39,45 @@ PageStackWindow {
     property string dialogText:      ""
     property string dialogName:      ""
 
+    property bool notifyHold:  false
+    property int notifyHoldDuration: 0
+
     initialPage: RosterPage {}    
+
+    Timer {
+        id: notifyHoldTimer
+        interval: 60000
+        running: true; repeat: true
+        onTriggered: {
+            if (notifyHoldDuration>0) {
+                notifyHold = true
+                notifyHoldDuration--
+                console.log(notifyHoldDuration + " minutes left till notifications be resumed.")
+            } else {
+                notifyHold = false
+            }
+        }
+
+
+    }
 
     XmppClient {
         id: xmppClient
         onMessageReceived: {
             if( xmppClient.myBareJid != bareJidLastMsg ) {
                 globalUnreadCount++
+                if (!notifyHold) {
+                    if (settings.gBool("notifications", "useGlobalNote") == true) {
+                        notify.postGlobalNote(qsTr("New message from ") + getNameByJid(bareJidLastMsg) + qsTr(". You have ") + globalUnreadCount + qsTr(" unread messages."))
+                    }
+                    if (settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff") == true) {
+                        if (lock.isLocked()) {
+                            lock.blink()
+                        }
+
+                    }
+                    notifySndVibr("MsgRecv")
+                }
                 if (settings.gBool("notifications","notifyMsgRecv") == true) {
                     sb.text = "[" + globalUnreadCount + "] " + qsTr("Message from ") + getNameByJid(bareJidLastMsg)
                     sb.open()
@@ -53,32 +85,19 @@ PageStackWindow {
                 if (settings.gBool("behavior","enableHsWidget")) {
                     notify.postHSWidget()
                 }
-                if (settings.gBool("notifications", "useGlobalNote") == true) {
-                    notify.postGlobalNote(qsTr("New message from ") + getNameByJid(bareJidLastMsg) + qsTr(". You have ") + globalUnreadCount + qsTr(" unread messages."))
-                }
-                if (settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff") == true) {
-                    if (lock.isLocked()) {
-                        lock.unlockDevice()
-                        lock.lockDevice()
-                        lock.unlockDevice()
-                        lock.lockDevice()
-                        lock.unlockDevice()
-                        lock.lockDevice()
-                    }
-
-                }
-
-                notifySndVibr("MsgRecv")
-                //chatIcon.setChatIconStatus(1);
+                //chatIcon.setChatIconStatus(true)
+                //console.log("Result is "+chatIcon.getChatIconStatus())
             }
         }
         onStatusChanged: {
             console.log( "XmppClient::onStatusChanged:" + status )
             main.statusChanged()
-            notifySndVibr("NotifyConn")
-            if (settings.gBool("notifications", "notifyConnection") == true) {
-                sb.text = qsTr("Status changed to ") + notify.getStatusName()
-                sb.open()
+            if (!notifyHold) {
+                notifySndVibr("NotifyConn")
+                if (settings.gBool("notifications", "notifyConnection") == true) {
+                    sb.text = qsTr("Status changed to ") + notify.getStatusName()
+                    sb.open()
+                }
             }
             if (settings.gBool("behavior","enableHsWidget")) {
                 notify.postHSWidget()
@@ -96,7 +115,9 @@ PageStackWindow {
                 sb.text = "Subscription request from " + bareJid
                 sb.open()
             }
-            notifySndVibr("MsgSub")
+            if (!notifyHold) {
+                notifySndVibr("MsgSub")
+            }
             dialogJid = bareJid
             dialog.source = ""
             dialog.source = "Dialogs/QuerySubscribtion.qml"
@@ -257,10 +278,6 @@ PageStackWindow {
 
     /**************(* notify *)**************/
 
-    /*ChatIcon {
-        id: chatIcon
-    }*/
-
     Lock { id: lock }
 
     Notifications { id: notify }
@@ -295,15 +312,17 @@ PageStackWindow {
     }
 
     function notifySndVibr(how) {
-        if( settings.gBool("notifications","vibra"+how )) {
-            hapticsEffect.duration = settings.gInt("notifications","vibra"+how+"Duration" )
-            hapticsEffect.intensity = settings.gInt("notifications","vibra"+how+"Intensity" )/100
-            hapticsEffect.running = true
-        }
-        if( settings.gBool("notifications","sound"+how )) {
-            sndEffect.source = settings.gStr("notifications","sound"+how+"File" )
-            sndEffect.volume = settings.gInt("notifications","sound"+how+"Volume" )/100
-            sndEffect.play()
+        if (!notifyHold) {
+            if( settings.gBool("notifications","vibra"+how )) {
+                hapticsEffect.duration = settings.gInt("notifications","vibra"+how+"Duration" )
+                hapticsEffect.intensity = settings.gInt("notifications","vibra"+how+"Intensity" )/100
+                hapticsEffect.running = true
+            }
+            if( settings.gBool("notifications","sound"+how )) {
+                sndEffect.source = settings.gStr("notifications","sound"+how+"File" )
+                sndEffect.volume = settings.gInt("notifications","sound"+how+"Volume" )/100
+                sndEffect.play()
+            }
         }
     }
     Audio { id: sndEffect }

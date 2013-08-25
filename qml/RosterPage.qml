@@ -181,11 +181,65 @@ Page {
                     }}
             }
             MenuItem {
+                text: main.notifyHold ? "Unmute notifications" : "Mute notifications"
+                onClicked: {
+                    if (main.notifyHold) {
+                        main.notifyHold = false
+                        main.notifyHoldDuration = 0
+                    } else {
+                        muteNotifications.open()
+                    }
+                }
+            }
+
+            MenuItem {
                 text: qsTr("About...")
                 onClicked: main.pageStack.push( "qrc:/qml/AboutPage.qml" )
             }
         }
     }
+
+    CommonDialog {
+        id: muteNotifications
+        titleText: qsTr("Mute notifications")
+
+        buttonTexts: [qsTr("OK"), qsTr("Cancel")]
+
+        onButtonClicked: {
+            if ((index === 0) && ( notifyHoldDuration.text != "" )) {
+                main.notifyHoldDuration = parseInt(notifyHoldDuration.text)
+                notifyHold = true
+            }
+        }
+
+        content: Rectangle {
+            width: parent.width-20
+            height: 100
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "transparent"
+
+            Text {
+                id: queryLabel;
+                color: "white";
+                anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10; top: parent.top; topMargin: 10 }
+                text: qsTr("Mute notifications for...");
+            }
+            TextField {
+                id: notifyHoldDuration
+                text: dialogName
+                height: 50
+                anchors { bottom: parent.bottom; bottomMargin: 5; left: parent.left; right: parent.right }
+                placeholderText: qsTr("Time in minutes (ex. 15)")
+
+                onActiveFocusChanged: {
+                    splitscreenY = 0
+                }
+            }
+        }
+    }
+
+
+
     Menu {
         id: contactMenu
         // define the items in the menu and corresponding actions
