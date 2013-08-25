@@ -39,7 +39,8 @@ TARGET.EPOCHEAPSIZE = 0x200000 0x1F400000
 symbian {
     LIBS += -lavkon \
             -laknnotify \
-            -leiksrv
+            -leiksrv \
+            -lhwrmlightclient
 }
 
 # If your application uses the Qt Mobility libraries, uncomment the following
@@ -76,7 +77,8 @@ SOURCES += main.cpp \
     globalnote.cpp \
     filemodel.cpp \
     nativechaticon.cpp \
-    fileio.cpp
+    fileio.cpp \
+    lock.cpp
 
 
 HEADERS += MyXmppClient.h \
@@ -102,7 +104,8 @@ HEADERS += MyXmppClient.h \
     globalnote.h \
     filemodel.h \
     nativechaticon.h \
-    fileio.h
+    fileio.h \
+    lock.h
 
 OTHER_FILES += \
     README \

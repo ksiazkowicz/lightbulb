@@ -2,6 +2,8 @@
 #define LOCK_H
 
 #include <QObject>
+#include <e32base.h>
+#include <hwrmlight.h>
 
 class lock : public QObject
 {
@@ -11,6 +13,10 @@ public:
     Q_INVOKABLE void lockDevice();
     Q_INVOKABLE void unlockDevice();
     Q_INVOKABLE bool isLocked();
+    Q_INVOKABLE void blink();
+
+private:
+    CHWRMLight* light; // Light control
     
 signals:
     
