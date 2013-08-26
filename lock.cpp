@@ -33,7 +33,5 @@ bool lock::isLocked() {
 }
 
 void lock::blink() {
-    light->LightBlinkL(CHWRMLight::EPrimaryDisplay, KHWRMInfiniteDuration, KHWRMDefaultCycleTime, KHWRMDefaultCycleTime*2, KHWRMDefaultIntensity);
-    light->LightBlinkL(CHWRMLight::EPrimaryKeyboard, KHWRMInfiniteDuration, KHWRMDefaultCycleTime/2, KHWRMDefaultCycleTime*2, KHWRMDefaultIntensity);
-    //delete light;
+    light->LightBlinkL(CHWRMLight::EPrimaryDisplay | CHWRMLight::EPrimaryKeyboard, 1000, 1000, 1000, KHWRMDefaultIntensity);
 }
