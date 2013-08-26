@@ -61,6 +61,18 @@ PageStackWindow {
 
     }
 
+    Timer {
+        id: blinker
+        interval: 100
+        running: true; repeat:true
+        onTriggered: {
+            if (lock.isLocked && globalUnreadCount>0) {
+               lock.notificationBlink()
+            }
+        }
+    }
+
+
     XmppClient {
         id: xmppClient
         onMessageReceived: {

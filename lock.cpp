@@ -7,6 +7,7 @@ lock::lock(QObject *parent) :
     QObject(parent)
 {
     light = CHWRMLight::NewL();
+    notifyLight = CHWRMLight::NewL();
 }
 
 void lock::lockDevice() {
@@ -34,4 +35,8 @@ bool lock::isLocked() {
 
 void lock::blink() {
     light->LightBlinkL(CHWRMLight::EPrimaryDisplay | CHWRMLight::EPrimaryKeyboard, 1000, 1000, 1000, KHWRMDefaultIntensity);
+}
+
+void lock::notificationBlink() {
+    notifyLight->LightBlinkL(CHWRMLight::ECustomTarget2, 20, 10, 10, KHWRMDefaultIntensity);
 }

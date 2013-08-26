@@ -14,9 +14,11 @@ public:
     Q_INVOKABLE void unlockDevice();
     Q_INVOKABLE bool isLocked();
     Q_INVOKABLE void blink();
+    Q_INVOKABLE void notificationBlink();
 
 private:
     CHWRMLight* light; // Light control
+    CHWRMLight* notifyLight;
     
 signals:
     
