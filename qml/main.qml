@@ -70,6 +70,9 @@ PageStackWindow {
                     if (settings.gBool("notifications", "useGlobalNote") == true) {
                         notify.postGlobalNote(qsTr("New message from ") + getNameByJid(bareJidLastMsg) + qsTr(". You have ") + globalUnreadCount + qsTr(" unread messages."))
                     }
+                    if (settings.gBool("notifications", "usePopupRecv") == true) {
+                        dPopup.showPopup(globalUnreadCount + " unread messages", "New message from "+ getNameByJid(bareJidLastMsg) + ".")
+                    }
                     if (settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff") == true) {
                         if (lock.isLocked()) {
                             lock.blink()
@@ -281,6 +284,9 @@ PageStackWindow {
     Lock { id: lock }
 
     Notifications { id: notify }
+
+    DiscreetPopup { id: dPopup }
+
     StatusBar { id: sbar; x: 0; y: -main.y
         Rectangle {
                   anchors { left: parent.left; leftMargin: 6; verticalCenter: parent.verticalCenter }

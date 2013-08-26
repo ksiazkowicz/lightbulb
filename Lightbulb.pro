@@ -78,7 +78,9 @@ SOURCES += main.cpp \
     filemodel.cpp \
     nativechaticon.cpp \
     fileio.cpp \
-    lock.cpp
+    lock.cpp \
+    xmppclientmanager.cpp \
+    discreetpopup.cpp
 
 
 HEADERS += MyXmppClient.h \
@@ -105,7 +107,9 @@ HEADERS += MyXmppClient.h \
     filemodel.h \
     nativechaticon.h \
     fileio.h \
-    lock.h
+    lock.h \
+    xmppclientmanager.h \
+    discreetpopup.h
 
 OTHER_FILES += \
     README \

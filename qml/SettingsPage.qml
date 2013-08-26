@@ -112,6 +112,16 @@ Page {
                            }
                         }
                     CheckBox {
+                           id: usePopupRecv
+                           text: qsTr("Discreet Popup")
+                           height: 64
+                           checked: settings.gBool("notifications", "usePopupRecv")
+                           platformInverted: main.platformInverted
+                           onCheckedChanged: {
+                              settings.sBool(checked,"notifications", "usePopupRecv")
+                           }
+                        }
+                    CheckBox {
                            id: dontBLINK
                            text: qsTr("Blink screen when locked")
                            height: 64

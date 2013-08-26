@@ -17,6 +17,8 @@
 //#include "nativechaticon.h"
 #include "fileio.h"
 #include "lock.h"
+#include "xmppclientmanager.h"
+#include "discreetpopup.h"
 
 #include <QtGui/QSplashScreen>
 #include <QtGui/QPixmap>
@@ -40,6 +42,9 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     qmlRegisterType<FileIO>(LIGHTBULB_NAMESPACE, 1, 0, "FileIO");
     //qmlRegisterType<nativechaticon>(LIGHTBULB_NAMESPACE,1, 0, "ChatIcon");
     qmlRegisterType<lock>(LIGHTBULB_NAMESPACE, 1, 0, "Lock");
+    qmlRegisterType<discreetpopup>(LIGHTBULB_NAMESPACE, 1, 0, "DiscreetPopup");
+
+    qmlRegisterType<xmppClientManager>(LIGHTBULB_NAMESPACE, 1, 0, "ClientManager");
 
     qmlRegisterUncreatableType<RosterListModel>(LIGHTBULB_NAMESPACE, 1, 0, "Roster", "Use xmppClient.roster instead");
     qmlRegisterUncreatableType<MsgListModel>(LIGHTBULB_NAMESPACE, 1, 0, "MessagesList", "");
