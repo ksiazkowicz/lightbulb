@@ -39,15 +39,16 @@ Page {
         id: myName
         anchors { top: programName.bottom; horizontalCenterOffset: 2; horizontalCenter: parent.horizontalCenter }
         color: main.textColor
-        text: "Maciej Janiszewski (2013)"
-        font.pixelSize: platformStyle.fontSizeMedium
+        wrapMode: Text.Wrap
+        text: "Maciej Janiszewski (pisarzk@gmail.com)"
+        font.pixelSize: platformStyle.fontSizeSmall
         horizontalAlignment: Text.AlignHCenter
     }
 
     Text {
         id: authorName
         color: main.textColor
-        text: "(pisarzk@gmail.com)"
+        text: "Fabian Hüllmantel"
         anchors { top: myName.bottom; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
         font.pixelSize: platformStyle.fontSizeSmall
         horizontalAlignment: Text.AlignHCenter
@@ -70,7 +71,7 @@ Page {
         color: main.textColor
         text: qsTr("During development of this software, no mobile device was harmed.")
         width: parent.width
-        anchors { top: authorName.bottom; topMargin: 80; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
+        anchors { top: authorName.bottom; topMargin: 64; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
         wrapMode: Text.WordWrap
         font.pixelSize: platformStyle.fontSizeSmall
         horizontalAlignment: Text.AlignHCenter
