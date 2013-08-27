@@ -29,7 +29,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 {
     QScopedPointer<QApplication> app( createApplication(argc, argv) );
 
-    QSplashScreen *splash = new QSplashScreen(QPixmap("qrc:/qml/images/splash.png"));
+    QSplashScreen *splash = new QSplashScreen(QPixmap("qrc:/qml/images/splash.jpg"));
     splash->show();
 
     qmlRegisterType<MyXmppClient>(LIGHTBULB_NAMESPACE, 1, 0, "XmppClient" );

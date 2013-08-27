@@ -44,6 +44,7 @@
         <file>qml/ArchivePage.qml</file>
         <file>qml/bubble/incTriangle.png</file>
         <file>qml/bubble/ownTriangle.png</file>
-        <file>qml/images/splash.png</file>
+        <file>qml/EmptyPage.qml</file>
+        <file>qml/images/splash.jpg</file>
     </qresource>
 </RCC>
