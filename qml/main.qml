@@ -42,6 +42,9 @@ PageStackWindow {
     property bool notifyHold:  false
     property int notifyHoldDuration: 0
 
+    property int suspenderDuration: 0
+    property bool isSuspended: false
+
     initialPage: RosterPage {}    
 
     Timer {
@@ -78,6 +81,29 @@ PageStackWindow {
         }
     }
 
+    Timer {
+        id: suspender
+        running: true; repeat: true
+        onTriggered: {
+            if (!Qt.application.active) {
+                if (suspenderDuration==900) {
+                    if (!isSuspended) {
+                        pageStack.pop()
+                        pageStack.replace("qrc:/qml/EmptyPage.qml")
+                        isSuspended = true
+                        console.log("Suspending...")
+                    }
+                } else { suspenderDuration += 1; console.log("Will suspend in "+(900-suspenderDuration)) }
+            } else {
+                if (isSuspended) {
+                    pageStack.replace("qrc:/qml/RosterPage.qml")
+                    suspenderDuration = 0
+                    isSuspended = false
+                }
+            }
+        }
+
+    }
 
     XmppClient {
         id: xmppClient
