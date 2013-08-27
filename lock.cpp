@@ -38,5 +38,9 @@ void lock::blink() {
 }
 
 void lock::notificationBlink() {
-    notifyLight->LightBlinkL(CHWRMLight::ECustomTarget2, 20, 10, 10, KHWRMDefaultIntensity);
+    notifyLight->LightBlinkL(CHWRMLight::ECustomTarget2, 60, 10, 10, KHWRMDefaultIntensity);
+}
+
+void lock::notificationStop() {
+    notifyLight->ReleaseLight(CHWRMLight::ECustomTarget2);
 }

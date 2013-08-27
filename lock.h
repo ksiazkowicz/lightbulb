@@ -15,6 +15,7 @@ public:
     Q_INVOKABLE bool isLocked();
     Q_INVOKABLE void blink();
     Q_INVOKABLE void notificationBlink();
+    Q_INVOKABLE void notificationStop();
 
 private:
     CHWRMLight* light; // Light control

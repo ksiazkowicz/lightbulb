@@ -63,11 +63,17 @@ PageStackWindow {
 
     Timer {
         id: blinker
-        interval: 100
+        interval: 1000
         running: true; repeat:true
         onTriggered: {
-            if (lock.isLocked && globalUnreadCount>0) {
-               lock.notificationBlink()
+            if (lock.isLocked && globalUnreadCount>0 && !Qt.application.active) {
+                lock.notificationBlink()
+            }
+            if (!lock.isLocked){
+                lock.notificationStop()
+            }
+            if (Qt.application.active) {
+                lock.notificationStop()
             }
         }
     }
