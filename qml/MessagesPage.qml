@@ -222,14 +222,16 @@ Page {
     /*--------------------( Text input field )--------------------*/
     TextArea {
               id: txtMessage
-              anchors.bottom: parent.bottom
+              anchors.bottom: splitViewInput.top
               anchors.left: parent.left;
               anchors.right: parent.right;
               //height: text. > 1 ? 50 * text.lineCount : 50
               placeholderText: qsTr( "Tap here to enter message..." )
 
+
+
               onActiveFocusChanged: {
-                  main.splitscreenY = inputContext.height - (main.height - y) + 1.5*height
+                  main.splitscreenY = 0
               }
               Keys.onReturnPressed:{
                    sendMessage()

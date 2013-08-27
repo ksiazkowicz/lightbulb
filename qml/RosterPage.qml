@@ -181,7 +181,7 @@ Page {
                     }}
             }
             MenuItem {
-                text: main.notifyHold ? "Unmute notifications" : "Mute notifications"
+                text: main.notifyHold ? "Unmute notifications (" + main.notifyHoldDuration + " min.)" : "Mute notifications"
                 onClicked: {
                     if (main.notifyHold) {
                         main.notifyHold = false
@@ -293,14 +293,37 @@ Page {
         id: rosterSearch
         height: 0
         width: parent.width
-        anchors.bottom: parent.bottom
+        anchors.bottom: splitViewInput.top
         placeholderText: qsTr("Tap to write")
 
         Behavior on height { SmoothedAnimation { velocity: 200 } }
 
         onActiveFocusChanged: {
-            main.splitscreenY = inputContext.height - (main.height - y) + 1.5*height
+            main.splitscreenY = 0
+            //main.splitscreenY = (main.height - y) > 256 ? (main.height - y) : (main.height - y) + (256 - (main.height - y))
         }
+    }
+
+    Item {
+        id: splitViewInput
+
+        anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
+
+        Behavior on height { PropertyAnimation { duration: 1 } }
+
+        states: [
+            State {
+                name: "Visible"; when: inputContext.visible
+                PropertyChanges { target: splitViewInput; height: inputContext.height - toolBarLayout.height }
+                PropertyChanges { target: main; inputInProgress: true }
+            },
+
+            State {
+                name: "Hidden"; when: !inputContext.visible
+                PropertyChanges { target: splitViewInput; }
+                PropertyChanges { target: main; inputInProgress: false }
+            }
+        ]
     }
 
     ToolBarLayout {
