@@ -78,6 +78,9 @@ PageStackWindow {
             if (Qt.application.active) {
                 lock.notificationStop()
             }
+            if (globalUnreadCount < 0) {
+                globalUnreadCount = 0
+            }
         }
     }
 
