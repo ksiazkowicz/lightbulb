@@ -121,17 +121,9 @@ Page {
         } //Rectangle
     }
 
-    Rectangle {
-        id: limiter
-        y: -main.y
-        color: "transparent"
-        height: 1
-        anchors { left: parent.left; right: parent.right }
-    }
-
     Flickable {
         id: rosterView
-        anchors { top: limiter.top; left: parent.left; right: parent.right; bottom: rosterSearch.top; }
+        anchors { top: parent.top; left: parent.left; right: parent.right; bottom: rosterSearch.top; }
         contentHeight: columnContent.height
         contentWidth: columnContent.width
 
@@ -332,7 +324,7 @@ Page {
             iconSource: "toolbar-back"
             smooth: true
             onClicked: {
-                Qt.quit()
+                closeDialog.open()
             }
         }
         ToolButton {

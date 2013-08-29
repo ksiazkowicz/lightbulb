@@ -108,6 +108,27 @@ PageStackWindow {
 
     }
 
+    CommonDialog {
+        id: closeDialog
+        titleText: "Confirmation"
+        buttonTexts: [qsTr("Yes"), qsTr("No")]
+
+        onButtonClicked: {
+            if (index === 0) {
+                Qt.quit()
+            }
+        }
+
+        content: Text {
+            color: "white";
+            id: dialogQueryLabel;
+            wrapMode: Text.Wrap;
+            anchors { left: parent.left; right: parent.right; leftMargin: 10; rightMargin:10; verticalCenter: parent.verticalCenter }
+            text: qsTr("Are you sure you want to close the app?")
+        }
+    }
+
+
     XmppClient {
         id: xmppClient
         onMessageReceived: {
