@@ -102,6 +102,16 @@ Page {
                             }
                         }
                     CheckBox {
+                            id: notifyLight
+                            text: qsTr("Use notification LED")
+                            height: 64
+                            checked: settings.gBool("notifications", "notifyLED")
+                            platformInverted: main.platformInverted
+                            onCheckedChanged: {
+                                settings.sBool(checked,"notifications", "notifyLED")
+                            }
+                        }
+                    CheckBox {
                            id: useGlobalNote
                            text: qsTr("Global note")
                            height: 64
