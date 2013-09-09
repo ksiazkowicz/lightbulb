@@ -102,26 +102,6 @@ Page {
                             }
                         }
                     CheckBox {
-                            id: notifyLight
-                            text: qsTr("Use notification LED")
-                            height: 64
-                            checked: settings.gBool("notifications", "notifyLED")
-                            platformInverted: main.platformInverted
-                            onCheckedChanged: {
-                                settings.sBool(checked,"notifications", "notifyLED")
-                            }
-                        }
-                    CheckBox {
-                           id: useGlobalNote
-                           text: qsTr("Global note")
-                           height: 64
-                           checked: settings.gBool("notifications", "useGlobalNote")
-                           platformInverted: main.platformInverted
-                           onCheckedChanged: {
-                              settings.sBool(checked,"notifications", "useGlobalNote")
-                           }
-                        }
-                    CheckBox {
                            id: usePopupRecv
                            text: qsTr("Discreet Popup")
                            height: 64
@@ -403,8 +383,7 @@ Page {
                         text: "Roster item height (" + rosterItemHeight.value + " px)"
                         color: main.textColor
                     }
-                    Row {
-                        Slider {
+                    Slider {
                             id: rosterItemHeight
                             stepSize: 1
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -420,7 +399,6 @@ Page {
                                 settings.sInt(value,"ui", "rosterItemHeight")
                             }
                         }
-                    }
                 }
             }
         }

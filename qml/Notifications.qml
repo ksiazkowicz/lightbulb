@@ -61,6 +61,10 @@ Item {
         }
     }
 
+    function postInfo(messageString) {
+        notify.displayInfo(messageString)
+    }
+
     function notifyMessageSent() {
         if( vibraMsgSent ) {
             hapticsEffectSentMsg.running = true

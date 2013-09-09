@@ -79,8 +79,8 @@ SOURCES += main.cpp \
     nativechaticon.cpp \
     fileio.cpp \
     lock.cpp \
-    xmppclientmanager.cpp \
-    discreetpopup.cpp
+    discreetpopup.cpp \
+    avkonnotify.cpp
 
 
 HEADERS += MyXmppClient.h \
@@ -108,15 +108,14 @@ HEADERS += MyXmppClient.h \
     nativechaticon.h \
     fileio.h \
     lock.h \
-    xmppclientmanager.h \
-    discreetpopup.h
+    discreetpopup.h \
+    avkonnotify.h
 
 OTHER_FILES += \
     README \
     qml/Dialogs/AddContact.qml \
     qml/Dialogs/ChangeStatus.qml \
     qml/Dialogs/RemoveAccount.qml \
-    qml/Dialogs/Info.qml \
     qml/Dialogs/RemoveContact.qml \
     qml/Dialogs/RenameContact.qml \
     qml/Dialogs/QuerySubscribtion.qml \
@@ -134,7 +133,6 @@ OTHER_FILES += \
     qml/Notifications.qml \
     qml/Dialogs/VibrationSettings.qml \
     qml/Dialogs/SoundSettings.qml \
-    qml/Banner.qml \
     qml/ArchivePage.qml
 
 # Please do not modify the following two lines. Required for deployment.

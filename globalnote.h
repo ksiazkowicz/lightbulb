@@ -11,11 +11,12 @@ private:
     TInt iNoteId;
     CAknGlobalNote* iNote;
     void StopGlobalNoteL(void);
-    void ShowGlobalNoteL(TAknGlobalNoteType aNoteType, const TDesC16& aMessage);
     void ShowNoteL(const TDesC& aMessage);
+    void ShowInfoL(const TDesC& aMessage);
 public:
     explicit globalnote(QObject *parent = 0);
     Q_INVOKABLE void displayGlobalNote(QString message);
+    Q_INVOKABLE void displayInfo(QString message);
 signals:
     
 public slots:

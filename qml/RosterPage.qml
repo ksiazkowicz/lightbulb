@@ -178,6 +178,7 @@ Page {
                     if (main.notifyHold) {
                         main.notifyHold = false
                         main.notifyHoldDuration = 0
+                        notifyHoldTimer.running = false
                     } else {
                         muteNotifications.open()
                     }
@@ -201,6 +202,7 @@ Page {
             if ((index === 0) && ( notifyHoldDuration.text != "" )) {
                 main.notifyHoldDuration = parseInt(notifyHoldDuration.text)
                 notifyHold = true
+                notifyHoldTimer.running = true
             }
         }
 
@@ -218,6 +220,7 @@ Page {
             }
             TextField {
                 id: notifyHoldDuration
+                inputMethodHints: Qt.ImhFormattedNumbersOnly
                 text: dialogName
                 height: 50
                 anchors { bottom: parent.bottom; bottomMargin: 5; left: parent.left; right: parent.right }
@@ -264,8 +267,7 @@ Page {
                 onClicked: {dialogTitle = qsTr("Subscribed")
                     dialogText = qsTr("Sent request to ")+dialogName
                     xmppClient.subscribe( xmppClient.chatJid )
-                    dialog.source = ""
-                    dialog.source = "Dialogs/Info.qml"
+                    notify.postGlobalNote(qsTr("Sent request to ")+dialogName)
                 }
             }
             MenuItem {
@@ -273,8 +275,7 @@ Page {
                 onClicked: {dialogTitle = qsTr("Unsuscribed")
                     dialogText = qsTr("Unsuscribed ")+dialogName
                     xmppClient.unsubscribe( xmppClient.chatJid )
-                    dialog.source = ""
-                    dialog.source = "Dialogs/Info.qml"
+                    notify.postGlobalNote(qsTr("Unsuscribed ")+dialogName)
                 }
             }
         }

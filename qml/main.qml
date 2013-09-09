@@ -25,7 +25,7 @@ PageStackWindow {
 
     property int                     splitscreenY: 0
 
-    property string                  lastStatus: settings.gStr("behavior","lastStatusText")
+    property string                  lastStatus: settings.gBool("behavior", "lastStatusText") ? settings.gStr("behavior","lastStatusText") : ""
     property string nowEditing:      ""
     property string url:             ""
 
@@ -45,12 +45,14 @@ PageStackWindow {
     property int suspenderDuration: 0
     property bool isSuspended: false
 
+    property bool isActive: true
+
     initialPage: RosterPage {}    
 
     Timer {
         id: notifyHoldTimer
         interval: 60000
-        running: true; repeat: true
+        running: false; repeat: true
         onTriggered: {
             if (notifyHoldDuration>0) {
                 notifyHold = true
@@ -58,6 +60,7 @@ PageStackWindow {
                 console.log(notifyHoldDuration + " minutes left till notifications be resumed.")
             } else {
                 notifyHold = false
+                notifyHoldTimer.running = false
             }
         }
 
@@ -69,17 +72,31 @@ PageStackWindow {
         interval: 1000
         running: true; repeat:true
         onTriggered: {
-            if (lock.isLocked && globalUnreadCount>0 && !Qt.application.active) {
+            if (globalUnreadCount>0) {
                 lock.notificationBlink()
-            }
-            if (!lock.isLocked){
-                lock.notificationStop()
-            }
-            if (Qt.application.active) {
-                lock.notificationStop()
             }
             if (globalUnreadCount < 0) {
                 globalUnreadCount = 0
+            }
+        }
+    }
+
+    Connections {
+        target: Qt.application
+        onActiveChanged: {
+            if (Qt.application.active) {
+                isActive = true
+                blinker.running = false
+                suspender.running = false
+                suspenderDuration = 0
+                if (isSuspended) {
+                    pageStack.replace("qrc:/qml/RosterPage.qml")
+                    isSuspended = false
+                }
+            } else {
+                isActive = false
+                blinker.running = true
+                suspender.running = true
             }
         }
     }
@@ -88,22 +105,16 @@ PageStackWindow {
         id: suspender
         running: true; repeat: true
         onTriggered: {
-            if (!Qt.application.active) {
-                if (suspenderDuration==900) {
-                    if (!isSuspended) {
-                        pageStack.pop()
-                        pageStack.replace("qrc:/qml/EmptyPage.qml")
-                        isSuspended = true
-                        console.log("Suspending...")
-                    }
-                } else { suspenderDuration += 1; console.log("Will suspend in "+(900-suspenderDuration)) }
-            } else {
-                if (isSuspended) {
-                    pageStack.replace("qrc:/qml/RosterPage.qml")
-                    suspenderDuration = 0
-                    isSuspended = false
+            if (suspenderDuration==60) {
+                if (!isSuspended) {
+                    pageStack.pop()
+                    pageStack.pop()
+                    pageStack.clear()
+                    isSuspended = true
+                    console.log("Suspending...")
+                    suspender.running = false
                 }
-            }
+            } else { suspenderDuration += 1; console.log("Will suspend in "+(60-suspenderDuration)) }
         }
 
     }
@@ -135,10 +146,7 @@ PageStackWindow {
             if( xmppClient.myBareJid != bareJidLastMsg ) {
                 globalUnreadCount++
                 if (!notifyHold) {
-                    if (settings.gBool("notifications", "useGlobalNote") == true) {
-                        notify.postGlobalNote(qsTr("New message from ") + getNameByJid(bareJidLastMsg) + qsTr(". You have ") + globalUnreadCount + qsTr(" unread messages."))
-                    }
-                    if (settings.gBool("notifications", "usePopupRecv") == true) {
+                    if (settings.gBool("notifications", "usePopupRecv") == true && !isActive) {
                         dPopup.showPopup(globalUnreadCount + " unread messages", "New message from "+ getNameByJid(bareJidLastMsg) + ".")
                     }
                     if (settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff") == true) {
@@ -156,8 +164,6 @@ PageStackWindow {
                 if (settings.gBool("behavior","enableHsWidget")) {
                     notify.postHSWidget()
                 }
-                //chatIcon.setChatIconStatus(true)
-                //console.log("Result is "+chatIcon.getChatIconStatus())
             }
         }
         onStatusChanged: {
@@ -294,8 +300,7 @@ PageStackWindow {
 
             dialogTitle = qsTr("First run")
             dialogText = qsTr("Welcome to Lightbulb! I guess it's your first time, isn't it? Have fun with testing! #whyIevenPutThisDialogHere?")
-            dialog.source = ""
-            dialog.source = "Dialogs/Info.qml"
+            notify.postInfo(dialogText)
 
             pageStack.replace("qrc:/qml/RosterPage.qml")
 
@@ -381,7 +386,7 @@ PageStackWindow {
                         }
                     }
                 }
-        Banner { z: 10; id: sb }
+        InfoBanner { id: sb }
 
     }
 
@@ -441,6 +446,7 @@ PageStackWindow {
         BusyIndicator {
             id: busyindicator1
             anchors.centerIn: parent
+            running: true
         }
 
     }

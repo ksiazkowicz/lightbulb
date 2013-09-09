@@ -196,27 +196,19 @@ Page {
     }
     /* --------------------( Messages view )-------------------- */
 
-    Rectangle {
-        id: limiter
-        y: -main.y
-        color: "transparent"
-        height: 1
-        anchors { left: parent.left; right: parent.right }
-    }
-
     ListView {
         id: listViewMessages
         boundsBehavior: Flickable.StopAtBounds
-        anchors { top: limiter.top; topMargin: 5; bottom: txtMessage.top; bottomMargin: 5; left: parent.left; right: parent.right }
+        anchors { top: parent.top; topMargin: 5; bottom: txtMessage.top; bottomMargin: 5; left: parent.left; right: parent.right }
         clip: true
         model: xmppClient.messages
         delegate: componentWrapperItem
         spacing: 5
         onCountChanged: {
-            listViewMessages.positionViewAtIndex(count - 1, ListView.End)
+            listViewMessages.positionViewAtEnd ()
         }
         onHeightChanged: {
-            listViewMessages.positionViewAtIndex(count - 1, ListView.End)
+            listViewMessages.positionViewAtEnd ()
         }
     }
     /*--------------------( Text input field )--------------------*/
