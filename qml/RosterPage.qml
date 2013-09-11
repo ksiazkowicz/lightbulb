@@ -26,6 +26,7 @@ Page {
     property int  rosterItemHeight: settings.gInt("ui","rosterItemHeight")
     property bool showContactStatusText: settings.gBool("ui","showContactStatusText")
     property bool rosterLayoutAvatar: settings.gBool("ui","rosterLayoutAvatar")
+    property string selectedJid: ""
 
   /*******************************************************************************/
 
@@ -98,7 +99,7 @@ Page {
                 }
 
                 onPressAndHold: {
-                    xmppClient.chatJid = contactJid
+                    selectedJid = contactJid
                     dialogName = contactName
                     contactMenu.open()
                 }
@@ -254,19 +255,21 @@ Page {
                 onClicked: {
                     main.requestMyVCard = false
                     main.pageStack.push( "qrc:/qml/VCardPage.qml" )
+                    xmppClient.chatJid = selectedJid
                 }
             }
             MenuItem {
                 text: qsTr("Archive")
                 onClicked: {
                     main.pageStack.push( "qrc:/qml/ArchivePage.qml" )
+                    xmppClient.chatJid = selectedJid
                 }
             }
             MenuItem {
                 text: qsTr("Subscribe")
                 onClicked: {dialogTitle = qsTr("Subscribed")
                     dialogText = qsTr("Sent request to ")+dialogName
-                    xmppClient.subscribe( xmppClient.chatJid )
+                    xmppClient.subscribe( selectedJid )
                     notify.postGlobalNote(qsTr("Sent request to ")+dialogName)
                 }
             }
@@ -274,7 +277,7 @@ Page {
                 text: qsTr("Unsubscribe")
                 onClicked: {dialogTitle = qsTr("Unsuscribed")
                     dialogText = qsTr("Unsuscribed ")+dialogName
-                    xmppClient.unsubscribe( xmppClient.chatJid )
+                    xmppClient.unsubscribe( selectedJid )
                     notify.postGlobalNote(qsTr("Unsuscribed ")+dialogName)
                 }
             }

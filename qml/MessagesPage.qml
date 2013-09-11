@@ -33,6 +33,7 @@ Page {
                 listModelResources.append( {resource:listResources[z], checked:false} )
             }
         }
+        main.isChatInProgress = true
     }
     /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
     Component {
@@ -187,7 +188,6 @@ Page {
         onMessageReceived: {
             if( xmppClient.bareJidLastMsg == xmppClient.chatJid ) {
                 messagesPage.resourceJid = xmppClient.resourceLastMsg
-                main.globalUnreadCount = main.globalUnreadCount - 1
                 if (settings.gBool("behavior","enableHsWidget")) {
                     notify.postHSWidget()
                 }
@@ -370,9 +370,11 @@ Page {
             iconSource: "toolbar-back"
             onClicked: {
                 pageStack.pop()
+                main.isChatInProgress = false
                 statusBarText.text = "Contacts"
                 xmppClient.resetUnreadMessages( xmppClient.chatJid )
                 xmppClient.hideChat()
+                xmppClient.chatJid = ""
             }
         }
         ToolButton {
@@ -388,8 +390,11 @@ Page {
             iconSource: "images/bar_open_chats.png"
             onClicked: {
                 pageStack.replace( "qrc:/qml/ChatsPage.qml" )
+                main.isChatInProgress = false
+                statusBarText.text = "Chats"
                 xmppClient.resetUnreadMessages( xmppClient.chatJid ) //cleans unread count for this JID
                 xmppClient.hideChat()
+                xmppClient.chatJid = ""
             }
             Image {
                 id: imgMarkUnread
@@ -434,6 +439,9 @@ Page {
                 onClicked: {
                     xmppClient.closeChat( xmppClient.chatJid )
                     pageStack.pop()
+                    main.isChatInProgress = false
+                    xmppClient.chatJid = ""
+                    statusBarText = "Contacts"
                 }
             }
             /*MenuItem {

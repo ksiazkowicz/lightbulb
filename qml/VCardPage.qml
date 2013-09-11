@@ -257,6 +257,7 @@ Page {
             onClicked: {
                 pageStack.pop()
                 statusBarText.text = "Contacts"
+                xmppClient.chatJid = ""
             }
         }/*
         ToolButton {

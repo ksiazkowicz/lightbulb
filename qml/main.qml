@@ -47,6 +47,8 @@ PageStackWindow {
 
     property bool isActive: true
 
+    property bool isChatInProgress: false
+
     initialPage: RosterPage {}    
 
     Timer {
@@ -75,9 +77,6 @@ PageStackWindow {
             if (globalUnreadCount>0) {
                 lock.notificationBlink()
             }
-            if (globalUnreadCount < 0) {
-                globalUnreadCount = 0
-            }
         }
     }
 
@@ -93,10 +92,15 @@ PageStackWindow {
                     pageStack.replace("qrc:/qml/RosterPage.qml")
                     isSuspended = false
                 }
+                if (xmppClient.chatJid != "") {
+                    isChatInProgress = true
+                    xmppClient.resetUnreadMessages( xmppClient.chatJid )
+                }
             } else {
                 isActive = false
                 blinker.running = true
                 suspender.running = true
+                isChatInProgress = false
             }
         }
     }
@@ -113,6 +117,8 @@ PageStackWindow {
                     isSuspended = true
                     console.log("Suspending...")
                     suspender.running = false
+                    xmppClient.chatJid = ""
+                    isChatInProgress = false
                 }
             } else { suspenderDuration += 1; console.log("Will suspend in "+(60-suspenderDuration)) }
         }
@@ -144,7 +150,12 @@ PageStackWindow {
         id: xmppClient
         onMessageReceived: {
             if( xmppClient.myBareJid != bareJidLastMsg ) {
-                globalUnreadCount++
+                if (!isChatInProgress) { globalUnreadCount++ }
+                else {
+                        if (bareJidLastMsg != xmppClient.chatJid) {
+                            globalUnreadCount++
+                        }
+                }
                 if (!notifyHold) {
                     if (settings.gBool("notifications", "usePopupRecv") == true && !isActive) {
                         dPopup.showPopup(globalUnreadCount + " unread messages", "New message from "+ getNameByJid(bareJidLastMsg) + ".")

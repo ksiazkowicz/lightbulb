@@ -103,7 +103,8 @@ Page {
         ToolButton {
             iconSource: "toolbar-back"
             onClicked: { statusBarText.text = "Contacts"
-                pageStack.pop() }
+                pageStack.pop()
+                xmppClient.chatJid = ""}
         }
         ToolButton {
             iconSource: "qrc:/qml/images/close_stop.svg"
