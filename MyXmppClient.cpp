@@ -192,6 +192,7 @@ void MyXmppClient::initRoster()
                           Qt::UniqueConnection  );
     }
 
+    listModelRoster->takeRows(0, listModelRoster->count() );
 
     QStringList listBareJids = rosterManager->getRosterBareJids();
     for( int j=0; j < listBareJids.length(); j++ )
@@ -207,22 +208,15 @@ void MyXmppClient::initRoster()
         if( listOfGroup.length() > 0 ) {
             group = listOfGroup.at(0);
         }
-
-        /* если в кеше есть аватарка и vCard, получим их */
         QString avatarPath = cacheIM->getAvatarCache( bareJid );
         vCardData vCdata = cacheIM->getVCard( bareJid );
 
         if ( avatarPath.isEmpty() && vCdata.isEmpty() )
         {
-            /* кеш пустой, запрос vCard для текущего bareJid */
             vCardManager->requestVCard( bareJid );
-            //qDebug() << "* request vCard for " << bareJid;
         }
         else
         {
-            /*if( !avatarPath.isEmpty() ) {
-                avatarPath = QString("file://") + avatarPath;
-            }*/
             QString nickName = vCdata.nickName;
             if( (!nickName.isEmpty()) && (!nickName.isNull()) && (itemRoster.name().isEmpty()) ) {
                 name =  nickName;
@@ -237,11 +231,8 @@ void MyXmppClient::initRoster()
         itemModel->setAvatar( avatarPath );
         itemModel->setUnreadMsg( 0 );
 
-        listRoster[ bareJid ] = itemModel;
+        listModelRoster->append(itemModel);
     }
-
-    this->setQMLListRoster();
-
     emit rosterChanged();
 
 }
@@ -250,7 +241,10 @@ void MyXmppClient::initRoster()
 
 void MyXmppClient::initPresence(const QString& bareJid, const QString& resource)
 {
-    if( !listRoster.contains( bareJid ) ) {
+    int indxItem = -1;
+    RosterItemModel *item = (RosterItemModel*)listModelRoster->find( bareJid, indxItem );
+
+    if( item == 0 ) {
         return;
     }
 
@@ -258,17 +252,13 @@ void MyXmppClient::initPresence(const QString& bareJid, const QString& resource)
     QXmppPresence::Type statusJid = xmppPresence.type();
 
     QStringList _listResources = this->getResourcesByJid( bareJid );
-    //qDebug() << "*** initPresence():" << bareJid << " => " << resource << "_listResources:["<<_listResources<<"]";
     if( (_listResources.count() > 0) && (!_listResources.contains(resource)) )
     {
-        /* делать выход ничего не меняя ?? */
         qDebug() << bareJid << "/" << resource << " ****************[" <<_listResources<<"]" ;
         if( statusJid == QXmppPresence::Unavailable ) {
             return;
         }
     }
-
-    RosterItemModel *item = listRoster[ bareJid ];
 
     item->setResource( resource );
 
@@ -277,9 +267,7 @@ void MyXmppClient::initPresence(const QString& bareJid, const QString& resource)
 
     QString txtStatus = this->getTextStatus( xmppPresence.statusText(), xmppPresence );
     item->setTextStatus( txtStatus );
-    qDebug() << "initPresence():" << bareJid << " => " << resource << " => " << txtStatus ;
 
-    int indxItem = -1;
     RosterItemModel *itemExists = (RosterItemModel*)listModelRoster->find( bareJid, indxItem );
 
     if( itemExists != 0 ) {
@@ -299,18 +287,6 @@ void MyXmppClient::initPresence(const QString& bareJid, const QString& resource)
         item_chat->setTextStatus( txtStatus );
     }
 }
-
-void MyXmppClient::setQMLListRoster()
-{
-    listModelRoster->takeRows(0, listModelRoster->count() );
-    QMap< QString, RosterItemModel*>::iterator itr;
-    for ( itr = listRoster.begin(); itr != listRoster.end(); itr++ )
-    {
-        RosterItemModel* itemData = itr.value();
-        listModelRoster->append( itemData );
-    }
-}
-
 
 QString MyXmppClient::getPicPresence( const QXmppPresence &presence ) const
 {
@@ -551,20 +527,10 @@ void MyXmppClient::setMyPresence( StatusXmpp status, QString textStatus ) //Q_IN
             xmppClient->disconnectFromServer();
         }
         myPresence.setType( QXmppPresence::Unavailable );
-
-        QMap< QString, RosterItemModel*>::iterator itr;
-        for ( itr = listRoster.begin(); itr != listRoster.end(); itr++ )
-        {
-            listRoster.remove(itr.key());
-        }
     }
 
     xmppClient->setClientPresence( myPresence  );
     this->presenceReceived( myPresence );
-
-    if( status == Offline ) {
-        this->setQMLListRoster();
-    }
 }
 
 
@@ -719,7 +685,6 @@ void MyXmppClient::itemAdded(const QString &bareJid )
     qDebug() << "MyXmppClient::itemAdded(): " << bareJid;
     QStringList resourcesList = rosterManager->getResources( bareJid );
 
-    /* добавляем в ростер */
     QXmppPresence presence( QXmppPresence::Unavailable );
     RosterItemModel *itemModel = new RosterItemModel( );
     itemModel->setGroup("");
@@ -728,9 +693,8 @@ void MyXmppClient::itemAdded(const QString &bareJid )
     itemModel->setJid( bareJid );
     itemModel->setAvatar("");
     itemModel->setUnreadMsg( 0 );
-    listRoster[ bareJid ] = itemModel;
+    listModelRoster->append( itemModel );
 
-    /* запрашиваем присутствие */
     for( int L = 0; L<resourcesList.length(); L++ )
     {
         QString resource = resourcesList.at(L);
@@ -748,7 +712,6 @@ void MyXmppClient::itemChanged(const QString &bareJid )
 
         QXmppRosterIq::Item rosterEntry = rosterManager->getRosterEntry( bareJid );
         QString name = rosterEntry.name();
-        //qDebug() << "rosterEntry.name()=" << name;
 
         RosterItemModel *item = (RosterItemModel*)listModelRoster->find( bareJid );
         if( item ) {
@@ -763,16 +726,10 @@ void MyXmppClient::itemRemoved(const QString &bareJid )
 {
     qDebug() << "MyXmppClient::itemRemoved(): " << bareJid;
 
-    if( listRoster.contains( bareJid ) )
-    {
-        listRoster.remove( bareJid );
-    }
-
     int indxItem = -1;
     RosterItemModel *itemExists = (RosterItemModel*)listModelRoster->find( bareJid, indxItem );
     if( itemExists )
     {
-        /* удаляем контакт из ростера */
         if( indxItem >= 0 ) {
             listModelRoster->takeRow( indxItem );
         }
@@ -1055,8 +1012,6 @@ void MyXmppClient::presenceReceived( const QXmppPresence & presence )
         }
 
         emit statusChanged();
-
-        //qDebug() << "^^^ MyXmppClient::presenceReceived(): for " << bareJid << " status is " << presence.type();
     }
 }
 

@@ -95,10 +95,7 @@ class MyXmppClient : public QObject
     QXmppVCardManager *vCardManager;
     QXmppMessageReceiptManager * xmppMessageReceiptManager;
 
-    QMap< QString, RosterItemModel*> listRoster;
     RosterListModel *listModelRoster;
-
-    void setQMLListRoster();
 
     MeegIMSettings *mimOpt;
 

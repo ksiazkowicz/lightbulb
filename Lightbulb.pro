@@ -6,17 +6,12 @@
 QT += declarative
 QT += network
 
-symbian:TARGET.UID3 = 0xE22AC278
-
 # Smart Installer package's UID
 # This UID is from the protected range and therefore the package will
 # fail to install if self-signed. By default qmake uses the unprotected
 # range value if unprotected UID is defined for the application and
 # 0x2002CCCF value if protected UID is given to the application
 #symbian:DEPLOYMENT.installer_header = 0x2002CCCF
-
-# Allow network access on Symbian
-symbian:TARGET.CAPABILITY += NetworkServices
 
 #NOTE: Update your version number with each build.
 #NOTE: You may also need a different name than the executable for your caption.
@@ -33,24 +28,30 @@ symbian:TARGET.CAPABILITY += NetworkServices
 # my_deployment.pkg_prerules = package header vendorinfo
 # DEPLOYMENT += my_deployment
 
-
-TARGET.EPOCHEAPSIZE = 0x200000 0x1F400000
-
 symbian {
+    TARGET.UID3 = 0xE22AC278
+    TARGET.CAPABILITY += NetworkServices
+    TARGET.EPOCHEAPSIZE = 0x200000 0x1F400000
+    CONFIG += qt-components
     LIBS += -lavkon \
             -laknnotify \
             -leiksrv \
-            -lhwrmlightclient
+            -lhwrmlightclient \
+            -lapgrfx \
+            -lcone \
+            -lws32 \
+            -lbitgdi \
+            -lfbscli \
+            -laknskins \
+            -laknskinsrv \
+            -leikcore
 }
 
 # If your application uses the Qt Mobility libraries, uncomment the following
 # lines and add the respective components to the MOBILITY variable.
- CONFIG += mobility
+CONFIG += mobility
 MOBILITY += feedback
- MOBILITY += systeminfo #QSystemNetworkInfo
-
-# Add dependency to Symbian components
-CONFIG += qt-components
+MOBILITY += systeminfo
 
 DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS
 
@@ -80,7 +81,6 @@ SOURCES += main.cpp \
     fileio.cpp \
     lock.cpp \
     discreetpopup.cpp
-
 
 HEADERS += MyXmppClient.h \
     listmodel.h \
@@ -149,20 +149,7 @@ addFiles.pkg_postrules += "\"C:\\Projekty\\Lightbulb\\sounds\\Message_Received.w
 addFiles.pkg_postrules += "\"C:\\Projekty\\Lightbulb\\sounds\\Message_Sent.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Message_Sent.wav\""
 addFiles.pkg_postrules += "\"C:\\Projekty\\Lightbulb\\sounds\\New_Message.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Subscription_Request.wav\""
 
-
-
-
-
 DEPLOYMENT += addFiles
 
 RESOURCES += \
     resources.qrc
-
-#that library should be copied to SDK folder
-#LIBS += -lhswidgetpublisher
-#Libs for appswitcher
-LIBS += -lapgrfx -lcone -lws32
-#Libs for CFbsBimap
-LIBS += -lbitgdi -lfbscli -laknskins -laknskinsrv -leikcore # -laknswallpaperutils
-
-TRANSLATIONS = lang\pl.ts
