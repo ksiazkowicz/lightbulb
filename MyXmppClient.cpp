@@ -39,7 +39,6 @@ MyXmppClient::MyXmppClient() : QObject(0)
     QObject::connect( xmppMessageReceiptManager, SIGNAL(messageDelivered(QString,QString)), msgWrapper, SLOT(messageDelivered(QString,QString)) );
 
     listModelChats = new ChatsListModel( this );
-
     listModelRoster = new RosterListModel( this );
 
     m_bareJidLastMessage = "";
@@ -73,10 +72,6 @@ MyXmppClient::MyXmppClient() : QObject(0)
 
 MyXmppClient::~MyXmppClient()
 {
-    if( xmppClient != NULL ) {
-        delete xmppClient;
-    }
-
     if( cacheIM != NULL) {
         delete cacheIM;
     }
@@ -84,10 +79,6 @@ MyXmppClient::~MyXmppClient()
     if( msgWrapper != NULL) {
         delete msgWrapper;
     }
-
-    /*if( xmppMessageReceiptManager != NULL) {
-        delete xmppMessageReceiptManager;
-    }*/
 }
 
 void MyXmppClient::initXmppClient()
@@ -101,8 +92,6 @@ void MyXmppClient::initXmppClient()
     /* add extension */
     xmppClient->addExtension( xmppMessageReceiptManager );
 }
-
-
 
 void MyXmppClient::clientStateChanged(QXmppClient::State state)
 {
@@ -137,8 +126,6 @@ void MyXmppClient::clientStateChanged(QXmppClient::State state)
     emit connectingChanged();
 }
 
-
-
 void MyXmppClient::connectToXmppServer() //Q_INVOKABLE
 {
     //xmppConfig = mimOpt->getDefaultAccount();
@@ -167,13 +154,10 @@ void MyXmppClient::connectToXmppServer() //Q_INVOKABLE
 
 }
 
-
 void MyXmppClient::disconnectFromXmppServer() //Q_INVOKABLE
 {
     xmppClient->disconnectFromServer();
 }
-
-
 
 /* it initialises the list of contacts - roster */
 void MyXmppClient::initRoster()
@@ -236,8 +220,6 @@ void MyXmppClient::initRoster()
     emit rosterChanged();
 
 }
-
-
 
 void MyXmppClient::initPresence(const QString& bareJid, const QString& resource)
 {
@@ -315,8 +297,6 @@ QString MyXmppClient::getPicPresence( const QXmppPresence &presence ) const
 
     return picPresenceName;
 }
-
-
 
 QString MyXmppClient::getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const
 {

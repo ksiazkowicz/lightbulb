@@ -5,6 +5,7 @@
 
 QT += declarative
 QT += network
+QT += sql
 
 # Smart Installer package's UID
 # This UID is from the protected range and therefore the package will
@@ -61,14 +62,13 @@ SOURCES += main.cpp \
     listmodel.cpp \
     rosterlistmodel.cpp \
     rosteritemmodel.cpp \
+    chatslistmodel.cpp \
     mycache.cpp \
     storevcard.cpp \
     mysettings.cpp \
     messagewrapper.cpp \
     msgitemmodel.cpp \
     msglistmodel.cpp \
-    chatslistmodel.cpp \
-    chatsitemmodel.cpp \
     accountsitemmodel.cpp \
     accountslistmodel.cpp \
     meegimsettings.cpp \
@@ -80,20 +80,20 @@ SOURCES += main.cpp \
     nativechaticon.cpp \
     fileio.cpp \
     lock.cpp \
-    discreetpopup.cpp
+    discreetpopup.cpp #\
+#    databasemanager.cpp
 
 HEADERS += MyXmppClient.h \
     listmodel.h \
     rosterlistmodel.h \
     rosteritemmodel.h \
+    chatslistmodel.h \
     mycache.h \
     storevcard.h \
     mysettings.h \
     messagewrapper.h \
     msgitemmodel.h \
     msglistmodel.h \
-    chatslistmodel.h \
-    chatsitemmodel.h \
     accountsitemmodel.h \
     accountslistmodel.h \
     meegimsettings.h \
@@ -107,7 +107,8 @@ HEADERS += MyXmppClient.h \
     nativechaticon.h \
     fileio.h \
     lock.h \
-    discreetpopup.h
+    discreetpopup.h #\
+#    databasemanager.h
 
 OTHER_FILES += \
     README \

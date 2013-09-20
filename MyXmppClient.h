@@ -17,7 +17,6 @@
 #include "rosteritemmodel.h"
 #include "rosterlistmodel.h"
 
-#include "chatsitemmodel.h"
 #include "chatslistmodel.h"
 
 #include "mycache.h"
