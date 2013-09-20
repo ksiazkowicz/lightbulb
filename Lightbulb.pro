@@ -80,8 +80,8 @@ SOURCES += main.cpp \
     nativechaticon.cpp \
     fileio.cpp \
     lock.cpp \
-    discreetpopup.cpp #\
-#    databasemanager.cpp
+    discreetpopup.cpp \
+    DatabaseManager.cpp
 
 HEADERS += MyXmppClient.h \
     listmodel.h \
@@ -107,8 +107,8 @@ HEADERS += MyXmppClient.h \
     nativechaticon.h \
     fileio.h \
     lock.h \
-    discreetpopup.h #\
-#    databasemanager.h
+    discreetpopup.h \
+    DatabaseManager.h
 
 OTHER_FILES += \
     README \

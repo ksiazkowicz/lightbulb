@@ -4,13 +4,14 @@
 #include "QXmppVersionManager.h"
 #include "QXmppConfiguration.h"
 #include "QXmppClient.h"
+#include "DatabaseManager.h"
 
 #include <QDebug>
 #include <QCryptographicHash>
 #include <QFile>
 #include <QDir>
 
-QString MyXmppClient::myVersion = "0.1.0 Debug";
+QString MyXmppClient::myVersion = "0.1.1";
 
 QString MyXmppClient::getBareJidByJid( const QString &jid )
 {

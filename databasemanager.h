@@ -4,19 +4,29 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <QSqlError>
-#include <QFile>
+#include <QSqlQuery>
+#include <QVariant>
 
-class DatabaseManager : public QObject
-    {
-    public:
-        DatabaseManager(QObject *parent = 0);
-        ~DatabaseManager();
+class DatabaseManager: public QObject
+{
+    Q_OBJECT
+
+public:
+    DatabaseManager(QObject *parent = 0);
+    //~DatabaseManager();
 
     public:
         bool openDB();
         bool deleteDB();
-        QSqlError lastError();
+        Q_INVOKABLE bool initDB();
 
+        // create database structure
+        bool mkAccTable();
+        bool mkChatsTable();
+        bool mkRosterTable();
+        bool mkMessagesTable(QString bareJid);
+
+        QSqlError lastError();
     private:
         QSqlDatabase db;
     };
