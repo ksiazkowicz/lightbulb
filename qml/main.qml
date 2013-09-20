@@ -50,6 +50,8 @@ PageStackWindow {
 
     property bool isChatInProgress: false
 
+    property int blinkerSet: 0
+
     initialPage: RosterPage {}    
 
     Timer {
@@ -72,12 +74,12 @@ PageStackWindow {
 
     Timer {
         id: blinker
-        interval: 1000
+        interval: 100
         running: true; repeat:true
         onTriggered: {
             if (globalUnreadCount>0) {
-                lock.notificationBlink()
-            }
+                if (blinkerSet < 4) { avkon.notificationBlink(); blinkerSet++ } else { if (blinkerSet > 6) { blinkerSet = 0} else { blinkerSet++ } }
+            } else { blinkerSet = 0; blinker.running = false }
         }
     }
 
@@ -97,18 +99,15 @@ PageStackWindow {
                     isChatInProgress = true
                     globalUnreadCount = globalUnreadCount - tempUnreadCount
                 }
-                if (isChatInProgress) {
-                    console.log('globalUnreadCount = ' + globalUnreadCount)
-                    globalUnreadCount = globalUnreadCount - tempUnreadCount
-                    console.log('Updating globalUnreadCount. tempUnreadCount = ' + tempUnreadCount)
-                }
                 tempUnreadCount = 0
                 if (globalUnreadCount<0) {
                     globalUnreadCount = 0
                 }
             } else {
                 isActive = false
-                blinker.running = true
+                if (globalUnreadCount>0) {
+                    blinker.running = true
+                }
                 suspender.running = true
                 isChatInProgress = false
             }
@@ -174,15 +173,13 @@ PageStackWindow {
                             globalUnreadCount++
                         }
                 }
+                if (!isActive) { blinker.running = true }
                 if (!notifyHold) {
                     if (settings.gBool("notifications", "usePopupRecv") == true && !isActive) {
-                        dPopup.showPopup(globalUnreadCount + " unread messages", "New message from "+ getNameByJid(bareJidLastMsg) + ".")
+                        avkon.showPopup(globalUnreadCount + " unread messages", "New message from "+ getNameByJid(bareJidLastMsg) + ".")
                     }
-                    if (settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff") == true) {
-                        if (lock.isLocked()) {
-                            lock.blink()
-                        }
-
+                    if (settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff" && !isActive) == true) {
+                        avkon.screenBlink()
                     }
                     notifySndVibr("MsgRecv")
                 }
@@ -383,11 +380,9 @@ PageStackWindow {
 
     /**************(* notify *)**************/
 
-    Lock { id: lock }
+    Avkon { id: avkon }
 
     Notifications { id: notify }
-
-    DiscreetPopup { id: dPopup }
 
     StatusBar { id: sbar; x: 0; y: -main.y
         Rectangle {

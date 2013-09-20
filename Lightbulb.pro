@@ -73,15 +73,11 @@ SOURCES += main.cpp \
     accountslistmodel.cpp \
     meegimsettings.cpp \
     qmlvcard.cpp \
-    qmlrostermodel.cpp \
     lightbulbhswidget.cpp \
-    globalnote.cpp \
     filemodel.cpp \
-    nativechaticon.cpp \
     fileio.cpp \
-    lock.cpp \
-    discreetpopup.cpp \
-    DatabaseManager.cpp
+    DatabaseManager.cpp \
+    QAvkonHelper.cpp
 
 HEADERS += MyXmppClient.h \
     listmodel.h \
@@ -98,17 +94,13 @@ HEADERS += MyXmppClient.h \
     accountslistmodel.h \
     meegimsettings.h \
     qmlvcard.h \
-    qmlrostermodel.h \
     qhswidget.h \
     lightbulbhswidget.h \
     qmlclipboardadapter.h \
-    globalnote.h \
     filemodel.h \
-    nativechaticon.h \
     fileio.h \
-    lock.h \
-    discreetpopup.h \
-    DatabaseManager.h
+    DatabaseManager.h \
+    QAvkonHelper.h
 
 OTHER_FILES += \
     README \

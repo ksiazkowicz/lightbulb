@@ -46,23 +46,19 @@ Item {
         hsWidget.updateWidget(iconPath)
     }
 
-    Hswidget {
+    HSWidget {
         id: hsWidget
 
     }
 
-    GlobalNote {
-        id: notify
-    }
-
     function postGlobalNote(messageString) {
         if ((!inputInProgress) && (!Qt.application.active) ) {
-            notify.displayGlobalNote(messageString)
+            avkon.displayGlobalNote(messageString)
         }
     }
 
     function postInfo(messageString) {
-        notify.displayInfo(messageString)
+        avkon.displayGlobalNote(messageString)
     }
 
     function notifyMessageSent() {
