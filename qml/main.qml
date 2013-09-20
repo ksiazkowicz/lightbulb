@@ -13,6 +13,7 @@ PageStackWindow {
     property string textColor:       platformInverted ? platformStyle.colorNormalDark : platformStyle.colorNormalLight
 
     property int                     globalUnreadCount: 0
+    property int                     tempUnreadCount: 0
     property bool                    inputInProgress: false
 
     property string                  accJid: ""
@@ -94,7 +95,16 @@ PageStackWindow {
                 }
                 if (xmppClient.chatJid != "") {
                     isChatInProgress = true
-                    xmppClient.resetUnreadMessages( xmppClient.chatJid )
+                    globalUnreadCount = globalUnreadCount - tempUnreadCount
+                }
+                if (isChatInProgress) {
+                    console.log('globalUnreadCount = ' + globalUnreadCount)
+                    globalUnreadCount = globalUnreadCount - tempUnreadCount
+                    console.log('Updating globalUnreadCount. tempUnreadCount = ' + tempUnreadCount)
+                }
+                tempUnreadCount = 0
+                if (globalUnreadCount<0) {
+                    globalUnreadCount = 0
                 }
             } else {
                 isActive = false
@@ -119,6 +129,7 @@ PageStackWindow {
                     suspender.running = false
                     xmppClient.chatJid = ""
                     isChatInProgress = false
+                    tempUnreadCount = 0
                 }
             } else { suspenderDuration += 1; console.log("Will suspend in "+(60-suspenderDuration)) }
         }
@@ -150,9 +161,13 @@ PageStackWindow {
         id: xmppClient
         onMessageReceived: {
             if( xmppClient.myBareJid != bareJidLastMsg ) {
-                if (!isChatInProgress) { globalUnreadCount++ }
-                else {
-                        if (bareJidLastMsg != xmppClient.chatJid) {
+                if (!isChatInProgress) {
+                    globalUnreadCount++
+                    if (bareJidLastMsg == xmppClient.chatJid) {
+                        tempUnreadCount++
+                    }
+                } else {
+                        if (bareJidLastMsg != xmppClient.chatJid || !isActive) {
                             globalUnreadCount++
                         }
                 }
