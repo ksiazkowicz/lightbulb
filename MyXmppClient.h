@@ -138,6 +138,7 @@ public :
     /*--- unread msg ---*/
     /*Q_INVOKABLE */void incUnreadMessage( QString bareJid );
     Q_INVOKABLE void resetUnreadMessages( QString bareJid );
+    Q_INVOKABLE void setUnreadMessages( QString bareJid, int count );
 
     /*--- vCard ---*/
     Q_INVOKABLE void requestVCard( QString bareJid );

@@ -127,9 +127,12 @@ PageStackWindow {
                     isSuspended = true
                     console.log("Suspending...")
                     suspender.running = false
-                    xmppClient.chatJid = ""
-                    isChatInProgress = false
-                    tempUnreadCount = 0
+                    if (xmppClient.chatJid != "") {
+                        xmppClient.setUnreadMessages(xmppClient.chatJid, tempUnreadCount)
+                        xmppClient.chatJid = ""
+                        isChatInProgress = false
+                        tempUnreadCount = 0
+                    }
                 }
             } else { suspenderDuration += 1; console.log("Will suspend in "+(60-suspenderDuration)) }
         }

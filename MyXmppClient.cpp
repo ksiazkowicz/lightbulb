@@ -659,6 +659,20 @@ void MyXmppClient::resetUnreadMessages(QString bareJid) //Q_INVOKABLE
     }
 }
 
+void MyXmppClient::setUnreadMessages(QString bareJid, int count) //Q_INVOKABLE
+{
+    RosterItemModel *item = (RosterItemModel*)listModelRoster->find( bareJid );
+    if( item != 0 ) {
+        item->setUnreadMsg( count );
+    }
+
+    RosterItemModel *itemChat = (RosterItemModel*)listModelChats->find( bareJid );
+    if( itemChat != 0 ) {
+        itemChat->setUnreadMsg( count );
+    }
+
+}
+
 
 void MyXmppClient::itemAdded(const QString &bareJid )
 {
