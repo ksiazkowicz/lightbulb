@@ -1,8 +1,6 @@
 # Header files
 HEADERS += \
-    qxmpp/base/QXmppArchiveIq.h \
     qxmpp/base/QXmppBindIq.h \
-    qxmpp/base/QXmppBookmarkSet.h \
     qxmpp/base/QXmppByteStreamIq.h \
     qxmpp/base/QXmppConstants.h \
     qxmpp/base/QXmppDataForm.h \
@@ -40,9 +38,7 @@ HEADERS += \
 	
 # Source files
 SOURCES += \
-    qxmpp/base/QXmppArchiveIq.cpp \
     qxmpp/base/QXmppBindIq.cpp \
-    qxmpp/base/QXmppBookmarkSet.cpp \
     qxmpp/base/QXmppByteStreamIq.cpp \
     qxmpp/base/QXmppCodec.cpp \
     qxmpp/base/QXmppConstants.cpp \
