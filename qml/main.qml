@@ -240,13 +240,18 @@ PageStackWindow {
     }
 
     function changeAudioFile() {
-                var component = Qt.createComponent("qrc:/qml/Dialogs/FileDialog.qml");
+                /*var component = Qt.createComponent("qrc:/qml/Dialogs/FileDialog.qml");
                 var dialog = component.createObject(main);
                 if( dialog !== null ) {
                     dialog.dirMode = false;
                     dialog.fileSelected.connect(fileSelected);
                     dialog.directorySelected.connect(directorySelected);
                     dialog.open();
+                }*/
+                var filename = avkon.openFileSelectionDlg();
+
+                if (filename != "") {
+                    settings.sStr(filename,"notifications",nowEditing+"File")
                 }
             }
 

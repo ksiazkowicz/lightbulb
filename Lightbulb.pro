@@ -3,9 +3,9 @@
 #folder_01.target = qml
 #DEPLOYMENTFOLDERS = folder_01
 
-QT += declarative
-QT += network
-QT += sql
+QT += declarative \
+      network \
+      sql
 
 # Smart Installer package's UID
 # This UID is from the protected range and therefore the package will
@@ -45,14 +45,15 @@ symbian {
             -lfbscli \
             -laknskins \
             -laknskinsrv \
-            -leikcore
+            -leikcore \
+            -lcommondialogs
 }
 
 # If your application uses the Qt Mobility libraries, uncomment the following
 # lines and add the respective components to the MOBILITY variable.
 CONFIG += mobility
-MOBILITY += feedback
-MOBILITY += systeminfo
+MOBILITY += feedback \
+            systeminfo
 
 DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS
 
@@ -74,8 +75,6 @@ SOURCES += main.cpp \
     meegimsettings.cpp \
     qmlvcard.cpp \
     lightbulbhswidget.cpp \
-    filemodel.cpp \
-    fileio.cpp \
     DatabaseManager.cpp \
     QAvkonHelper.cpp
 
@@ -97,20 +96,18 @@ HEADERS += MyXmppClient.h \
     qhswidget.h \
     lightbulbhswidget.h \
     qmlclipboardadapter.h \
-    filemodel.h \
-    fileio.h \
     DatabaseManager.h \
     QAvkonHelper.h
 
-OTHER_FILES += \
-    README \
+OTHER_FILES += README \
     qml/Dialogs/AddContact.qml \
     qml/Dialogs/ChangeStatus.qml \
     qml/Dialogs/RemoveAccount.qml \
     qml/Dialogs/RemoveContact.qml \
     qml/Dialogs/RenameContact.qml \
     qml/Dialogs/QuerySubscribtion.qml \
-    qml/Dialogs/FileDialog.qml \
+    qml/Dialogs/VibrationSettings.qml \
+    qml/Dialogs/SoundSettings.qml \
     qml/ChatsPage.qml \
     qml/AccountAddPage.qml \
     qml/VCardPage.qml \
@@ -120,10 +117,7 @@ OTHER_FILES += \
     qml/MessagesPage.qml \
     qml/AccountsPage.qml \
     qml/AboutPage.qml \
-    qml/DialogChangeStatus.qml \
     qml/Notifications.qml \
-    qml/Dialogs/VibrationSettings.qml \
-    qml/Dialogs/SoundSettings.qml \
     qml/ArchivePage.qml
 
 # Please do not modify the following two lines. Required for deployment.

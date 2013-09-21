@@ -4,6 +4,7 @@
 #include <QObject>
 #include <akndiscreetpopup.h>
 #include <aknglobalnote.h>
+#include <CAknFileSelectionDialog.h>
 #include <e32base.h>
 #include <hwrmlight.h>
 
@@ -18,6 +19,7 @@ public:
     Q_INVOKABLE void screenBlink();
     Q_INVOKABLE void notificationBlink();
     Q_INVOKABLE void displayGlobalNote(QString message);
+    Q_INVOKABLE QString openFileSelectionDlg();
 
 private:
     TInt iNoteId;

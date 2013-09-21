@@ -2,8 +2,11 @@
 #include <akndiscreetpopup.h>
 #include <aknkeylock.h>
 #include <aknglobalnote.h>
+#include <CAknFileSelectionDialog.h>
+#include <AknCommonDialogs.h>
 #include <hwrmlight.h>
 #include <e32svr.h>
+#include <eikmenup.h>
 
 QAvkonHelper::QAvkonHelper(QObject *parent) :
     QObject(parent)
@@ -51,4 +54,14 @@ void QAvkonHelper::ShowNoteL(const TDesC16& aMessage)
 {
     iNote = CAknGlobalNote::NewL();
     iNoteId = iNote->ShowNoteL(EAknGlobalInformationNote,aMessage);
+}
+
+QString QAvkonHelper::openFileSelectionDlg()
+{
+    TBuf16<255> filename;
+    if (!AknCommonDialogs::RunSelectDlgLD(filename, 0))
+            return NULL;
+    QString qString = QString::fromUtf16(filename.Ptr(), filename.Length());
+    return qString;
+
 }
