@@ -20,8 +20,6 @@ bool DatabaseManager::openDB()
 
 QSqlError DatabaseManager::lastError()
 {
-    // If opening database has failed user can ask
-    // error description by QSqlError::text()
     return db.lastError();
 }
 
@@ -75,7 +73,6 @@ bool DatabaseManager::mkRosterTable()
                          "status varchar(12), "
                          "statusText varchar(255), "
                          "avatarPath varchar(255), "
-                         "manualHostPort integer, "
                          "unreadMsg integer)");
     }
     return ret;
@@ -112,4 +109,9 @@ bool DatabaseManager::mkMessagesTable(QString bareJid)
     return ret;
 }
 
+/*bool DatabaseManager::insertMessage(int acc, int contact, QString res, QString time, int delivered, int mine, int type)
+{
 
+
+
+}*/

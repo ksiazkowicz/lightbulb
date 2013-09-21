@@ -2,7 +2,6 @@
 #define OCLISTMODEL_H
 
 #include "listmodel.h"
-//#include "chatsitemmodel.h"
 #include "rosteritemmodel.h"
 
 class ChatsListModel : public ListModel

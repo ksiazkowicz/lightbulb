@@ -19,6 +19,8 @@
 
 #include "chatslistmodel.h"
 
+#include "DatabaseManager.h"
+
 #include "mycache.h"
 #include "messagewrapper.h"
 #include "meegimsettings.h"
@@ -97,6 +99,7 @@ class MyXmppClient : public QObject
     RosterListModel *listModelRoster;
 
     MeegIMSettings *mimOpt;
+    DatabaseManager *database;
 
     QMLVCard * qmlVCard;
     QString flVCardRequest;

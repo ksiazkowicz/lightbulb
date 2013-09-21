@@ -80,7 +80,7 @@ CommonDialog {
             TextField {
                 id: wrapperTextEdit
                 height: 50
-                anchors { bottom: parent.bottom; bottomMargin: 5; left: parent.left; right: parent.right }
+                anchors { bottom: parent.bottom; bottomMargin: 5; left: parent.left; right: parent.right; topMargin: 5; }
                 placeholderText: qsTr("Status text")
                 text: main.lastStatus
             }

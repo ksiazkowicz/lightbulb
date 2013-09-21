@@ -27,6 +27,10 @@ MyXmppClient::MyXmppClient() : QObject(0)
     cacheIM = new MyCache(this);
     msgWrapper = new MessageWrapper(this);
 
+    database = new DatabaseManager(this);
+    database->openDB();
+    database->initDB();
+
     xmppClient = new QXmppClient( this );
     QObject::connect( xmppClient, SIGNAL(stateChanged(QXmppClient::State)), this, SLOT(clientStateChanged(QXmppClient::State)) );
     QObject::connect( xmppClient, SIGNAL(messageReceived(QXmppMessage)), this, SLOT(messageReceivedSlot(QXmppMessage)) );

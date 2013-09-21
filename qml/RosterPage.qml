@@ -258,13 +258,13 @@ Page {
                     xmppClient.chatJid = selectedJid
                 }
             }
-            MenuItem {
+            /*MenuItem {
                 text: qsTr("Archive")
                 onClicked: {
                     main.pageStack.push( "qrc:/qml/ArchivePage.qml" )
                     xmppClient.chatJid = selectedJid
                 }
-            }
+            }*/
             MenuItem {
                 text: qsTr("Subscribe")
                 onClicked: {dialogTitle = qsTr("Subscribed")

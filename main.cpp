@@ -12,8 +12,6 @@
 #include "meegimsettings.h"
 #include "qmlclipboardadapter.h"
 #include "lightbulbhswidget.h"
-#include "filemodel.h"
-#include "fileio.h"
 #include "QAvkonHelper.h"
 
 #include <QtGui/QSplashScreen>
@@ -33,8 +31,6 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     qmlRegisterType<QMLVCard>(LIGHTBULB_NAMESPACE, 1, 0, "XmppVCard" );
     qmlRegisterType<QmlClipboardAdapter>(LIGHTBULB_NAMESPACE, 1, 0, "Clipboard" );
     qmlRegisterType<LightbulbHSWidget>(LIGHTBULB_NAMESPACE, 1, 0, "HSWidget" );
-    qmlRegisterType<FileModel>(LIGHTBULB_NAMESPACE, 1, 0, "FileModel");
-    qmlRegisterType<FileIO>(LIGHTBULB_NAMESPACE, 1, 0, "FileIO");
     qmlRegisterType<QAvkonHelper>(LIGHTBULB_NAMESPACE, 1, 0, "Avkon");
 
     qmlRegisterUncreatableType<RosterListModel>(LIGHTBULB_NAMESPACE, 1, 0, "Roster", "Use xmppClient.roster instead");
