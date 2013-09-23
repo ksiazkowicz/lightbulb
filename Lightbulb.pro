@@ -68,8 +68,6 @@ SOURCES += main.cpp \
     storevcard.cpp \
     mysettings.cpp \
     messagewrapper.cpp \
-    msgitemmodel.cpp \
-    msglistmodel.cpp \
     accountsitemmodel.cpp \
     accountslistmodel.cpp \
     meegimsettings.cpp \
@@ -87,8 +85,6 @@ HEADERS += MyXmppClient.h \
     storevcard.h \
     mysettings.h \
     messagewrapper.h \
-    msgitemmodel.h \
-    msglistmodel.h \
     accountsitemmodel.h \
     accountslistmodel.h \
     meegimsettings.h \

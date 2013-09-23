@@ -6,7 +6,6 @@
 
 #include "rosterlistmodel.h"
 #include "chatslistmodel.h"
-#include "msglistmodel.h"
 #include "accountslistmodel.h"
 #include "qmlvcard.h"
 #include "meegimsettings.h"
@@ -35,7 +34,6 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     qmlRegisterType<QAvkonHelper>(LIGHTBULB_NAMESPACE, 1, 0, "Avkon");
 
     qmlRegisterUncreatableType<RosterListModel>(LIGHTBULB_NAMESPACE, 1, 0, "Roster", "Use xmppClient.roster instead");
-    qmlRegisterUncreatableType<MsgListModel>(LIGHTBULB_NAMESPACE, 1, 0, "MessagesList", "");
     qmlRegisterUncreatableType<SqlQueryModel>(LIGHTBULB_NAMESPACE, 1, 0, "SqlQuery", "");
     qmlRegisterUncreatableType<ChatsListModel>(LIGHTBULB_NAMESPACE, 1, 0, "ChatsList", "");
     qmlRegisterUncreatableType<AccountsListModel>(LIGHTBULB_NAMESPACE, 1, 0, "AccountsList", "Use settings.accounts instead");

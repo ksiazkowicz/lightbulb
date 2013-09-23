@@ -78,7 +78,6 @@ class MyXmppClient : public QObject
     Q_PROPERTY( int port READ getPort WRITE setPort NOTIFY portChanged )
     Q_PROPERTY( QString resource READ getResource WRITE setResource NOTIFY resourceChanged )
     Q_PROPERTY( ChatsListModel* openChats READ getOpenChats NOTIFY openChatsChanged )
-    //Q_PROPERTY( MsgListModel* messages READ getMessages NOTIFY messagesChanged )
     Q_PROPERTY( SqlQueryModel* messages READ getSqlMessages NOTIFY sqlMessagesChanged )
     Q_PROPERTY( QString chatJid READ getChatJid WRITE setChatJid NOTIFY chatJidChanged )
     Q_PROPERTY( QString contactName READ getContactName WRITE setContactName NOTIFY contactNameChanged )
@@ -179,7 +178,6 @@ public :
     QString getVersion() const { return MyXmppClient::myVersion; }
 	
     /*--- chat options ---*/
-    Q_INVOKABLE void clearChat( const QString bareJid ) { msgWrapper->clearChat( bareJid); }
     Q_INVOKABLE void attentionSend( QString bareJid, QString resource = "" );
 
     /*----------------------------------*/
@@ -217,8 +215,6 @@ public :
     void setResource( const QString & value ) { if(value!=m_resource) {m_resource=value; emit resourceChanged(); } }
 
     ChatsListModel* getOpenChats() const { return listModelChats; }
-
-    MsgListModel* getMessages() const { return msgWrapper->getMessages(); }
 
     SqlQueryModel* getSqlMessages();
 
@@ -303,7 +299,6 @@ public slots:
 
     Q_INVOKABLE void openChat( QString jid );
     Q_INVOKABLE void closeChat( QString jid );
-    Q_INVOKABLE void hideChat() { this->setChatJid(""); msgWrapper->hideChat(); }
 
 private slots:
     void initRoster();

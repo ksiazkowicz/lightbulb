@@ -37,11 +37,7 @@ MyXmppClient::MyXmppClient() : QObject(0)
     QObject::connect( xmppClient, SIGNAL(presenceReceived(QXmppPresence)), this, SLOT(presenceReceived(QXmppPresence)) );
     QObject::connect( xmppClient, SIGNAL(error(QXmppClient::Error)), this, SLOT(error(QXmppClient::Error)) );
 
-    QObject::connect( msgWrapper, SIGNAL(openChat(QString)), this, SLOT(openChat(QString)) );
-    //QObject::connect( msgWrapper, SIGNAL(sendMyMsg(QXmppMessage)), xmppClient, SLOT(sendPacket(QXmppPacket)) );
-
     xmppMessageReceiptManager = new QXmppMessageReceiptManager();
-    QObject::connect( xmppMessageReceiptManager, SIGNAL(messageDelivered(QString,QString)), msgWrapper, SLOT(messageDelivered(QString,QString)) );
 
     listModelChats = new ChatsListModel( this );
     listModelRoster = new RosterListModel( this );
@@ -606,7 +602,6 @@ void MyXmppClient::openChat( QString bareJid ) //Q_INVOKABLE
     emit chatOpened( bareJid );
     emit openChatsChanged( bareJid );
 
-    msgWrapper->initChat( bareJid );
     //this->resetUnreadMessages( bareJid );
 }
 
@@ -629,7 +624,6 @@ void MyXmppClient::closeChat( QString bareJid ) //Q_INVOKABLE
         emit chatClosed( bareJid );
         //qDebug() << "MyXmppClient::closeChat("<<bareJid<<"): row:"<<row << " result:"<<res << " listModelChats.count():" <<listModelChats->count();
     }
-    msgWrapper->removeListOfChat( bareJid );
 }
 
 
@@ -764,7 +758,6 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         qDebug() << "Msg state is QXmppMessage::Active";
         if( !( xmppMsg.body().isEmpty() || xmppMsg.body().isNull()) )
         {
-            msgWrapper->textMessage(xmppMsg);
             QString jid = xmppMsg.from();
             if( jid.indexOf('/') >= 0 ) {
                 QStringList sl =  jid.split('/');
@@ -809,8 +802,8 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         }
         else if( !( xmppMsg.body().isEmpty() || xmppMsg.body().isNull()) )
         {
-            msgWrapper->textMessage(xmppMsg);
-            if (m_archiveIncMessage) { archiveIncMessage(xmppMsg, false); }
+            //msgWrapper->textMessage(xmppMsg);
+            archiveIncMessage(xmppMsg, false);
 
             QString jid = xmppMsg.from();
             if( jid.indexOf('/') >= 0 ) {
@@ -826,6 +819,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
             this->incUnreadMessage( bareJid_from );
             emit this->messageReceived( bareJid_from, bareJid_to );
         }
+        this->openChat(xmppMsg.from());
         qDebug() << "MessageWrapper::messageReceived(): xmppMsg.state():" << xmppMsg.state();
     }
 }
@@ -834,7 +828,12 @@ void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg, bool mine )
 {
     QDateTime currTime = QDateTime::currentDateTime();
 
-    database->insertMessage(1,getBareJidByJid(xmppMsg.from()),xmppMsg.body(),currTime.toString("dd/MM/yyyy hh:mm:ss"),mine);
+    QString body;
+    body = body.replace(">", "&gt;");  //fix for > stuff
+    body = body.replace("<", "&lt;");  //and < stuff too ^^
+    body = msgWrapper->parseMsgOnLink(xmppMsg.body());
+
+    database->insertMessage(1,getBareJidByJid(xmppMsg.from()),body,currTime.toString("dd-MM-yy hh:mm:ss"),mine);
     emit sqlMessagesChanged();
 }
 
