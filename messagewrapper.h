@@ -7,6 +7,7 @@
 #include <QDateTime>
 #include <QVariant>
 #include <QtDeclarative>
+#include "DatabaseManager.h"
 
 #include "msgitemmodel.h"
 #include "msglistmodel.h"
@@ -63,6 +64,7 @@ public:
     void removeListOfChat( QString &bareJid );
 
     MsgListModel* getMessages() const { return mlm; }
+    //SqlQueryModel getSqlMessages() const { return sql; }
 
     void textMessage(const QXmppMessage &xmppMsg);
 

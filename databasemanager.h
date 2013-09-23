@@ -5,7 +5,27 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSqlQueryModel>
 #include <QVariant>
+
+class SqlQueryModel : public QSqlQueryModel
+{
+    Q_OBJECT
+
+    void generateRoleNames();
+
+public:
+    explicit SqlQueryModel(QObject *parent = 0);
+
+    void setQuery(const QString &query, const QSqlDatabase &db = QSqlDatabase());
+    void setQuery(const QSqlQuery &query);
+    QVariant data(const QModelIndex &index, int role) const;
+
+signals:
+
+public slots:
+
+};
 
 class DatabaseManager: public QObject
 {
@@ -24,10 +44,10 @@ public:
         bool mkAccTable();
         bool mkChatsTable();
         bool mkRosterTable();
-        bool mkMessagesTable(QString bareJid);
+        bool mkMessagesTable();
+        bool insertMessage(int acc, QString bareJid, QString text, QString time, int mine);
 
         QSqlError lastError();
-    private:
         QSqlDatabase db;
     };
 

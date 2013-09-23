@@ -78,7 +78,8 @@ class MyXmppClient : public QObject
     Q_PROPERTY( int port READ getPort WRITE setPort NOTIFY portChanged )
     Q_PROPERTY( QString resource READ getResource WRITE setResource NOTIFY resourceChanged )
     Q_PROPERTY( ChatsListModel* openChats READ getOpenChats NOTIFY openChatsChanged )
-    Q_PROPERTY( MsgListModel* messages READ getMessages NOTIFY messagesChanged )
+    //Q_PROPERTY( MsgListModel* messages READ getMessages NOTIFY messagesChanged )
+    Q_PROPERTY( SqlQueryModel* messages READ getSqlMessages NOTIFY sqlMessagesChanged )
     Q_PROPERTY( QString chatJid READ getChatJid WRITE setChatJid NOTIFY chatJidChanged )
     Q_PROPERTY( QString contactName READ getContactName WRITE setContactName NOTIFY contactNameChanged )
     Q_PROPERTY( QMLVCard* vcard READ getVCard NOTIFY vCardChanged )
@@ -100,6 +101,7 @@ class MyXmppClient : public QObject
 
     MeegIMSettings *mimOpt;
     DatabaseManager *database;
+    SqlQueryModel *sql;
 
     QMLVCard * qmlVCard;
     QString flVCardRequest;
@@ -218,6 +220,8 @@ public :
 
     MsgListModel* getMessages() const { return msgWrapper->getMessages(); }
 
+    SqlQueryModel* getSqlMessages();
+
     QString getChatJid() const { return m_chatJid; }
     void setChatJid( const QString & value )
     {
@@ -283,6 +287,7 @@ signals:
     void chatOpened( QString bareJid );
     void chatClosed( QString bareJid );
     void messagesChanged();
+    void sqlMessagesChanged();
     void chatJidChanged();
     void contactNameChanged();
     void vCardChanged();
@@ -328,7 +333,6 @@ private:
     QString m_contactName;
     int accounts;
     void archiveIncMessage( const QXmppMessage &xmppMsg, bool mine );
-    void appendConversationStart( QString bareJid );
 
     QString getPicPresence( const QXmppPresence &presence ) const;
     QString getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const;

@@ -599,8 +599,9 @@ void MyXmppClient::openChat( QString bareJid ) //Q_INVOKABLE
 
     if (!item) {
         listModelChats->append( newItem );
-        if (m_archiveIncMessage) { appendConversationStart(bareJid); }
     };
+
+    database->mkMessagesTable();
 
     emit chatOpened( bareJid );
     emit openChatsChanged( bareJid );
@@ -831,52 +832,10 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
 
 void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg, bool mine )
 {
-    QString parameterString;
-    QString bareJid;
-    QString contactName;
-    QString body;
-
-    bareJid = getBareJidByJid(xmppMsg.from());
-    if (!mine) { contactName = getNameByJid(bareJid); } else { contactName = "Me"; }
-    body = xmppMsg.body();
-
-
     QDateTime currTime = QDateTime::currentDateTime();
 
-    QDir archiveDir;
-    archiveDir.mkpath(cacheIM->getContactCache(bareJid));
-
-    parameterString = contactName +  currTime.toString(" dd/MM/yyyy hh:mm:ss: ") + body;
-    qDebug() << "archiveIncMessage() appending: " + parameterString;
-    QString parameterFileString(cacheIM->getContactCache(bareJid) + "\\" + currTime.toString("d MMMM, yyyy") + ".txt");
-    QFile parameterFile(parameterFileString);
-    parameterFile.open(QFile::Append);
-    QTextStream out(&parameterFile);
-    out.setCodec(QTextCodec::codecForName("UTF-8"));
-    out << parameterString << endl;
-    parameterFile.close();
-}
-
-void MyXmppClient::appendConversationStart( QString bareJid )
-{
-    QString parameterString;
-
-    QDateTime currTime = QDateTime::currentDateTime();
-
-    QDir archiveDir;
-    archiveDir.mkpath(cacheIM->getContactCache(bareJid));
-
-    parameterString = " ******** ( Conversation started at " + currTime.toString("hh:mm:ss") + " ) ******** ";
-    qDebug() << "appendConversationStart() appending: " + parameterString;
-    QString parameterFileString(cacheIM->getContactCache(bareJid) + "\\" + currTime.toString("d MMMM, yyyy") + ".txt");
-    QFile parameterFile(parameterFileString);
-    parameterFile.open(QFile::Append);
-    QTextStream out(&parameterFile);
-    out.setCodec(QTextCodec::codecForName("UTF-8"));
-    out << parameterString << endl;
-    parameterFile.close();
-
-
+    database->insertMessage(1,getBareJidByJid(xmppMsg.from()),xmppMsg.body(),currTime.toString("dd/MM/yyyy hh:mm:ss"),mine);
+    emit sqlMessagesChanged();
 }
 
 QString MyXmppClient::getPicPresenceByJid(QString bareJid)
@@ -1159,5 +1118,12 @@ void MyXmppClient::attentionSend( QString bareJid, QString resource )
     xmppClient->sendPacket( xmppMsg );
 
     msgWrapper->attention( bareJid, true );
+}
+
+SqlQueryModel* MyXmppClient::getSqlMessages()
+{
+    sql = new SqlQueryModel(0);
+    sql->setQuery("SELECT * FROM messages WHERE bareJid='" + m_chatJid + "'",database->db);
+    return sql;
 }
 

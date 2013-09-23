@@ -54,20 +54,20 @@ Page {
                 anchors.rightMargin: 16
                 source: "qrc:/qml/bubble/incTriangle.png"
                 width: 13
-                height: msgMy == true ? 0 : 13
+                height: isMine == true ? 0 : 13
             }
             Rectangle {
                 id: bubbleTop
                 anchors.top: triangleTop.bottom
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.rightMargin: msgMy == true ? 64 : 6
-                anchors.leftMargin: msgMy == true ? 6 : 64
+                anchors.rightMargin: isMine == true ? 64 : 6
+                anchors.leftMargin: isMine == true ? 6 : 64
                 height: 20
                 gradient: Gradient {
-                    GradientStop { position: 0.0; color: msgMy == true ? "#6f6f74" : "#f2f1f4" }
-                    GradientStop { position: 0.5; color: msgMy == true ? "#56565b" : "#eae9ed" }
-                    GradientStop { position: 1.0; color: msgMy == true ? "#56565b" : "#eae9ed" }
+                    GradientStop { position: 0.0; color: isMine == true ? "#6f6f74" : "#f2f1f4" }
+                    GradientStop { position: 0.5; color: isMine == true ? "#56565b" : "#eae9ed" }
+                    GradientStop { position: 1.0; color: isMine == true ? "#56565b" : "#eae9ed" }
                 }
                 smooth: true
 
@@ -78,13 +78,13 @@ Page {
                 anchors.bottom: triangleBottom.top
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.rightMargin: msgMy == true ? 64 : 6
-                anchors.leftMargin: msgMy == true ? 6 : 64
+                anchors.rightMargin: isMine == true ? 64 : 6
+                anchors.leftMargin: isMine == true ? 6 : 64
                 height: 20
                 gradient: Gradient {
-                    GradientStop { position: 0.0; color: msgMy == true ? "#56565b" : "#e6e6eb" }
-                    GradientStop { position: 0.5; color: msgMy == true ? "#56565b" : "#e6e6eb" }
-                    GradientStop { position: 1.0; color: msgMy == true ? "#46464b" : "#b9b8bd" }
+                    GradientStop { position: 0.0; color: isMine == true ? "#56565b" : "#e6e6eb" }
+                    GradientStop { position: 0.5; color: isMine == true ? "#56565b" : "#e6e6eb" }
+                    GradientStop { position: 1.0; color: isMine == true ? "#46464b" : "#b9b8bd" }
                 }
                 smooth: true
 
@@ -93,11 +93,11 @@ Page {
             Rectangle {
                 id: bubbleCenter
                 anchors.fill: parent
-                anchors.rightMargin: msgMy == true ? 64 : 6
-                anchors.leftMargin: msgMy == true ? 6 : 64
+                anchors.rightMargin: isMine == true ? 64 : 6
+                anchors.leftMargin: isMine == true ? 6 : 64
                 anchors.topMargin: triangleTop.height+10
                 anchors.bottomMargin: triangleBottom.height+10
-                color: msgMy == true ? "#56565b" : "#e6e6eb"
+                color: isMine == true ? "#56565b" : "#e6e6eb"
             }
 
             Image {
@@ -107,18 +107,18 @@ Page {
                 anchors.leftMargin: 16
                 source: "qrc:/qml/bubble/ownTriangle.png"
                 width: 13
-                height: msgMy == true ? 13 : 0
+                height: isMine == true ? 13 : 0
             }
             Text {
                   id: message
                   anchors.top: bubbleTop.bottom
-                  anchors.rightMargin: msgMy == true ? 74 : 16
-                  anchors.leftMargin: msgMy == true ? 16 : 74
+                  anchors.rightMargin: isMine == true ? 74 : 16
+                  anchors.leftMargin: isMine == true ? 16 : 74
                   anchors.topMargin: -10
                   anchors.left: parent.left
                   anchors.right: parent.right
-                  text: "<font color='#009FEB'>" + (msgMy == true ? qsTr("Me") : (xmppClient.contactName === "" ? xmppClient.chatJid : xmppClient.contactName) ) + ":</font> " + msgText
-                  color: msgMy == true ? "white" : "black"
+                  text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (xmppClient.contactName === "" ? xmppClient.chatJid : xmppClient.contactName) ) + ":</font> " + msgText
+                  color: isMine == true ? "white" : "black"
                   font.pixelSize: 16
                   wrapMode: Text.Wrap
                   onLinkActivated: { main.url=link; linkContextMenu.open()}
@@ -126,8 +126,9 @@ Page {
             Text {
                   id: time
                   anchors.top: message.bottom;
-                  anchors.right: parent.right; anchors.rightMargin: msgMy == true ? 80 : 16
-                  text: msgDateTime.substr(0,5)
+                  anchors.right: parent.right; anchors.rightMargin: isMine  == true ? 80 : 16
+                  //text: time.substr(0,5)
+                  text: dateTime
                   font.pixelSize: 16
                   color: "#999999"
             }
@@ -262,37 +263,6 @@ Page {
             }
         ]
     }
-    /******************************( Copy mode! )**********************************/
-/*  function generateLog()
-    {
-     for (var i=0;i<listViewMessages.count;i++)
-     {
-         logText.text = logText.text + txtHeader.text + "\n" + txtMessage.text + "\n";
-     }
-    }
-
-    CommonDialog{
-        id: copyDialog
-        width: parent.width
-        height: parent.height
-        titleText: "Log"
-        privateCloseIcon: true
-
-        content: Rectangle {
-            width: parent.width-5
-            height: parent.height-5
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: "transparent"
-
-            TextField {
-                id: logText
-                anchors.fill: parent
-                placeholderText: "Oups, something went wrong. o.o"
-            }
-        }
-
-    }
-*/
     CommonDialog {
         id: dlgResources
         titleText: qsTr("Resources")

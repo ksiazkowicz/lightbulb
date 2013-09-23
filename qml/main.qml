@@ -158,7 +158,6 @@ PageStackWindow {
         }
     }
 
-
     XmppClient {
         id: xmppClient
         onMessageReceived: {
@@ -254,30 +253,6 @@ PageStackWindow {
                     settings.sStr(filename,"notifications",nowEditing+"File")
                 }
             }
-
-    /************************( file selection dialog )*****************************/
-    FileModel { id: fileModel }
-
-    function openFile( dirMode ) {
-                var component = Qt.createComponent("qrc:/qml/Dialogs/FileDialog.qml");
-                var dialog = component.createObject(main);
-                if( dialog !== null ) {
-                    if( dirMode) {
-                        dialog.dirMode = true;
-                    }
-                    dialog.fileSelected.connect(fileSelected);
-                    dialog.directorySelected.connect(directorySelected);
-                    dialog.open();
-                }
-            }
-
-    function fileSelected( filePath ) {
-        settings.sStr("file:///" + filePath.substring(0,2) + filePath.substring(3,filePath.length),"notifications",nowEditing+"File")
-    }
-
-    function directorySelected( dirPath) {
-            console.debug("directoryAdded:" + dirPath);
-    }
 
     /************************( stuff to do when running this app )*****************************/
 
