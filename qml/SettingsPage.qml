@@ -471,18 +471,6 @@ Page {
                             settings.sBool(checked,"behavior","goOnlineOnStart")
                         }
                     }
-
-                    CheckBox {
-                        id: logStuff
-                        text: qsTr("Archive incoming messages")
-                        checked: settings.gBool("behavior","archiveIncMessage")
-                        platformInverted: main.platformInverted
-                        onCheckedChanged: {
-                            console.log("Archive incoming messages: checked="+checked)
-                            xmppClient.archiveIncMessage = checked
-                            settings.sBool(checked,"behavior","archiveIncMessage")
-                        }
-                    }
                     CheckBox {
                         id: enableWidget
                         text: qsTr("Enable homescreen widget")

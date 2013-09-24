@@ -224,6 +224,16 @@ PageStackWindow {
             dialog.source = ""
             dialog.source = "Dialogs/QuerySubscribtion.qml"
         }
+        onTypingChanged: {
+            if (settings.gBool("notifications", "notifyTyping") == true) {
+                if (typingChanged) {
+                    sb.text = getNameByJid(bareJid) + " is typing."
+                } else {
+                    sb.text = getNameByJid(bareJid) + " stopped typing."
+                }
+                sb.open()
+            }
+        }
     } //XmppClient
 
     MeegIMSettings { id: settings }
@@ -239,28 +249,19 @@ PageStackWindow {
     }
 
     function changeAudioFile() {
-                /*var component = Qt.createComponent("qrc:/qml/Dialogs/FileDialog.qml");
-                var dialog = component.createObject(main);
-                if( dialog !== null ) {
-                    dialog.dirMode = false;
-                    dialog.fileSelected.connect(fileSelected);
-                    dialog.directorySelected.connect(directorySelected);
-                    dialog.open();
-                }*/
-                var filename = avkon.openFileSelectionDlg();
+        var filename = avkon.openFileSelectionDlg();
 
-                if (filename != "") {
-                    settings.sStr(filename,"notifications",nowEditing+"File")
-                }
-            }
+        if (filename != "") {
+            settings.sStr(filename,"notifications",nowEditing+"File")
+        }
+    }
 
     /************************( stuff to do when running this app )*****************************/
 
     function checkIfFirstRun() {
-        if (!settings.gBool("main","not_first_run") || settings.gBool("main","build006")) {
+        if (!settings.gBool("main","not_first_run") || settings.gStr("main","last_used_rel") !== "0.2") {
             settings.sBool(true,"main","not_first_run")
-            settings.sBool(true,"main","build007")
-            settings.sBool(false,"main","build006")
+            settings.sStr("0.2","main","last_used_rel")
 
             settings.sBool(true,"notifications","vibraMsgRecv")
             settings.sInt(800,"notifications","vibraMsgRecvDuration")

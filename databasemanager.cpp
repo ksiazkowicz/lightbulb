@@ -96,7 +96,6 @@ bool DatabaseManager::initDB()
 {
     mkAccTable();
     mkRosterTable();
-    mkChatsTable();
 
     return true;
 }
@@ -133,22 +132,31 @@ bool DatabaseManager::mkRosterTable()
                          "status varchar(12), "
                          "statusText varchar(255), "
                          "avatarPath varchar(255), "
+                         "isChatInProgress int, "
                          "unreadMsg integer)");
     }
     return ret;
 }
 
-bool DatabaseManager::mkChatsTable()
+bool DatabaseManager::checkIfChatInProgress( QString bareJid )
 {
     bool ret = false;
-    if (db.isOpen()) {
-        QSqlQuery query;
-        ret = query.exec("create table chats "
-                         "(id integer primary key, "
-                         "id_account integer, "
-                         "id_contact integer)");
-    }
+    QSqlQuery query;
+    query.prepare("select isChatInProgress from roster where jid = " + bareJid);
+    SqlQueryModel isChatInProgress;
+    isChatInProgress->setQuery(query,db);
+
+    ret = isChatInProgress.record(0).value("isChatInProgress").toBool();
     return ret;
+}
+
+bool DatabaseManager::setChatInProgress( QString bareJid, bool chat )
+{
+    bool ret = false;
+    QSqlQuery query;
+    ret = query.exec("UPDATE roster SET isChatInProgress=" + chat.toInt() + " where jid="+ bareJid);
+    return ret;
+
 }
 
 bool DatabaseManager::mkMessagesTable()

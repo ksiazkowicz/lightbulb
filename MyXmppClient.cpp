@@ -40,6 +40,9 @@ MyXmppClient::MyXmppClient() : QObject(0)
     listModelChats = new ChatsListModel( this );
     listModelRoster = new RosterListModel( this );
 
+    sqlRoster = new SqlQueryModel( this );
+    sqlRoster->setQuery("select * from roster", database->db);
+
     m_bareJidLastMessage = "";
     m_resourceLastMessage = "";
     m_stateConnect = Disconnect;
@@ -49,13 +52,12 @@ MyXmppClient::MyXmppClient() : QObject(0)
     m_myjid = "";
     m_password = "";
     m_host = "";
-    m_port= 0;
+    m_port = 0;
     m_resource = "";
     m_chatJid = "";
     m_contactName = "";
     m_reconnectOnError = false;
     m_keepAlive = 60;
-    m_archiveIncMessage = false;
     accounts = 0;
 
     flVCardRequest = "";
@@ -211,6 +213,7 @@ void MyXmppClient::initRoster()
         itemModel->setUnreadMsg( 0 );
 
         listModelRoster->append(itemModel);
+        database->doGenericQuery("INSERT into roster values (1," + itemRoster.name() + "," + bareJid + ",NULL,"+this->getPicPresence(QXmppPresence::Unavailable) + ",NULL,0,0)");
     }
     emit rosterChanged();
 
@@ -263,6 +266,7 @@ void MyXmppClient::initPresence(const QString& bareJid, const QString& resource)
         item_chat->setPicStatus( picStatus );
         item_chat->setTextStatus( txtStatus );
     }
+    database->doGenericQuery("UPDATE roster SET status=" + picStatus + " statusText=" + txtStatus + " resource=" + resource + " where jid=" + bareJid);
 }
 
 QString MyXmppClient::getPicPresence( const QXmppPresence &presence ) const
@@ -572,6 +576,7 @@ void MyXmppClient::openChat( QString bareJid ) //Q_INVOKABLE
     RosterItemModel *itemRoster =  reinterpret_cast<RosterItemModel*>( listModelRoster->find( bareJid ) );
 
     RosterItemModel* item = reinterpret_cast<RosterItemModel*>( listModelChats->find( bareJid ) );
+    bool isChatInProgress = database->checkIfChatInProgress(bareJid);
     QXmppPresence presence( QXmppPresence::Unavailable );
     RosterItemModel *newItem = new RosterItemModel( );
     newItem->setGroup( "" );
@@ -590,6 +595,10 @@ void MyXmppClient::openChat( QString bareJid ) //Q_INVOKABLE
     if (!item) {
         listModelChats->append( newItem );
     };
+
+    if (!isChatInProgress) {
+        \database->setChatInProgress( bareJid, true );
+    }
 
     database->mkMessagesTable();
 
@@ -618,6 +627,7 @@ void MyXmppClient::closeChat( QString bareJid ) //Q_INVOKABLE
         emit chatClosed( bareJid );
         //qDebug() << "MyXmppClient::closeChat("<<bareJid<<"): row:"<<row << " result:"<<res << " listModelChats.count():" <<listModelChats->count();
     }
+    database->setChatInProgress( bareJid, false );
 }
 
 
@@ -823,6 +833,9 @@ void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg, bool mine )
     QString from;
     from = this->getBareJidByJid(xmppMsg.from());
 
+    QString to;
+    to = this->getBareJidByJid(xmppMsg.to());
+
     QString time;
     time = currTime.toString("dd-MM-yy hh:mm");
 
@@ -831,7 +844,11 @@ void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg, bool mine )
     body = body.replace("<", "&lt;");  //and < stuff too ^^
     body = msgWrapper->parseMsgOnLink(xmppMsg.body());
 
-    qDebug() << "MyXmppClient::archiveIncMessage(from =" << from << "; body = " << body << "; time = " << time <<"; mine = " << mine << ");";
+    if (mine) {
+        database->insertMessage(1,to,body,time,mine);
+    } else {
+        database->insertMessage(1,from,body,time,mine);
+    }
 
     database->insertMessage(1,from,body,time,mine);
     emit sqlMessagesChanged();
@@ -885,42 +902,28 @@ bool MyXmppClient::sendMyMessage(QString bareJid, QString resource, QString msgB
 {
     if( msgBody == "" ) { return false; }
 
-    QXmppMessage xmppMsg; //???
+    QXmppMessage xmppMsg;
+
     QString jid_from = bareJid;
     if( resource == "" ) {
         jid_from += "/resource";
     } else {
         jid_from += "/" + resource;
     }
+
     xmppMsg.setTo( jid_from );
     QString jid_to = m_myjid + "/" + xmppClient->configuration().resource();
     xmppMsg.setFrom( jid_to );
 
-    //qDebug() << "SEND MSG: from:[" << jid_to << "] to:[" << jid_from << "] body:[" << msgBody << "]";
-
-    /*QTextDocument doc;
-    doc.setHtml( msgBody );
-    xmppMsg.setBody( doc.toPlainText() );*/
-
     xmppMsg.setBody( msgBody );
-
-    xmppMsg.setReceiptRequested( true );  /* request DLR */
 
     xmppMsg.setState( QXmppMessage::Active );
 
-    //qDebug() << "MyXmppClient::sendMyMessage: "<<jid_from<<" "<<jid_to<<" "<<msgBody;
     xmppClient->sendPacket( xmppMsg );
-
-    msgBody = msgBody.replace(">", "&gt;");  //fix for > stuff
-    msgBody = msgBody.replace("<", "&lt;");  //and < stuff too ^^
-    xmppMsg.setBody( msgBody );
 
     this->messageReceivedSlot( xmppMsg );
 
-    xmppMsg.setFrom( jid_from );
-    xmppMsg.setTo( jid_to );
-
-    if (m_archiveIncMessage) { archiveIncMessage(xmppMsg, true); }
+    archiveIncMessage(xmppMsg, true);
 
     return true;
 }
@@ -1121,8 +1124,8 @@ void MyXmppClient::attentionSend( QString bareJid, QString resource )
 
 SqlQueryModel* MyXmppClient::getSqlMessages()
 {
-    sql = new SqlQueryModel(0);
-    sql->setQuery("SELECT * FROM messages WHERE bareJid='" + m_chatJid + "'",database->db);
-    return sql;
+    sqlMessages = new SqlQueryModel(0);
+    sqlMessages->setQuery("SELECT * FROM messages WHERE bareJid='" + m_chatJid + "'",database->db);
+    return sqlMessages;
 }
 

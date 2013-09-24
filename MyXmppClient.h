@@ -71,6 +71,7 @@ class MyXmppClient : public QObject
     Q_PROPERTY( QString statusText READ getStatusText WRITE setStatusText  NOTIFY statusTextChanged )
     Q_PROPERTY( bool isTyping READ getTyping NOTIFY typingChanged )
     Q_PROPERTY( RosterListModel* roster READ getRoster NOTIFY rosterChanged )
+    Q_PROPERTY( SqlQueryModel* sqlRoster READ getSqlRoster NOTIFY sqlRosterChanged )
     Q_PROPERTY( QString myBareJid READ getMyJid WRITE setMyJid NOTIFY myJidChanged )
     Q_PROPERTY( QString myPassword READ getPassword() WRITE setPassword  NOTIFY myPasswordChanged )
     Q_PROPERTY( QString host READ getHost WRITE setHost NOTIFY hostChanged )
@@ -98,7 +99,8 @@ class MyXmppClient : public QObject
 
     SettingsDBWrapper *mimOpt;
     DatabaseManager *database;
-    SqlQueryModel *sql;
+    SqlQueryModel *sqlMessages;
+    SqlQueryModel *sqlRoster;
 
     QMLVCard * qmlVCard;
     QString flVCardRequest;
@@ -196,6 +198,8 @@ public :
     void setTyping( QString &jid, const bool isTyping ) { m_flTyping = isTyping; emit typingChanged(jid, isTyping); }
 
     RosterListModel* getRoster() const { return listModelRoster; }
+
+    SqlQueryModel* getSqlRoster() const { return sqlRoster; }
 
     QString getMyJid() const { return m_myjid; }
     void setMyJid( const QString& myjid ) { if(myjid!=m_myjid) {m_myjid=myjid; emit myJidChanged(); } }

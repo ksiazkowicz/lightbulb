@@ -47,6 +47,9 @@ public:
         bool mkMessagesTable();
         bool insertMessage(int acc, QString bareJid, QString text, QString time, int mine);
 
+        bool checkIfChatInProgress( QString bareJid );
+        bool setChatInProgress( QString bareJid, bool chat );
+
         bool insertAccount(QString jid, QString pass, QString resource, int manualHostPort, int enabled, QString host, int port);
         bool doGenericQuery(QString genericQuery);
 
