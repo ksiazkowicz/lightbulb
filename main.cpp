@@ -8,7 +8,7 @@
 #include "chatslistmodel.h"
 #include "accountslistmodel.h"
 #include "qmlvcard.h"
-#include "meegimsettings.h"
+#include "SettingsDBWrapper.h"
 #include "qmlclipboardadapter.h"
 #include "lightbulbhswidget.h"
 #include "QAvkonHelper.h"
@@ -27,7 +27,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     splash->show();
 
     qmlRegisterType<MyXmppClient>(LIGHTBULB_NAMESPACE, 1, 0, "XmppClient" );
-    qmlRegisterType<MeegIMSettings>(LIGHTBULB_NAMESPACE, 1, 0, "MeegIMSettings" );
+    qmlRegisterType<SettingsDBWrapper>(LIGHTBULB_NAMESPACE, 1, 0, "MeegIMSettings" );
     qmlRegisterType<QMLVCard>(LIGHTBULB_NAMESPACE, 1, 0, "XmppVCard" );
     qmlRegisterType<QmlClipboardAdapter>(LIGHTBULB_NAMESPACE, 1, 0, "Clipboard" );
     qmlRegisterType<LightbulbHSWidget>(LIGHTBULB_NAMESPACE, 1, 0, "HSWidget" );

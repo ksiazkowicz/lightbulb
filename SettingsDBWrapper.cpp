@@ -1,8 +1,8 @@
-#include "meegimsettings.h"
+#include "SettingsDBWrapper.h"
 
 #include "MyXmppClient.h"
 
-MeegIMSettings::MeegIMSettings() : MySettings(0)
+SettingsDBWrapper::SettingsDBWrapper() : MySettings(0)
 {
 
     jid_indx0 = "";
@@ -10,11 +10,10 @@ MeegIMSettings::MeegIMSettings() : MySettings(0)
     dflt_indx0 = "";
 
     alm = new AccountsListModel( this );
-
     this->initListOfAccounts();
 }
 
-QXmppConfiguration MeegIMSettings::getDefaultAccount()
+QXmppConfiguration SettingsDBWrapper::getDefaultAccount()
 {
     QXmppConfiguration xmppConfig;
 
@@ -59,7 +58,7 @@ QXmppConfiguration MeegIMSettings::getDefaultAccount()
 }
 
 
-void MeegIMSettings::initListOfAccounts() //Q_INVOKABLE
+void SettingsDBWrapper::initListOfAccounts() //Q_INVOKABLE
 {
     QStringList listAcc = getListAccounts();
 
@@ -98,7 +97,7 @@ void MeegIMSettings::initListOfAccounts() //Q_INVOKABLE
 }
 
 
-void MeegIMSettings::setAccount(
+void SettingsDBWrapper::setAccount(
         QString _jid,
         QString _pass,
         bool _isDflt,
@@ -125,14 +124,14 @@ void MeegIMSettings::setAccount(
 }
 
 
-void MeegIMSettings::removeAccount( QString _jid ) //Q_INVOKABLE
+void SettingsDBWrapper::removeAccount( QString _jid ) //Q_INVOKABLE
 {
     this->remAccount( _jid );
     this->remove( _jid );
 }
 
 
-bool MeegIMSettings::accIsDefault(int index)
+bool SettingsDBWrapper::accIsDefault(int index)
 {
     bool val = false;
     if( (index>=0) and (index<alm->count()) ) {
@@ -142,7 +141,7 @@ bool MeegIMSettings::accIsDefault(int index)
     return val;
 }
 
-QString MeegIMSettings::accGetJid(int index)
+QString SettingsDBWrapper::accGetJid(int index)
 {
     QString val = "";
     if( (index>=0) and (index<alm->count()) ) {
@@ -152,7 +151,7 @@ QString MeegIMSettings::accGetJid(int index)
     return val;
 }
 
-QString MeegIMSettings::accGetPassword(int index)
+QString SettingsDBWrapper::accGetPassword(int index)
 {
     QString val = "";
     if( (index>=0) and (index<alm->count()) ) {
@@ -162,7 +161,7 @@ QString MeegIMSettings::accGetPassword(int index)
     return val;
 }
 
-QString MeegIMSettings::accGetResource(int index)
+QString SettingsDBWrapper::accGetResource(int index)
 {
     QString val = "";
     if( (index>=0) and (index<alm->count()) ) {
@@ -172,7 +171,7 @@ QString MeegIMSettings::accGetResource(int index)
     return val;
 }
 
-QString MeegIMSettings::accGetHost(int index)
+QString SettingsDBWrapper::accGetHost(int index)
 {
     QString val = "";
     if( (index>=0) and (index<alm->count()) ) {
@@ -182,7 +181,7 @@ QString MeegIMSettings::accGetHost(int index)
     return val;
 }
 
-int MeegIMSettings::accGetPort(int index)
+int SettingsDBWrapper::accGetPort(int index)
 {
     int val = 0;
     if( (index>=0) and (index<alm->count()) ) {
@@ -192,7 +191,7 @@ int MeegIMSettings::accGetPort(int index)
     return val;
 }
 
-bool MeegIMSettings::accIsManuallyHostPort(int index)
+bool SettingsDBWrapper::accIsManuallyHostPort(int index)
 {
     bool val = false;
     if( (index>=0) and (index<alm->count()) ) {
@@ -202,7 +201,7 @@ bool MeegIMSettings::accIsManuallyHostPort(int index)
     return val;
 }
 
-void MeegIMSettings::saveStatusText(QString statusText)
+void SettingsDBWrapper::saveStatusText(QString statusText)
 {
     if( statusText != this->getStatusText() )
     {
@@ -210,31 +209,31 @@ void MeegIMSettings::saveStatusText(QString statusText)
     }
 }
 
-bool MeegIMSettings::gBool(QString group, QString key) // Q_INVOKABLE
+bool SettingsDBWrapper::gBool(QString group, QString key) // Q_INVOKABLE
 {
     return this->getBool(group,key);
 }
-void MeegIMSettings::sBool(const bool isSet, QString group, QString key) // Q_INVOKABLE
+void SettingsDBWrapper::sBool(const bool isSet, QString group, QString key) // Q_INVOKABLE
 {
     this->setBool(isSet,group,key);
 }
 
 
-int MeegIMSettings::gInt(QString group, QString key) // Q_INVOKABLE
+int SettingsDBWrapper::gInt(QString group, QString key) // Q_INVOKABLE
 {
     return this->getInt(group,key);
 }
-void MeegIMSettings::sInt(const int isSet, QString group, QString key) // Q_INVOKABLE
+void SettingsDBWrapper::sInt(const int isSet, QString group, QString key) // Q_INVOKABLE
 {
     this->setInt(isSet,group,key);
 }
 
 
-QString MeegIMSettings::gStr(QString group, QString key) // Q_INVOKABLE
+QString SettingsDBWrapper::gStr(QString group, QString key) // Q_INVOKABLE
 {
     return this->getString(group,key);
 }
-void MeegIMSettings::sStr(const QString isSet, QString group, QString key) // Q_INVOKABLE
+void SettingsDBWrapper::sStr(const QString isSet, QString group, QString key) // Q_INVOKABLE
 {
     this->setString(isSet,group,key);
 }

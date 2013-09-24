@@ -167,6 +167,43 @@ bool DatabaseManager::mkMessagesTable()
     return ret;
 }
 
+bool DatabaseManager::insertAccount(QString jid,
+                                    QString pass,
+                                    QString resource,
+                                    int manualHostPort,
+                                    int enabled,
+                                    QString host,
+                                    int port)
+{
+    bool ret = false;
+    QSqlQuery query;
+    ret = query.prepare("INSERT INTO accounts (jid, pass, resource, manualHostPort, enabled, host, port) "
+                        "VALUES (:jid, :pass, :resource, :manualHostPort, :enabled, :host, :port)");
+    if (ret) {
+        query.bindValue(":jid", jid);
+        query.bindValue(":pass", pass);
+        query.bindValue(":resource", resource);
+        query.bindValue(":manualHostPort", manualHostPort);
+        query.bindValue(":enabled", enabled);
+        query.bindValue(":host", host);
+        query.bindValue(":port", port);
+        ret = query.exec();
+    }
+    return ret;
+}
+
+bool DatabaseManager::doGenericQuery(QString genericQuery)
+{
+    bool ret = false;
+    QSqlQuery query;
+    ret = query.prepare(genericQuery);
+    if (ret) {
+        ret = query.exec();
+    }
+    return ret;
+}
+
+
 bool DatabaseManager::insertMessage(int acc,
                                     QString bareJid,
                                     QString text,

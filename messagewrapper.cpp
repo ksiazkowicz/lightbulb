@@ -5,8 +5,6 @@
 
 MessageWrapper::MessageWrapper(QObject *parent) : QObject(parent)
 {
-    openChatJid = "";
-    m_myBareJid = "";
 }
 
 QString MessageWrapper::parseMsgOnLink( const QString &inString ) const

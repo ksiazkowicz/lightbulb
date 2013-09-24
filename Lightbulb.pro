@@ -70,11 +70,11 @@ SOURCES += main.cpp \
     messagewrapper.cpp \
     accountsitemmodel.cpp \
     accountslistmodel.cpp \
-    meegimsettings.cpp \
     qmlvcard.cpp \
     lightbulbhswidget.cpp \
     DatabaseManager.cpp \
-    QAvkonHelper.cpp
+    QAvkonHelper.cpp \
+    SettingsDBWrapper.cpp
 
 HEADERS += MyXmppClient.h \
     listmodel.h \
@@ -87,13 +87,13 @@ HEADERS += MyXmppClient.h \
     messagewrapper.h \
     accountsitemmodel.h \
     accountslistmodel.h \
-    meegimsettings.h \
     qmlvcard.h \
     qhswidget.h \
     lightbulbhswidget.h \
     qmlclipboardadapter.h \
     DatabaseManager.h \
-    QAvkonHelper.h
+    QAvkonHelper.h \
+    SettingsDBWrapper.h
 
 OTHER_FILES += README \
     qml/Dialogs/AddContact.qml \

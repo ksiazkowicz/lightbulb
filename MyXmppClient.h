@@ -4,7 +4,6 @@
 
 #include "QXmppVCardIq.h"
 #include "QXmppVCardManager.h"
-#include "QXmppMessageReceiptManager.h"
 #include "QXmppClient.h"
 
 #include <QObject>
@@ -23,7 +22,7 @@
 
 #include "mycache.h"
 #include "messagewrapper.h"
-#include "meegimsettings.h"
+#include "SettingsDBWrapper.h"
 
 #include "qmlvcard.h"
 
@@ -94,11 +93,10 @@ class MyXmppClient : public QObject
     QXmppClient *xmppClient;
     QXmppRosterManager *rosterManager;
     QXmppVCardManager *vCardManager;
-    QXmppMessageReceiptManager * xmppMessageReceiptManager;
 
     RosterListModel *listModelRoster;
 
-    MeegIMSettings *mimOpt;
+    SettingsDBWrapper *mimOpt;
     DatabaseManager *database;
     SqlQueryModel *sql;
 
@@ -223,7 +221,6 @@ public :
     {
         if(value!=m_chatJid) {
             m_chatJid=value;
-            msgWrapper->setChatBareJid( m_chatJid );
             emit chatJidChanged();
         }
     }

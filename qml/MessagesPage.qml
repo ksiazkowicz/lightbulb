@@ -126,9 +126,8 @@ Page {
             Text {
                   id: time
                   anchors.top: message.bottom;
-                  anchors.right: parent.right; anchors.rightMargin: isMine  == true ? 80 : 16
-                  //text: time.substr(0,5)
-                  text: dateTime
+                  anchors.right: parent.right; anchors.rightMargin: isMine == true ? 80 : 16
+                  text: dateTime.substr(0,8) == Qt.formatDateTime(new Date(), "dd-MM-yy") ? dateTime.substr(9,5) : dateTime
                   font.pixelSize: 16
                   color: "#999999"
             }
@@ -398,20 +397,6 @@ Page {
                 text: qsTr("Set resource")
                 onClicked: {
                     dlgResources.open();
-                }
-            }
-            MenuItem {
-                text: qsTr("Clear chat")
-                onClicked: xmppClient.clearChat( xmppClient.chatJid )
-            }
-            MenuItem {
-                text: qsTr("Close chat")
-                onClicked: {
-                    xmppClient.closeChat( xmppClient.chatJid )
-                    pageStack.pop()
-                    main.isChatInProgress = false
-                    xmppClient.chatJid = ""
-                    statusBarText = "Contacts"
                 }
             }
             /*MenuItem {
