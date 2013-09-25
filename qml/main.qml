@@ -226,7 +226,7 @@ PageStackWindow {
         }
         onTypingChanged: {
             if (settings.gBool("notifications", "notifyTyping") == true) {
-                if (typingChanged) {
+                if (isTyping) {
                     sb.text = getNameByJid(bareJid) + " is typing."
                 } else {
                     sb.text = getNameByJid(bareJid) + " stopped typing."

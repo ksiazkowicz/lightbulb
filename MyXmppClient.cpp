@@ -597,7 +597,7 @@ void MyXmppClient::openChat( QString bareJid ) //Q_INVOKABLE
     };
 
     if (!isChatInProgress) {
-        \database->setChatInProgress( bareJid, true );
+        database->setChatInProgress( bareJid, true );
     }
 
     database->mkMessagesTable();
@@ -759,23 +759,6 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
     if( xmppMsg.state() == QXmppMessage::Active )
     {
         qDebug() << "Msg state is QXmppMessage::Active";
-        if( !( xmppMsg.body().isEmpty() || xmppMsg.body().isNull()) )
-        {
-            QString jid = xmppMsg.from();
-            if( jid.indexOf('/') >= 0 ) {
-                QStringList sl =  jid.split('/');
-                m_bareJidLastMessage = sl[0];
-                if( sl.count() > 1 ) {
-                    m_resourceLastMessage = sl[1];
-                }
-            } else {
-                m_bareJidLastMessage = xmppMsg.from();
-            }
-
-            this->incUnreadMessage( bareJid_from );
-            emit this->messageReceived( bareJid_from, bareJid_to );
-            archiveIncMessage(xmppMsg, false);
-        }
     }
     else if( xmppMsg.state() == QXmppMessage::Inactive )
     {
@@ -789,11 +772,13 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
     {
         m_flTyping = true;
         emit typingChanged( bareJid_from, true);
+        qDebug() << bareJid_from << " is composing.";
     }
     else if( xmppMsg.state() == QXmppMessage::Paused )
     {
         m_flTyping = false;
         emit typingChanged( bareJid_from, false);
+        qDebug() << bareJid_from << " paused.";
     }
     else
     {
@@ -801,28 +786,26 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         {
             //qDebug() << "ZZZ: attentionRequest !!! from:" <<xmppMsg.from();
             msgWrapper->attention( bareJid_from, false );
-            this->incUnreadMessage( bareJid_from );
-            emit this->messageReceived( bareJid_from, bareJid_to );
         }
-        else if( !( xmppMsg.body().isEmpty() || xmppMsg.body().isNull()) )
-        {
-            QString jid = xmppMsg.from();
-            if( jid.indexOf('/') >= 0 ) {
-                QStringList sl =  jid.split('/');
-                m_bareJidLastMessage = sl[0];
-                if( sl.count() > 1 ) {
-                    m_resourceLastMessage = sl[1];
-                }
-            } else {
-                m_bareJidLastMessage = xmppMsg.from();
-            }
-
-            this->incUnreadMessage( bareJid_from );
-            emit this->messageReceived( bareJid_from, bareJid_to );
-            archiveIncMessage(xmppMsg, false);
-        }
-        this->openChat( bareJid_from );
         qDebug() << "MessageWrapper::messageReceived(): xmppMsg.state():" << xmppMsg.state();
+    }
+    if ( !( xmppMsg.body().isEmpty() || xmppMsg.body().isNull()) )
+    {
+        QString jid = xmppMsg.from();
+        if( jid.indexOf('/') >= 0 ) {
+            QStringList sl =  jid.split('/');
+            m_bareJidLastMessage = sl[0];
+            if( sl.count() > 1 ) {
+                m_resourceLastMessage = sl[1];
+            }
+        } else {
+            m_bareJidLastMessage = xmppMsg.from();
+        }
+
+        this->incUnreadMessage( bareJid_from );
+        archiveIncMessage(xmppMsg, false);
+        emit this->messageReceived( bareJid_from, bareJid_to );
+        this->openChat( bareJid_from );
     }
 }
 
@@ -849,8 +832,6 @@ void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg, bool mine )
     } else {
         database->insertMessage(1,from,body,time,mine);
     }
-
-    database->insertMessage(1,from,body,time,mine);
     emit sqlMessagesChanged();
 }
 

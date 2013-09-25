@@ -275,6 +275,7 @@ signals:
     void statusChanged();
     void typingChanged( QString bareJid, bool isTyping );
     void rosterChanged();
+    void sqlRosterChanged();
     void myJidChanged();
     void myPasswordChanged();
     void hostChanged();

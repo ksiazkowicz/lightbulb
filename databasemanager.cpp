@@ -144,7 +144,7 @@ bool DatabaseManager::checkIfChatInProgress( QString bareJid )
     QSqlQuery query;
     query.prepare("select isChatInProgress from roster where jid = " + bareJid);
     SqlQueryModel isChatInProgress;
-    isChatInProgress->setQuery(query,db);
+    isChatInProgress.setQuery(query);
 
     ret = isChatInProgress.record(0).value("isChatInProgress").toBool();
     return ret;
@@ -154,7 +154,12 @@ bool DatabaseManager::setChatInProgress( QString bareJid, bool chat )
 {
     bool ret = false;
     QSqlQuery query;
-    ret = query.exec("UPDATE roster SET isChatInProgress=" + chat.toInt() + " where jid="+ bareJid);
+    QString queryStr;
+    queryStr = "UPDATE roster SET isChatInProgress=";
+    queryStr += chat;
+    queryStr += " where jid=";
+    queryStr += bareJid;
+    ret = query.exec(queryStr);
     return ret;
 
 }
