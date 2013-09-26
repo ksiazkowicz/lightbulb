@@ -789,7 +789,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         }
         qDebug() << "MessageWrapper::messageReceived(): xmppMsg.state():" << xmppMsg.state();
     }
-    if ( !( xmppMsg.body().isEmpty() || xmppMsg.body().isNull()) )
+    if ( !( xmppMsg.body().isEmpty() || xmppMsg.body().isNull() || getBareJidByJid(xmppMsg.from()) == m_myjid ) )
     {
         QString jid = xmppMsg.from();
         if( jid.indexOf('/') >= 0 ) {
@@ -802,10 +802,11 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
             m_bareJidLastMessage = xmppMsg.from();
         }
 
+        this->openChat( bareJid_from );
+
         this->incUnreadMessage( bareJid_from );
         archiveIncMessage(xmppMsg, false);
         emit this->messageReceived( bareJid_from, bareJid_to );
-        this->openChat( bareJid_from );
     }
 }
 
