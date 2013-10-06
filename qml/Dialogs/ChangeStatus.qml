@@ -17,28 +17,25 @@ CommonDialog {
         }
 
         onButtonClicked: {
-             xmppClient.keepAlive = settings.gBool("behavior","keepAliveInterval")
-             xmppClient.reconnectOnError = settings.gBool("behavior","reconnectOnError")
+            xmppClient.keepAlive = settings.gBool("behavior","keepAliveInterval")
+            xmppClient.reconnectOnError = settings.gBool("behavior","reconnectOnError")
 
-              var ret = ""
+            var ret = ""
 
-              if( colStatus.selectedIndex === 0 ) {
-                       ret = XmppClient.Online
-              } else if( colStatus.selectedIndex === 1 ) {
-                       ret = XmppClient.Chat
-              } else if( colStatus.selectedIndex === 2 ) {
-                       ret = XmppClient.Away
-              } else if( colStatus.selectedIndex === 3 ) {
-                       ret = XmppClient.XA
-              } else if( colStatus.selectedIndex === 4 ) {
-                       ret = XmppClient.DND
-              } else if( colStatus.selectedIndex === 5 ) {
-                       ret = XmppClient.Offline
-              }
-              xmppClient.setMyPresence( ret, wrapperTextEdit.text )
-              main.lastStatus = wrapperTextEdit.text
+            switch (colStatus.selectedIndex) {
+                case 0: ret = XmppClient.Online; break;
+                case 1: ret = XmppClient.Chat; break;
+                case 2: ret = XmppClient.Away; break;
+                case 3: ret = XmppClient.XA; break;
+                case 4: ret = XmppClient.DND; break;
+                case 5: ret = XmppClient.Offline; break;
+                default: ret = XmppClient.Unknown; break;
+            }
 
-              if (storeStatus) { settings.sStr(wrapperTextEdit.text,"behavior","lastStatusText") } else { settings.sStr("","behavior","lastStatusText") }
+            xmppClient.setMyPresence( ret, wrapperTextEdit.text )
+            main.lastStatus = wrapperTextEdit.text
+
+            if (storeStatus) { settings.sStr(wrapperTextEdit.text,"behavior","lastStatusText") } else { settings.sStr("","behavior","lastStatusText") }
         }
 
         content: Rectangle {
