@@ -213,7 +213,8 @@ void MyXmppClient::initRoster()
         itemModel->setUnreadMsg( 0 );
 
         listModelRoster->append(itemModel);
-        database->doGenericQuery("INSERT into roster values (1," + itemRoster.name() + "," + bareJid + ",NULL,"+this->getPicPresence(QXmppPresence::Unavailable) + ",NULL,0,0)");
+        database->doGenericQuery("INSERT into roster values (1," + itemRoster.name() + "," + bareJid + ",\"empty\","+this->getPicPresence(QXmppPresence::Unavailable) + ",NULL,0,0)");
+
     }
     emit rosterChanged();
 
@@ -770,15 +771,19 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
     }
     else if( xmppMsg.state() == QXmppMessage::Composing )
     {
-        m_flTyping = true;
-        emit typingChanged( bareJid_from, true);
-        qDebug() << bareJid_from << " is composing.";
+        if (bareJid_from != m_myjid) {
+            m_flTyping = true;
+            emit typingChanged( bareJid_from, true);
+            qDebug() << bareJid_from << " is composing.";
+        }
     }
     else if( xmppMsg.state() == QXmppMessage::Paused )
     {
-        m_flTyping = false;
-        emit typingChanged( bareJid_from, false);
-        qDebug() << bareJid_from << " paused.";
+        if (bareJid_from != m_myjid) {
+            m_flTyping = false;
+            emit typingChanged( bareJid_from, false);
+            qDebug() << bareJid_from << " paused.";
+        }
     }
     else
     {
@@ -789,7 +794,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         }
         qDebug() << "MessageWrapper::messageReceived(): xmppMsg.state():" << xmppMsg.state();
     }
-    if ( !( xmppMsg.body().isEmpty() || xmppMsg.body().isNull() || getBareJidByJid(xmppMsg.from()) == m_myjid ) )
+    if ( !( xmppMsg.body().isEmpty() || xmppMsg.body().isNull() || bareJid_from == m_myjid ) )
     {
         QString jid = xmppMsg.from();
         if( jid.indexOf('/') >= 0 ) {

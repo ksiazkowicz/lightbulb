@@ -47,40 +47,41 @@ CommonDialog {
             anchors.horizontalCenter: parent.horizontalCenter
             color: "transparent"
 
+            TumblerColumn {
+                id: colStatus
+
+                items: ListModel {
+                           ListElement {
+                               value: "Online"
+                           }
+                           ListElement {
+                               value: "Chatty"
+                           }
+                           ListElement {
+                               value: "Away"
+                           }
+                           ListElement {
+                               value: "Extended Away"
+                           }
+                           ListElement {
+                               value: "Do not disturb"
+                           }
+                           ListElement {
+                               value: "Offline"
+                           }
+                       }
+            }
+
             Tumbler {
                 id: tumbler
-                anchors { top: parent.top; left: parent.left; right: parent.right; bottom: wrapperTextEdit.top }
-                columns: TumblerColumn {
-                    id: colStatus
-
-                    items: ListModel {
-                        ListElement {
-                            value: "Online"
-                        }
-                        ListElement {
-                            value: "Chatty"
-                        }
-                        ListElement {
-                            value: "Away"
-                        }
-                        ListElement {
-                            value: "Extended Away"
-                        }
-                        ListElement {
-                            value: "Do not disturb"
-                        }
-                        ListElement {
-                            value: "Offline"
-                        }
-                    }
-
-                }
+                anchors { top: parent.top; topMargin: 5; left: parent.left; right: parent.right; bottom: wrapperTextEdit.top; bottomMargin: 5 }
+                columns: [ colStatus ]
             }
 
             TextField {
                 id: wrapperTextEdit
                 height: 50
-                anchors { bottom: parent.bottom; bottomMargin: 5; left: parent.left; right: parent.right; topMargin: 5; }
+                anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
                 placeholderText: qsTr("Status text")
                 text: main.lastStatus
             }

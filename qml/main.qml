@@ -10,6 +10,7 @@ PageStackWindow {
 
     showStatusBar:                   true
     platformInverted:                settings.gBool("ui","invertPlatform")
+
     property string textColor:       platformInverted ? platformStyle.colorNormalDark : platformStyle.colorNormalLight
 
     property int                     globalUnreadCount: 0
@@ -206,13 +207,9 @@ PageStackWindow {
             }
         }
         onVCardChanged: { xmppVCard.vcard = xmppClient.vcard }
-        onErrorHappened: {
-            console.log("QML: Error: " + errorString )
-            sb.text = "Error: "+errorString
-            sb.open()
-        }
         onPresenceJidChanged: { if (presenceBareJid == xmppClient.myBareJid ) notify.getStatusName(); }
         onSubscriptionReceived: {
+            console.log( "QML: Main: ::onSubscriptionReceived: [" + bareJid + "]" )
             if (settings.gBool("notifications","notifySubscription") == true) {
                 sb.text = "Subscription request from " + bareJid
                 sb.open()
@@ -225,7 +222,7 @@ PageStackWindow {
             dialog.source = "Dialogs/QuerySubscribtion.qml"
         }
         onTypingChanged: {
-            if (settings.gBool("notifications", "notifyTyping") == true) {
+            if (settings.gBool("notifications", "notifyTyping") == true && getNameByJid(bareJid) !== "") {
                 if (isTyping) {
                     sb.text = getNameByJid(bareJid) + " is typing."
                 } else {

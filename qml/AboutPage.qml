@@ -28,7 +28,7 @@ Page {
     Text {
         id: programName
         color: main.textColor
-        text: "Lightbulb 0.1.1"
+        text: "Lightbulb 0.2"
         anchors { top: logo.bottom; topMargin: 5; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
         horizontalAlignment: Text.AlignHCenter
         font.pixelSize: platformStyle.fontSizeMedium*1.5

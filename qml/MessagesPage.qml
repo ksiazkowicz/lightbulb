@@ -342,7 +342,6 @@ Page {
                 main.isChatInProgress = false
                 statusBarText.text = "Contacts"
                 xmppClient.resetUnreadMessages( xmppClient.chatJid )
-                xmppClient.hideChat()
                 xmppClient.chatJid = ""
             }
         }

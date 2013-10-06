@@ -10,9 +10,13 @@ Page {
 
     Connections {
         target: xmppClient
-
-        onSubscriptionReceived: {
-            console.log( "QML: RosterPage: ::onSubscriptionReceived: [" + bareJid + "]" )
+        onErrorHappened: {
+            errorText.text = "You're offline\n"+errorString
+        }
+        onStatusChanged: {
+            if (xmppClient.status == XmppClient.Offline) {
+                errorText.text = "You're offline"
+            }
         }
     }
 
@@ -376,6 +380,38 @@ Page {
             smooth: true
             onClicked: {
                 rosterMenu.open()
+            }
+        }
+    }
+
+    Rectangle {
+
+        color: "black"
+        opacity: 0.9
+        anchors.fill: parent
+        NumberAnimation { properties: "visible"; duration: 200 }
+
+        visible: xmppClient.status == XmppClient.Offline
+
+        Rectangle {
+            anchors.centerIn: parent
+            color: "black"
+            height: sadface.height + 5 + errorText.height
+            width: errorText.width
+            Text {
+                id: sadface
+                color: "white"
+                anchors { top: parent.top; left: parent.left }
+                visible: parent.visible
+                text: ":("
+                font.pixelSize: 64
+            }
+            Text {
+                id: errorText
+                color: "white"
+                anchors { top: sadface.bottom; horizontalCenter: parent.horizontalCenter; topMargin: 5 }
+                visible: parent.visible
+                text: "You're offline"
             }
         }
     }
