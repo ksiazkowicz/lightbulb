@@ -418,12 +418,11 @@ Page {
                     anchors { top: parent.top; topMargin: 10; left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10 }
                     CheckBox {
                         id: cbNeedReconnect
-                        text: qsTr("Reconnect when error")
-                        checked: settings.gBool("behavior", "reconnectOnError") === true ? true : false
+                        text: qsTr("Reconnect on error")
+                        checked: settings.gBool("behavior", "reconnectOnError")
                         platformInverted: main.platformInverted
                         onCheckedChanged: {
                             console.log("Reconnect on error: checked="+checked)
-                            xmppClient.reconnectOnError = checked
                             settings.sBool(checked,"behavior", "reconnectOnError")
                         }
                     }

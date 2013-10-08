@@ -40,5 +40,6 @@
         <file>qml/bubble/incTriangle.png</file>
         <file>qml/bubble/ownTriangle.png</file>
         <file>qml/images/splash.jpg</file>
+        <file>qml/Dialogs/ReconnectDialog.qml</file>
     </qresource>
 </RCC>

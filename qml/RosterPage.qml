@@ -11,11 +11,11 @@ Page {
     Connections {
         target: xmppClient
         onErrorHappened: {
-            errorText.text = "You're offline\n"+errorString
+            errorText.text = errorString
         }
         onStatusChanged: {
             if (xmppClient.status == XmppClient.Offline) {
-                errorText.text = "You're offline"
+                errorText.text = ""
             }
         }
     }
@@ -297,11 +297,6 @@ Page {
         placeholderText: qsTr("Tap to write")
 
         Behavior on height { SmoothedAnimation { velocity: 200 } }
-
-        onActiveFocusChanged: {
-            main.splitscreenY = 0
-            //main.splitscreenY = (main.height - y) > 256 ? (main.height - y) : (main.height - y) + (256 - (main.height - y))
-        }
     }
 
     Item {
@@ -387,7 +382,7 @@ Page {
     Rectangle {
 
         color: "black"
-        opacity: 0.9
+        opacity: 0.7
         anchors.fill: parent
         NumberAnimation { properties: "visible"; duration: 200 }
 
@@ -395,9 +390,9 @@ Page {
 
         Rectangle {
             anchors.centerIn: parent
-            color: "black"
-            height: sadface.height + 5 + errorText.height
-            width: errorText.width
+            color: "transparent"
+            height: sadface.height + 5 + offlineText.height + 10 + errorText.height
+            width: offlineText.width
             Text {
                 id: sadface
                 color: "white"
@@ -407,11 +402,20 @@ Page {
                 font.pixelSize: 64
             }
             Text {
-                id: errorText
+                id: offlineText
                 color: "white"
                 anchors { top: sadface.bottom; horizontalCenter: parent.horizontalCenter; topMargin: 5 }
                 visible: parent.visible
                 text: "You're offline"
+                font.pixelSize: 32
+            }
+            Text {
+                id: errorText
+                color: "white"
+                anchors { top: offlineText.bottom; topMargin: 10 }
+                visible: parent.visible
+                text: ""
+                font.pixelSize: 16
             }
         }
     }

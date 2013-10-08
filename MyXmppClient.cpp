@@ -435,7 +435,6 @@ void MyXmppClient::setStatus( StatusXmpp __status)
         } else if( __status == Offline ) {
             myPresence.setType( QXmppPresence::Unavailable );
             m_status = __status;
-            emit statusChanged();
         }
 
         xmppClient->setClientPresence( myPresence );
@@ -771,7 +770,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
     }
     else if( xmppMsg.state() == QXmppMessage::Composing )
     {
-        if (bareJid_from != m_myjid) {
+        if (bareJid_from != "") {
             m_flTyping = true;
             emit typingChanged( bareJid_from, true);
             qDebug() << bareJid_from << " is composing.";
@@ -779,7 +778,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
     }
     else if( xmppMsg.state() == QXmppMessage::Paused )
     {
-        if (bareJid_from != m_myjid) {
+        if (bareJid_from != "") {
             m_flTyping = false;
             emit typingChanged( bareJid_from, false);
             qDebug() << bareJid_from << " paused.";
@@ -967,11 +966,11 @@ void MyXmppClient::error(QXmppClient::Error e)
 {
     QString errString;
     if( e == QXmppClient::SocketError ) {
-        errString = "Socket error";
+        errString = "SOCKET_ERROR";
     } else if( e == QXmppClient::KeepAliveError ) {
-        errString = "Keep alive error";
+        errString = "KEEP_ALIVE_ERROR";
     } else if( e == QXmppClient::XmppStreamError ) {
-        errString = "Xmpp stream error";
+        errString = "XMPP_STREAM_ERROR";
     }
 
     if( !errString.isNull() )

@@ -161,6 +161,12 @@ PageStackWindow {
 
     XmppClient {
         id: xmppClient
+        onErrorHappened: {
+            if (settings.gBool("behavior", "reconnectOnError")) {
+                dialog.source = ""
+                dialog.source = "Dialogs/ReconnectDialog.qml"
+            }
+        }
         onMessageReceived: {
             if( xmppClient.myBareJid != bareJidLastMsg ) {
                 if (!isChatInProgress) {
@@ -222,7 +228,7 @@ PageStackWindow {
             dialog.source = "Dialogs/QuerySubscribtion.qml"
         }
         onTypingChanged: {
-            if (settings.gBool("notifications", "notifyTyping") == true && getNameByJid(bareJid) !== "") {
+            if (settings.gBool("notifications", "notifyTyping") == true) {
                 if (isTyping) {
                     sb.text = getNameByJid(bareJid) + " is typing."
                 } else {
@@ -240,7 +246,6 @@ PageStackWindow {
         initAccount()
         checkIfFirstRun()
         xmppClient.keepAlive = settings.gInt("behavior", "keepAliveInterval")
-        xmppClient.reconnectOnError = settings.gBool("behavior", "reconnectOnError")
         xmppClient.archiveIncMessage = settings.gBool("behavior", "archiveIncMessage")
         if (settings.gBool("behavior","goOnlineOnStart")) { xmppClient.setMyPresence( XmppClient.Online, lastStatus ) }
     }

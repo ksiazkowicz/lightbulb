@@ -114,7 +114,8 @@ OTHER_FILES += README \
     qml/AccountsPage.qml \
     qml/AboutPage.qml \
     qml/Notifications.qml \
-    qml/ArchivePage.qml
+    qml/ArchivePage.qml \
+    qml/Dialogs/ReconnectDialog.qml
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
