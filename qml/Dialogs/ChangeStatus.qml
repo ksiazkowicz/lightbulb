@@ -14,6 +14,7 @@ CommonDialog {
         Component.onCompleted: {
             open()
             main.splitscreenY = 0
+            colStatus.selectedIndex = main.lastUsedStatus
         }
 
         onButtonClicked: {
@@ -34,6 +35,7 @@ CommonDialog {
 
             xmppClient.setMyPresence( ret, wrapperTextEdit.text )
             main.lastStatus = wrapperTextEdit.text
+            main.lastUsedStatus = colStatus.selectedIndex
 
             if (storeStatus) { settings.sStr(wrapperTextEdit.text,"behavior","lastStatusText") } else { settings.sStr("","behavior","lastStatusText") }
         }

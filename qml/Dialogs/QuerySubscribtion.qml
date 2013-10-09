@@ -19,7 +19,7 @@ CommonDialog {
         color: "white";
         id: subQueryLabel;
         wrapMode: Text.Wrap;
-        anchors { left: parent.left; right: parent.right; leftMargin: 10; rightMargin:10; verticalCenter: parent.verticalCenter }
+        anchors { fill: parent; leftMargin: 10; rightMargin:10 }
         text: qsTr("Accept subscription request from ") + dialogJid + "?";
     }
 }

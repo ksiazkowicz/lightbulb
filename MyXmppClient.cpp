@@ -56,7 +56,6 @@ MyXmppClient::MyXmppClient() : QObject(0)
     m_resource = "";
     m_chatJid = "";
     m_contactName = "";
-    m_reconnectOnError = false;
     m_keepAlive = 60;
     accounts = 0;
 
@@ -136,7 +135,6 @@ void MyXmppClient::connectToXmppServer() //Q_INVOKABLE
     xmppConfig.setAutoAcceptSubscriptions(false);
 
     /*******************/
-    xmppConfig.setAutoReconnectionEnabled( m_reconnectOnError );
 
     if( m_resource.isEmpty() || m_resource.isNull() ) {
         xmppConfig.setResource( "Lightbulb" );

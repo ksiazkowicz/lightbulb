@@ -33,6 +33,7 @@ PageStackWindow {
 
     signal statusChanged
     property string statStatusText:  xmppClient.statusText
+    property int lastUsedStatus: 0
     signal statusTextChanged
 
     property bool requestMyVCard:    false
@@ -54,6 +55,10 @@ PageStackWindow {
     property int blinkerSet: 0
 
     initialPage: RosterPage {}    
+
+    SymbiosisAPI {
+        id: symbiosis
+    }
 
     Timer {
         id: notifyHoldTimer
@@ -79,7 +84,7 @@ PageStackWindow {
         running: true; repeat:true
         onTriggered: {
             if (globalUnreadCount>0) {
-                if (blinkerSet < 4) { avkon.notificationBlink(); blinkerSet++ } else { if (blinkerSet > 6) { blinkerSet = 0} else { blinkerSet++ } }
+                if (blinkerSet < 4) { avkon.notificationBlink(); /*symbiosis.sendMessage("blink");*/ blinkerSet++ } else { if (blinkerSet > 6) { blinkerSet = 0} else { blinkerSet++ } }
             } else { blinkerSet = 0; blinker.running = false }
         }
     }

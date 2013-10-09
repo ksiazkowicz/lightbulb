@@ -93,7 +93,8 @@ HEADERS += MyXmppClient.h \
     qmlclipboardadapter.h \
     DatabaseManager.h \
     QAvkonHelper.h \
-    SettingsDBWrapper.h
+    SettingsDBWrapper.h \
+    SymbiosisAPIClient.h
 
 OTHER_FILES += README \
     qml/Dialogs/AddContact.qml \

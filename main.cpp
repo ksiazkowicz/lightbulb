@@ -13,6 +13,7 @@
 #include "lightbulbhswidget.h"
 #include "QAvkonHelper.h"
 #include "DatabaseManager.h"
+#include "SymbiosisAPIClient.h"
 
 #include <QtGui/QSplashScreen>
 #include <QtGui/QPixmap>
@@ -32,6 +33,8 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     qmlRegisterType<QmlClipboardAdapter>(LIGHTBULB_NAMESPACE, 1, 0, "Clipboard" );
     qmlRegisterType<LightbulbHSWidget>(LIGHTBULB_NAMESPACE, 1, 0, "HSWidget" );
     qmlRegisterType<QAvkonHelper>(LIGHTBULB_NAMESPACE, 1, 0, "Avkon");
+
+    qmlRegisterType<SymbiosisAPIClient>(LIGHTBULB_NAMESPACE, 1, 0, "SymbiosisAPI" );
 
     qmlRegisterUncreatableType<RosterListModel>(LIGHTBULB_NAMESPACE, 1, 0, "Roster", "Use xmppClient.roster instead");
     qmlRegisterUncreatableType<SqlQueryModel>(LIGHTBULB_NAMESPACE, 1, 0, "SqlQuery", "");

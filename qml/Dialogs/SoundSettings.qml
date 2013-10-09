@@ -20,6 +20,7 @@ CommonDialog {
             Column {
                 spacing: 5
                 width: parent.width
+                anchors { topMargin: 5; bottomMargin: 5; fill: parent }
 
                 Text {
                     id: volumeText
