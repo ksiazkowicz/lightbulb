@@ -79,6 +79,8 @@ class MyXmppClient : public QObject
     Q_PROPERTY( QString resource READ getResource WRITE setResource NOTIFY resourceChanged )
     Q_PROPERTY( ChatsListModel* openChats READ getOpenChats NOTIFY openChatsChanged )
     Q_PROPERTY( SqlQueryModel* messages READ getSqlMessages NOTIFY sqlMessagesChanged )
+    Q_PROPERTY( int messagesCount READ getSqlMessagesCount NOTIFY sqlMessagesChanged )
+    Q_PROPERTY( SqlQueryModel* last10messages READ getLastSqlMessages NOTIFY sqlMessagesChanged )
     Q_PROPERTY( QString chatJid READ getChatJid WRITE setChatJid NOTIFY chatJidChanged )
     Q_PROPERTY( QString contactName READ getContactName WRITE setContactName NOTIFY contactNameChanged )
     Q_PROPERTY( QMLVCard* vcard READ getVCard NOTIFY vCardChanged )
@@ -219,6 +221,8 @@ public :
     ChatsListModel* getOpenChats() const { return listModelChats; }
 
     SqlQueryModel* getSqlMessages();
+    int getSqlMessagesCount();
+    SqlQueryModel* getLastSqlMessages();
 
     QString getChatJid() const { return m_chatJid; }
     void setChatJid( const QString & value )

@@ -1106,10 +1106,27 @@ void MyXmppClient::attentionSend( QString bareJid, QString resource )
     msgWrapper->attention( bareJid, true );
 }
 
+SqlQueryModel* MyXmppClient::getLastSqlMessages()
+{
+    sqlMessages = new SqlQueryModel(0);
+    sqlMessages->setQuery("SELECT * FROM (SELECT * FROM messages WHERE bareJid='" + m_chatJid + "' ORDER BY id DESC limit 10) ORDER BY id ASC",database->db);
+
+    return sqlMessages;
+}
+
 SqlQueryModel* MyXmppClient::getSqlMessages()
 {
     sqlMessages = new SqlQueryModel(0);
     sqlMessages->setQuery("SELECT * FROM messages WHERE bareJid='" + m_chatJid + "'",database->db);
+
     return sqlMessages;
+}
+
+int MyXmppClient::getSqlMessagesCount()
+{
+    sqlMessages = new SqlQueryModel(0);
+    sqlMessages->setQuery("SELECT * FROM messages WHERE bareJid='" + m_chatJid + "'",database->db);
+
+    return sqlMessages->rowCount();
 }
 

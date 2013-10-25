@@ -196,19 +196,58 @@ Page {
     }
     /* --------------------( Messages view )-------------------- */
 
-    ListView {
-        id: listViewMessages
-        boundsBehavior: Flickable.StopAtBounds
-        anchors { top: parent.top; topMargin: 5; bottom: txtMessage.top; bottomMargin: 5; left: parent.left; right: parent.right }
-        clip: true
-        model: xmppClient.messages
-        delegate: componentWrapperItem
-        spacing: 5
-        onCountChanged: {
-            listViewMessages.positionViewAtEnd ()
+    Timer {
+        running: true
+        interval: 30
+        onTriggered: {
+            flickable.contentY = flickable.contentHeight-flickable.height;
         }
+    }
+
+    Flickable {
+        id: flickable
+        boundsBehavior: Flickable.DragAndOvershootBounds
+
+        anchors { top: parent.top; bottom: txtMessage.top; left: parent.left; right: parent.right }
+
+        contentHeight: showAllMessagesBtn.height+10+listViewMessages.contentHeight+2
+
+
+        Button {
+            id: showAllMessagesBtn
+            text: "Show more messages"
+            anchors { top: parent.top; topMargin: 5; left: parent.left; right: parent.right }
+            height: xmppClient.messagesCount > 10 ? 40 : 0
+            onClicked: {
+                listViewMessages.model = xmppClient.messages
+                visible = false
+            }
+
+        }
+
+        ListView {
+            id: listViewMessages
+            interactive: false
+            anchors { top: showAllMessagesBtn.bottom; topMargin: 5; bottom: parent.bottom; bottomMargin: 2; left: parent.left; right: parent.right }
+            clip: true
+            model: xmppClient.last10messages
+            delegate: componentWrapperItem
+            spacing: 5
+            onHeightChanged: {
+                if (parent.contentHeight > parent.height) {
+                    parent.contentY = parent.contentHeight-parent.height;
+                }
+            }
+        }
+
+        Component.onCompleted: {
+            contentY = contentHeight-height;
+        }
+
         onHeightChanged: {
-            listViewMessages.positionViewAtEnd ()
+            if (contentHeight > height) {
+                contentY = contentHeight-height;
+            }
         }
     }
     /*--------------------( Text input field )--------------------*/
