@@ -1118,7 +1118,7 @@ SqlQueryModel* MyXmppClient::getSqlMessagesByPage()
 {
     int border = page*20;
     sqlMessages = new SqlQueryModel(0);
-    sqlMessages->setQuery("SELECT * FROM (SELECT * FROM messages WHERE bareJid='" + m_chatJid + "' ORDER BY id DESC limit " + border + ") ORDER BY id ASC limit 20",database->db);
+    sqlMessages->setQuery("SELECT * FROM (SELECT * FROM messages WHERE bareJid='" + m_chatJid + "' ORDER BY id DESC limit " + QString::number(border) + ") ORDER BY id ASC limit 20",database->db);
 
     return sqlMessages;
 }
@@ -1129,5 +1129,10 @@ int MyXmppClient::getSqlMessagesCount()
     sqlMessages->setQuery("SELECT * FROM messages WHERE bareJid='" + m_chatJid + "'",database->db);
 
     return sqlMessages->rowCount();
+}
+
+void MyXmppClient::gotoPage(int nPage)
+{
+    page = nPage;
 }
 

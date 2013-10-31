@@ -200,7 +200,7 @@ public :
     void setStatus( StatusXmpp __status );
 
     int getPage() const { return page; }
-    void gotoPage(int nPage) const { page=nPage; }
+    void gotoPage(int nPage);
 
     bool getTyping() const { return m_flTyping; }
     void setTyping( QString &jid, const bool isTyping ) { m_flTyping = isTyping; emit typingChanged(jid, isTyping); }
