@@ -826,6 +826,7 @@ void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg, bool mine )
     time = currTime.toString("dd-MM-yy hh:mm");
 
     QString body;
+    body = xmppMsg.body();
     body = body.replace(">", "&gt;");  //fix for > stuff
     body = body.replace("<", "&lt;");  //and < stuff too ^^
     body = msgWrapper->parseMsgOnLink(body);
