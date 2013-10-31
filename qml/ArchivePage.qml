@@ -47,14 +47,9 @@ Page {
             height: time.height + message.height + 10
 
             anchors.horizontalCenter: parent.horizontalCenter
-            Rectangle {
-                id: bubbleCenter
-                anchors { fill: parent; rightMargin: 5; leftMargin: 5; topMargin: 5; bottomMargin: 5 }
-                color: "transparent"
-            }
             Text {
                   id: message
-                  anchors { top: bubbleCenter.top; left: bubbleCenter.left; right: bubbleCenter.right }
+                  anchors { top: parent.top; left: parent.left; right: parent.right }
                   text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (xmppClient.contactName === "" ? xmppClient.chatJid : xmppClient.contactName) ) + ":</font> " + msgText
                   color: "white"
                   font.pixelSize: 16
@@ -63,7 +58,7 @@ Page {
             }
             Text {
                   id: time
-                  anchors { top: message.bottom; right: bubbleCenter.right }
+                  anchors { top: message.bottom; right: parent.right }
                   text: dateTime.substr(0,8) == Qt.formatDateTime(new Date(), "dd-MM-yy") ? dateTime.substr(9,5) : dateTime
                   font.pixelSize: 16
                   color: "#999999"
@@ -136,56 +131,22 @@ Page {
         id: flickable
         boundsBehavior: Flickable.DragAndOvershootBounds
 
-        anchors { top: parent.top; bottom: txtMessage.top; left: parent.left; right: parent.right }
+        anchors { fill: parent }
 
-        contentHeight: showAllMessagesBtn.height+10+listViewMessages.contentHeight+2
-
-
-        Button {
-            id: showAllMessagesBtn
-            text: "Next page"
-            anchors { top: parent.top; topMargin: height>0 ? 5 : 0; left: parent.left; right: parent.right }
-            height: xmppClient.messagesCount > xmppClient.getPage*20 ? 40 : 0
-            onClicked: {
-                xmppClient.gotoPage(xmppClient.getPage+1)
-            }
-
-        }
+        contentHeight: listViewMessages.contentHeight+10
 
         ListView {
             id: listViewMessages
             interactive: false
-            anchors { top: showAllMessagesBtn.bottom; topMargin: 5; bottom: goToPreviousPageBtn.top; bottomMargin: goToPreviousPageBtn.height>0 ? 5 : 0; left: parent.left; right: parent.right }
+            anchors { top: parent.top; topMargin: 5; bottom: parent.bottom; bottomMargin: 5; left: parent.left; right: parent.right }
             clip: true
             model: xmppClient.messagesByPage
             delegate: componentWrapperItem
-            spacing: 5
-            onHeightChanged: {
-                if (parent.contentHeight > parent.height) {
-                    parent.contentY = parent.contentHeight-parent.height;
-                }
-            }
-        }
-
-        Button {
-            id: goToPreviousPageBtn
-            text: "Previous page"
-            anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
-            height: xmppClient.getPage > 1 ? 40 : 0
-            onClicked: {
-                xmppClient.gotoPage(xmppClient.getPage-1)
-            }
-
+            spacing: 2
         }
 
         Component.onCompleted: {
             contentY = contentHeight-height;
-        }
-
-        onHeightChanged: {
-            if (contentHeight > height) {
-                contentY = contentHeight-height;
-            }
         }
     }
    /********************************( Toolbar )************************************/
@@ -197,9 +158,30 @@ Page {
             iconSource: "toolbar-back"
             onClicked: {
                 pageStack.replace("qrc:/qml/MessagesPage.qml")
-                xmppClient.gotoPage(1)
+                xmppClient.page = 1
             }
         }
+
+        ButtonRow {
+                 ToolButton {
+                     iconSource: "toolbar-previous"
+                     enabled: xmppClient.page > 1
+                     opacity: enabled ? 1 : 0.2
+                     onClicked: {
+                        xmppClient.page--;
+                        flickable.contentY = flickable.contentHeight-flickable.height;
+                     }
+                 }
+                 ToolButton {
+                     iconSource: "toolbar-next"
+                     enabled: xmppClient.messagesCount - (xmppClient.page*20)> 0
+                     opacity: enabled ? 1 : 0.2
+                     onClicked: {
+                        xmppClient.page++;
+                     }
+                 }
+             }
+
         ToolButton {
             iconSource: "images/bar_open_chats.png"
             onClicked: {
@@ -209,7 +191,7 @@ Page {
                 xmppClient.resetUnreadMessages( xmppClient.chatJid ) //cleans unread count for this JID
                 xmppClient.hideChat()
                 xmppClient.chatJid = ""
-                xmppClient.gotoPage(1)
+                xmppClient.page = 1
             }
             Image {
                 id: imgMarkUnread

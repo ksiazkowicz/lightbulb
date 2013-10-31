@@ -219,7 +219,7 @@ Page {
             anchors { top: parent.top; topMargin: height>0 ? 5 : 0; left: parent.left; right: parent.right }
             height: xmppClient.messagesCount > 10 ? 40 : 0
             onClicked: {
-                xmppClient.gotoPage(1)
+                xmppClient.page = 1
                 pageStack.replace("qrc:/qml/ArchivePage.qml")
             }
 

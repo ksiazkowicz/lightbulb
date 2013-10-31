@@ -1134,5 +1134,6 @@ int MyXmppClient::getSqlMessagesCount()
 void MyXmppClient::gotoPage(int nPage)
 {
     page = nPage;
+    emit pageChanged();
 }
 
