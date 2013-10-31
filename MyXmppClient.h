@@ -68,6 +68,7 @@ class MyXmppClient : public QObject
     Q_PROPERTY( QString resourceLastMsg READ getResourceLastMsg NOTIFY messageReceived )
     Q_PROPERTY( StateConnect stateConnect READ getStateConnect NOTIFY connectingChanged )
     Q_PROPERTY( StatusXmpp status READ getStatus WRITE setStatus NOTIFY statusChanged )
+    Q_PROPERTY( int page READ getPage WRITE gotoPage NOTIFY pageChanged )
     Q_PROPERTY( QString statusText READ getStatusText WRITE setStatusText  NOTIFY statusTextChanged )
     Q_PROPERTY( bool isTyping READ getTyping NOTIFY typingChanged )
     Q_PROPERTY( RosterListModel* roster READ getRoster NOTIFY rosterChanged )
@@ -78,9 +79,9 @@ class MyXmppClient : public QObject
     Q_PROPERTY( int port READ getPort WRITE setPort NOTIFY portChanged )
     Q_PROPERTY( QString resource READ getResource WRITE setResource NOTIFY resourceChanged )
     Q_PROPERTY( ChatsListModel* openChats READ getOpenChats NOTIFY openChatsChanged )
-    Q_PROPERTY( SqlQueryModel* messages READ getSqlMessages NOTIFY sqlMessagesChanged )
     Q_PROPERTY( int messagesCount READ getSqlMessagesCount NOTIFY sqlMessagesChanged )
     Q_PROPERTY( SqlQueryModel* last10messages READ getLastSqlMessages NOTIFY sqlMessagesChanged )
+    Q_PROPERTY( SqlQueryModel* messagesByPage READ getSqlMessagesByPage NOTIFY pageChanged )
     Q_PROPERTY( QString chatJid READ getChatJid WRITE setChatJid NOTIFY chatJidChanged )
     Q_PROPERTY( QString contactName READ getContactName WRITE setContactName NOTIFY contactNameChanged )
     Q_PROPERTY( QMLVCard* vcard READ getVCard NOTIFY vCardChanged )
@@ -133,6 +134,8 @@ public :
     ~MyXmppClient();
 
     void initXmppClient();
+
+    int page;
 
     /* --- presence --- */
     Q_INVOKABLE void setMyPresence( StatusXmpp status, QString textStatus );
@@ -196,6 +199,9 @@ public :
     StatusXmpp getStatus() const { return m_status; }
     void setStatus( StatusXmpp __status );
 
+    int getPage() const { return page; }
+    void gotoPage(int nPage) const { page=nPage; }
+
     bool getTyping() const { return m_flTyping; }
     void setTyping( QString &jid, const bool isTyping ) { m_flTyping = isTyping; emit typingChanged(jid, isTyping); }
 
@@ -220,9 +226,9 @@ public :
 
     ChatsListModel* getOpenChats() const { return listModelChats; }
 
-    SqlQueryModel* getSqlMessages();
     int getSqlMessagesCount();
     SqlQueryModel* getLastSqlMessages();
+    SqlQueryModel* getSqlMessagesByPage();
 
     QString getChatJid() const { return m_chatJid; }
     void setChatJid( const QString & value )
@@ -277,6 +283,7 @@ signals:
     void connectingChanged();
     void statusTextChanged();
     void statusChanged();
+    void pageChanged();
     void typingChanged( QString bareJid, bool isTyping );
     void rosterChanged();
     void sqlRosterChanged();

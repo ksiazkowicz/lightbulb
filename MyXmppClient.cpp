@@ -58,6 +58,7 @@ MyXmppClient::MyXmppClient() : QObject(0)
     m_contactName = "";
     m_keepAlive = 60;
     accounts = 0;
+    page = 1;
 
     flVCardRequest = "";
     qmlVCard = new QMLVCard();
@@ -211,8 +212,7 @@ void MyXmppClient::initRoster()
         itemModel->setUnreadMsg( 0 );
 
         listModelRoster->append(itemModel);
-        database->doGenericQuery("INSERT into roster values (1," + itemRoster.name() + "," + bareJid + ",\"empty\","+this->getPicPresence(QXmppPresence::Unavailable) + ",NULL,0,0)");
-
+        database->insertContact(1,bareJid,name,this->getPicPresence(QXmppPresence::Unavailable),avatarPath);
     }
     emit rosterChanged();
 
@@ -828,7 +828,7 @@ void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg, bool mine )
     QString body;
     body = body.replace(">", "&gt;");  //fix for > stuff
     body = body.replace("<", "&lt;");  //and < stuff too ^^
-    body = msgWrapper->parseMsgOnLink(xmppMsg.body());
+    body = msgWrapper->parseMsgOnLink(body);
 
     if (mine) {
         database->insertMessage(1,to,body,time,mine);
@@ -1114,10 +1114,11 @@ SqlQueryModel* MyXmppClient::getLastSqlMessages()
     return sqlMessages;
 }
 
-SqlQueryModel* MyXmppClient::getSqlMessages()
+SqlQueryModel* MyXmppClient::getSqlMessagesByPage()
 {
+    int border = page*20;
     sqlMessages = new SqlQueryModel(0);
-    sqlMessages->setQuery("SELECT * FROM messages WHERE bareJid='" + m_chatJid + "'",database->db);
+    sqlMessages->setQuery("SELECT * FROM (SELECT * FROM messages WHERE bareJid='" + m_chatJid + "' ORDER BY id DESC limit " + border + ") ORDER BY id ASC limit 20",database->db);
 
     return sqlMessages;
 }

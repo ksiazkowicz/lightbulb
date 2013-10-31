@@ -237,3 +237,30 @@ bool DatabaseManager::insertMessage(int acc,
     }
     return ret;
 }
+
+
+bool DatabaseManager::insertContact( int acc,
+                                     QString bareJid,
+                                     QString name,
+                                     QString presence,
+                                     QString avatarPath)
+{
+    bool ret = false;
+    QSqlQuery query;
+    ret = query.prepare("INSERT INTO roster (id, id_account, name, jid, resource, status, statusText, avatarPath, isChatInProgress, unreadMsg) "
+                        "VALUES (:acc, :name, :jid, :resource, :status, :statusText, :avatarPath, :isChatInProgress, :unreadMsg)");
+    if (ret) {
+        query.bindValue(":acc", acc);
+        query.bindValue(":jid", bareJid);
+        query.bindValue(":name", name);
+        query.bindValue(":resource", "");
+        query.bindValue(":status", presence);
+        query.bindValue(":statusText","");
+        query.bindValue(":avatarPath",avatarPath);
+        query.bindValue(":isChatInProgress",0);
+        query.bindValue(":unreadMsg",0);
+        ret = query.exec();
+    }
+
+    return ret;
+}

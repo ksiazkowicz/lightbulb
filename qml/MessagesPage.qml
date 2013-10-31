@@ -216,11 +216,11 @@ Page {
         Button {
             id: showAllMessagesBtn
             text: "Show more messages"
-            anchors { top: parent.top; topMargin: 5; left: parent.left; right: parent.right }
+            anchors { top: parent.top; topMargin: height>0 ? 5 : 0; left: parent.left; right: parent.right }
             height: xmppClient.messagesCount > 10 ? 40 : 0
             onClicked: {
-                listViewMessages.model = xmppClient.messages
-                visible = false
+                xmppClient.gotoPage(1)
+                pageStack.replace("qrc:/qml/ArchivePage.qml")
             }
 
         }

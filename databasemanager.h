@@ -46,6 +46,7 @@ public:
         bool mkRosterTable();
         bool mkMessagesTable();
         bool insertMessage(int acc, QString bareJid, QString text, QString time, int mine);
+        bool insertContact(int acc, QString bareJid, QString name, QString presence, QString avatarPath);
 
         bool checkIfChatInProgress( QString bareJid );
         bool setChatInProgress( QString bareJid, bool chat );
