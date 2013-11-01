@@ -264,14 +264,12 @@ Page {
               onActiveFocusChanged: {
                   main.splitscreenY = 0
               }
-              Keys.onReturnPressed:{
-                   sendMessage()
-              }
-              Keys.onEnterPressed:{
-                  sendMessage()
-              }
               onTextChanged: {
-                   flTyping = true
+                  if (text.lenght > 0) { flTyping = true } else { flTyping = false }
+
+                  if (text.charCodeAt(text.length-1) === 10) {
+                      sendMessage()
+                  }
 
                    if( (!timerTextTyping.running) && (flSendMsg==false) ) {
                       timerTextTyping.restart()
