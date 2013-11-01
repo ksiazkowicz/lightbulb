@@ -7,6 +7,13 @@
 #include <hwrmlight.h>
 #include <e32svr.h>
 #include <eikmenup.h>
+#include <eikenv.h> // CEikonEnv
+#include <apgcli.h> // RApaLsSession
+#include <apgtask.h> // TApaTaskList, TApaTask
+#include <QUrl>
+
+_LIT(KBrowserPrefix, "4 " );
+static const TUid KUidBrowser = { 0x10008D39 };
 
 QAvkonHelper::QAvkonHelper(QObject *parent) :
     QObject(parent)
@@ -64,4 +71,58 @@ QString QAvkonHelper::openFileSelectionDlg()
     QString qString = QString::fromUtf16(filename.Ptr(), filename.Length());
     return qString;
 
+}
+
+void QAvkonHelper::openDefaultBrowser(const QUrl &url) const
+{
+    // code ported from Tweetian by Dickson
+    // https://github.com/dicksonleong/Tweetian/blob/master/src/symbianutils.cpp
+
+    // convert url to encoded version of QString
+    QString encUrl(QString::fromUtf8(url.toEncoded()));
+    // using qt_QString2TPtrC() based on
+    // <http://qt.gitorious.org/qt/qt/blobs/4.7/src/corelib/kernel/qcore_symbian_p.h#line102>
+    TPtrC tUrl(TPtrC16(static_cast<const TUint16*>(encUrl.utf16()), encUrl.length()));
+
+    // Following code based on
+    // <http://www.developer.nokia.com/Community/Wiki/Launch_default_web_browser_using_Symbian_C%2B%2B>
+
+    // create a session with apparc server
+    RApaLsSession appArcSession;
+    User::LeaveIfError(appArcSession.Connect());
+    CleanupClosePushL<RApaLsSession>(appArcSession);
+
+    // get the default application uid for application/x-web-browse
+    TDataType mimeDatatype(_L8("application/x-web-browse"));
+    TUid handlerUID;
+    appArcSession.AppForDataType(mimeDatatype, handlerUID);
+
+    // if UiD not found, use the native browser
+    if (handlerUID.iUid == 0 || handlerUID.iUid == -1)
+        handlerUID = KUidBrowser;
+
+    // Following code based on
+    // <http://qt.gitorious.org/qt/qt/blobs/4.7/src/gui/util/qdesktopservices_s60.cpp#line213>
+
+    HBufC* buf16 = HBufC::NewLC(tUrl.Length() + KBrowserPrefix.iTypeLength);
+    buf16->Des().Copy(KBrowserPrefix); // Prefix used to launch correct browser view
+    buf16->Des().Append(tUrl);
+
+    TApaTaskList taskList(CEikonEnv::Static()->WsSession());
+    TApaTask task = taskList.FindApp(handlerUID);
+    if (task.Exists()) {
+        // Switch to existing browser instance
+        task.BringToForeground();
+        HBufC8* param8 = HBufC8::NewLC(buf16->Length());
+        param8->Des().Append(buf16->Des());
+        task.SendMessage(TUid::Uid( 0 ), *param8); // Uid is not used
+        CleanupStack::PopAndDestroy(param8);
+    } else {
+        // Start a new browser instance
+        TThreadId id;
+        appArcSession.StartDocument(*buf16, handlerUID, id);
+    }
+
+    CleanupStack::PopAndDestroy(buf16);
+    CleanupStack::PopAndDestroy(&appArcSession);
 }

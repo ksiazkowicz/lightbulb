@@ -14,26 +14,21 @@ QT += declarative \
 # 0x2002CCCF value if protected UID is given to the application
 #symbian:DEPLOYMENT.installer_header = 0x2002CCCF
 
-#NOTE: Update your version number with each build.
-#NOTE: You may also need a different name than the executable for your caption.
-#    packageheader = "$${LITERAL_HASH}{\"Lightbulb (pre-release)\"}, (0xE22AC278), 0, 1, 7, TYPE=SA"
-
-#NOTE: Add a vendor (company) names.
-#NOTE: The global name is mandatory for Symbian Signed and should match the name in your Symbian Signed account.
-#    vendorinfo = \
-#     "%{\"Maciej Janiszewski\"}" \
-#     ":\"Maciej Janiszewski\""
-
-#NOTE: The new new package header and vendor information are defined but not yet used
-#NOTE: Add the variables to ''my_deployment.pkg_prerules'', and add this to the DEPLOYMENT
-# my_deployment.pkg_prerules = package header vendorinfo
-# DEPLOYMENT += my_deployment
+VERSION = 0.2.0
 
 symbian {
     TARGET.UID3 = 0xE22AC278
     TARGET.CAPABILITY += NetworkServices
     TARGET.EPOCHEAPSIZE = 0x200000 0x1F400000
     CONFIG += qt-components
+
+    vendorinfo += "%{\"n1958 Apps\"}" ":\"n1958 Apps\""
+    my_deployment.pkg_prerules = vendorinfo
+    DEPLOYMENT += my_deployment
+    DEPLOYMENT.display_name = Lightbulb
+
+    DEFINES += APP_VERSION=\"$$VERSION\"
+
     LIBS += -lavkon \
             -laknnotify \
             -leiksrv \
@@ -46,6 +41,7 @@ symbian {
             -laknskins \
             -laknskinsrv \
             -leikcore \
+            -lapmime \
             -lcommondialogs
 }
 
@@ -116,7 +112,8 @@ OTHER_FILES += README \
     qml/AboutPage.qml \
     qml/Notifications.qml \
     qml/ArchivePage.qml \
-    qml/Dialogs/ReconnectDialog.qml
+    qml/Dialogs/ReconnectDialog.qml \
+    qml/Dialogs/Chats.qml
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)

@@ -7,6 +7,7 @@
 #include <CAknFileSelectionDialog.h>
 #include <e32base.h>
 #include <hwrmlight.h>
+#include <QUrl>
 
 class QAvkonHelper : public QObject
 {
@@ -20,6 +21,7 @@ public:
     Q_INVOKABLE void notificationBlink();
     Q_INVOKABLE void displayGlobalNote(QString message);
     Q_INVOKABLE QString openFileSelectionDlg();
+    Q_INVOKABLE void openDefaultBrowser(const QUrl &url) const;
 
 private:
     TInt iNoteId;

@@ -360,7 +360,7 @@ PageStackWindow {
         id: linkContextMenu
         MenuLayout {
             MenuItem {text: qsTr("Copy"); onClicked: { clipboard.setText(url) } }
-            MenuItem {text: qsTr("Open in default browser"); onClicked: { Qt.openUrlExternally(url) }}
+            MenuItem {text: qsTr("Open in default browser"); onClicked: { avkon.openDefaultBrowser(url) }}
       }
     }
     Clipboard { id: clipboard }
