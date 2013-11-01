@@ -49,7 +49,7 @@ CommonDialog {
                     onLinkActivated: { main.url=link; linkContextMenu.open()}
                     wrapMode: Text.Wrap
                     font.pixelSize: 16
-                    color: main.textColor
+                    color: "white"
             }
             MouseArea {
                 id: mouseAreaItem;
@@ -79,7 +79,7 @@ CommonDialog {
             Rectangle {
                 height: 1
                 anchors { top: parent.bottom; left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
-                color: main.textColor
+                color: "white"
                 opacity: 0.2
             }
         } //Rectangle

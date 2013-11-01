@@ -6,6 +6,7 @@ import lightbulb 1.0
 CommonDialog {
         titleText: qsTr("Effect settings")
         privateCloseIcon: true
+        height: 216
 
         Component.onCompleted: {
             open()

@@ -4,6 +4,7 @@ import com.nokia.symbian 1.1
 
 CommonDialog {
     buttonTexts: [qsTr("Yes"), qsTr("No")]
+    titleText: "Confirmation"
 
     Component.onCompleted: {
         open()
@@ -21,7 +22,7 @@ CommonDialog {
         color: "white";
         id: dialogQueryLabel;
         wrapMode: Text.Wrap;
-        anchors { fill: parent; leftMargin: 10; rightMargin:10 }
+        anchors { fill: parent; leftMargin: 10; rightMargin:10; topMargin: 10 }
         text: qsTr("Remove ") + dialogName + "?";
     }
 }

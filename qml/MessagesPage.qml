@@ -256,10 +256,7 @@ Page {
               anchors.bottom: splitViewInput.top
               anchors.left: parent.left;
               anchors.right: parent.right;
-              //height: text. > 1 ? 50 * text.lineCount : 50
               placeholderText: qsTr( "Tap here to enter message..." )
-
-
 
               onActiveFocusChanged: {
                   main.splitscreenY = 0
@@ -268,6 +265,7 @@ Page {
                   if (text.lenght > 0) { flTyping = true } else { flTyping = false }
 
                   if (text.charCodeAt(text.length-1) === 10) {
+                      text = text.substring(0,text.length-1)
                       sendMessage()
                   }
 

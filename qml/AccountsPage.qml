@@ -134,7 +134,8 @@ Page {
             iconSource: "toolbar-delete"
             onClicked: {
                 if( main.accJid != "" ) {
-                    dialogQueryRemove.open()
+                    dialog.source = ""
+                    dialog.source = "qrc:/dialogs/Account/Remove"
                 }
             }
         }
@@ -155,25 +156,6 @@ Page {
             }
         }
     }
-
-
-    /*********************************************************************/
-    CommonDialog {
-        id: dialogQueryRemove
-        titleText: qsTr("Remove account")
-
-        buttonTexts: [qsTr("Yes"), qsTr("No")]
-
-        onButtonClicked: {
-            if (index === 0) {
-                settings.removeAccount( main.accJid )
-                settings.initListOfAccounts()
-            }
-        }
-
-        content: Label { id: dialogInfoLabel; anchors.centerIn: parent; text: qsTr("Remove ") + main.accJid + "?";}
-    }
-
 
     /*********************************************************************/
 
