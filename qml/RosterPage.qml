@@ -346,9 +346,8 @@ Page {
             iconSource: "qrc:/qml/images/bar_open_chats.png"
             smooth: true
             onClicked: {
-                //dialog.source = ""
-                //dialog.source = "qrc:/dialogs/Chats"
-                pageStack.replace( "qrc:/pages/Chats" )
+                dialog.source = ""
+                dialog.source = "qrc:/dialogs/Chats"
             }
 
             Image {

@@ -54,6 +54,15 @@ PageStackWindow {
 
     property int blinkerSet: 0
 
+    function openChat() {
+        if (pageStack.depth > 1) {
+            pageStack.replace("qrc:/pages/Messages")
+        } else {
+            pageStack.push("qrc:/pages/Messages")
+        }
+        dialog.source = ""
+    }
+
     SymbiosisAPI {
         id: symbiosis
     }
@@ -122,7 +131,7 @@ PageStackWindow {
         id: suspender
         running: true; repeat: true
         onTriggered: {
-            if (suspenderDuration==60) {
+            if (suspenderDuration==900) {
                 if (!isSuspended) {
                     pageStack.pop()
                     pageStack.pop()
@@ -137,7 +146,7 @@ PageStackWindow {
                         tempUnreadCount = 0
                     }
                 }
-            } else { suspenderDuration += 1; console.log("Will suspend in "+(60-suspenderDuration)) }
+            } else { suspenderDuration += 1; console.log("Will suspend in "+(900-suspenderDuration)) }
         }
 
     }

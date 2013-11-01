@@ -68,7 +68,6 @@
         <file alias="AccountsAdd">qml/AccountAddPage.qml</file>
         <file alias="Accounts">qml/AccountsPage.qml</file>
         <file alias="Archive">qml/ArchivePage.qml</file>
-        <file alias="Chats">qml/ChatsPage.qml</file>
         <file alias="Messages">qml/MessagesPage.qml</file>
         <file alias="Roster">qml/RosterPage.qml</file>
         <file alias="Settings">qml/SettingsPage.qml</file>

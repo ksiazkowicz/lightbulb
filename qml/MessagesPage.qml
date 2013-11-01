@@ -396,11 +396,9 @@ Page {
         ToolButton {
             iconSource: "qrc:/qml/images/bar_open_chats.png"
             onClicked: {
-                pageStack.replace( "qrc:/pages/Chats" )
-                main.isChatInProgress = false
-                statusBarText.text = "Chats"
                 xmppClient.resetUnreadMessages( xmppClient.chatJid ) //cleans unread count for this JID
-                xmppClient.chatJid = ""
+                dialog.source = ""
+                dialog.source = "qrc:/dialogs/Chats"
             }
             Image {
                 id: imgMarkUnread

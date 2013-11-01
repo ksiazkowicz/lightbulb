@@ -101,7 +101,6 @@ OTHER_FILES += README \
     qml/Dialogs/QuerySubscribtion.qml \
     qml/Dialogs/VibrationSettings.qml \
     qml/Dialogs/SoundSettings.qml \
-    qml/ChatsPage.qml \
     qml/AccountAddPage.qml \
     qml/VCardPage.qml \
     qml/SettingsPage.qml \

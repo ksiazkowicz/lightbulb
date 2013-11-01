@@ -6,6 +6,7 @@ CommonDialog {
     id: dlgChats
     titleText: qsTr("Chats")
     privateCloseIcon: true
+    height: 480
 
     Connections {
         target: xmppClient
@@ -16,99 +17,81 @@ CommonDialog {
         main.splitscreenY = 0
     }
 
-    content: ListView {
-                id: listViewResources
+    property int  rosterItemHeight: settings.gInt("ui","rosterItemHeight")
+    property bool rosterLayoutAvatar: settings.gBool("ui","rosterLayoutAvatar")
+
+  /*******************************************************************************/
+
+    Component {
+        id: componentRosterItem
+        Rectangle {
+            id: wrapper
+            width: listViewChats.width
+            color: "transparent"
+            height: rosterItemHeight
+
+            Image {
+                id: imgPresence
+                source: rosterLayoutAvatar ? (contactPicAvatar === "" ? "qrc:/qml/images/avatar.png" : contactPicAvatar) : contactPicStatus
+                sourceSize.height: rosterItemHeight-4
+                sourceSize.width: rosterItemHeight-4
+                anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
+                height: rosterItemHeight-4
+                width: rosterItemHeight-4
+            } //imgPresence
+            Text {
+                    id: txtJid
+                    property string contact: contactName
+                    anchors { left: imgPresence.right; right: imgPresenceR.left; leftMargin: 10; rightMargin: 10; verticalCenter: parent.verticalCenter }
+                    width: parent.width
+                    maximumLineCount: (rosterItemHeight/22) > 1 ? (rosterItemHeight/22) : 1
+                    text: (contactName === "" ? contactJid : contactName) + (contactUnreadMsg > 0 ? " [" + contactUnreadMsg + "]" : "")
+                    onLinkActivated: { main.url=link; linkContextMenu.open()}
+                    wrapMode: Text.Wrap
+                    font.pixelSize: 16
+                    color: main.textColor
+            }
+            MouseArea {
+                id: mouseAreaItem;
                 anchors.fill: parent
-                height: (xmppClient.openChats.count*48)+1
+
+                onClicked: {
+                    listViewChats.currentIndex = index
+                    xmppClient.chatJid = contactJid
+                    xmppClient.contactName = contactName
+                    main.globalUnreadCount = main.globalUnreadCount - contactUnreadMsg
+                    xmppClient.resetUnreadMessages( contactJid )
+                    if (settings.gBool("behavior","enableHsWidget")) {
+                        notify.postHSWidget()
+                    }
+                    main.openChat()
+                } //onClicked
+            }
+            Image {
+                id: imgPresenceR
+                source: rosterLayoutAvatar ? contactPicStatus : ""
+                sourceSize.height: (wrapper.height/3) - 4
+                sourceSize.width: (wrapper.height/3) - 4
+                anchors { verticalCenter: parent.verticalCenter; right: parent.right; rightMargin: rosterLayoutAvatar ? 10 : 0 }
+                height: rosterLayoutAvatar ? (rosterItemHeight/3) - 4 : 0
+                width: rosterLayoutAvatar ? (rosterItemHeight/3) - 4 : 0
+            }
+            Rectangle {
+                height: 1
+                anchors { top: parent.bottom; left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
+                color: main.textColor
+                opacity: 0.2
+            }
+        } //Rectangle
+    }
+
+
+    content: ListView {
+                id: listViewChats
+                anchors.fill: parent
+                height: (xmppClient.openChats.count*rosterItemHeight)+1
                 highlightFollowsCurrentItem: false
                 model: xmppClient.openChats
-                delegate: Component {
-                    id: componentRosterItem
-                    Rectangle {
-                        id: wrapper
-                        height: 48
-                        width: parent.width
-                        gradient: gr_normal
-                        Gradient {
-                            id: gr_normal
-                            GradientStop { position: 0; color: "transparent" }
-                            GradientStop { position: 1; color: "transparent" }
-                        }
-                        Gradient {
-                            id: gr_press
-                            GradientStop { position: 0; color: "#1C87DD" }
-                            GradientStop { position: 1; color: "#51A8FB" }
-                        }
-                        states: State {
-                            name: "Current"
-                            when: wrapper.ListView.view.currentIndex
-                            PropertyChanges { target: wrapper; gradient: gr_press }
-                            PropertyChanges { target: wrapper; font.bold: true }
-                        }
-
-                        Image {
-                            id: imgPresence
-                            source: contactPicStatus
-                            sourceSize.height: wrapper.height
-                            sourceSize.width: wrapper.height
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.left: parent.left
-                            anchors.leftMargin: 7
-
-                            Image {
-                                id: imgMarkUnread
-                                source: "qrc:/qml/images/message_mark.png"
-                                opacity: contactUnreadMsg != 0 ? 1 : 0
-                                anchors.centerIn: parent
-                                smooth: true
-                                scale: 1
-                            }
-                        } //imgPresence
-
-                        Rectangle {
-                            z: 1
-                            id: wrapperTxtJid
-                            anchors.left: imgPresence.right
-                            anchors.leftMargin: 5
-                            anchors.top: parent.top
-                            anchors.topMargin: 0
-                            color: "transparent"
-                            height: parent.height - 2
-                            width: contactItemType == 0 ? parent.width - (imgPresence.width + imgPresence.anchors.leftMargin) - 5 : parent.width - (imgPresence.width + imgPresence.anchors.leftMargin)
-                        }
-                        Item {
-                            anchors.verticalCenter: wrapperTxtJid.verticalCenter
-                            anchors.left: wrapperTxtJid.left
-                            height: wrapperTxtJid.height
-                            width: wrapperTxtJid.width
-                            clip: true
-                            Text {
-                                id: txtJid
-                                clip: true
-                                text: contactUnreadMsg != 0 ? (contactName === "" ? contactJid : contactName) + "\n" + (contactUnreadMsg==1 ? contactUnreadMsg + qsTr(" new message") : contactUnreadMsg + qsTr(" new messages") ) : (contactName === "" ? contactJid : contactName)
-                                font.pixelSize: 16
-                                color: main.textColor
-                                anchors.verticalCenter: parent.verticalCenter
-                                anchors.left: parent.left
-                            }
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: {
-                                wrapper.ListView.view.currentIndex = index
-                                xmppClient.chatJid = contactJid
-                                xmppClient.contactName = contactName
-                                main.globalUnreadCount = main.globalUnreadCount - contactUnreadMsg
-                                xmppClient.resetUnreadMessages( contactJid )
-                                if (settings.gBool("behavior","enableHsWidget")) {
-                                    notify.postHSWidget()
-                                }
-                                pageStack.replace( "qrc:/pages/Messages" )
-                                dlgChats.close()
-                            } //onClicked
-                        } //MouseArea
-                    }
-                } //Component
+                delegate: componentRosterItem
             }
 }
