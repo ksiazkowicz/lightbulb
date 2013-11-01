@@ -400,7 +400,6 @@ Page {
                 main.isChatInProgress = false
                 statusBarText.text = "Chats"
                 xmppClient.resetUnreadMessages( xmppClient.chatJid ) //cleans unread count for this JID
-                xmppClient.hideChat()
                 xmppClient.chatJid = ""
             }
             Image {

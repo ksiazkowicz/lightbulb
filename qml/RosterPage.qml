@@ -345,7 +345,12 @@ Page {
             id: toolBarButtonChats
             iconSource: "qrc:/qml/images/bar_open_chats.png"
             smooth: true
-            onClicked: main.pageStack.push( "qrc:/pages/Chats" )
+            onClicked: {
+                //dialog.source = ""
+                //dialog.source = "qrc:/dialogs/Chats"
+                pageStack.replace( "qrc:/pages/Chats" )
+            }
+
             Image {
                 id: imgMarkUnread
                 source: "qrc:/qml/images/message_mark.png"

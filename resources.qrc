@@ -61,6 +61,7 @@
         <file alias="Contact/Rename">qml/Dialogs/RenameContact.qml</file>
         <file alias="Settings/Sound">qml/Dialogs/SoundSettings.qml</file>
         <file alias="Settings/Vibration">qml/Dialogs/VibrationSettings.qml</file>
+        <file alias="Chats">qml/Dialogs/Chats.qml</file>
     </qresource>
     <qresource prefix="/pages">
         <file alias="About">qml/AboutPage.qml</file>
