@@ -265,35 +265,43 @@ PageStackWindow {
     /************************( stuff to do when running this app )*****************************/
 
     function checkIfFirstRun() {
-        if (!settings.gBool("main","not_first_run") || settings.gStr("main","last_used_rel") !== "0.2") {
+        if (!settings.gBool("main","not_first_run") || settings.gStr("main","last_used_rel") !== "0.2-symbiosis") {
             settings.sBool(true,"main","not_first_run")
             settings.sStr("0.2","main","last_used_rel")
 
-            settings.sBool(true,"notifications","vibraMsgRecv")
-            settings.sInt(800,"notifications","vibraMsgRecvDuration")
-            settings.sInt(100,"notifications","vibraMsgRecvIntensity")
+            symbiosis.registerEvent("msgRecv");
+            symbiosis.registerEvent("msgSent");
+            symbiosis.registerEvent("msgSub");
+            symbiosis.registerEvent("notifyConnection");
 
-            settings.sBool(true,"notifications","soundMsgRecv")
-            settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Message_Received.wav", "notifications","soundMsgRecvFile")
-            settings.sInt(100,"notifications","soundMsgRecvVolume")
+            symbiosis.setEventProperty("msgRecv","enabled","b_true");
 
-            settings.sBool(true,"notifications","notifyMsgRecv")
-            settings.sBool(true,"notifications","blinkScrOnMsgRecv")
-            settings.sBool(true,"notifications","useGlobalNote")
+            symbiosis.setEventProperty("msgRecv","vibraEnabled","b_true");
+            symbiosis.setEventProperty("msgRecv","vibraDuration","i_800");
+            symbiosis.setEventProperty("msgRecv","vibraIntensity","i_100");
+            symbiosis.setEventProperty("msgRecv","soundEnabled","b_true");
+            symbiosis.setEventProperty("msgRecv","soundFile","s_file:///C:/Data/.config/Lightbulb/sounds/Message_Received.wav");
+            symbiosis.setEventProperty("msgRecv","soundVolume","i_100");
+            symbiosis.setEventProperty("msgRecv","blink","b_true");
+            symbiosis.setEventProperty("msgRecv","discreetPopup","b_true");
 
-            settings.sInt(400,"notifications","vibraMsgSentDuration")
-            settings.sInt(100,"notifications","vibraMsgSentIntensity")
+            symbiosis.setEventProperty("msgSent","enabled","b_true");
 
-            settings.sBool(true,"notifications","soundMsgSent")
-            settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Message_Sent.wav", "notifications","soundMsgSentFile")
-            settings.sInt(100,"notifications","soundMsgSentVolume")
+            symbiosis.setEventProperty("msgSent","vibraEnabled","b_true");
+            symbiosis.setEventProperty("msgSent","vibraDuration","i_400");
+            symbiosis.setEventProperty("msgSent","vibraIntensity","i_100");
+            symbiosis.setEventProperty("msgSent","soundEnabled","b_true");
+            symbiosis.setEventProperty("msgSent","soundFile","s_file:///C:/Data/.config/Lightbulb/sounds/Message_Sent.wav");
+            symbiosis.setEventProperty("msgSent","soundVolume","i_100");
 
-            settings.sInt(500,"notifications","vibraMsgSubDuration")
-            settings.sInt(50,"notifications","vibraMsgSubIntensity")
+            symbiosis.setEventProperty("msgSub","enabled","b_false");
+            symbiosis.setEventProperty("msgSub","vibraEnabled","b_true");
+            symbiosis.setEventProperty("msgSub","vibraDuration","i_500");
+            symbiosis.setEventProperty("msgSub","vibraIntensity","i_50");
 
-            settings.sBool(true,"notifications","soundMsgSub")
-            settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Subscription_Request.wav", "notifications","soundMsgSubFile")
-            settings.sInt(100,"notifications","soundMsgSubVolume")
+            symbiosis.setEventProperty("msgSub","soundEnabled","b_true");
+            symbiosis.setEventProperty("msgSub","soundFile","s_file:///C:/Data/.config/Lightbulb/sounds/Subscription_Request.wav");
+            symbiosis.setEventProperty("msgSub","soundVolume","i_100");
 
             settings.sBool(true,"notifications","notifyConnection")
 
