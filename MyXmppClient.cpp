@@ -839,7 +839,7 @@ QString MyXmppClient::parseEmoticons( QString string ) {
     nStr.replace(" ;-( ", begin + ";(" + end);
 
     nStr.replace(" :| ", begin + ":|" + end);
-    nStr.replace(" <3 ", begin + "<3" + end);
+    nStr.replace(" &lt;3 ", begin + "<3" + end);
 
     nStr.replace(" :\\ ", begin + ":\\" + end);
     nStr.replace(" :-\\ ", begin + ":\\" + end);
@@ -854,11 +854,11 @@ QString MyXmppClient::parseEmoticons( QString string ) {
     nStr.replace(" :X ", begin + ":X" + end);
     nStr.replace(" :x ", begin + ":x" + end);
 
-    nStr.replace(" :> ", begin + ":>" + end);
+    nStr.replace(" :&gt; ", begin + ":>" + end);
     nStr.replace(" B) ", begin + "B)" + end);
     nStr.replace(" %) ", begin + "%)" + end);
     nStr.replace(" :@ ", begin + ":@" + end);
-    nStr.replace(" ;> ", begin + ";>" + end);
+    nStr.replace(" ;&gt; ", begin + ";>" + end);
     nStr.replace(" >) ", begin + ">)" + end);
     nStr.replace(" 8) ", begin + "8)" + end);
     nStr.replace(" (=_=) ", begin + "=_=" + end);
@@ -883,8 +883,8 @@ void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg, bool mine )
     body = xmppMsg.body();
     body = body.replace(">", "&gt;");  //fix for > stuff
     body = body.replace("<", "&lt;");  //and < stuff too ^^
-    body = parseEmoticons(body);
     body = msgWrapper->parseMsgOnLink(body);
+    body = parseEmoticons(body);
 
     if (mine) {
         database->insertMessage(1,to,body,time,mine);
