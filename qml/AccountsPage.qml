@@ -69,7 +69,7 @@ Page {
                     main.accHost = accHost
                     main.accPort = accPort
                     main.accManualHostPort = accManualHostPort
-                    pageStack.push( "qrc:/qml/AccountAddPage.qml" )
+                    pageStack.push( "qrc:/pages/AccountsAdd" )
                 }
                 onClicked: {
                     wrapper.ListView.view.currentIndex = index
@@ -140,10 +140,10 @@ Page {
         }
 
         ToolButton {
-            iconSource: "images/edit.svg"
+            iconSource: "qrc:/qml/images/edit.svg"
             onClicked: {
                 if( main.accJid != "" ) {
-                    pageStack.push( "qrc:/qml/AccountAddPage.qml" )
+                    pageStack.push( "qrc:/pages/AccountsAdd" )
                 }
             }
         }
@@ -191,7 +191,7 @@ Page {
                     main.accResource = ""
                     main.accHost = "chat.facebook.com"
                     main.accPort = "5222"
-                    pageStack.push( "qrc:/qml/AccountAddPage.qml" )
+                    pageStack.push( "qrc:/pages/AccountsAdd" )
                 }
             }
             MenuItem {
@@ -204,7 +204,7 @@ Page {
                     main.accResource = ""
                     main.accHost = "talk.google.com"
                     main.accPort = "5222"
-                    pageStack.push( "qrc:/qml/AccountAddPage.qml" )
+                    pageStack.push( "qrc:/pages/AccountsAdd" )
                 }
             }
             MenuItem {
@@ -216,7 +216,7 @@ Page {
                     main.accResource = ""
                     main.accHost = ""
                     main.accPort = "5222"
-                    pageStack.push( "qrc:/qml/AccountAddPage.qml" )
+                    pageStack.push( "qrc:/pages/AccountsAdd" )
                 }
             }
         }

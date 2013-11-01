@@ -1,15 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>Lightbulb.svg</file>
-        <file>qml/AboutPage.qml</file>
-        <file>qml/AccountAddPage.qml</file>
-        <file>qml/AccountsPage.qml</file>
-        <file>qml/ChatsPage.qml</file>
-        <file>qml/MessagesPage.qml</file>
         <file>qml/Notifications.qml</file>
-        <file>qml/RosterPage.qml</file>
-        <file>qml/SettingsPage.qml</file>
-        <file>qml/VCardPage.qml</file>
         <file>qml/images/alarm.svg</file>
         <file>qml/images/avatar.png</file>
         <file>qml/images/bar_open_chats.png</file>
@@ -19,27 +11,66 @@
         <file>qml/images/message_mark.png</file>
         <file>qml/images/message_num.png</file>
         <file>qml/images/ok.svg</file>
-        <file>qml/images/presence-away.svg</file>
-        <file>qml/images/presence-busy.svg</file>
-        <file>qml/images/presence-chatty.svg</file>
-        <file>qml/images/presence-offline.svg</file>
-        <file>qml/images/presence-online.svg</file>
         <file>qml/images/presence-xa.svg</file>
         <file>qml/images/send_message.svg</file>
         <file>qml/images/settings.svg</file>
-        <file>qml/Dialogs/AddContact.qml</file>
-        <file>qml/Dialogs/ChangeStatus.qml</file>
-        <file>qml/Dialogs/QuerySubscribtion.qml</file>
-        <file>qml/Dialogs/RemoveAccount.qml</file>
-        <file>qml/Dialogs/RemoveContact.qml</file>
-        <file>qml/Dialogs/RenameContact.qml</file>
-        <file>qml/main.qml</file>
-        <file>qml/Dialogs/VibrationSettings.qml</file>
-        <file>qml/Dialogs/SoundSettings.qml</file>
-        <file>qml/ArchivePage.qml</file>
         <file>qml/bubble/incTriangle.png</file>
         <file>qml/bubble/ownTriangle.png</file>
-        <file>qml/images/splash.jpg</file>
-        <file>qml/Dialogs/ReconnectDialog.qml</file>
+        <file>qml/main.qml</file>
+    </qresource>
+    <qresource prefix="/smileys">
+        <file alias=":@">qml/smileys/angry.png</file>
+        <file alias="%)">qml/smileys/confused.png</file>
+        <file alias="B)">qml/smileys/cool.png</file>
+        <file alias=";(">qml/smileys/cry.png</file>
+        <file alias=">)">qml/smileys/evil.png</file>
+        <file alias=":)">qml/smileys/happy.png</file>
+        <file alias="&lt;3">qml/smileys/heart.png</file>
+        <file alias=":|">qml/smileys/indifference.png</file>
+        <file alias=":*">qml/smileys/kiss.png</file>
+        <file alias=":D">qml/smileys/laugh.png</file>
+        <file alias=":-D">qml/smileys/laugh2.png</file>
+        <file alias="8)">qml/smileys/nerdsmile.png</file>
+        <file alias=":X">qml/smileys/quiet.png</file>
+        <file alias=":(">qml/smileys/sad.png</file>
+        <file alias=":\">qml/smileys/skeptical.png</file>
+        <file alias=":>">qml/smileys/smile.png</file>
+        <file alias=":O">qml/smileys/suprised.png</file>
+        <file alias="=_=">qml/smileys/tired.png</file>
+        <file alias=":P">qml/smileys/tounge.png</file>
+        <file alias=";)">qml/smileys/wink.png</file>
+        <file alias=";D">qml/smileys/wink2.png</file>
+        <file alias=";>">qml/smileys/wink3.png</file>
+    </qresource>
+    <qresource prefix="/presence">
+        <file alias="away">qml/images/presence-away.svg</file>
+        <file alias="busy">qml/images/presence-busy.svg</file>
+        <file alias="chatty">qml/images/presence-chatty.svg</file>
+        <file alias="offline">qml/images/presence-offline.svg</file>
+        <file alias="online">qml/images/presence-online.svg</file>
+        <file alias="unknown">qml/images/presence-unknown.png</file>
+        <file alias="xa">qml/images/presence-xa.svg</file>
+    </qresource>
+    <qresource prefix="/dialogs">
+        <file alias="Contact/Add">qml/Dialogs/AddContact.qml</file>
+        <file alias="Status/Change">qml/Dialogs/ChangeStatus.qml</file>
+        <file alias="Contact/Subscribe">qml/Dialogs/QuerySubscribtion.qml</file>
+        <file alias="Status/Reconnect">qml/Dialogs/ReconnectDialog.qml</file>
+        <file alias="Account/Remove">qml/Dialogs/RemoveAccount.qml</file>
+        <file alias="Contact/Remove">qml/Dialogs/RemoveContact.qml</file>
+        <file alias="Contact/Rename">qml/Dialogs/RenameContact.qml</file>
+        <file alias="Settings/Sound">qml/Dialogs/SoundSettings.qml</file>
+        <file alias="Settings/Vibration">qml/Dialogs/VibrationSettings.qml</file>
+    </qresource>
+    <qresource prefix="/pages">
+        <file alias="About">qml/AboutPage.qml</file>
+        <file alias="AccountsAdd">qml/AccountAddPage.qml</file>
+        <file alias="Accounts">qml/AccountsPage.qml</file>
+        <file alias="Archive">qml/ArchivePage.qml</file>
+        <file alias="Chats">qml/ChatsPage.qml</file>
+        <file alias="Messages">qml/MessagesPage.qml</file>
+        <file alias="Roster">qml/RosterPage.qml</file>
+        <file alias="Settings">qml/SettingsPage.qml</file>
+        <file alias="VCard">qml/VCardPage.qml</file>
     </qresource>
 </RCC>

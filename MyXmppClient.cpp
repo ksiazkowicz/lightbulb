@@ -275,21 +275,21 @@ QString MyXmppClient::getPicPresence( const QXmppPresence &presence ) const
     QXmppPresence::Type status = presence.type();
     if( status != QXmppPresence::Available )
     {
-        picPresenceName = "qrc:/qml/images/presence-offline.svg";
+        picPresenceName = "qrc:/presence/offline";
     }
     else
     {
         QXmppPresence::AvailableStatusType availableStatus = presence.availableStatusType();
         if( availableStatus == QXmppPresence::Online ) {
-            picPresenceName = "qrc:/qml/images/presence-online.svg";
+            picPresenceName = "qrc:/presence/online";
         } else if ( availableStatus == QXmppPresence::Chat ) {
-            picPresenceName = "qrc:/qml/images/presence-chatty.svg";
+            picPresenceName = "qrc:/presence/chatty";
         } else if ( availableStatus == QXmppPresence::Away ) {
-            picPresenceName = "qrc:/qml/images/presence-away.svg";
+            picPresenceName = "qrc:/presence/away";
         } else if ( availableStatus == QXmppPresence::XA ) {
-            picPresenceName = "qrc:/qml/images/presence-xa.svg";
+            picPresenceName = "qrc:/presence/xa";
         } else if ( availableStatus == QXmppPresence::DND ) {
-            picPresenceName = "qrc:/qml/images/presence-busy.svg";
+            picPresenceName = "qrc:/presence/busy";
         }
     }
 
@@ -812,6 +812,60 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
     }
 }
 
+QString MyXmppClient::parseEmoticons( QString string ) {
+    QString nStr = " " + string + " ";
+    QString begin = " <img src='qrc:/smileys/";
+    QString end = "' /> ";
+
+    nStr.replace(" :) ", begin + ":)" + end);
+    nStr.replace(" :-) ", begin + ":)" + end);
+
+    nStr.replace(" :D ", begin + ":D" + end);
+    nStr.replace(" :-D ", begin + ":-D" + end);
+
+    nStr.replace(" ;) ", begin + ";)" + end);
+    nStr.replace(" ;-) ", begin + ";)" + end);
+
+    nStr.replace(" ;D ", begin + ";D" + end);
+    nStr.replace(" ;-D ", begin + ";D" + end);
+
+    nStr.replace(" :( ", begin + ":(" + end);
+    nStr.replace(" :-( ", begin + ":(" + end);
+
+    nStr.replace(" :P ", begin + ":P" + end);
+    nStr.replace(" :-P ", begin + ":P" + end);
+
+    nStr.replace(" ;( ", begin + ";(" + end);
+    nStr.replace(" ;-( ", begin + ";(" + end);
+
+    nStr.replace(" :| ", begin + ":|" + end);
+    nStr.replace(" <3 ", begin + "<3" + end);
+
+    nStr.replace(" :\\ ", begin + ":\\" + end);
+    nStr.replace(" :-\\ ", begin + ":\\" + end);
+
+    nStr.replace(" :o ", begin + ":O" + end);
+    nStr.replace(" :O ", begin + ":O" + end);
+    nStr.replace(" o.o ", begin + ":O" + end);
+
+    nStr.replace(" :* ", begin + ":*" + end);
+    nStr.replace(" ;* ", begin + ":*" + end);
+
+    nStr.replace(" :X ", begin + ":X" + end);
+    nStr.replace(" :x ", begin + ":x" + end);
+
+    nStr.replace(" :> ", begin + ":>" + end);
+    nStr.replace(" B) ", begin + "B)" + end);
+    nStr.replace(" %) ", begin + "%)" + end);
+    nStr.replace(" :@ ", begin + ":@" + end);
+    nStr.replace(" ;> ", begin + ";>" + end);
+    nStr.replace(" >) ", begin + ">)" + end);
+    nStr.replace(" 8) ", begin + "8)" + end);
+    nStr.replace(" (=_=) ", begin + "=_=" + end);
+
+    return nStr;
+}
+
 void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg, bool mine )
 {
     QDateTime currTime = QDateTime::currentDateTime();
@@ -829,6 +883,7 @@ void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg, bool mine )
     body = xmppMsg.body();
     body = body.replace(">", "&gt;");  //fix for > stuff
     body = body.replace("<", "&lt;");  //and < stuff too ^^
+    body = parseEmoticons(body);
     body = msgWrapper->parseMsgOnLink(body);
 
     if (mine) {

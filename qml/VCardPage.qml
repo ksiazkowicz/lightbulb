@@ -51,7 +51,7 @@ Page {
     }
     function clearForm()
     {
-        vCardPhoto = "images/avatar.png"
+        vCardPhoto = "qrc:/qml/images/avatar.png"
         vCardNickName = ""
         vCardName = ""
         vCardMiddleName = ""
@@ -90,7 +90,7 @@ Page {
                     smooth: true
                     height: 128
                     width: height
-                    source: "images/avatar.png"
+                    source: "qrc:/qml/images/avatar.png"
                     sourceSize.height: height
                     sourceSize.width: width
                     anchors.verticalCenter: parent.verticalCenter
@@ -259,20 +259,7 @@ Page {
                 statusBarText.text = "Contacts"
                 xmppClient.chatJid = ""
             }
-        }/*
-        ToolButton {
-            iconSource: "images/bar_ok.png"
-            anchors.left: parent.left
-            anchors.leftMargin: (3.5*(parent.width/4) - 0.5*toolBarButtonOptions.width)
-            onClicked: {
-                //TODO: Отправка vCard на сервер
-                //xmppClient.setMyVCard()
-                var objVCard = Qt.createQmlObject("import QtQuick 1.1; import meegim 1.0; XmppVCard {}", parent, "VCardPage.qml: XmppVCard" )
-                objVCard.name = "xyxyxy"
-                console.log(objVCard.name)
-            }
-            visible: false
-        }*/
+        }
     }
 
 }

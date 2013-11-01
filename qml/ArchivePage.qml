@@ -157,7 +157,7 @@ Page {
         ToolButton {
             iconSource: "toolbar-back"
             onClicked: {
-                pageStack.replace("qrc:/qml/MessagesPage.qml")
+                pageStack.replace("qrc:/pages/Messages")
                 xmppClient.page = 1
             }
         }
@@ -183,9 +183,9 @@ Page {
              }
 
         ToolButton {
-            iconSource: "images/bar_open_chats.png"
+            iconSource: "qrc:/qml/images/bar_open_chats.png"
             onClicked: {
-                pageStack.replace( "qrc:/qml/ChatsPage.qml" )
+                pageStack.replace( "qrc:/pages/Chats" )
                 main.isChatInProgress = false
                 statusBarText.text = "Chats"
                 xmppClient.resetUnreadMessages( xmppClient.chatJid ) //cleans unread count for this JID
@@ -195,7 +195,7 @@ Page {
             }
             Image {
                 id: imgMarkUnread
-                source: "images/message_mark.png"
+                source: "qrc:/qml/images/message_mark.png"
                 visible: globalUnreadCount != 0
                 anchors.centerIn: parent
             }

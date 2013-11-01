@@ -62,7 +62,7 @@ Page {
                             onClicked: {
                                 main.nowEditing = "vibraMsgRecv"
                                 dialog.source = ""
-                                dialog.source = "Dialogs/VibrationSettings.qml"
+                                dialog.source = "qrc:/dialogs/Settings/Vibration"
                             }
                         }
                     }
@@ -86,7 +86,7 @@ Page {
                             onClicked: {
                                 main.nowEditing = "soundMsgRecv"
                                 dialog.source = ""
-                                dialog.source = "Dialogs/SoundSettings.qml"
+                                dialog.source = "qrc:/dialogs/Settings/Sound"
                             }
                         }
                     }
@@ -146,7 +146,7 @@ Page {
                             onClicked: {
                                 main.nowEditing = "vibraMsgSent"
                                 dialog.source = ""
-                                dialog.source = "Dialogs/VibrationSettings.qml"
+                                dialog.source = "qrc:/dialogs/Settings/Vibration"
                             }
                         }
                     }
@@ -171,7 +171,7 @@ Page {
                             onClicked: {
                                 main.nowEditing = "soundMsgSent"
                                 dialog.source = ""
-                                dialog.source = "Dialogs/SoundSettings.qml"
+                                dialog.source = "qrc:/dialogs/Settings/Sound"
                             }
                         }
                     }
@@ -210,7 +210,7 @@ Page {
                             onClicked: {
                                 main.nowEditing = "soundNotifyConn"
                                 dialog.source = ""
-                                dialog.source = "Dialogs/SoundSettings.qml"
+                                dialog.source = "qrc:/dialogs/Settings/Sound"
                             }
                         }
                     }
@@ -239,7 +239,7 @@ Page {
                             onClicked: {
                                 main.nowEditing = "soundMsgSub"
                                 dialog.source = ""
-                                dialog.source = "Dialogs/SoundSettings.qml"
+                                dialog.source = "qrc:/dialogs/Settings/Sound"
                             }
                         }
                     }
@@ -265,7 +265,7 @@ Page {
                             onClicked: {
                                 main.nowEditing = "vibraMsgSub"
                                 dialog.source = ""
-                                dialog.source = "Dialogs/VibrationSettings.qml"
+                                dialog.source = "qrc:/dialogs/Settings/Vibration"
                             }
                         }
                     }
@@ -499,7 +499,7 @@ Page {
                 statusBarText.text = "Contacts"
                 if (shouldIreloadRoster) {
                     pageStack.pop()
-                    pageStack.replace("qrc:/qml/RosterPage.qml")
+                    pageStack.replace("qrc:/pages/Roster")
                 } else {
                     pageStack.pop()
                 }

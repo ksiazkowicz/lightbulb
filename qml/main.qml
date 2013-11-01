@@ -54,8 +54,6 @@ PageStackWindow {
 
     property int blinkerSet: 0
 
-    initialPage: RosterPage {}    
-
     SymbiosisAPI {
         id: symbiosis
     }
@@ -98,7 +96,7 @@ PageStackWindow {
                 suspender.running = false
                 suspenderDuration = 0
                 if (isSuspended) {
-                    pageStack.replace("qrc:/qml/RosterPage.qml")
+                    pageStack.replace("qrc:/pages/Roster")
                     isSuspended = false
                 }
                 if (xmppClient.chatJid != "") {
@@ -169,7 +167,7 @@ PageStackWindow {
         onErrorHappened: {
             if (settings.gBool("behavior", "reconnectOnError")) {
                 dialog.source = ""
-                dialog.source = "Dialogs/ReconnectDialog.qml"
+                dialog.source = "qrc:/dialogs/Status/Reconnect"
             }
         }
         onMessageReceived: {
@@ -230,7 +228,7 @@ PageStackWindow {
             }
             dialogJid = bareJid
             dialog.source = ""
-            dialog.source = "Dialogs/QuerySubscribtion.qml"
+            dialog.source = "qrc:/dialogs/Contact/Subscribe"
         }
         onTypingChanged: {
             if (settings.gBool("notifications", "notifyTyping") == true) {
@@ -253,6 +251,7 @@ PageStackWindow {
         xmppClient.keepAlive = settings.gInt("behavior", "keepAliveInterval")
         xmppClient.archiveIncMessage = settings.gBool("behavior", "archiveIncMessage")
         if (settings.gBool("behavior","goOnlineOnStart")) { xmppClient.setMyPresence( XmppClient.Online, lastStatus ) }
+        pageStack.push("qrc:/pages/Roster")
     }
 
     function changeAudioFile() {
@@ -316,7 +315,7 @@ PageStackWindow {
             dialogText = qsTr("Welcome to Lightbulb! I guess it's your first time, isn't it? Have fun with testing! #whyIevenPutThisDialogHere?")
             notify.postInfo(dialogText)
 
-            pageStack.replace("qrc:/qml/RosterPage.qml")
+            pageStack.replace("qrc:/pages/Roster")
 
         }
 

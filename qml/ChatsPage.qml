@@ -40,7 +40,7 @@ Page {
 
                 Image {
                     id: imgMarkUnread
-                    source: "images/message_mark.png"
+                    source: "qrc:/qml/images/message_mark.png"
                     opacity: contactUnreadMsg != 0 ? 1 : 0
                     anchors.centerIn: parent
                     smooth: true
@@ -89,7 +89,7 @@ Page {
                     if (settings.gBool("behavior","enableHsWidget")) {
                         notify.postHSWidget()
                     }
-                    pageStack.replace( "qrc:/qml/MessagesPage.qml" )
+                    pageStack.replace( "qrc:/pages/Messages" )
                 }
 
                 onPressAndHold: {

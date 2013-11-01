@@ -137,6 +137,9 @@ public :
 
     int page;
 
+    /* stuff */
+    QString parseEmoticons(QString string);
+
     /* --- presence --- */
     Q_INVOKABLE void setMyPresence( StatusXmpp status, QString textStatus );
 

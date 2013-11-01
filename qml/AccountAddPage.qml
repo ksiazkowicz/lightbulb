@@ -179,7 +179,7 @@ Page {
         }
 
         ToolButton {
-            iconSource: "images/ok.svg"
+            iconSource: "qrc:/qml/images/ok.svg"
             onClicked: {
                 var jid = tiJid.text
                 var pass = tiPass.text
@@ -197,7 +197,7 @@ Page {
 
                 settings.initListOfAccounts()
 
-                pageStack.replace( "qrc:/qml/AccountsPage.qml" )
+                pageStack.replace( "qrc:/pages/Accounts" )
             }
         }
     }

@@ -40,7 +40,7 @@ Page {
             id: wrapper
             width: rosterView.width
             color: "transparent"
-            visible: rosterSearch.text !== "" ? (txtJid.contact.substr(0, rosterSearch.text.length) == rosterSearch.text ? true : false ) : contactPicStatus === "qrc:/qml/images/presence-offline.svg" ? !hideOffline : true
+            visible: rosterSearch.text !== "" ? (txtJid.contact.substr(0, rosterSearch.text.length) == rosterSearch.text ? true : false ) : contactPicStatus === "qrc:/presence/offline" ? !hideOffline : true
             height: rosterItemHeight
 
             Image {
@@ -53,7 +53,7 @@ Page {
                 width: rosterItemHeight-4
                 Image {
                     id: imgUnreadMsg
-                    source: showUnreadCount ? "images/message_num.png" : "images/message_mark.png"
+                    source: showUnreadCount ? "qrc:/qml/images/message_num.png" : "qrc:/qml/images/message_mark.png"
                     sourceSize.height: wrapper.height
                     sourceSize.width: wrapper.height
                     smooth: true
@@ -99,7 +99,7 @@ Page {
                     xmppClient.contactName = contactName
                     main.globalUnreadCount = main.globalUnreadCount - contactUnreadMsg
                     notify.postHSWidget()
-                    main.pageStack.push( "qrc:/qml/MessagesPage.qml" )
+                    main.pageStack.push( "qrc:/pages/Messages" )
                 }
 
                 onPressAndHold: {
@@ -157,16 +157,16 @@ Page {
                 text: qsTr("Status")
                 onClicked: {
                     dialog.source = ""
-                    dialog.source = "Dialogs/ChangeStatus.qml"
+                    dialog.source = "qrc:/dialogs/Status/Change"
                 }
             }
             MenuItem {
                 text: qsTr("Accounts")
-                onClicked: main.pageStack.push( "qrc:/qml/AccountsPage.qml" )
+                onClicked: main.pageStack.push( "qrc:/pages/Accounts" )
             }
             MenuItem {
                 text: qsTr("Settings")
-                onClicked: main.pageStack.push( "qrc:/qml/SettingsPage.qml" )
+                onClicked: main.pageStack.push( "qrc:/pages/Settings" )
             }
 
             MenuItem {
@@ -174,7 +174,7 @@ Page {
                 onClicked: {if( xmppClient.stateConnect == XmppClient.Online )
                     {
                         main.requestMyVCard = true
-                        main.pageStack.push( "qrc:/qml/VCardPage.qml" )
+                        main.pageStack.push( "qrc:/pages/VCard" )
                     }}
             }
             MenuItem {
@@ -192,7 +192,7 @@ Page {
 
             MenuItem {
                 text: qsTr("About...")
-                onClicked: main.pageStack.push( "qrc:/qml/AboutPage.qml" )
+                onClicked: main.pageStack.push( "qrc:/pages/About" )
             }
         }
     }
@@ -247,28 +247,21 @@ Page {
             MenuItem {
                 text: qsTr("Remove")
                 onClicked: { dialog.source = ""
-                    dialog.source = "Dialogs/RemoveContact.qml"}
+                    dialog.source = "qrc:/dialogs/Contact/Remove"}
             }
             MenuItem {
                 text: qsTr("Rename")
                 onClicked: { dialog.source = ""
-                    dialog.source = "Dialogs/RenameContact.qml"}
+                    dialog.source = "qrc:/dialogs/Contact/Rename"}
             }
             MenuItem {
                 text: qsTr("vCard")
                 onClicked: {
                     main.requestMyVCard = false
-                    main.pageStack.push( "qrc:/qml/VCardPage.qml" )
+                    main.pageStack.push( "qrc:/pages/VCard" )
                     xmppClient.chatJid = selectedJid
                 }
             }
-            /*MenuItem {
-                text: qsTr("Archive")
-                onClicked: {
-                    main.pageStack.push( "qrc:/qml/ArchivePage.qml" )
-                    xmppClient.chatJid = selectedJid
-                }
-            }*/
             MenuItem {
                 text: qsTr("Subscribe")
                 onClicked: {dialogTitle = qsTr("Subscribed")
@@ -335,7 +328,7 @@ Page {
             smooth: true
             onClicked: {
                 dialog.source = ""
-                dialog.source = "Dialogs/AddContact.qml"
+                dialog.source = "qrc:/dialogs/Contact/Add"
             }
         }
         ToolButton {
@@ -350,12 +343,12 @@ Page {
 
         ToolButton {
             id: toolBarButtonChats
-            iconSource: "images/bar_open_chats.png"
+            iconSource: "qrc:/qml/images/bar_open_chats.png"
             smooth: true
-            onClicked: main.pageStack.push( "qrc:/qml/ChatsPage.qml" )
+            onClicked: main.pageStack.push( "qrc:/pages/Chats" )
             Image {
                 id: imgMarkUnread
-                source: "images/message_mark.png"
+                source: "qrc:/qml/images/message_mark.png"
                 visible: globalUnreadCount != 0
                 anchors.centerIn: parent
             }
