@@ -40,12 +40,12 @@ Page {
             id: wrapper
             width: rosterView.width
             color: "transparent"
-            visible: rosterSearch.text !== "" ? (txtJid.contact.substr(0, rosterSearch.text.length) == rosterSearch.text ? true : false ) : contactPicStatus === "qrc:/presence/offline" ? !hideOffline : true
+            visible: rosterSearch.text !== "" ? (txtJid.contact.substr(0, rosterSearch.text.length) == rosterSearch.text ? true : false ) : presence === "qrc:/presence/offline" ? !hideOffline : true
             height: rosterItemHeight
 
             Image {
                 id: imgPresence
-                source: rosterLayoutAvatar ? (contactPicAvatar === "" ? "qrc:/qml/images/avatar.png" : contactPicAvatar) : contactPicStatus
+                source: rosterLayoutAvatar ? avatarPath : presence
                 sourceSize.height: rosterItemHeight-4
                 sourceSize.width: rosterItemHeight-4
                 anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
@@ -57,19 +57,19 @@ Page {
                     sourceSize.height: wrapper.height
                     sourceSize.width: wrapper.height
                     smooth: true
-                    visible: markUnread ? contactUnreadMsg != 0 : false
+                    visible: markUnread ? unreadMsg != 0 : false
                     anchors.centerIn: parent
-                    opacity: contactUnreadMsg != 0 ? 1 : 0
+                    opacity: unreadMsg != 0 ? 1 : 0
                     Rectangle {
                         color: "transparent"
                         width: wrapper.height * 0.29
                         height: width
                         anchors.right: parent.right
                         anchors.bottom: parent.bottom
-                        visible: showUnreadCount ? contactUnreadMsg != 0 : false
+                        visible: showUnreadCount ? unreadMsg != 0 : false
                         Text {
                             id: txtUnreadMsg
-                            text: contactUnreadMsg
+                            text: unreadMsg
                             font.pixelSize: 0.72*parent.width
                             anchors.centerIn: parent
                             z: 1
@@ -80,11 +80,11 @@ Page {
             } //imgPresence
             Text {
                     id: txtJid
-                    property string contact: contactName
+                    property string contact: name
                     anchors { left: imgPresence.right; right: imgPresenceR.left; leftMargin: 10; rightMargin: 10; verticalCenter: parent.verticalCenter }
                     width: parent.width
                     maximumLineCount: (rosterItemHeight/22) > 1 ? (rosterItemHeight/22) : 1
-                    text: (contactName === "" ? contactJid : contactName) + (showContactStatusText ? ("\n" + contactTextStatus) : "")
+                    text: (name === "" ? jid : name) + (showContactStatusText ? ("\n" + statusText) : "")
                     onLinkActivated: { main.url=link; linkContextMenu.open()}
                     wrapMode: Text.Wrap
                     font.pixelSize: (showContactStatusText ? 16 : 0)
@@ -95,22 +95,22 @@ Page {
                 anchors.fill: parent
 
                 onClicked: {
-                    xmppClient.chatJid = contactJid
-                    xmppClient.contactName = contactName
-                    main.globalUnreadCount = main.globalUnreadCount - contactUnreadMsg
+                    xmppClient.chatJid = jid
+                    xmppClient.contactName = name
+                    main.globalUnreadCount = main.globalUnreadCount - unreadMsg
                     notify.postHSWidget()
                     main.pageStack.push( "qrc:/pages/Messages" )
                 }
 
                 onPressAndHold: {
-                    selectedJid = contactJid
-                    dialogName = contactName
+                    selectedJid = jid
+                    dialogName = name
                     contactMenu.open()
                 }
             }
             Image {
                 id: imgPresenceR
-                source: rosterLayoutAvatar ? contactPicStatus : ""
+                source: rosterLayoutAvatar ? presence : ""
                 sourceSize.height: (wrapper.height/3) - 4
                 sourceSize.width: (wrapper.height/3) - 4
                 anchors { verticalCenter: parent.verticalCenter; right: parent.right; rightMargin: rosterLayoutAvatar ? 10 : 0 }
@@ -138,7 +138,7 @@ Page {
             spacing: 0
 
             Repeater {
-                model: xmppClient.roster
+                model: xmppClient.sqlRoster
                 delegate: componentRosterItem
             }
 
@@ -185,7 +185,8 @@ Page {
                         main.notifyHoldDuration = 0
                         notifyHoldTimer.running = false
                     } else {
-                        muteNotifications.open()
+                        dialog.source = ""
+                        dialog.source = "qrc:/dialogs/MuteNotifications"
                     }
                 }
             }
@@ -196,49 +197,6 @@ Page {
             }
         }
     }
-
-    CommonDialog {
-        id: muteNotifications
-        titleText: qsTr("Mute notifications")
-
-        buttonTexts: [qsTr("OK"), qsTr("Cancel")]
-
-        onButtonClicked: {
-            if ((index === 0) && ( notifyHoldDuration.text != "" )) {
-                main.notifyHoldDuration = parseInt(notifyHoldDuration.text)
-                notifyHold = true
-                notifyHoldTimer.running = true
-            }
-        }
-
-        content: Rectangle {
-            width: parent.width-20
-            height: 100
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: "transparent"
-
-            Text {
-                id: queryLabel;
-                color: "white";
-                anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10; top: parent.top; topMargin: 10 }
-                text: qsTr("Mute notifications for...");
-            }
-            TextField {
-                id: notifyHoldDuration
-                inputMethodHints: Qt.ImhFormattedNumbersOnly
-                text: dialogName
-                height: 50
-                anchors { bottom: parent.bottom; bottomMargin: 5; left: parent.left; right: parent.right }
-                placeholderText: qsTr("Time in minutes (ex. 15)")
-
-                onActiveFocusChanged: {
-                    splitscreenY = 0
-                }
-            }
-        }
-    }
-
-
 
     Menu {
         id: contactMenu
@@ -320,7 +278,8 @@ Page {
             iconSource: "toolbar-back"
             smooth: true
             onClicked: {
-                closeDialog.open()
+                dialog.source = ""
+                dialog.source = "qrc:/dialogs/Close"
             }
         }
         ToolButton {

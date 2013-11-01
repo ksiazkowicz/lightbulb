@@ -3,8 +3,9 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 CommonDialog {
-    buttonTexts: [qsTr("Yes"), qsTr("No")]
+    id: closeDialog
     titleText: "Confirmation"
+    buttonTexts: [qsTr("Yes"), qsTr("No")]
 
     Component.onCompleted: {
         open()
@@ -12,9 +13,7 @@ CommonDialog {
 
     onButtonClicked: {
         if (index === 0) {
-            selectedName = ""
-            __selectedContactItemType = 0
-            xmppClient.removeContact( xmppClient.chatJid )
+            Qt.quit()
         }
     }
 
@@ -23,6 +22,6 @@ CommonDialog {
         id: dialogQueryLabel;
         wrapMode: Text.Wrap;
         anchors { left: parent.left; right: parent.right; leftMargin: 10; rightMargin:10; verticalCenter: parent.verticalCenter }
-        text: qsTr("Remove ") + dialogName + "?";
+        text: qsTr("Are you sure you want to close the app?")
     }
 }

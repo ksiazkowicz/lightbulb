@@ -42,14 +42,18 @@ public:
 
         // create database structure
         bool mkAccTable();
-        bool mkChatsTable();
         bool mkRosterTable();
         bool mkMessagesTable();
         bool insertMessage(int acc, QString bareJid, QString text, QString time, int mine);
-        bool insertContact(int acc, QString bareJid, QString name, QString presence, QString avatarPath);
 
+        bool insertContact(int acc, QString bareJid, QString name, QString presence, QString avatarPath);
+        bool deleteContact(int acc, QString bareJid );
         bool checkIfChatInProgress( QString bareJid );
+        bool checkIfContactExists( QString bareJid );
         bool setChatInProgress( QString bareJid, bool chat );
+        bool updateContact( int acc, QString bareJid, QString property, QString value );
+        bool incUnreadMessage( int acc, QString bareJid );
+        QString getContactProperty( int acc, QString bareJid, QString property );
 
         bool insertAccount(QString jid, QString pass, QString resource, int manualHostPort, int enabled, QString host, int port);
         bool doGenericQuery(QString genericQuery);

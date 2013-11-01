@@ -21,7 +21,7 @@ CommonDialog {
         color: "white";
         id: dialogQueryLabel;
         wrapMode: Text.Wrap;
-        anchors { fill: parent; leftMargin: 10; rightMargin:10; topMargin: 10 }
+        anchors { left: parent.left; right: parent.right; leftMargin: 10; rightMargin:10; verticalCenter: parent.verticalCenter }
         text: qsTr("Remove ") + main.accJid + "?";
     }
 }

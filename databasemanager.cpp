@@ -129,7 +129,7 @@ bool DatabaseManager::mkRosterTable()
                          "name varchar(30), "
                          "jid varchar(30), "
                          "resource varchar(30), "
-                         "status varchar(12), "
+                         "presence varchar(12), "
                          "statusText varchar(255), "
                          "avatarPath varchar(255), "
                          "isChatInProgress int, "
@@ -142,24 +142,44 @@ bool DatabaseManager::checkIfChatInProgress( QString bareJid )
 {
     bool ret = false;
     QSqlQuery query;
-    query.prepare("select isChatInProgress from roster where jid = " + bareJid);
+    query.prepare("select isChatInProgress from roster where jid = '" + bareJid + "'");
+    query.exec();
+    qDebug() << query.lastError();
     SqlQueryModel isChatInProgress;
     isChatInProgress.setQuery(query);
 
     ret = isChatInProgress.record(0).value("isChatInProgress").toBool();
+    qDebug() << isChatInProgress.record(0).value("isChatInProgress");
     return ret;
 }
+
+bool DatabaseManager::checkIfContactExists( QString bareJid )
+{
+    bool ret = false;
+    QSqlQuery query;
+    query.prepare("select * from roster where jid = '" + bareJid + "'");
+    query.exec();
+    SqlQueryModel contactExists;
+    contactExists.setQuery(query);
+
+    ret = contactExists.rowCount() > 0 ? true : false;
+    return ret;
+}
+
 
 bool DatabaseManager::setChatInProgress( QString bareJid, bool chat )
 {
     bool ret = false;
+    int tmp = chat;
     QSqlQuery query;
     QString queryStr;
-    queryStr = "UPDATE roster SET isChatInProgress=";
-    queryStr += chat;
-    queryStr += " where jid=";
+    queryStr = "UPDATE roster SET isChatInProgress='";
+    queryStr += QString::number(tmp);
+    queryStr += "' where jid='";
     queryStr += bareJid;
+    queryStr += "'";
     ret = query.exec(queryStr);
+    qDebug() << query.lastError();
     return ret;
 
 }
@@ -247,7 +267,7 @@ bool DatabaseManager::insertContact( int acc,
 {
     bool ret = false;
     QSqlQuery query;
-    ret = query.prepare("INSERT INTO roster (id, id_account, name, jid, resource, status, statusText, avatarPath, isChatInProgress, unreadMsg) "
+    ret = query.prepare("INSERT INTO roster (id_account, name, jid, resource, presence, statusText, avatarPath, isChatInProgress, unreadMsg) "
                         "VALUES (:acc, :name, :jid, :resource, :status, :statusText, :avatarPath, :isChatInProgress, :unreadMsg)");
     if (ret) {
         query.bindValue(":acc", acc);
@@ -263,4 +283,48 @@ bool DatabaseManager::insertContact( int acc,
     }
 
     return ret;
+}
+
+bool DatabaseManager::updateContact( int acc,
+                                     QString bareJid,
+                                     QString property,
+                                     QString value)
+{
+    bool ret = false;
+    QSqlQuery query;
+    ret = query.exec("UPDATE roster SET " + property + "='" + value +  "' where jid='" + bareJid + "'");
+    return ret;
+}
+
+bool DatabaseManager::deleteContact( int acc,
+                                     QString bareJid)
+{
+    bool ret = false;
+    QSqlQuery query;
+    ret = query.exec("DELETE FROM roster WHERE jid='" + bareJid + "'");
+    return ret;
+}
+
+bool DatabaseManager::incUnreadMessage( int acc, QString bareJid )
+{
+    bool ret = false;
+    QSqlQuery query;
+    query.exec("select unreadMsg from roster where jid = '" + bareJid + "'");
+    SqlQueryModel unreadMsgCount;
+    unreadMsgCount.setQuery(query);
+
+    int nCount = unreadMsgCount.record(0).value("unreadMsg").toInt()+1;
+
+    ret = query.exec("UPDATE roster SET unreadMsg='" + QString::number(nCount) + "' where jid='" + bareJid + "'" );
+    return ret;
+}
+
+QString DatabaseManager::getContactProperty( int acc, QString bareJid, QString property)
+{
+    QSqlQuery query;
+    query.exec("select " + property + " from roster where jid = '" + bareJid + "'");
+    SqlQueryModel contact;
+    contact.setQuery(query);
+
+    return contact.record(0).value(property).toString();
 }

@@ -163,24 +163,24 @@ Page {
         }
 
         ButtonRow {
-                 ToolButton {
-                     iconSource: "toolbar-previous"
-                     enabled: xmppClient.page > 1
-                     opacity: enabled ? 1 : 0.2
-                     onClicked: {
-                        xmppClient.page--;
-                        flickable.contentY = flickable.contentHeight-flickable.height;
-                     }
-                 }
-                 ToolButton {
-                     iconSource: "toolbar-next"
-                     enabled: xmppClient.messagesCount - (xmppClient.page*20)> 0
-                     opacity: enabled ? 1 : 0.2
-                     onClicked: {
-                        xmppClient.page++;
-                     }
-                 }
+            ToolButton {
+                iconSource: "toolbar-previous"
+                enabled: xmppClient.messagesCount - (xmppClient.page*20)> 0
+                opacity: enabled ? 1 : 0.2
+                onClicked: {
+                   xmppClient.page++;
+                }
+            }
+            ToolButton {
+                iconSource: "toolbar-next"
+                enabled: xmppClient.page > 1
+                opacity: enabled ? 1 : 0.2
+                onClicked: {
+                    xmppClient.page--;
+                    flickable.contentY = flickable.contentHeight-flickable.height;
+                }
              }
+        }
 
         ToolButton {
             iconSource: "qrc:/qml/images/bar_open_chats.png"

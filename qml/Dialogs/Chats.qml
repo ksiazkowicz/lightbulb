@@ -6,7 +6,7 @@ CommonDialog {
     id: dlgChats
     titleText: qsTr("Chats")
     privateCloseIcon: true
-    height: 480
+    height: 320
 
     Connections {
         target: xmppClient
@@ -27,12 +27,25 @@ CommonDialog {
         Rectangle {
             id: wrapper
             width: listViewChats.width
-            color: "transparent"
+            gradient: unreadMsg > 0 ? incomingMsg : nihilNovi
+
+            Gradient {
+                id: incomingMsg
+                GradientStop { position: 0; color: "red" }
+                GradientStop { position: 1; color: "darkred" }
+            }
+
+            Gradient {
+                id: nihilNovi
+                GradientStop { position: 0; color: "transparent" }
+                GradientStop { position: 1; color: "transparent" }
+            }
+
             height: rosterItemHeight
 
             Image {
                 id: imgPresence
-                source: rosterLayoutAvatar ? (contactPicAvatar === "" ? "qrc:/qml/images/avatar.png" : contactPicAvatar) : contactPicStatus
+                source: rosterLayoutAvatar ? avatarPath : presence
                 sourceSize.height: rosterItemHeight-4
                 sourceSize.width: rosterItemHeight-4
                 anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
@@ -41,15 +54,16 @@ CommonDialog {
             } //imgPresence
             Text {
                     id: txtJid
-                    property string contact: contactName
+                    property string contact: name
                     anchors { left: imgPresence.right; right: imgPresenceR.left; leftMargin: 10; rightMargin: 10; verticalCenter: parent.verticalCenter }
                     width: parent.width
                     maximumLineCount: (rosterItemHeight/22) > 1 ? (rosterItemHeight/22) : 1
-                    text: (contactName === "" ? contactJid : contactName) + (contactUnreadMsg > 0 ? " [" + contactUnreadMsg + "]" : "")
+                    text: (name === "" ? jid : name) + (unreadMsg > 0 ? " [" + unreadMsg + "]" : "")
                     onLinkActivated: { main.url=link; linkContextMenu.open()}
                     wrapMode: Text.Wrap
                     font.pixelSize: 16
                     color: "white"
+                    opacity: unreadMsg > 0 ? 1 : 0.7
             }
             MouseArea {
                 id: mouseAreaItem;
@@ -57,10 +71,10 @@ CommonDialog {
 
                 onClicked: {
                     listViewChats.currentIndex = index
-                    xmppClient.chatJid = contactJid
-                    xmppClient.contactName = contactName
-                    main.globalUnreadCount = main.globalUnreadCount - contactUnreadMsg
-                    xmppClient.resetUnreadMessages( contactJid )
+                    xmppClient.chatJid = jid
+                    xmppClient.contactName = name
+                    main.globalUnreadCount = main.globalUnreadCount - unreadMsg
+                    xmppClient.resetUnreadMessages( jid )
                     if (settings.gBool("behavior","enableHsWidget")) {
                         notify.postHSWidget()
                     }
@@ -69,7 +83,7 @@ CommonDialog {
             }
             Image {
                 id: imgPresenceR
-                source: rosterLayoutAvatar ? contactPicStatus : ""
+                source: rosterLayoutAvatar ? presence : ""
                 sourceSize.height: (wrapper.height/3) - 4
                 sourceSize.width: (wrapper.height/3) - 4
                 anchors { verticalCenter: parent.verticalCenter; right: parent.right; rightMargin: rosterLayoutAvatar ? 10 : 0 }
@@ -89,9 +103,9 @@ CommonDialog {
     content: ListView {
                 id: listViewChats
                 anchors.fill: parent
-                height: (xmppClient.openChats.count*rosterItemHeight)+1
+                height: (xmppClient.sqlChats.count*rosterItemHeight)+1
                 highlightFollowsCurrentItem: false
-                model: xmppClient.openChats
+                model: xmppClient.sqlChats
                 delegate: componentRosterItem
             }
 }

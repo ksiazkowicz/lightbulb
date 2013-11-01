@@ -208,27 +208,14 @@ Page {
         id: flickable
         boundsBehavior: Flickable.DragAndOvershootBounds
 
-        anchors { top: parent.top; bottom: txtMessage.top; left: parent.left; right: parent.right }
+        anchors { top: parent.top; topMargin:5; bottom: txtMessage.top; bottomMargin: 2; left: parent.left; right: parent.right }
 
-        contentHeight: showAllMessagesBtn.height+10+listViewMessages.contentHeight+2
-
-
-        Button {
-            id: showAllMessagesBtn
-            text: "Show more messages"
-            anchors { top: parent.top; topMargin: height>0 ? 5 : 0; left: parent.left; right: parent.right }
-            height: xmppClient.messagesCount > 10 ? 40 : 0
-            onClicked: {
-                xmppClient.page = 1
-                pageStack.replace("qrc:/pages/Archive")
-            }
-
-        }
+        contentHeight: listViewMessages.contentHeight
 
         ListView {
             id: listViewMessages
             interactive: false
-            anchors { top: showAllMessagesBtn.bottom; topMargin: 5; bottom: parent.bottom; bottomMargin: 2; left: parent.left; right: parent.right }
+            anchors { fill: parent }
             clip: true
             model: xmppClient.last10messages
             delegate: componentWrapperItem
@@ -430,16 +417,17 @@ Page {
                     dlgResources.open();
                 }
             }
+
+            MenuItem {
+                text: "Archive"
+                onClicked: {
+                    xmppClient.page = 1
+                    pageStack.replace("qrc:/pages/Archive")
+                }
+            }
             /*MenuItem {
                 text: "Send attention"
                 onClicked: xmppClient.attentionSend( xmppClient.chatJid, messagesPage.resourceJid )
-            }*/
-            /*MenuItem {
-                text: "Copy mode"
-                onClicked: {
-                    generateLog();
-                    copyDialog.open();
-                }
             }*/
         }
     }

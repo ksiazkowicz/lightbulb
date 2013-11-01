@@ -112,7 +112,9 @@ OTHER_FILES += README \
     qml/Notifications.qml \
     qml/ArchivePage.qml \
     qml/Dialogs/ReconnectDialog.qml \
-    qml/Dialogs/Chats.qml
+    qml/Dialogs/Chats.qml \
+    qml/Dialogs/CloseDialog.qml \
+    qml/Dialogs/MuteNotifications.qml
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)

@@ -13,11 +13,6 @@
 #include <QList>
 #include <QVariant>
 
-#include "rosteritemmodel.h"
-#include "rosterlistmodel.h"
-
-#include "chatslistmodel.h"
-
 #include "DatabaseManager.h"
 
 #include "mycache.h"
@@ -71,14 +66,13 @@ class MyXmppClient : public QObject
     Q_PROPERTY( int page READ getPage WRITE gotoPage NOTIFY pageChanged )
     Q_PROPERTY( QString statusText READ getStatusText WRITE setStatusText  NOTIFY statusTextChanged )
     Q_PROPERTY( bool isTyping READ getTyping NOTIFY typingChanged )
-    Q_PROPERTY( RosterListModel* roster READ getRoster NOTIFY rosterChanged )
-    Q_PROPERTY( SqlQueryModel* sqlRoster READ getSqlRoster NOTIFY sqlRosterChanged )
+    Q_PROPERTY( SqlQueryModel* sqlRoster READ getSqlRoster NOTIFY rosterChanged )
+    Q_PROPERTY( SqlQueryModel* sqlChats READ getSqlChats NOTIFY openChatsChanged )
     Q_PROPERTY( QString myBareJid READ getMyJid WRITE setMyJid NOTIFY myJidChanged )
     Q_PROPERTY( QString myPassword READ getPassword() WRITE setPassword  NOTIFY myPasswordChanged )
     Q_PROPERTY( QString host READ getHost WRITE setHost NOTIFY hostChanged )
     Q_PROPERTY( int port READ getPort WRITE setPort NOTIFY portChanged )
     Q_PROPERTY( QString resource READ getResource WRITE setResource NOTIFY resourceChanged )
-    Q_PROPERTY( ChatsListModel* openChats READ getOpenChats NOTIFY openChatsChanged )
     Q_PROPERTY( int messagesCount READ getSqlMessagesCount NOTIFY sqlMessagesChanged )
     Q_PROPERTY( SqlQueryModel* last10messages READ getLastSqlMessages NOTIFY sqlMessagesChanged )
     Q_PROPERTY( SqlQueryModel* messagesByPage READ getSqlMessagesByPage NOTIFY pageChanged )
@@ -92,18 +86,15 @@ class MyXmppClient : public QObject
     MyCache *cacheIM;
     MessageWrapper *msgWrapper;
 
-    ChatsListModel *listModelChats;
-
     QXmppClient *xmppClient;
     QXmppRosterManager *rosterManager;
     QXmppVCardManager *vCardManager;
-
-    RosterListModel *listModelRoster;
 
     SettingsDBWrapper *mimOpt;
     DatabaseManager *database;
     SqlQueryModel *sqlMessages;
     SqlQueryModel *sqlRoster;
+    SqlQueryModel *sqlChats;
 
     QMLVCard * qmlVCard;
     QString flVCardRequest;
@@ -148,7 +139,6 @@ public :
     Q_INVOKABLE void typingStop( QString bareJid, QString resource );
 
     /*--- unread msg ---*/
-    /*Q_INVOKABLE */void incUnreadMessage( QString bareJid );
     Q_INVOKABLE void resetUnreadMessages( QString bareJid );
     Q_INVOKABLE void setUnreadMessages( QString bareJid, int count );
 
@@ -208,9 +198,9 @@ public :
     bool getTyping() const { return m_flTyping; }
     void setTyping( QString &jid, const bool isTyping ) { m_flTyping = isTyping; emit typingChanged(jid, isTyping); }
 
-    RosterListModel* getRoster() const { return listModelRoster; }
+    SqlQueryModel* getSqlRoster();
 
-    SqlQueryModel* getSqlRoster() const { return sqlRoster; }
+    SqlQueryModel* getSqlChats();
 
     QString getMyJid() const { return m_myjid; }
     void setMyJid( const QString& myjid ) { if(myjid!=m_myjid) {m_myjid=myjid; emit myJidChanged(); } }
@@ -226,8 +216,6 @@ public :
 
     QString getResource() const { return m_resource; }
     void setResource( const QString & value ) { if(value!=m_resource) {m_resource=value; emit resourceChanged(); } }
-
-    ChatsListModel* getOpenChats() const { return listModelChats; }
 
     int getSqlMessagesCount();
     SqlQueryModel* getLastSqlMessages();
@@ -289,7 +277,6 @@ signals:
     void pageChanged();
     void typingChanged( QString bareJid, bool isTyping );
     void rosterChanged();
-    void sqlRosterChanged();
     void myJidChanged();
     void myPasswordChanged();
     void hostChanged();
@@ -298,12 +285,10 @@ signals:
     void openChatsChanged( QString bareJid );
     void chatOpened( QString bareJid );
     void chatClosed( QString bareJid );
-    void messagesChanged();
     void sqlMessagesChanged();
     void chatJidChanged();
     void contactNameChanged();
     void vCardChanged();
-    void presenceJidChanged( const QString &presenceBareJid, const QString &presenceTextStatus, const QString &presencePicStatus );
     void errorHappened( const QString &errorString );
     void subscriptionReceived( const QString bareJid );
     void keepAliveChanged();
