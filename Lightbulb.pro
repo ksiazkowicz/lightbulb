@@ -57,9 +57,6 @@ DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS
 SOURCES += main.cpp \
     MyXmppClient.cpp \
     listmodel.cpp \
-    rosterlistmodel.cpp \
-    rosteritemmodel.cpp \
-    chatslistmodel.cpp \
     mycache.cpp \
     storevcard.cpp \
     mysettings.cpp \
@@ -74,9 +71,6 @@ SOURCES += main.cpp \
 
 HEADERS += MyXmppClient.h \
     listmodel.h \
-    rosterlistmodel.h \
-    rosteritemmodel.h \
-    chatslistmodel.h \
     mycache.h \
     storevcard.h \
     mysettings.h \

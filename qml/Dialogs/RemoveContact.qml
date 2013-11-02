@@ -12,8 +12,6 @@ CommonDialog {
 
     onButtonClicked: {
         if (index === 0) {
-            selectedName = ""
-            __selectedContactItemType = 0
             xmppClient.removeContact( xmppClient.chatJid )
         }
     }

@@ -296,6 +296,18 @@ bool DatabaseManager::updateContact( int acc,
     return ret;
 }
 
+bool DatabaseManager::updatePresence( int acc,
+                                     QString bareJid,
+                                     QString presence,
+                                     QString resource,
+                                     QString statusText)
+{
+    bool ret = false;
+    QSqlQuery query;
+    ret = query.exec("UPDATE roster SET presence='" + presence + "', resource='" + resource + "', statusText='" + statusText + "' where jid='" + bareJid + "'");
+    return ret;
+}
+
 bool DatabaseManager::deleteContact( int acc,
                                      QString bareJid)
 {
@@ -328,3 +340,14 @@ QString DatabaseManager::getContactProperty( int acc, QString bareJid, QString p
 
     return contact.record(0).value(property).toString();
 }
+
+QString DatabaseManager::getContactPropertyByIndex( int acc, int index, QString property)
+{
+    QSqlQuery query;
+    query.exec("select " + property + " from roster where id = '" + QString::number(index) + "'");
+    SqlQueryModel contact;
+    contact.setQuery(query);
+
+    return contact.record(0).value(property).toString();
+}
+

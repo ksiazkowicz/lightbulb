@@ -52,8 +52,8 @@ public:
         bool checkIfContactExists( QString bareJid );
         bool setChatInProgress( QString bareJid, bool chat );
         bool updateContact( int acc, QString bareJid, QString property, QString value );
+        bool updatePresence( int acc, QString bareJid, QString presence, QString resource, QString statusText);
         bool incUnreadMessage( int acc, QString bareJid );
-        QString getContactProperty( int acc, QString bareJid, QString property );
 
         bool insertAccount(QString jid, QString pass, QString resource, int manualHostPort, int enabled, QString host, int port);
         bool doGenericQuery(QString genericQuery);

@@ -96,6 +96,8 @@ class MyXmppClient : public QObject
     SqlQueryModel *sqlRoster;
     SqlQueryModel *sqlChats;
 
+    QStringList jidCache;
+
     QMLVCard * qmlVCard;
     QString flVCardRequest;
 
@@ -127,9 +129,7 @@ public :
     void initXmppClient();
 
     int page;
-
-    /* stuff */
-    QString parseEmoticons(QString string);
+    bool roster_initiated;
 
     /* --- presence --- */
     Q_INVOKABLE void setMyPresence( StatusXmpp status, QString textStatus );

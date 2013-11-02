@@ -38,6 +38,8 @@ PageStackWindow {
 
     property bool requestMyVCard:    false
 
+    property string dialogJid:       ""
+
     property string dialogTitle:     ""
     property string dialogText:      ""
     property string dialogName:      ""

@@ -10,6 +10,7 @@
 #include <QCryptographicHash>
 #include <QFile>
 #include <QDir>
+#include <QSqlRecord>
 
 QString MyXmppClient::myVersion = "0.2 Debug";
 
@@ -53,6 +54,7 @@ MyXmppClient::MyXmppClient() : QObject(0)
     m_keepAlive = 60;
     accounts = 0;
     page = 1;
+    roster_initiated = true;
 
     flVCardRequest = "";
     qmlVCard = new QMLVCard();
@@ -152,6 +154,7 @@ void MyXmppClient::disconnectFromXmppServer() //Q_INVOKABLE
 /* it initialises the list of contacts - roster */
 void MyXmppClient::initRoster()
 {
+    roster_initiated = false;
     qDebug() << "MyXmppClient::initRoster() has been called";
     if( ! rosterManager->isRosterReceived() ) {
         qDebug() << "MyXmppClient::initRoster(): roster has not received yet";
@@ -167,6 +170,17 @@ void MyXmppClient::initRoster()
     }
 
     QStringList listBareJids = rosterManager->getRosterBareJids();
+
+    for( int i=0; i < sqlRoster->rowCount(); i++)    // clean the roster, remove contacts which are not on the server
+    {
+        QString bareJid = sqlRoster->record(i).value("jid").toString();
+        jidCache.append(bareJid);
+        if (!listBareJids.contains(bareJid)) {
+            database->deleteContact(1,bareJid);
+            jidCache.removeAt(jidCache.indexOf(bareJid));
+        }
+    }
+
     for( int j=0; j < listBareJids.length(); j++ )
     {
         QString bareJid = listBareJids.at(j);
@@ -175,15 +189,10 @@ void MyXmppClient::initRoster()
 
         QXmppRosterIq::Item itemRoster = rosterManager->getRosterEntry( bareJid );
         QString name = itemRoster.name();
-        QList<QString> listOfGroup = itemRoster.groups().toList();
-        QString group = "";
-        if( listOfGroup.length() > 0 ) {
-            group = listOfGroup.at(0);
-        }
         QString avatarPath = cacheIM->getAvatarCache( bareJid );
         vCardData vCdata = cacheIM->getVCard( bareJid );
 
-        if ( avatarPath.isEmpty() && vCdata.isEmpty() )
+        if ( avatarPath.isEmpty() || vCdata.isEmpty() )
         {
             vCardManager->requestVCard( bareJid );
         }
@@ -195,21 +204,21 @@ void MyXmppClient::initRoster()
             }
         }
 
-        if (database->checkIfContactExists(bareJid)) {
-            database->updateContact(1,bareJid,"name",name);
+        if (jidCache.contains(bareJid)) {
+            if (sqlRoster->record(jidCache.indexOf(bareJid)).value("name").toString() != name) database->updateContact(1,bareJid,"name",name);
         } else {
-            qDebug() << "inserting contact " << bareJid << ";" << name << ";" << getPicPresence(QXmppPresence::Unavailable) <<
-                        ";" << avatarPath;
             database->insertContact(1,bareJid,name,this->getPicPresence(QXmppPresence::Unavailable),avatarPath);
+            jidCache.append(bareJid);
         }
     }
+    roster_initiated = true;
     emit rosterChanged();
 
 }
 
 void MyXmppClient::initPresence(const QString& bareJid, const QString& resource)
 {
-    if( !database->checkIfContactExists(bareJid) ) {
+    if( !jidCache.contains(bareJid) ) {
         return;
     }
 
@@ -225,9 +234,15 @@ void MyXmppClient::initPresence(const QString& bareJid, const QString& resource)
         }
     }
 
-    database->updateContact(1,bareJid,"resource",resource);
-    database->updateContact(1,bareJid,"presence",this->getPicPresence( xmppPresence ));
-    database->updateContact(1,bareJid,"statusText",this->getTextStatus( xmppPresence.statusText(), xmppPresence ));
+    bool needRefreshing;
+
+    if (this->getPicPresence( xmppPresence ) != sqlRoster->record(jidCache.indexOf(bareJid)).value("presence").toString()
+            || this->getTextStatus( xmppPresence.statusText(), xmppPresence ) != sqlRoster->record(jidCache.indexOf(bareJid)).value("statusText").toString()) {
+        database->updatePresence(1,bareJid,this->getPicPresence( xmppPresence ), resource, this->getTextStatus( xmppPresence.statusText(), xmppPresence ));
+        needRefreshing = true;
+    }
+
+    if (needRefreshing && roster_initiated) emit rosterChanged();
 }
 
 QString MyXmppClient::getPicPresence( const QXmppPresence &presence ) const
@@ -318,7 +333,7 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
             avatarFile = cacheIM->getAvatarCache( bareJid );
         }
         if( isAvatarCreated ) {
-            if( database->checkIfContactExists(bareJid) ) {
+            if( jidCache.contains(bareJid) ) {
                 database->updateContact(1, bareJid, "avatarPath", avatarFile);
             }
         }
@@ -553,11 +568,13 @@ void MyXmppClient::closeChat( QString bareJid ) //Q_INVOKABLE
 void MyXmppClient::resetUnreadMessages(QString bareJid) //Q_INVOKABLE
 {
     database->updateContact(1,bareJid,"unreadMsg","0");
+    emit rosterChanged();
 }
 
 void MyXmppClient::setUnreadMessages(QString bareJid, int count) //Q_INVOKABLE
 {
     database->updateContact(1,bareJid,"unreadMsg",QString::number(count));
+    emit rosterChanged();
 }
 
 
@@ -566,8 +583,10 @@ void MyXmppClient::itemAdded(const QString &bareJid )
     qDebug() << "MyXmppClient::itemAdded(): " << bareJid;
     QStringList resourcesList = rosterManager->getResources( bareJid );
 
-    database->insertContact(1,bareJid,bareJid,this->getPicPresence( QXmppPresence::Unavailable ),cacheIM->getAvatarCache( bareJid ));
-
+    if (!jidCache.contains(bareJid)) {
+        database->insertContact(1,bareJid,bareJid,this->getPicPresence( QXmppPresence::Unavailable ),cacheIM->getAvatarCache( bareJid ));
+        jidCache.append(bareJid);
+    }
     for( int L = 0; L<resourcesList.length(); L++ )
     {
         QString resource = resourcesList.at(L);
@@ -599,6 +618,7 @@ void MyXmppClient::itemRemoved(const QString &bareJid )
     qDebug() << "MyXmppClient::itemRemoved(): " << bareJid;
 
     database->deleteContact(1,bareJid);
+    jidCache.removeAt(jidCache.indexOf(bareJid));
 }
 
 
@@ -673,8 +693,10 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
             m_bareJidLastMessage = xmppMsg.from();
         }
 
-        if (!database->checkIfContactExists(bareJid_from)) {
-            database->insertContact(1,bareJid_from,bareJid_from,this->getPicPresence(QXmppPresence::Unavailable),cacheIM->getAvatarCache(bareJid_from));
+        if (!jidCache.contains(bareJid_from)) {
+            database->insertContact(1,bareJid_from,bareJid_from,this->getPicPresence(QXmppPresence::Unsubscribed),cacheIM->getAvatarCache(bareJid_from));
+            jidCache.append(bareJid_from);
+            emit rosterChanged();
         }
 
         this->openChat( bareJid_from );
@@ -683,60 +705,6 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         archiveIncMessage(xmppMsg, false);
         emit this->messageReceived( bareJid_from, bareJid_to );
     }
-}
-
-QString MyXmppClient::parseEmoticons( QString string ) {
-    QString nStr = " " + string + " ";
-    QString begin = " <img src='qrc:/smileys/";
-    QString end = "' /> ";
-
-    nStr.replace(" :) ", begin + ":)" + end);
-    nStr.replace(" :-) ", begin + ":)" + end);
-
-    nStr.replace(" :D ", begin + ":D" + end);
-    nStr.replace(" :-D ", begin + ":-D" + end);
-
-    nStr.replace(" ;) ", begin + ";)" + end);
-    nStr.replace(" ;-) ", begin + ";)" + end);
-
-    nStr.replace(" ;D ", begin + ";D" + end);
-    nStr.replace(" ;-D ", begin + ";D" + end);
-
-    nStr.replace(" :( ", begin + ":(" + end);
-    nStr.replace(" :-( ", begin + ":(" + end);
-
-    nStr.replace(" :P ", begin + ":P" + end);
-    nStr.replace(" :-P ", begin + ":P" + end);
-
-    nStr.replace(" ;( ", begin + ";(" + end);
-    nStr.replace(" ;-( ", begin + ";(" + end);
-
-    nStr.replace(" :| ", begin + ":|" + end);
-    nStr.replace(" &lt;3 ", begin + "<3" + end);
-
-    nStr.replace(" :\\ ", begin + ":\\" + end);
-    nStr.replace(" :-\\ ", begin + ":\\" + end);
-
-    nStr.replace(" :o ", begin + ":O" + end);
-    nStr.replace(" :O ", begin + ":O" + end);
-    nStr.replace(" o.o ", begin + ":O" + end);
-
-    nStr.replace(" :* ", begin + ":*" + end);
-    nStr.replace(" ;* ", begin + ":*" + end);
-
-    nStr.replace(" :X ", begin + ":X" + end);
-    nStr.replace(" :x ", begin + ":x" + end);
-
-    nStr.replace(" :&gt; ", begin + ":>" + end);
-    nStr.replace(" B) ", begin + "B)" + end);
-    nStr.replace(" %) ", begin + "%)" + end);
-    nStr.replace(" :@ ", begin + ":@" + end);
-    nStr.replace(" ;&gt; ", begin + ";>" + end);
-    nStr.replace(" >) ", begin + ">)" + end);
-    nStr.replace(" 8) ", begin + "8)" + end);
-    nStr.replace(" (=_=) ", begin + "=_=" + end);
-
-    return nStr;
 }
 
 void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg, bool mine )
@@ -757,7 +725,7 @@ void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg, bool mine )
     body = body.replace(">", "&gt;");  //fix for > stuff
     body = body.replace("<", "&lt;");  //and < stuff too ^^
     body = msgWrapper->parseMsgOnLink(body);
-    body = parseEmoticons(body);
+    body = msgWrapper->parseEmoticons(body);
 
     if (mine) {
         database->insertMessage(1,to,body,time,mine);
@@ -769,23 +737,23 @@ void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg, bool mine )
 
 QString MyXmppClient::getPicPresenceByJid(QString bareJid)
 {
-    return database->getContactProperty(1,bareJid,"presence");
+    return sqlRoster->record(jidCache.indexOf(bareJid)).value("presence").toString();
 }
 
 
 QString MyXmppClient::getStatusTextByJid(QString bareJid)
 {
-    return database->getContactProperty(1,bareJid,"statusText");
+    return sqlRoster->record(jidCache.indexOf(bareJid)).value("statusText").toString();
 }
 
 QString MyXmppClient::getAvatarByJid(QString bareJid)
 {
-    return database->getContactProperty(1,bareJid,"avatarPath");
+    return sqlRoster->record(jidCache.indexOf(bareJid)).value("avatarPath").toString();
 }
 
 QString MyXmppClient::getNameByJid(QString bareJid)
 {
-    return database->getContactProperty(1,bareJid,"name");
+    return sqlRoster->record(jidCache.indexOf(bareJid)).value("name").toString();
 }
 
 
@@ -835,7 +803,6 @@ void MyXmppClient::presenceReceived( const QXmppPresence & presence )
         bareJid = jid.split('/')[0];
         resource = jid.split('/')[1];
     }
-    //this->initPresence( bareJid, resource );
     QString myResource = xmppClient->configuration().resource();
 
     //qDebug() << "### MyXmppClient::presenceReceived():" << bareJid << "|" << resource << "|" << myResource << "|" << presence.from() << "|" << presence.type()<< "|" << presence.availableStatusType();
@@ -893,6 +860,7 @@ void MyXmppClient::error(QXmppClient::Error e)
 void MyXmppClient::addContact( QString bareJid, QString nick, QString group, bool sendSubscribe )
 {
     database->insertContact(1,bareJid,nick,this->getPicPresence( QXmppPresence::Unavailable ),cacheIM->getAvatarCache( bareJid ));
+    jidCache.append(bareJid);
     if( rosterManager )
     {
         QSet<QString> gr;
