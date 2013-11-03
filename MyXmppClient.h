@@ -12,6 +12,7 @@
 #include <QMap>
 #include <QList>
 #include <QVariant>
+#include <QThread>
 
 #include "DatabaseManager.h"
 
@@ -91,7 +92,6 @@ class MyXmppClient : public QObject
     QXmppVCardManager *vCardManager;
 
     SettingsDBWrapper *mimOpt;
-    DatabaseManager *database;
     SqlQueryModel *sqlMessages;
     SqlQueryModel *sqlRoster;
     SqlQueryModel *sqlChats;
@@ -129,8 +129,6 @@ public :
     void initXmppClient();
 
     int page;
-    bool roster_initiated;
-
     /* --- presence --- */
     Q_INVOKABLE void setMyPresence( StatusXmpp status, QString textStatus );
 
@@ -282,7 +280,7 @@ signals:
     void hostChanged();
     void portChanged();
     void resourceChanged();
-    void openChatsChanged( QString bareJid );
+    void openChatsChanged();
     void chatOpened( QString bareJid );
     void chatClosed( QString bareJid );
     void sqlMessagesChanged();
@@ -332,6 +330,17 @@ private:
 
     QString getPicPresence( const QXmppPresence &presence ) const;
     QString getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const;
+
+
+    // threaded db code
+    void dbInsertContact(int acc, QString bareJid, QString name, QString presence, QString avatarPath);
+    void dbInsertMessage(int acc, QString bareJid, QString msgText, QString time, int mine);
+    void dbDeleteContact(int acc, QString bareJid);
+    void dbUpdateContact(int acc, QString bareJid, QString property, QString value);
+    void dbUpdatePresence(int acc, QString bareJid, QString presence, QString resource, QString statusText);
+    void dbIncUnreadMessage(int acc, QString bareJid);
+    void dbSetChatInProgress(int acc, QString bareJid, int value);
+    // threaded db code end
 
 
     int m_keepAlive;

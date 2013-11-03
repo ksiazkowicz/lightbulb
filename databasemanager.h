@@ -7,6 +7,7 @@
 #include <QSqlQuery>
 #include <QSqlQueryModel>
 #include <QVariant>
+#include <QStringList>
 
 class SqlQueryModel : public QSqlQueryModel
 {
@@ -33,33 +34,35 @@ class DatabaseManager: public QObject
 
 public:
     DatabaseManager(QObject *parent = 0);
-    //~DatabaseManager();
+    ~DatabaseManager();
+
+    signals:
+        void finished();
 
     public:
-        bool openDB();
         bool deleteDB();
-        Q_INVOKABLE bool initDB();
 
         // create database structure
         bool mkAccTable();
         bool mkRosterTable();
         bool mkMessagesTable();
-        bool insertMessage(int acc, QString bareJid, QString text, QString time, int mine);
-
-        bool insertContact(int acc, QString bareJid, QString name, QString presence, QString avatarPath);
-        bool deleteContact(int acc, QString bareJid );
-        bool checkIfChatInProgress( QString bareJid );
-        bool checkIfContactExists( QString bareJid );
-        bool setChatInProgress( QString bareJid, bool chat );
-        bool updateContact( int acc, QString bareJid, QString property, QString value );
-        bool updatePresence( int acc, QString bareJid, QString presence, QString resource, QString statusText);
-        bool incUnreadMessage( int acc, QString bareJid );
-
-        bool insertAccount(QString jid, QString pass, QString resource, int manualHostPort, int enabled, QString host, int port);
-        bool doGenericQuery(QString genericQuery);
-
         QSqlError lastError();
         QSqlDatabase db;
+        QStringList parameters;
+        bool databaseOpen;
+    public slots:
+        Q_INVOKABLE bool initDB();
+        bool insertMessage();
+
+        bool insertContact();
+        bool deleteContact();
+        bool setChatInProgress();
+        bool updateContact();
+        bool updatePresence();
+        bool incUnreadMessage();
+
+        bool insertAccount(QString jid, QString pass, QString resource, int manualHostPort, int enabled, QString host, int port);
+
     };
 
 #endif // DATABASEMANAGER_H

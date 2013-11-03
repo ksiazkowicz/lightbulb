@@ -3,6 +3,7 @@
 #include <QSqlRecord>
 #include <QSqlField>
 #include <QDebug>
+#include <QSqlDatabase>
 
 
 //--------------------------------
@@ -19,7 +20,8 @@ SqlQueryModel::SqlQueryModel(QObject *parent) :
 
 void SqlQueryModel::setQuery(const QString &query, const QSqlDatabase &db)
 {
-    QSqlQueryModel::setQuery(query,db);
+    if (db.isOpen())
+        QSqlQueryModel::setQuery(query,db);
     generateRoleNames();
 }
 
@@ -64,18 +66,26 @@ QVariant SqlQueryModel::data(const QModelIndex &index, int role) const
 DatabaseManager::DatabaseManager(QObject *parent) :
     QObject(parent)
 {
+    if ( !QSqlDatabase::contains("Database")) {
+        db = QSqlDatabase::addDatabase("QSQLITE","Database");
+        db.setDatabaseName("com.lightbulb.db");
+    } else {
+        db = QSqlDatabase::database("Database");
+        db.setDatabaseName("com.lightbulb.db");
+    }
+
+    if ( !db.isOpen() )
+    {
+        if (!db.open()) {
+            qWarning() << "Unable to connect to database, giving up:" << db.lastError().text();
+            databaseOpen = false;
+            return;
+        }
+    }
+    databaseOpen = true;
 }
 
-bool DatabaseManager::openDB()
-{
-    // Find QSLite driver
-    db = QSqlDatabase::addDatabase("QSQLITE");
-
-    // NOTE: File exists in the application private folder, in Symbian Qt implementation
-    db.setDatabaseName("com.lightbulb.db");
-
-    // Open databasee
-    return db.open();
+DatabaseManager::~DatabaseManager() {
 }
 
 QSqlError DatabaseManager::lastError()
@@ -96,6 +106,9 @@ bool DatabaseManager::initDB()
 {
     mkAccTable();
     mkRosterTable();
+    mkMessagesTable();
+
+    emit finished();
 
     return true;
 }
@@ -104,7 +117,7 @@ bool DatabaseManager::mkAccTable()
 {
     bool ret = false;
     if (db.isOpen()) {
-        QSqlQuery query;
+        QSqlQuery query(db);
         ret = query.exec("create table accounts "
                          "(id integer primary key, "
                          "jid varchar(30), "
@@ -115,6 +128,7 @@ bool DatabaseManager::mkAccTable()
                          "host varchar(30), "
                          "port integer)");
     }
+    emit finished();
     return ret;
 }
 
@@ -122,7 +136,7 @@ bool DatabaseManager::mkRosterTable()
 {
     bool ret = false;
     if (db.isOpen()) {
-        QSqlQuery query;
+        QSqlQuery query(db);
         ret = query.exec("create table roster "
                          "(id integer primary key, "
                          "id_account integer, "
@@ -135,51 +149,23 @@ bool DatabaseManager::mkRosterTable()
                          "isChatInProgress int, "
                          "unreadMsg integer)");
     }
+    emit finished();
     return ret;
 }
 
-bool DatabaseManager::checkIfChatInProgress( QString bareJid )
+bool DatabaseManager::setChatInProgress()
 {
+    QStringList params = parameters;
     bool ret = false;
-    QSqlQuery query;
-    query.prepare("select isChatInProgress from roster where jid = '" + bareJid + "'");
-    query.exec();
-    qDebug() << query.lastError();
-    SqlQueryModel isChatInProgress;
-    isChatInProgress.setQuery(query);
-
-    ret = isChatInProgress.record(0).value("isChatInProgress").toBool();
-    qDebug() << isChatInProgress.record(0).value("isChatInProgress");
-    return ret;
-}
-
-bool DatabaseManager::checkIfContactExists( QString bareJid )
-{
-    bool ret = false;
-    QSqlQuery query;
-    query.prepare("select * from roster where jid = '" + bareJid + "'");
-    query.exec();
-    SqlQueryModel contactExists;
-    contactExists.setQuery(query);
-
-    ret = contactExists.rowCount() > 0 ? true : false;
-    return ret;
-}
-
-
-bool DatabaseManager::setChatInProgress( QString bareJid, bool chat )
-{
-    bool ret = false;
-    int tmp = chat;
-    QSqlQuery query;
+    QSqlQuery query(db);
     QString queryStr;
     queryStr = "UPDATE roster SET isChatInProgress='";
-    queryStr += QString::number(tmp);
+    queryStr += params.at(2);
     queryStr += "' where jid='";
-    queryStr += bareJid;
+    queryStr += params.at(1);
     queryStr += "'";
     ret = query.exec(queryStr);
-    qDebug() << query.lastError();
+    emit finished();
     return ret;
 
 }
@@ -188,7 +174,7 @@ bool DatabaseManager::mkMessagesTable()
 {
     bool ret = false;
     if (db.isOpen()) {
-        QSqlQuery query;
+        QSqlQuery query(db);
         ret = query.exec("create table messages "
                          "(id integer primary key, "
                          "id_account integer, "
@@ -197,6 +183,7 @@ bool DatabaseManager::mkMessagesTable()
                          "dateTime varchar(30), "
                          "isMine integer)");
     }
+    emit finished();
     return ret;
 }
 
@@ -209,7 +196,7 @@ bool DatabaseManager::insertAccount(QString jid,
                                     int port)
 {
     bool ret = false;
-    QSqlQuery query;
+    QSqlQuery query(db);
     ret = query.prepare("INSERT INTO accounts (jid, pass, resource, manualHostPort, enabled, host, port) "
                         "VALUES (:jid, :pass, :resource, :manualHostPort, :enabled, :host, :port)");
     if (ret) {
@@ -222,132 +209,112 @@ bool DatabaseManager::insertAccount(QString jid,
         query.bindValue(":port", port);
         ret = query.exec();
     }
+    emit finished();
     return ret;
 }
 
-bool DatabaseManager::doGenericQuery(QString genericQuery)
+bool DatabaseManager::insertMessage()
 {
+    QStringList params = parameters;
     bool ret = false;
-    QSqlQuery query;
-    ret = query.prepare(genericQuery);
-    if (ret) {
-        ret = query.exec();
-    }
-    return ret;
-}
-
-
-bool DatabaseManager::insertMessage(int acc,
-                                    QString bareJid,
-                                    QString text,
-                                    QString time,
-                                    int mine)
-{
-    bool ret = false;
-    QSqlQuery query;
+    QSqlQuery query(db);
     ret = query.prepare("INSERT INTO messages (id_account, bareJid, msgText, dateTime, isMine) "
                         "VALUES (:acc, :jid, :msgText, :time, :mine)");
     if (ret) {
-        query.bindValue(":acc", acc);
-        query.bindValue(":jid", bareJid);
-        query.bindValue(":msgText", text);
-        query.bindValue(":time", time);
-        query.bindValue(":mine", mine);
-        ret = query.exec();
+        query.bindValue(":acc", params.at(0).toInt());
+        query.bindValue(":jid", params.at(1));
+        query.bindValue(":msgText", params.at(2));
+        query.bindValue(":time", params.at(3));
+        query.bindValue(":mine", params.at(4).toInt());
+        if (databaseOpen)
+            ret = query.exec();
     }
+    emit finished();
     return ret;
 }
 
 
-bool DatabaseManager::insertContact( int acc,
-                                     QString bareJid,
-                                     QString name,
-                                     QString presence,
-                                     QString avatarPath)
+bool DatabaseManager::insertContact()
 {
+    QStringList params = parameters;
     bool ret = false;
-    QSqlQuery query;
+    QSqlQuery query(db);
     ret = query.prepare("INSERT INTO roster (id_account, name, jid, resource, presence, statusText, avatarPath, isChatInProgress, unreadMsg) "
                         "VALUES (:acc, :name, :jid, :resource, :status, :statusText, :avatarPath, :isChatInProgress, :unreadMsg)");
     if (ret) {
-        query.bindValue(":acc", acc);
-        query.bindValue(":jid", bareJid);
-        query.bindValue(":name", name);
+        query.bindValue(":acc", params.at(0).toInt());
+        query.bindValue(":jid", params.at(1));
+        query.bindValue(":name", params.at(2));
         query.bindValue(":resource", "");
-        query.bindValue(":status", presence);
+        query.bindValue(":status", params.at(3));
         query.bindValue(":statusText","");
-        query.bindValue(":avatarPath",avatarPath);
+        query.bindValue(":avatarPath",params.at(4));
         query.bindValue(":isChatInProgress",0);
         query.bindValue(":unreadMsg",0);
-        ret = query.exec();
+        if (databaseOpen) {
+            ret = query.exec();
+        }
     }
-
+    emit finished();
     return ret;
 }
 
-bool DatabaseManager::updateContact( int acc,
-                                     QString bareJid,
-                                     QString property,
-                                     QString value)
+bool DatabaseManager::updateContact()
 {
+    QStringList params = parameters;
     bool ret = false;
-    QSqlQuery query;
-    ret = query.exec("UPDATE roster SET " + property + "='" + value +  "' where jid='" + bareJid + "'");
+    QSqlQuery query(db);
+    ret = query.prepare("UPDATE roster SET " + params.at(2) + "=:value where jid=:jid");
+    query.bindValue(":value",params.at(3));
+    query.bindValue(":jid",params.at(1));
+    query.exec();
+    emit finished();
     return ret;
 }
 
-bool DatabaseManager::updatePresence( int acc,
-                                     QString bareJid,
-                                     QString presence,
-                                     QString resource,
-                                     QString statusText)
+bool DatabaseManager::updatePresence()
 {
+    QStringList params = parameters;
     bool ret = false;
-    QSqlQuery query;
-    ret = query.exec("UPDATE roster SET presence='" + presence + "', resource='" + resource + "', statusText='" + statusText + "' where jid='" + bareJid + "'");
+    QSqlQuery query(db);
+    ret = query.prepare("UPDATE roster SET presence=:presence, resource=:resource, statusText=:statusText where jid=:jid");
+    query.bindValue(":presence",params.at(2));
+    query.bindValue(":resource",params.at(3));
+    query.bindValue(":statusText",params.at(4));
+    query.bindValue(":jid",params.at(1));
+    query.exec();
+    qDebug() << query.lastQuery();
+    qDebug() << query.lastError();
+    emit finished();
     return ret;
 }
 
-bool DatabaseManager::deleteContact( int acc,
-                                     QString bareJid)
+bool DatabaseManager::deleteContact()
 {
+    QStringList params = parameters;
     bool ret = false;
-    QSqlQuery query;
-    ret = query.exec("DELETE FROM roster WHERE jid='" + bareJid + "'");
+    QSqlQuery query(db);
+    if (databaseOpen)
+        ret = query.exec("DELETE FROM roster WHERE jid='" + params.at(1) + "'");
+
+    emit finished();
     return ret;
 }
 
-bool DatabaseManager::incUnreadMessage( int acc, QString bareJid )
+bool DatabaseManager::incUnreadMessage()
 {
+    QStringList params = parameters;
     bool ret = false;
-    QSqlQuery query;
-    query.exec("select unreadMsg from roster where jid = '" + bareJid + "'");
-    SqlQueryModel unreadMsgCount;
-    unreadMsgCount.setQuery(query);
+    QSqlQuery query(db);
+    if (databaseOpen) {
+        query.exec("select unreadMsg from roster where jid = '" + params.at(1) + "'");
+        SqlQueryModel unreadMsgCount;
+        unreadMsgCount.setQuery(query);
 
-    int nCount = unreadMsgCount.record(0).value("unreadMsg").toInt()+1;
+        int nCount = unreadMsgCount.record(0).value("unreadMsg").toInt()+1;
 
-    ret = query.exec("UPDATE roster SET unreadMsg='" + QString::number(nCount) + "' where jid='" + bareJid + "'" );
+        ret = query.exec("UPDATE roster SET unreadMsg='" + QString::number(nCount) + "' where jid='" + params.at(1) + "'" );
+    }
+    emit finished();
     return ret;
 }
-
-QString DatabaseManager::getContactProperty( int acc, QString bareJid, QString property)
-{
-    QSqlQuery query;
-    query.exec("select " + property + " from roster where jid = '" + bareJid + "'");
-    SqlQueryModel contact;
-    contact.setQuery(query);
-
-    return contact.record(0).value(property).toString();
-}
-
-QString DatabaseManager::getContactPropertyByIndex( int acc, int index, QString property)
-{
-    QSqlQuery query;
-    query.exec("select " + property + " from roster where id = '" + QString::number(index) + "'");
-    SqlQueryModel contact;
-    contact.setQuery(query);
-
-    return contact.record(0).value(property).toString();
-}
-
