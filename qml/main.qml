@@ -442,8 +442,7 @@ PageStackWindow {
         opacity: xmppClient.rosterNeedsUpdate ? 1 : 0.5
         anchors.fill: parent
 
-        visible: main.pageStack.busy || xmppClient.rosterNeedsUpdate
-
+        visible: main.pageStack.busy || ( xmppClient.rosterNeedsUpdate && statusBarText.text == "Contacts" )
         BusyIndicator {
             id: busyindicator1
             anchors.centerIn: parent
