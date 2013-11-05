@@ -349,6 +349,7 @@ Page {
             color: "transparent"
             height: sadface.height + 5 + offlineText.height + 10 + errorText.height
             width: offlineText.width
+            visible: xmppClient.status == XmppClient.Offline
             Text {
                 id: sadface
                 color: "white"
@@ -374,6 +375,7 @@ Page {
                 font.pixelSize: 16
             }
         }
+
     }
 
 }

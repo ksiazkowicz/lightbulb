@@ -439,15 +439,23 @@ PageStackWindow {
     /***************(uselessshit)**********/
     Rectangle {
         color: "black"
-        opacity: 0.5
+        opacity: xmppClient.rosterNeedsUpdate ? 1 : 0.5
         anchors.fill: parent
 
-        visible: main.pageStack.busy ? true : false
+        visible: main.pageStack.busy || xmppClient.rosterNeedsUpdate
 
         BusyIndicator {
             id: busyindicator1
             anchors.centerIn: parent
             running: true
+        }
+        Text {
+            id: rosterUpdate
+            text: "Updating contact list..."
+            anchors { horizontalCenter: parent.horizontalCenter; top: busyindicator1.bottom; topMargin: 15 }
+            color: "white"
+            font.pixelSize: 20
+            visible: xmppClient.rosterNeedsUpdate
         }
 
     }

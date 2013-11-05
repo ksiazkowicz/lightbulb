@@ -191,6 +191,7 @@ MyXmppClient::MyXmppClient() : QObject(0)
     this->initXmppClient();
 
     rosterManager = 0;
+    rosterAvailable = true;
 
     flSetPresenceWithoutAck = true;
 }
@@ -1131,19 +1132,25 @@ int MyXmppClient::getSqlMessagesCount()
 
 SqlQueryModel* MyXmppClient::getSqlRoster()
 {
-    DatabaseManager* database = new DatabaseManager(this);
-    QThread* thread = new QThread;
-    //database->moveToThread(thread);
-
     sqlRoster = new SqlQueryModel( 0 );
-
-    if (database->databaseOpen) {
+    if (rosterAvailable) {
+        DatabaseManager* database = new DatabaseManager(this);
         //sqlRoster->setQuery("DELETE FROM ROSTER", database->db); // just uncomment this line when code goes wrong and roster is filled with crap, ok?
-        //sqlRoster->moveToThread(thread);
         sqlRoster->setQuery("select * from roster", database->db);
+        qDebug() << "sqlRoster updated";
+        database->deleteLater();
+        rosterNeedsUpdate = false;
+        emit rosterStatusUpdated();
     }
-    thread->deleteLater();
-    database->deleteLater();
+
+    if (!rosterAvailable && !rosterNeedsUpdate) {
+        rosterNeedsUpdate = true;
+        QTimer::singleShot(5000,this,SLOT(updateRosterIfPossible()));
+        qDebug() << "roster unavailable, delayed";
+        emit rosterStatusUpdated();
+    }
+
+    rosterAvailable = false;
 
     return sqlRoster;
 }
@@ -1164,6 +1171,14 @@ SqlQueryModel* MyXmppClient::getSqlChats()
     database->deleteLater();
 
     return sqlChats;
+}
+
+void MyXmppClient::updateRosterIfPossible() {
+    if (rosterNeedsUpdate) {
+        rosterAvailable = true;
+        emit rosterChanged();
+        qDebug() << "doing stuff";
+    }
 }
 
 void MyXmppClient::gotoPage(int nPage)

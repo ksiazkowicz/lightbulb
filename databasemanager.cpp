@@ -120,12 +120,12 @@ bool DatabaseManager::mkAccTable()
         QSqlQuery query(db);
         ret = query.exec("create table accounts "
                          "(id integer primary key, "
-                         "jid varchar(30), "
+                         "jid varchar(50), "
                          "pass varchar(30), "
                          "resource varchar(30), "
                          "manualHostPort integer, "
                          "enabled integer, "
-                         "host varchar(30), "
+                         "host varchar(50), "
                          "port integer)");
     }
     emit finished();
@@ -140,8 +140,8 @@ bool DatabaseManager::mkRosterTable()
         ret = query.exec("create table roster "
                          "(id integer primary key, "
                          "id_account integer, "
-                         "name varchar(30), "
-                         "jid varchar(30), "
+                         "name varchar(80), "
+                         "jid varchar(80), "
                          "resource varchar(30), "
                          "presence varchar(12), "
                          "statusText varchar(255), "
@@ -178,8 +178,8 @@ bool DatabaseManager::mkMessagesTable()
         ret = query.exec("create table messages "
                          "(id integer primary key, "
                          "id_account integer, "
-                         "bareJid varchar(30), "
-                         "msgText varchar(2048), "
+                         "bareJid varchar(80), "
+                         "msgText varchar(8096), "
                          "dateTime varchar(30), "
                          "isMine integer)");
     }
@@ -283,8 +283,6 @@ bool DatabaseManager::updatePresence()
     query.bindValue(":statusText",params.at(4));
     query.bindValue(":jid",params.at(1));
     query.exec();
-    qDebug() << query.lastQuery();
-    qDebug() << query.lastError();
     emit finished();
     return ret;
 }

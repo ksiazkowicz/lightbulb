@@ -59,6 +59,7 @@ class MyXmppClient : public QObject
     Q_OBJECT
     Q_DISABLE_COPY( MyXmppClient )
 
+    Q_PROPERTY( bool rosterNeedsUpdate READ checkIfRosterNeedsUpdate NOTIFY rosterStatusUpdated )
     Q_PROPERTY( QString version READ getVersion NOTIFY versionChanged )
     Q_PROPERTY( QString bareJidLastMsg READ getJidLastMsg NOTIFY messageReceived )
     Q_PROPERTY( QString resourceLastMsg READ getResourceLastMsg NOTIFY messageReceived )
@@ -194,11 +195,15 @@ public :
     void gotoPage(int nPage);
 
     bool getTyping() const { return m_flTyping; }
+    bool checkIfRosterNeedsUpdate() const { return rosterNeedsUpdate; }
     void setTyping( QString &jid, const bool isTyping ) { m_flTyping = isTyping; emit typingChanged(jid, isTyping); }
 
     SqlQueryModel* getSqlRoster();
 
     SqlQueryModel* getSqlChats();
+
+    bool rosterAvailable;
+    bool rosterNeedsUpdate;
 
     QString getMyJid() const { return m_myjid; }
     void setMyJid( const QString& myjid ) { if(myjid!=m_myjid) {m_myjid=myjid; emit myJidChanged(); } }
@@ -292,6 +297,7 @@ signals:
     void keepAliveChanged();
     void reconnectOnErrorChanged();
     void archiveIncMessageChanged();
+    void rosterStatusUpdated();
 
 public slots:
     void clientStateChanged( QXmppClient::State state );
@@ -310,6 +316,7 @@ private slots:
     void messageReceivedSlot( const QXmppMessage &msg );
     void presenceReceived( const QXmppPresence & presence );
     void error(QXmppClient::Error);
+    void updateRosterIfPossible();
 
 private:
     QString m_bareJidLastMessage;
