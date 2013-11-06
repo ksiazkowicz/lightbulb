@@ -153,9 +153,6 @@ public :
     Q_INVOKABLE bool sendMyMessage( QString bareJid, QString resource, QString msgBody );
 
     /*--- info by jid ---*/
-    Q_INVOKABLE QString getPicPresenceByJid( QString bareJid );
-    Q_INVOKABLE QString getStatusTextByJid( QString bareJid );
-    Q_INVOKABLE QString getAvatarByJid( QString bareJid );
     Q_INVOKABLE QString getNameByJid( QString bareJid );
     Q_INVOKABLE QStringList getResourcesByJid( QString bareJid );
 
@@ -316,10 +313,7 @@ private slots:
     void presenceReceived( const QXmppPresence & presence );
     void error(QXmppClient::Error);
     void updateRosterIfPossible();
-    void updThreadCount() {
-        qDebug() << "thread stopped; " << threadCount;
-        threadCount--;
-    }
+    void updThreadCount() { threadCount--; }
 
 private:
     QString m_bareJidLastMessage;
