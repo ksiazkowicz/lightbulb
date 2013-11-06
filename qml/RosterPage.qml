@@ -205,11 +205,13 @@ Page {
             MenuItem {
                 text: qsTr("Remove")
                 onClicked: { dialog.source = ""
+                    xmppClient.chatJid = selectedJid
                     dialog.source = "qrc:/dialogs/Contact/Remove"}
             }
             MenuItem {
                 text: qsTr("Rename")
                 onClicked: { dialog.source = ""
+                    xmppClient.chatJid = selectedJid
                     dialog.source = "qrc:/dialogs/Contact/Rename"}
             }
             MenuItem {

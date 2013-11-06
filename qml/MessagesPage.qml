@@ -425,6 +425,18 @@ Page {
                     pageStack.replace("qrc:/pages/Archive")
                 }
             }
+            MenuItem {
+                text: "Close chat"
+                onClicked: {
+                    pageStack.pop()
+                    main.isChatInProgress = false
+                    xmppClient.closeChat(xmppClient.chatJid )
+                    statusBarText.text = "Contacts"
+                    xmppClient.resetUnreadMessages( xmppClient.chatJid )
+                    xmppClient.chatJid = ""
+                }
+            }
+
             /*MenuItem {
                 text: "Send attention"
                 onClicked: xmppClient.attentionSend( xmppClient.chatJid, messagesPage.resourceJid )

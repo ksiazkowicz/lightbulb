@@ -21,6 +21,6 @@ CommonDialog {
         id: dialogQueryLabel;
         wrapMode: Text.Wrap;
         anchors { left: parent.left; right: parent.right; leftMargin: 10; rightMargin:10; verticalCenter: parent.verticalCenter }
-        text: qsTr("Remove ") + dialogName + "?";
+        text: qsTr("Are you sure you want to remove ") + dialogName + qsTr(" from your contact list?");
     }
 }
