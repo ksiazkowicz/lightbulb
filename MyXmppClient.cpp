@@ -192,6 +192,11 @@ MyXmppClient::MyXmppClient() : QObject(0)
     flSetPresenceWithoutAck = true;
 }
 
+int MyXmppClient::getUnreadCount() {
+    DatabaseManager* database = new DatabaseManager(this);
+    return database->getUnreadCount();
+}
+
 
 MyXmppClient::~MyXmppClient()
 {
@@ -295,6 +300,7 @@ void MyXmppClient::initRoster()
     }
 
     QStringList listBareJids = rosterManager->getRosterBareJids();
+    jidCache.clear();
 
     for( int i=0; i < sqlRoster->rowCount(); i++)    // clean the roster, remove contacts which are not on the server
     {

@@ -317,3 +317,17 @@ bool DatabaseManager::incUnreadMessage()
     emit finished();
     return ret;
 }
+
+int DatabaseManager::getUnreadCount()
+{
+    QSqlQuery query(db);
+    int count = 0;
+    if (databaseOpen) {
+        query.exec("select SUM(unreadMsg) from roster");
+        SqlQueryModel unreadMsgCount;
+        unreadMsgCount.setQuery(query);
+        count = unreadMsgCount.record(0).value("SUM(unreadMsg)").toInt();
+    }
+    emit finished();
+    return count;
+}

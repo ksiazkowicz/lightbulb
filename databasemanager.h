@@ -60,6 +60,7 @@ public:
         bool updateContact();
         bool updatePresence();
         bool incUnreadMessage();
+        int getUnreadCount();
 
         bool insertAccount(QString jid, QString pass, QString resource, int manualHostPort, int enabled, QString host, int port);
 

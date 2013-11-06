@@ -13,7 +13,7 @@ PageStackWindow {
 
     property string textColor:       platformInverted ? platformStyle.colorNormalDark : platformStyle.colorNormalLight
 
-    property int                     globalUnreadCount: 0
+    property int                     globalUnreadCount: xmppClient.getUnreadCount()
     property int                     tempUnreadCount: 0
     property bool                    inputInProgress: false
 

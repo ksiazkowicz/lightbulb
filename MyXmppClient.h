@@ -170,6 +170,9 @@ public :
     /*--- version ---*/
     static QString myVersion;
     QString getVersion() const { return MyXmppClient::myVersion; }
+
+    /*--- unread count ---*/
+    Q_INVOKABLE int getUnreadCount();
 	
     /*--- chat options ---*/
     Q_INVOKABLE void attentionSend( QString bareJid, QString resource = "" );
