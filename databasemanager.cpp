@@ -83,6 +83,7 @@ DatabaseManager::DatabaseManager(QObject *parent) :
         }
     }
     databaseOpen = true;
+    connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
 }
 
 DatabaseManager::~DatabaseManager() {

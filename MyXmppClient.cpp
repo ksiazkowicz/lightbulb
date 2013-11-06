@@ -29,6 +29,7 @@ QString MyXmppClient::getBareJidByJid( const QString &jid )
 
 void MyXmppClient::dbInsertContact(int acc, QString bareJid, QString name, QString presence, QString avatarPath) {
     QThread* thread = new QThread;
+    threadCount++;
     DatabaseManager* database = new DatabaseManager(this);
     database->moveToThread(thread);
     database->parameters.clear();
@@ -39,16 +40,19 @@ void MyXmppClient::dbInsertContact(int acc, QString bareJid, QString name, QStri
     database->parameters.append(avatarPath);
     connect(thread, SIGNAL(started()), database, SLOT(insertContact()));
     connect(database, SIGNAL(finished()), thread, SLOT(quit()));
-    connect(database, SIGNAL(finished()), this, SIGNAL(rosterChanged()));
-    connect(database, SIGNAL(finished()), database, SLOT(deleteLater()));
-    connect(database, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    //if (!rosterNeedsUpdate)
+        connect(database, SIGNAL(finished()), this, SIGNAL(rosterChanged()));
+
+    connect(database, SIGNAL(finished()), this, SLOT(updThreadCount()));
+    //connect(thread, SIGNAL(terminated()), thread, SLOT(deleteLater()));
     thread->start();
 }
 
 void MyXmppClient::dbInsertMessage(int acc, QString bareJid, QString msgText, QString time, int mine) {
     QThread* thread = new QThread;
+    threadCount++;
     DatabaseManager* database = new DatabaseManager(this);
-    //database->moveToThread(thread);
+    database->moveToThread(thread);
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
     database->parameters.append(bareJid);
@@ -58,30 +62,34 @@ void MyXmppClient::dbInsertMessage(int acc, QString bareJid, QString msgText, QS
     connect(thread, SIGNAL(started()), database, SLOT(insertMessage()));
     connect(database, SIGNAL(finished()), thread, SLOT(quit()));
     connect(database, SIGNAL(finished()), this, SIGNAL(sqlMessagesChanged()));
-    connect(database, SIGNAL(finished()), database, SLOT(deleteLater()));
-    connect(database, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    connect(database, SIGNAL(finished()), this, SLOT(updThreadCount()));
+    //connect(thread, SIGNAL(quit()), thread, SLOT(deleteLater()));
     thread->start();
 }
 
 void MyXmppClient::dbDeleteContact(int acc, QString bareJid) {
     QThread* thread = new QThread;
+    threadCount++;
     DatabaseManager* database = new DatabaseManager(this);
-    //database->moveToThread(thread);
+    database->moveToThread(thread);
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
     database->parameters.append(bareJid);
     connect(thread, SIGNAL(started()), database, SLOT(deleteContact()));
     connect(database, SIGNAL(finished()), thread, SLOT(quit()));
-    connect(database, SIGNAL(finished()), this, SIGNAL(rosterChanged()));
-    connect(database, SIGNAL(finished()), database, SLOT(deleteLater()));
-    connect(database, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    //if (!rosterNeedsUpdate)
+        connect(database, SIGNAL(finished()), this, SIGNAL(rosterChanged()));
+    connect(database, SIGNAL(finished()), this, SLOT(updThreadCount()));
+
+    //connect(thread, SIGNAL(terminated()), thread, SLOT(deleteLater()));
     thread->start();
 }
 
 void MyXmppClient::dbUpdateContact(int acc, QString bareJid, QString property, QString value) {
     QThread* thread = new QThread;
     DatabaseManager* database = new DatabaseManager(this);
-    //database->moveToThread(thread);
+    database->moveToThread(thread);
+    threadCount++;
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
     database->parameters.append(bareJid);
@@ -89,15 +97,19 @@ void MyXmppClient::dbUpdateContact(int acc, QString bareJid, QString property, Q
     database->parameters.append(value);
     connect(thread, SIGNAL(started()), database, SLOT(updateContact()));
     connect(database, SIGNAL(finished()), thread, SLOT(quit()));
-    connect(database, SIGNAL(finished()), this, SIGNAL(rosterChanged()));
-    connect(database, SIGNAL(finished()), database, SLOT(deleteLater()));
-    connect(database, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    //if (!rosterNeedsUpdate)
+        connect(database, SIGNAL(finished()), this, SIGNAL(rosterChanged()));
+
+    connect(database, SIGNAL(finished()), this, SLOT(updThreadCount()));
+    //connect(thread, SIGNAL(terminated()), thread, SLOT(deleteLater()));
     thread->start();
 }
 
 void MyXmppClient::dbUpdatePresence(int acc, QString bareJid, QString presence, QString resource, QString statusText) {
     QThread* thread = new QThread;
+    threadCount++;
     DatabaseManager* database = new DatabaseManager(this);
+    database->moveToThread(thread);
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
     database->parameters.append(bareJid);
@@ -107,43 +119,54 @@ void MyXmppClient::dbUpdatePresence(int acc, QString bareJid, QString presence, 
     //database->moveToThread(thread);
     connect(thread, SIGNAL(started()), database, SLOT(updatePresence()));
     connect(database, SIGNAL(finished()), thread, SLOT(quit()));
-    connect(database, SIGNAL(finished()), this, SIGNAL(rosterChanged()));
-    connect(database, SIGNAL(finished()), database, SLOT(deleteLater()));
-    connect(database, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    //if (!rosterNeedsUpdate)
+        connect(database, SIGNAL(finished()), this, SIGNAL(rosterChanged()));
+    connect(database, SIGNAL(finished()), this, SLOT(updThreadCount()));
+
+    //connect(thread, SIGNAL(terminated()), thread, SLOT(deleteLater()));
     thread->start();
 }
 
 void MyXmppClient::dbIncUnreadMessage(int acc, QString bareJid) {
     QThread* thread = new QThread;
+    threadCount++;
     DatabaseManager* database = new DatabaseManager(this);
-    //database->moveToThread(thread);
+    database->moveToThread(thread);
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
     database->parameters.append(bareJid);
     connect(thread, SIGNAL(started()), database, SLOT(incUnreadMessage()));
     connect(database, SIGNAL(finished()), thread, SLOT(quit()));
-    connect(database, SIGNAL(finished()), this, SIGNAL(rosterChanged()));
+    //if (!rosterNeedsUpdate)
+        connect(database, SIGNAL(finished()), this, SIGNAL(rosterChanged()));
     connect(database, SIGNAL(finished()), this, SIGNAL(openChatsChanged()));
-    connect(database, SIGNAL(finished()), database, SLOT(deleteLater()));
-    connect(database, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
+    connect(database, SIGNAL(finished()), this, SLOT(updThreadCount()));
+    //connect(thread, SIGNAL(terminated()), thread, SLOT(deleteLater()));
     thread->start();
 }
 
 void MyXmppClient::dbSetChatInProgress(int acc, QString bareJid, int value) {
     QThread* thread = new QThread;
+    threadCount++;
     DatabaseManager* database = new DatabaseManager(this);
-    //database->moveToThread(thread);
+    database->moveToThread(thread);
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
     database->parameters.append(bareJid);
     database->parameters.append(QString::number(value));
     connect(thread, SIGNAL(started()), database, SLOT(setChatInProgress()));
     connect(database, SIGNAL(finished()), thread, SLOT(quit()));
-    connect(database, SIGNAL(finished()), this, SIGNAL(rosterChanged()));
+    //if (!rosterNeedsUpdate)
+        connect(database, SIGNAL(finished()), this, SIGNAL(rosterChanged()));
     connect(database, SIGNAL(finished()), this, SIGNAL(openChatsChanged()));
-    connect(database, SIGNAL(finished()), database, SLOT(deleteLater()));
-    connect(database, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    connect(database, SIGNAL(finished()), this, SLOT(updThreadCount()));
+    //connect(thread, SIGNAL(terminated()), thread, SLOT(deleteLater()));
     thread->start();
+}
+
+/*void MyXmppClient::dbQueue() {
+
 }
 
 /* database code end */
@@ -153,14 +176,9 @@ MyXmppClient::MyXmppClient() : QObject(0)
     cacheIM = new MyCache(this);
     msgWrapper = new MessageWrapper(this);
 
-    QThread* thread = new QThread;
     DatabaseManager* database = new DatabaseManager(this);
-    database->moveToThread(thread);
-    connect(thread, SIGNAL(started()), database, SLOT(initDB()));
-    connect(database, SIGNAL(finished()), thread, SLOT(quit()));
-    connect(database, SIGNAL(finished()), database, SLOT(deleteLater()));
-    connect(database, SIGNAL(finished()), thread, SLOT(deleteLater()));
-    thread->start();
+    database->initDB();
+    database->deleteLater();
 
     xmppClient = new QXmppClient( this );
     QObject::connect( xmppClient, SIGNAL(stateChanged(QXmppClient::State)), this, SLOT(clientStateChanged(QXmppClient::State)) );
@@ -187,6 +205,9 @@ MyXmppClient::MyXmppClient() : QObject(0)
 
     flVCardRequest = "";
     qmlVCard = new QMLVCard();
+
+    //sqlRoster = new SqlQueryModel( 0 );
+    //sqlChats = new SqlQueryModel( 0 );
 
     this->initXmppClient();
 
@@ -1072,18 +1093,9 @@ void MyXmppClient::attentionSend( QString bareJid, QString resource )
 SqlQueryModel* MyXmppClient::getLastSqlMessages()
 {
     DatabaseManager* database = new DatabaseManager(this);
-    QThread* thread = new QThread;
-    //database->moveToThread(thread);
-
     sqlMessages = new SqlQueryModel( 0 );
 
-    if (database->databaseOpen) {
-        //sqlMessages->moveToThread(thread);
-        sqlMessages->setQuery("SELECT * FROM (SELECT * FROM messages WHERE bareJid='" + m_chatJid + "' ORDER BY id DESC limit 10) ORDER BY id ASC",database->db);
-        qDebug() << sqlMessages->query().lastQuery();
-        qDebug() << sqlMessages->lastError();
-    }
-    thread->deleteLater();
+    sqlMessages->setQuery("SELECT * FROM (SELECT * FROM messages WHERE bareJid='" + m_chatJid + "' ORDER BY id DESC limit 10) ORDER BY id ASC",database->db);
     database->deleteLater();
 
     return sqlMessages;
@@ -1093,18 +1105,8 @@ SqlQueryModel* MyXmppClient::getSqlMessagesByPage()
 {
     int border = page*20;
     DatabaseManager* database = new DatabaseManager(this);
-    QThread* thread = new QThread;
-    //database->moveToThread(thread);
-
     sqlMessages = new SqlQueryModel( 0 );
-
-    if (database->databaseOpen) {
-        //sqlMessages->moveToThread(thread);
-        sqlMessages->setQuery("SELECT * FROM (SELECT * FROM messages WHERE bareJid='" + m_chatJid + "' ORDER BY id DESC limit " + QString::number(border) + ") ORDER BY id ASC limit 20",database->db);
-        qDebug() << sqlMessages->query().lastQuery();
-        qDebug() << sqlMessages->lastError();
-    }
-    thread->deleteLater();
+    sqlMessages->setQuery("SELECT * FROM (SELECT * FROM messages WHERE bareJid='" + m_chatJid + "' ORDER BY id DESC limit " + QString::number(border) + ") ORDER BY id ASC limit 20",database->db);
     database->deleteLater();
 
     return sqlMessages;
@@ -1113,18 +1115,9 @@ SqlQueryModel* MyXmppClient::getSqlMessagesByPage()
 int MyXmppClient::getSqlMessagesCount()
 {
     DatabaseManager* database = new DatabaseManager(this);
-    QThread* thread = new QThread;
-    //database->moveToThread(thread);
-
     sqlMessages = new SqlQueryModel( 0 );
 
-    if (database->databaseOpen) {
-        //sqlMessages->moveToThread(thread);
-        sqlMessages->setQuery("SELECT * FROM messages WHERE bareJid='" + m_chatJid + "'",database->db);
-        qDebug() << sqlMessages->query().lastQuery();
-        qDebug() << sqlMessages->lastError();
-    }
-    thread->deleteLater();
+    sqlMessages->setQuery("SELECT * FROM messages WHERE bareJid='" + m_chatJid + "'",database->db);
     database->deleteLater();
 
     return sqlMessages->rowCount();
@@ -1133,7 +1126,16 @@ int MyXmppClient::getSqlMessagesCount()
 SqlQueryModel* MyXmppClient::getSqlRoster()
 {
     sqlRoster = new SqlQueryModel( 0 );
-    if (rosterAvailable) {
+    qDebug() << threadCount;
+
+    if ((!rosterAvailable && !rosterNeedsUpdate) || (threadCount > 1 && !rosterNeedsUpdate)) {
+        rosterNeedsUpdate = true;
+        QTimer::singleShot(250,this,SLOT(updateRosterIfPossible()));
+        qDebug() << "roster unavailable, delayed";
+        emit rosterStatusUpdated();
+    }
+
+    if (rosterAvailable && threadCount<2) {
         DatabaseManager* database = new DatabaseManager(this);
         //sqlRoster->setQuery("DELETE FROM ROSTER", database->db); // just uncomment this line when code goes wrong and roster is filled with crap, ok?
         sqlRoster->setQuery("select * from roster", database->db);
@@ -1141,33 +1143,17 @@ SqlQueryModel* MyXmppClient::getSqlRoster()
         database->deleteLater();
         rosterNeedsUpdate = false;
         emit rosterStatusUpdated();
+        rosterAvailable = false;
     }
-
-    if (!rosterAvailable && !rosterNeedsUpdate) {
-        rosterNeedsUpdate = true;
-        QTimer::singleShot(5000,this,SLOT(updateRosterIfPossible()));
-        qDebug() << "roster unavailable, delayed";
-        emit rosterStatusUpdated();
-    }
-
-    rosterAvailable = false;
-
     return sqlRoster;
 }
 
 SqlQueryModel* MyXmppClient::getSqlChats()
 {
     DatabaseManager* database = new DatabaseManager(this);
-    QThread* thread = new QThread;
-    //database->moveToThread(thread);
 
-    sqlChats = new SqlQueryModel( 0 );
-
-    if (database->databaseOpen) {
-        //sqlChats->moveToThread(thread);
-        sqlChats->setQuery("select * from roster where isChatInProgress=1",database->db);
-    }
-    thread->deleteLater();
+    //sqlChats = new SqlQueryModel( 0 );
+    sqlChats->setQuery("select * from roster where isChatInProgress=1",database->db);
     database->deleteLater();
 
     return sqlChats;
@@ -1178,6 +1164,8 @@ void MyXmppClient::updateRosterIfPossible() {
         rosterAvailable = true;
         emit rosterChanged();
         qDebug() << "doing stuff";
+    } else {
+        QTimer::singleShot(250,this,SLOT(updateRosterIfPossible()));
     }
 }
 

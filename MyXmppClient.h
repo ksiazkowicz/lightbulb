@@ -202,7 +202,6 @@ public :
 
     SqlQueryModel* getSqlChats();
 
-    bool rosterAvailable;
     bool rosterNeedsUpdate;
 
     QString getMyJid() const { return m_myjid; }
@@ -317,6 +316,10 @@ private slots:
     void presenceReceived( const QXmppPresence & presence );
     void error(QXmppClient::Error);
     void updateRosterIfPossible();
+    void updThreadCount() {
+        qDebug() << "thread stopped; " << threadCount;
+        threadCount--;
+    }
 
 private:
     QString m_bareJidLastMessage;
@@ -334,6 +337,9 @@ private:
     QString m_contactName;
     int accounts;
     void archiveIncMessage( const QXmppMessage &xmppMsg, bool mine );
+
+    bool rosterAvailable;
+    int threadCount;
 
     QString getPicPresence( const QXmppPresence &presence ) const;
     QString getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const;
