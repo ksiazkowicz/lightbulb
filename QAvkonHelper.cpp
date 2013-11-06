@@ -69,6 +69,16 @@ QString QAvkonHelper::openFileSelectionDlg()
     if (!AknCommonDialogs::RunSelectDlgLD(filename, 0))
             return NULL;
     QString qString = QString::fromUtf16(filename.Ptr(), filename.Length());
+
+    if (qString.right(4) != ".mp3" && qString.right(4) != ".wav" && qString != "") {
+        this->displayGlobalNote("Format not supported.");
+        return NULL;
+    }
+
+    if (qString != "") {
+        this->displayGlobalNote("File set to " + qString + ".");
+    }
+
     return qString;
 
 }
