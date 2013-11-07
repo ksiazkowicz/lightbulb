@@ -68,7 +68,7 @@ class MyXmppClient : public QObject
     Q_PROPERTY( int page READ getPage WRITE gotoPage NOTIFY pageChanged )
     Q_PROPERTY( QString statusText READ getStatusText WRITE setStatusText  NOTIFY statusTextChanged )
     Q_PROPERTY( bool isTyping READ getTyping NOTIFY typingChanged )
-    Q_PROPERTY( SqlQueryModel* sqlRoster READ getSqlRoster NOTIFY rosterChanged )
+    Q_PROPERTY( SqlQueryModel* sqlRoster READ getSqlRoster NOTIFY rosterUpdated)
     Q_PROPERTY( SqlQueryModel* sqlChats READ getSqlChats NOTIFY openChatsChanged )
     Q_PROPERTY( QString myBareJid READ getMyJid WRITE setMyJid NOTIFY myJidChanged )
     Q_PROPERTY( QString myPassword READ getPassword() WRITE setPassword  NOTIFY myPasswordChanged )
@@ -221,7 +221,7 @@ public :
     int getSqlMessagesCount();
     SqlQueryModel* getLastSqlMessages();
     SqlQueryModel* getSqlMessagesByPage();
-    Q_INVOKABLE QString getLastSqlMessage(QString bareJid);
+    Q_INVOKABLE QString getLastSqlMessage() { return latestMessage; }
     Q_INVOKABLE int getUnreadCount();
 
     QString getChatJid() const { return m_chatJid; }
@@ -279,7 +279,7 @@ signals:
     void statusChanged();
     void pageChanged();
     void typingChanged( QString bareJid, bool isTyping );
-    void rosterChanged();
+    void rosterUpdated();
     void myJidChanged();
     void myPasswordChanged();
     void hostChanged();
@@ -316,7 +316,9 @@ private slots:
     void messageReceivedSlot( const QXmppMessage &msg );
     void presenceReceived( const QXmppPresence & presence );
     void error(QXmppClient::Error);
+    void changeSqlRoster();
     void updateRosterIfPossible();
+    void unlockRoster();
     void updThreadCount() { threadCount--; }
 
 private:
