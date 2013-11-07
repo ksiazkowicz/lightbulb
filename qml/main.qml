@@ -24,6 +24,7 @@ PageStackWindow {
     property string                  accPort: ""
     property bool                    accManualHostPort: false
     property bool                    accDefault: false
+    property bool                    connecting: false
 
     property int                     splitscreenY: 0
 
@@ -155,6 +156,10 @@ PageStackWindow {
 
     XmppClient {
         id: xmppClient
+        onRosterUpdated: {
+            connecting = false
+        }
+
         onErrorHappened: {
             if (settings.gBool("behavior", "reconnectOnError")) {
                 dialog.source = ""
@@ -177,7 +182,7 @@ PageStackWindow {
                 if (!notifyHold) {
                     if (settings.gBool("notifications", "usePopupRecv") == true && !isActive) {
                         if (settings.gBool("behavior","msgInDiscrPopup")) {
-                            avkon.showPopup(getNameByJid(bareJidLastMsg), getLastSqlMessage(bareJidLastMsg))
+                            avkon.showPopup(getNameByJid(bareJidLastMsg), getLastSqlMessage())
                         } else {
                             avkon.showPopup(globalUnreadCount + " unread messages", "New message from "+ getNameByJid(bareJidLastMsg) + ".")
                         }
@@ -201,7 +206,7 @@ PageStackWindow {
             main.statusChanged()
             if (!notifyHold) {
                 notifySndVibr("NotifyConn")
-                if (settings.gBool("notifications", "notifyConnection") == true) {
+                if (settings.gBool("notifications", "notifyConnection") && !connecting) {
                     sb.text = qsTr("Status changed to ") + notify.getStatusName()
                     sb.open()
                 }
@@ -444,10 +449,11 @@ PageStackWindow {
     /***************(uselessshit)**********/
     Rectangle {
         color: "black"
-        opacity: xmppClient.rosterNeedsUpdate ? 1 : 0.5
+        opacity: (xmppClient.rosterNeedsUpdate || connecting) ? 1 : 0.5
+        Behavior on opacity { PropertyAnimation { duration: 500 } }
         anchors.fill: parent
 
-        visible: main.pageStack.busy || ( xmppClient.rosterNeedsUpdate && statusBarText.text == "Contacts" )
+        visible: main.pageStack.busy || ( xmppClient.rosterNeedsUpdate && statusBarText.text == "Contacts" ) || connecting
         BusyIndicator {
             id: busyindicator1
             anchors.centerIn: parent
@@ -455,11 +461,11 @@ PageStackWindow {
         }
         Text {
             id: rosterUpdate
-            text: "Updating contact list..."
+            text: connecting ? "Connecting..." : "Updating contact list..."
             anchors { horizontalCenter: parent.horizontalCenter; top: busyindicator1.bottom; topMargin: 15 }
             color: "white"
             font.pixelSize: 20
-            visible: xmppClient.rosterNeedsUpdate
+            visible: xmppClient.rosterNeedsUpdate || connecting
         }
 
     }

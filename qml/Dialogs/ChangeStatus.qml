@@ -33,6 +33,10 @@ CommonDialog {
                 default: ret = XmppClient.Unknown; break;
             }
 
+            if (notify.getStatusName() === "Offline" && ret !== XmppClient.Offline) {
+                main.connecting = true;
+            }
+
             xmppClient.setMyPresence( ret, wrapperTextEdit.text )
             main.lastStatus = wrapperTextEdit.text
             main.lastUsedStatus = colStatus.selectedIndex
