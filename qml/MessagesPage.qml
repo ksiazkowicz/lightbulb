@@ -9,9 +9,10 @@ Page {
     property string resourceJid: ""
 
     Component.onCompleted: {
+        console.log( xmppClient.chatJid )
         xmppClient.openChat( xmppClient.chatJid )
 
-        statusBarText.text = xmppClient.getNameByJid(xmppClient.chatJid)
+        statusBarText.text = xmppClient.contactName
 
         if( xmppClient.bareJidLastMsg == xmppClient.chatJid ) {
             messagesPage.resourceJid = xmppClient.resourceLastMsg
@@ -23,15 +24,17 @@ Page {
             listModelResources.append( {resource:qsTr("(by default)"), checked:false} )
         }
 
-        var listResources = xmppClient.getResourcesByJid(xmppClient.chatJid)
-        for( var z=0; z<listResources.length; z++ )
-        {
-            if( listResources[z] == "" ) { continue; }
-            if( messagesPage.resourceJid ==listResources[z] ) {
-                listModelResources.append( {resource:listResources[z], checked:true} )
-            } else {
-                listModelResources.append( {resource:listResources[z], checked:false} )
-            }
+        if (notify.getStatusName() != "Offline") {
+            var listResources = xmppClient.getResourcesByJid(xmppClient.chatJid)
+            for( var z=0; z<listResources.length; z++ )
+            {
+                if( listResources[z] == "" ) { continue; }
+                if( messagesPage.resourceJid ==listResources[z] ) {
+                    listModelResources.append( {resource:listResources[z], checked:true} )
+                } else {
+                    listModelResources.append( {resource:listResources[z], checked:false} )
+                }
+           }
         }
         main.isChatInProgress = true
     }
