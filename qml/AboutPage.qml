@@ -28,7 +28,7 @@ Page {
     Text {
         id: programName
         color: main.textColor
-        text: "Lightbulb 0.2"
+        text: "Lightbulb " + xmppClient.version
         anchors { top: logo.bottom; topMargin: 5; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
         horizontalAlignment: Text.AlignHCenter
         font.pixelSize: platformStyle.fontSizeMedium*1.5
@@ -63,7 +63,7 @@ Page {
         wrapMode: Text.WordWrap
         font.pixelSize: platformStyle.fontSizeSmall
         horizontalAlignment: Text.AlignHCenter
-        color: main.textColor
+        color: "red"
     }
 
     Text {

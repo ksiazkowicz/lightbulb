@@ -170,9 +170,6 @@ public :
     /*--- version ---*/
     static QString myVersion;
     QString getVersion() const { return MyXmppClient::myVersion; }
-
-    /*--- unread count ---*/
-    Q_INVOKABLE int getUnreadCount();
 	
     /*--- chat options ---*/
     Q_INVOKABLE void attentionSend( QString bareJid, QString resource = "" );
@@ -204,6 +201,8 @@ public :
 
     bool rosterNeedsUpdate;
 
+    QString latestMessage;
+
     QString getMyJid() const { return m_myjid; }
     void setMyJid( const QString& myjid ) { if(myjid!=m_myjid) {m_myjid=myjid; emit myJidChanged(); } }
 
@@ -222,6 +221,8 @@ public :
     int getSqlMessagesCount();
     SqlQueryModel* getLastSqlMessages();
     SqlQueryModel* getSqlMessagesByPage();
+    Q_INVOKABLE QString getLastSqlMessage(QString bareJid);
+    Q_INVOKABLE int getUnreadCount();
 
     QString getChatJid() const { return m_chatJid; }
     void setChatJid( const QString & value )

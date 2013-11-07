@@ -14,8 +14,7 @@
 #include <QThread>
 #include <QStringList>
 
-QString MyXmppClient::myVersion = "0.2 Debug";
-
+QString MyXmppClient::myVersion = "0.2-alphaM2";
 QString MyXmppClient::getBareJidByJid( const QString &jid )
 {
     QString bareJid = jid;
@@ -848,6 +847,7 @@ void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg, bool mine )
         this->dbInsertMessage(1,to,body,time,mine);
     } else {
         this->dbInsertMessage(1,from,body,time,mine);
+        latestMessage = xmppMsg.body().left(30);
     }
 }
 
@@ -1064,6 +1064,11 @@ SqlQueryModel* MyXmppClient::getLastSqlMessages()
     database->deleteLater();
 
     return sqlMessages;
+}
+
+QString MyXmppClient::getLastSqlMessage(QString bareJid)
+{
+    return latestMessage;
 }
 
 SqlQueryModel* MyXmppClient::getSqlMessagesByPage()

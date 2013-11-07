@@ -13,7 +13,7 @@ PageStackWindow {
 
     property string textColor:       platformInverted ? platformStyle.colorNormalDark : platformStyle.colorNormalLight
 
-    property int                     globalUnreadCount: xmppClient.getUnreadCount()
+    property int                     globalUnreadCount: 0
     property int                     tempUnreadCount: 0
     property bool                    inputInProgress: false
 
@@ -176,7 +176,11 @@ PageStackWindow {
                 if (!isActive) { blinker.running = true }
                 if (!notifyHold) {
                     if (settings.gBool("notifications", "usePopupRecv") == true && !isActive) {
-                        avkon.showPopup(globalUnreadCount + " unread messages", "New message from "+ getNameByJid(bareJidLastMsg) + ".")
+                        if (settings.gBool("behavior","msgInDiscrPopup")) {
+                            avkon.showPopup(getNameByJid(bareJidLastMsg), getLastSqlMessage(bareJidLastMsg))
+                        } else {
+                            avkon.showPopup(globalUnreadCount + " unread messages", "New message from "+ getNameByJid(bareJidLastMsg) + ".")
+                        }
                     }
                     if (settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff" && !isActive) == true) {
                         avkon.screenBlink()
@@ -242,6 +246,7 @@ PageStackWindow {
         xmppClient.archiveIncMessage = settings.gBool("behavior", "archiveIncMessage")
         if (settings.gBool("behavior","goOnlineOnStart")) { xmppClient.setMyPresence( XmppClient.Online, lastStatus ) }
         pageStack.push("qrc:/pages/Roster")
+        globalUnreadCount = xmppClient.getUnreadCount()
     }
 
     function changeAudioFile() {

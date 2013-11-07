@@ -484,6 +484,15 @@ Page {
                             }
                         }
                     }
+                    CheckBox {
+                        id: shortMessage
+                        text: qsTr("Message text in discreet popup")
+                        checked: settings.gBool("behavior","msgInDiscrPopup")
+                        platformInverted: main.platformInverted
+                        onCheckedChanged: {
+                            settings.sBool(checked,"behavior","msgInDiscrPopup")
+                        }
+                    }
                 }
             }
         }
@@ -509,14 +518,17 @@ Page {
                  TabButton {
                      text: "Notify"
                      tab: tabNotifications
+                     platformInverted: main.platformInverted
                  }
                  TabButton {
                      text: "UI"
                      tab: tabAppearance
+                     platformInverted: main.platformInverted
                  }
                  TabButton {
                      text: "Behavior"
                      tab: tabBehavior
+                     platformInverted: main.platformInverted
                  }
              }
     }
