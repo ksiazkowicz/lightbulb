@@ -13,7 +13,7 @@ Page {
 
     Image {
         id: logo
-        source: "qrc:/Lightbulb.svg"
+        source: "qrc:/Lightbulb"
         y: 32
         sourceSize.width: 128
         sourceSize.height: 128

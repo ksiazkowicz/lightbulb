@@ -179,7 +179,7 @@ Page {
         }
 
         ToolButton {
-            iconSource: "qrc:/qml/images/ok.svg"
+            iconSource: "qrc:/ok"
             onClicked: {
                 var jid = tiJid.text
                 var pass = tiPass.text

@@ -108,7 +108,8 @@ OTHER_FILES += README \
     qml/Dialogs/ReconnectDialog.qml \
     qml/Dialogs/Chats.qml \
     qml/Dialogs/CloseDialog.qml \
-    qml/Dialogs/MuteNotifications.qml
+    qml/Dialogs/MuteNotifications.qml \
+    qml/FirstRunWizard.qml
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)

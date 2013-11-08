@@ -1,6 +1,7 @@
 #include "QAvkonHelper.h"
 #include <akndiscreetpopup.h>
 #include <aknkeylock.h>
+#include <aknnotewrappers.h>
 #include <aknglobalnote.h>
 #include <CAknFileSelectionDialog.h>
 #include <AknCommonDialogs.h>
@@ -22,33 +23,29 @@ QAvkonHelper::QAvkonHelper(QObject *parent) :
     notifyLight = CHWRMLight::NewL();
 }
 
-void QAvkonHelper::showPopup(QString title, QString message) {
+void QAvkonHelper::showPopup(QString title, QString message, bool goToApp) {
     TPtrC16 sTitle(reinterpret_cast<const TUint16*>(title.utf16()));
     TPtrC16 sMessage(reinterpret_cast<const TUint16*>(message.utf16()));
 
-    TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(sTitle, sMessage,KAknsIIDNone, KNullDesC, 0, 0, 180, 0, NULL, {0xE22AC278}));
-}
-
-void QAvkonHelper::lockDevice() {
-    RAknKeyLock aKeyLock;
-    aKeyLock.Connect();
-    aKeyLock.EnableKeyLock();
-    aKeyLock.Close();
-}
-
-void QAvkonHelper::unlockDevice() {
-    RAknKeyLock aKeyLock;
-    aKeyLock.Connect();
-    aKeyLock.DisableKeyLock();
-    aKeyLock.Close();
+    if (goToApp) {
+        TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(sTitle, sMessage,KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL, {0xE22AC278}));
+    } else {
+        TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(sTitle, sMessage,KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL));
+    }
 }
 
 void QAvkonHelper::screenBlink() {
     light->LightBlinkL(CHWRMLight::EPrimaryDisplay | CHWRMLight::EPrimaryKeyboard, 1000, 1000, 1000, KHWRMDefaultIntensity);
 }
 
-void QAvkonHelper::notificationBlink() {
-    notifyLight->LightBlinkL(CHWRMLight::ECustomTarget2, 30, 1, 1, KHWRMDefaultIntensity);
+void QAvkonHelper::notificationBlink(int device) {
+    switch (device) {
+        case 1: TRAP_IGNORE(notifyLight->LightBlinkL(CHWRMLight::ECustomTarget1, 30, 1, 1, KHWRMDefaultIntensity)); break;
+        case 2: TRAP_IGNORE(notifyLight->LightBlinkL(CHWRMLight::ECustomTarget2, 30, 1, 1, KHWRMDefaultIntensity)); break;
+        case 3: TRAP_IGNORE(notifyLight->LightBlinkL(CHWRMLight::ECustomTarget3, 30, 1, 1, KHWRMDefaultIntensity)); break;
+        case 4: TRAP_IGNORE(notifyLight->LightBlinkL(CHWRMLight::ECustomTarget4, 30, 1, 1, KHWRMDefaultIntensity)); break;
+        default: TRAP_IGNORE(notifyLight->LightBlinkL(CHWRMLight::ECustomTarget2, 30, 1, 1, KHWRMDefaultIntensity)); break;
+    }
 }
 
 void QAvkonHelper::displayGlobalNote(QString message)

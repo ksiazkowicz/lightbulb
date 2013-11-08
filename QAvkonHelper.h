@@ -14,11 +14,9 @@ class QAvkonHelper : public QObject
     Q_OBJECT
 public:
     explicit QAvkonHelper(QObject *parent = 0);
-    Q_INVOKABLE void showPopup(QString title,QString message);
-    Q_INVOKABLE void lockDevice();
-    Q_INVOKABLE void unlockDevice();
+    Q_INVOKABLE void showPopup(QString title,QString message, bool goToApp);
     Q_INVOKABLE void screenBlink();
-    Q_INVOKABLE void notificationBlink();
+    Q_INVOKABLE void notificationBlink(int device);
     Q_INVOKABLE void displayGlobalNote(QString message);
     Q_INVOKABLE QString openFileSelectionDlg();
     Q_INVOKABLE void openDefaultBrowser(const QUrl &url) const;

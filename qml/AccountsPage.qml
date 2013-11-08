@@ -141,7 +141,7 @@ Page {
         }
 
         ToolButton {
-            iconSource: "qrc:/qml/images/edit.svg"
+            iconSource: "qrc:/edit"
             onClicked: {
                 if( main.accJid != "" ) {
                     pageStack.push( "qrc:/pages/AccountsAdd" )

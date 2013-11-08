@@ -58,7 +58,7 @@ Page {
                         }
                         ToolButton {
                             anchors.right: parent.right
-                            iconSource: "qrc:/qml/images/settings.svg"
+                            iconSource: "qrc:/settings"
                             onClicked: {
                                 main.nowEditing = "vibraMsgRecv"
                                 dialog.source = ""
@@ -82,7 +82,7 @@ Page {
                         }
                         ToolButton {
                             anchors.right: parent.right
-                            iconSource: "qrc:/qml/images/settings.svg"
+                            iconSource: "qrc:/settings"
                             onClicked: {
                                 main.nowEditing = "soundMsgRecv"
                                 dialog.source = ""
@@ -110,17 +110,42 @@ Page {
                            onCheckedChanged: {
                               settings.sBool(checked,"notifications", "usePopupRecv")
                            }
+                        }                    
+                    Rectangle {
+                        width: tabNotifications.width-20
+                        height: 50
+                        color: "transparent"
+                        CheckBox {
+                               id: dontBLINK
+                               text: qsTr("Use notification LED")
+                               height: 64
+                               checked: settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff")
+                               platformInverted: main.platformInverted
+                               onCheckedChanged: {
+                                  settings.sBool(checked,"notifications", "wibblyWobblyTimeyWimeyStuff")
+                               }
+                            }
+                        TextField {
+                            id: blinkSpecificDevice
+                            inputMethodHints: Qt.ImhFormattedNumbersOnly
+                            text: settings.gInt("notifications", "blinkScreenDevice")
+                            height: 50
+                            width: 50
+                            anchors.right: parent.right
+
+                            placeholderText: "1/2/3/4"
+
+
+                            Component.onCompleted: {
+                                blinkSpecificDevice.text = settings.gInt("notifications", "blinkScreenDevice")
+                            }
+
+                            onTextChanged: {
+                                var device = parseInt(blinkSpecificDevice.text)
+                                settings.sInt(device, "notifications", "blinkScreenDevice")
+                            }
                         }
-                    CheckBox {
-                           id: dontBLINK
-                           text: qsTr("Blink screen when locked")
-                           height: 64
-                           checked: settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff")
-                           platformInverted: main.platformInverted
-                           onCheckedChanged: {
-                              settings.sBool(checked,"notifications", "wibblyWobblyTimeyWimeyStuff")
-                           }
-                        }
+                    }
                     //
                     Text {
                         text: "Message sent"
@@ -142,7 +167,7 @@ Page {
                         }
                         ToolButton {
                             anchors.right: parent.right
-                            iconSource: "qrc:/qml/images/settings.svg"
+                            iconSource: "qrc:/settings"
                             onClicked: {
                                 main.nowEditing = "vibraMsgSent"
                                 dialog.source = ""
@@ -167,7 +192,7 @@ Page {
                         }
                         ToolButton {
                             anchors.right: parent.right
-                            iconSource: "qrc:/qml/images/settings.svg"
+                            iconSource: "qrc:/settings"
                             onClicked: {
                                 main.nowEditing = "soundMsgSent"
                                 dialog.source = ""
@@ -206,7 +231,7 @@ Page {
                         }
                         ToolButton {
                             anchors.right: parent.right
-                            iconSource: "qrc:/qml/images/settings.svg"
+                            iconSource: "qrc:/settings"
                             onClicked: {
                                 main.nowEditing = "soundNotifyConn"
                                 dialog.source = ""
@@ -235,7 +260,7 @@ Page {
                         }
                         ToolButton {
                             anchors.right: parent.right
-                            iconSource: "qrc:/qml/images/settings.svg"
+                            iconSource: "qrc:/settings"
                             onClicked: {
                                 main.nowEditing = "soundMsgSub"
                                 dialog.source = ""
@@ -261,7 +286,7 @@ Page {
                         }
                         ToolButton {
                             anchors.right: parent.right
-                            iconSource: "qrc:/qml/images/settings.svg"
+                            iconSource: "qrc:/settings"
                             onClicked: {
                                 main.nowEditing = "vibraMsgSub"
                                 dialog.source = ""
@@ -435,6 +460,7 @@ Page {
                     TextField {
                         id: tiKeepAlive
                         anchors.horizontalCenter: parent.horizontalCenter
+                        inputMethodHints: Qt.ImhFormattedNumbersOnly
                         width: tabBehavior.width-20
                         height: 50
                         Component.onCompleted: {
@@ -491,6 +517,15 @@ Page {
                         platformInverted: main.platformInverted
                         onCheckedChanged: {
                             settings.sBool(checked,"behavior","msgInDiscrPopup")
+                        }
+                    }
+                    CheckBox {
+                        id: linkInDiscrPopup
+                        text: qsTr("Discreet popup links to app")
+                        checked: settings.gBool("behavior","linkInDiscrPopup")
+                        platformInverted: main.platformInverted
+                        onCheckedChanged: {
+                            settings.sBool(checked,"behavior","linkInDiscrPopup")
                         }
                     }
                 }

@@ -1,19 +1,15 @@
 <RCC>
     <qresource prefix="/">
-        <file>Lightbulb.svg</file>
+        <file alias="Lightbulb">Lightbulb.svg</file>
         <file>qml/Notifications.qml</file>
-        <file>qml/images/alarm.svg</file>
         <file>qml/images/avatar.png</file>
-        <file>qml/images/bar_open_chats.png</file>
-        <file>qml/images/close_stop.svg</file>
-        <file>qml/images/connectivity.svg</file>
-        <file>qml/images/edit.svg</file>
+        <file alias="chats">qml/images/bar_open_chats.png</file>
+        <file alias="edit">qml/images/edit.svg</file>
         <file>qml/images/message_mark.png</file>
         <file>qml/images/message_num.png</file>
-        <file>qml/images/ok.svg</file>
-        <file>qml/images/presence-xa.svg</file>
-        <file>qml/images/send_message.svg</file>
-        <file>qml/images/settings.svg</file>
+        <file alias="ok">qml/images/ok.svg</file>
+        <file alias="message">qml/images/send_message.svg</file>
+        <file alias="settings">qml/images/settings.svg</file>
         <file>qml/bubble/incTriangle.png</file>
         <file>qml/bubble/ownTriangle.png</file>
         <file>qml/main.qml</file>
@@ -74,5 +70,6 @@
         <file alias="Roster">qml/RosterPage.qml</file>
         <file alias="Settings">qml/SettingsPage.qml</file>
         <file alias="VCard">qml/VCardPage.qml</file>
+        <file alias="FirstRun">qml/FirstRunWizard.qml</file>
     </qresource>
 </RCC>

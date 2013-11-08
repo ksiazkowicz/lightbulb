@@ -94,7 +94,7 @@ PageStackWindow {
         running: true; repeat:true
         onTriggered: {
             if (globalUnreadCount>0) {
-                if (blinkerSet < 4) { avkon.notificationBlink(); /*symbiosis.sendMessage("blink");*/ blinkerSet++ } else { if (blinkerSet > 6) { blinkerSet = 0} else { blinkerSet++ } }
+                if (blinkerSet < 4) { avkon.notificationBlink(settings.gInt("notifications", "blinkScreenDevice")); /*symbiosis.sendMessage("blink");*/ blinkerSet++ } else { if (blinkerSet > 6) { blinkerSet = 0} else { blinkerSet++ } }
             } else { blinkerSet = 0; blinker.running = false }
         }
     }
@@ -121,7 +121,7 @@ PageStackWindow {
                 }
             } else {
                 isActive = false
-                if (globalUnreadCount>0) {
+                if (globalUnreadCount>0 && settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff")) {
                     blinker.running = true
                 }
                 suspender.running = true
@@ -178,17 +178,14 @@ PageStackWindow {
                             globalUnreadCount++
                         }
                 }
-                if (!isActive) { blinker.running = true }
+                if (!isActive && settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff")) { blinker.running = true }
                 if (!notifyHold) {
                     if (settings.gBool("notifications", "usePopupRecv") == true && !isActive) {
                         if (settings.gBool("behavior","msgInDiscrPopup")) {
-                            avkon.showPopup(getNameByJid(bareJidLastMsg), getLastSqlMessage())
+                            avkon.showPopup(getNameByJid(bareJidLastMsg), getLastSqlMessage(),settings.gBool("behavior","linkInDiscrPopup"))
                         } else {
-                            avkon.showPopup(globalUnreadCount + " unread messages", "New message from "+ getNameByJid(bareJidLastMsg) + ".")
+                            avkon.showPopup(globalUnreadCount + " unread messages", "New message from "+ getNameByJid(bareJidLastMsg) + ".",settings.gBool("behavior","linkInDiscrPopup"))
                         }
-                    }
-                    if (settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff" && !isActive) == true) {
-                        avkon.screenBlink()
                     }
                     notifySndVibr("MsgRecv")
                 }
@@ -250,7 +247,6 @@ PageStackWindow {
         xmppClient.keepAlive = settings.gInt("behavior", "keepAliveInterval")
         xmppClient.archiveIncMessage = settings.gBool("behavior", "archiveIncMessage")
         if (settings.gBool("behavior","goOnlineOnStart")) { xmppClient.setMyPresence( XmppClient.Online, lastStatus ) }
-        pageStack.push("qrc:/pages/Roster")
         globalUnreadCount = xmppClient.getUnreadCount()
     }
 
@@ -265,58 +261,10 @@ PageStackWindow {
     /************************( stuff to do when running this app )*****************************/
 
     function checkIfFirstRun() {
-        if (!settings.gBool("main","not_first_run") || settings.gStr("main","last_used_rel") !== "0.2") {
-            settings.sBool(true,"main","not_first_run")
-            settings.sStr("0.2","main","last_used_rel")
-
-            settings.sBool(true,"notifications","vibraMsgRecv")
-            settings.sInt(800,"notifications","vibraMsgRecvDuration")
-            settings.sInt(100,"notifications","vibraMsgRecvIntensity")
-
-            settings.sBool(true,"notifications","soundMsgRecv")
-            settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Message_Received.wav", "notifications","soundMsgRecvFile")
-            settings.sInt(100,"notifications","soundMsgRecvVolume")
-
-            settings.sBool(true,"notifications","notifyMsgRecv")
-            settings.sBool(true,"notifications","blinkScrOnMsgRecv")
-            settings.sBool(true,"notifications","useGlobalNote")
-
-            settings.sInt(400,"notifications","vibraMsgSentDuration")
-            settings.sInt(100,"notifications","vibraMsgSentIntensity")
-
-            settings.sBool(true,"notifications","soundMsgSent")
-            settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Message_Sent.wav", "notifications","soundMsgSentFile")
-            settings.sInt(100,"notifications","soundMsgSentVolume")
-
-            settings.sInt(500,"notifications","vibraMsgSubDuration")
-            settings.sInt(50,"notifications","vibraMsgSubIntensity")
-
-            settings.sBool(true,"notifications","soundMsgSub")
-            settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Subscription_Request.wav", "notifications","soundMsgSubFile")
-            settings.sInt(100,"notifications","soundMsgSubVolume")
-
-            settings.sBool(true,"notifications","notifyConnection")
-
-            settings.sBool(true,"notifications","notifySubscription")
-
-            settings.sBool(true,"notifications","notifyTyping")
-
-            settings.sBool(true,"ui","markUnread")
-            settings.sBool(true,"ui","showUnreadCount")
-            settings.sInt(75,"ui","rosterItemHeight")
-            settings.sBool(true,"ui","showContactStatusText")
-
-            settings.sBool(true,"behavior","reconnectOnError")
-            settings.sInt(60,"behavior","keepAliveInterval")
-
-            settings.sBool(true,"behavior","storeStatusText")
-
-            dialogTitle = qsTr("First run")
-            dialogText = qsTr("Welcome to Lightbulb! I guess it's your first time, isn't it? Have fun with testing! #whyIevenPutThisDialogHere?")
-            notify.postInfo(dialogText)
-
-            pageStack.replace("qrc:/pages/Roster")
-
+        if (!settings.gBool("main","not_first_run")) {
+            pageStack.push("qrc:/pages/FirstRun")
+        } else {
+            pageStack.push("qrc:/pages/Roster")
         }
 
     }
@@ -371,7 +319,7 @@ PageStackWindow {
 
     Notifications { id: notify }
 
-    StatusBar { id: sbar; x: 0; y: -main.y
+    StatusBar { id: sbar; x: 0; y: -main.y; opacity: showStatusBar ? 1 : 0
         Rectangle {
                   anchors { left: parent.left; leftMargin: 6; verticalCenter: parent.verticalCenter }
                   width: sbar.width - 183; height: parent.height

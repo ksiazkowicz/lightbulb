@@ -304,7 +304,7 @@ Page {
 
         ToolButton {
             id: toolBarButtonChats
-            iconSource: "qrc:/qml/images/bar_open_chats.png"
+            iconSource: "qrc:/chats"
             smooth: true
             onClicked: {
                 dialog.source = ""

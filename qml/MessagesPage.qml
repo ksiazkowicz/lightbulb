@@ -372,7 +372,7 @@ Page {
         }
         ToolButton {
             id: toolBarButtonSend
-            iconSource: "qrc:/qml/images/send_message.svg"
+            iconSource: "qrc:/message"
             opacity: enabled ? 1 : 0.5
             enabled: txtMessage.text != ""
             onClicked: {
