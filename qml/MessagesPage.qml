@@ -380,7 +380,7 @@ Page {
             }
         }
         ToolButton {
-            iconSource: "qrc:/qml/images/bar_open_chats.png"
+            iconSource: "qrc:/chats"
             onClicked: {
                 xmppClient.resetUnreadMessages( xmppClient.chatJid ) //cleans unread count for this JID
                 dialog.source = ""

@@ -29,7 +29,7 @@ QString MyXmppClient::getBareJidByJid( const QString &jid )
 void MyXmppClient::dbInsertContact(int acc, QString bareJid, QString name, QString presence, QString avatarPath) {
     QThread* thread = new QThread;
     threadCount++;
-    DatabaseManager* database = new DatabaseManager(this);
+    DatabaseManager* database = new DatabaseManager;
     database->moveToThread(thread);
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
@@ -47,7 +47,7 @@ void MyXmppClient::dbInsertContact(int acc, QString bareJid, QString name, QStri
 void MyXmppClient::dbInsertMessage(int acc, QString bareJid, QString msgText, QString time, int mine) {
     QThread* thread = new QThread;
     threadCount++;
-    DatabaseManager* database = new DatabaseManager(this);
+    DatabaseManager* database = new DatabaseManager;
     database->moveToThread(thread);
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
@@ -65,7 +65,7 @@ void MyXmppClient::dbInsertMessage(int acc, QString bareJid, QString msgText, QS
 void MyXmppClient::dbDeleteContact(int acc, QString bareJid) {
     QThread* thread = new QThread;
     threadCount++;
-    DatabaseManager* database = new DatabaseManager(this);
+    DatabaseManager* database = new DatabaseManager;
     database->moveToThread(thread);
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
@@ -79,7 +79,7 @@ void MyXmppClient::dbDeleteContact(int acc, QString bareJid) {
 
 void MyXmppClient::dbUpdateContact(int acc, QString bareJid, QString property, QString value) {
     QThread* thread = new QThread;
-    DatabaseManager* database = new DatabaseManager(this);
+    DatabaseManager* database = new DatabaseManager;
     database->moveToThread(thread);
     threadCount++;
     database->parameters.clear();
@@ -98,7 +98,7 @@ void MyXmppClient::dbUpdateContact(int acc, QString bareJid, QString property, Q
 void MyXmppClient::dbUpdatePresence(int acc, QString bareJid, QString presence, QString resource, QString statusText) {
     QThread* thread = new QThread;
     threadCount++;
-    DatabaseManager* database = new DatabaseManager(this);
+    DatabaseManager* database = new DatabaseManager;
     database->moveToThread(thread);
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
@@ -116,7 +116,7 @@ void MyXmppClient::dbUpdatePresence(int acc, QString bareJid, QString presence, 
 void MyXmppClient::dbIncUnreadMessage(int acc, QString bareJid) {
     QThread* thread = new QThread;
     threadCount++;
-    DatabaseManager* database = new DatabaseManager(this);
+    DatabaseManager* database = new DatabaseManager;
     database->moveToThread(thread);
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
@@ -132,7 +132,7 @@ void MyXmppClient::dbIncUnreadMessage(int acc, QString bareJid) {
 void MyXmppClient::dbSetChatInProgress(int acc, QString bareJid, int value) {
     QThread* thread = new QThread;
     threadCount++;
-    DatabaseManager* database = new DatabaseManager(this);
+    DatabaseManager* database = new DatabaseManager;
     database->moveToThread(thread);
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
