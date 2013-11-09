@@ -27,10 +27,10 @@ QString MyXmppClient::getBareJidByJid( const QString &jid )
 /* database code begin */
 
 void MyXmppClient::dbInsertContact(int acc, QString bareJid, QString name, QString presence, QString avatarPath) {
-    QThread* thread = new QThread;
+    QThread* thread = new QThread( this );
     threadCount++;
-    DatabaseManager* database = new DatabaseManager;
-    database->moveToThread(thread);
+    DatabaseManager* database = new DatabaseManager( thread );
+    //database->moveToThread(thread);
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
     database->parameters.append(bareJid);
@@ -45,10 +45,10 @@ void MyXmppClient::dbInsertContact(int acc, QString bareJid, QString name, QStri
 }
 
 void MyXmppClient::dbInsertMessage(int acc, QString bareJid, QString msgText, QString time, int mine) {
-    QThread* thread = new QThread;
+    QThread* thread = new QThread( this );
     threadCount++;
-    DatabaseManager* database = new DatabaseManager;
-    database->moveToThread(thread);
+    DatabaseManager* database = new DatabaseManager( thread );
+    //database->moveToThread(thread);
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
     database->parameters.append(bareJid);
@@ -63,10 +63,10 @@ void MyXmppClient::dbInsertMessage(int acc, QString bareJid, QString msgText, QS
 }
 
 void MyXmppClient::dbDeleteContact(int acc, QString bareJid) {
-    QThread* thread = new QThread;
+    QThread* thread = new QThread( this );
     threadCount++;
-    DatabaseManager* database = new DatabaseManager;
-    database->moveToThread(thread);
+    DatabaseManager* database = new DatabaseManager( thread );
+    //database->moveToThread(thread);
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
     database->parameters.append(bareJid);
@@ -78,9 +78,9 @@ void MyXmppClient::dbDeleteContact(int acc, QString bareJid) {
 }
 
 void MyXmppClient::dbUpdateContact(int acc, QString bareJid, QString property, QString value) {
-    QThread* thread = new QThread;
-    DatabaseManager* database = new DatabaseManager;
-    database->moveToThread(thread);
+    QThread* thread = new QThread( this );
+    DatabaseManager* database = new DatabaseManager( thread );
+    //database->moveToThread(thread);
     threadCount++;
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
@@ -96,10 +96,10 @@ void MyXmppClient::dbUpdateContact(int acc, QString bareJid, QString property, Q
 }
 
 void MyXmppClient::dbUpdatePresence(int acc, QString bareJid, QString presence, QString resource, QString statusText) {
-    QThread* thread = new QThread;
+    QThread* thread = new QThread( this );
     threadCount++;
-    DatabaseManager* database = new DatabaseManager;
-    database->moveToThread(thread);
+    DatabaseManager* database = new DatabaseManager( thread );
+    rosterNeedsUpdate = true;
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
     database->parameters.append(bareJid);
@@ -114,10 +114,10 @@ void MyXmppClient::dbUpdatePresence(int acc, QString bareJid, QString presence, 
 }
 
 void MyXmppClient::dbIncUnreadMessage(int acc, QString bareJid) {
-    QThread* thread = new QThread;
+    QThread* thread = new QThread( this );
     threadCount++;
-    DatabaseManager* database = new DatabaseManager;
-    database->moveToThread(thread);
+    DatabaseManager* database = new DatabaseManager( thread );
+    //database->moveToThread(thread);
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
     database->parameters.append(bareJid);
@@ -130,10 +130,10 @@ void MyXmppClient::dbIncUnreadMessage(int acc, QString bareJid) {
 }
 
 void MyXmppClient::dbSetChatInProgress(int acc, QString bareJid, int value) {
-    QThread* thread = new QThread;
+    QThread* thread = new QThread( this );
     threadCount++;
-    DatabaseManager* database = new DatabaseManager;
-    database->moveToThread(thread);
+    DatabaseManager* database = new DatabaseManager( thread );
+    //database->moveToThread(thread);
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
     database->parameters.append(bareJid);
