@@ -180,7 +180,7 @@ PageStackWindow {
                 }
                 if (!isActive && settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff")) { blinker.running = true }
                 if (!notifyHold) {
-                    if (settings.gBool("notifications", "usePopupRecv") == true && !isActive) {
+                    if (settings.gBool("notifications", "usePopupRecv") == true && (xmppClient.chatJid !== bareJidLastMsg || !isActive)) {
                         if (settings.gBool("behavior","msgInDiscrPopup")) {
                             avkon.showPopup(getNameByJid(bareJidLastMsg), getLastSqlMessage(),settings.gBool("behavior","linkInDiscrPopup"))
                         } else {
@@ -188,10 +188,6 @@ PageStackWindow {
                         }
                     }
                     notifySndVibr("MsgRecv")
-                }
-                if (settings.gBool("notifications","notifyMsgRecv") == true) {
-                    sb.text = "[" + globalUnreadCount + "] " + qsTr("Message from ") + getNameByJid(bareJidLastMsg)
-                    sb.open()
                 }
                 if (settings.gBool("behavior","enableHsWidget")) {
                     notify.postHSWidget()
@@ -204,8 +200,9 @@ PageStackWindow {
             if (!notifyHold) {
                 notifySndVibr("NotifyConn")
                 if (settings.gBool("notifications", "notifyConnection") && !connecting) {
-                    sb.text = qsTr("Status changed to ") + notify.getStatusName()
-                    sb.open()
+                    if (xmppClient.statusText == "") {
+                        avkon.showPopup("Status changed to " + notify.getStatusName(),xmppClient.statusText,settings.gBool("behavior","linkInDiscrPopup"))
+                    } else { avkon.showPopup("Status changed to",notify.getStatusName(),settings.gBool("behavior","linkInDiscrPopup")) }
                 }
             }
             if (settings.gBool("behavior","enableHsWidget")) {
@@ -216,8 +213,7 @@ PageStackWindow {
         onSubscriptionReceived: {
             console.log( "QML: Main: ::onSubscriptionReceived: [" + bareJid + "]" )
             if (settings.gBool("notifications","notifySubscription") == true) {
-                sb.text = "Subscription request from " + bareJid
-                sb.open()
+                avkon.showPopup("Subscription request",bareJid,settings.gBool("behavior","linkInDiscrPopup"))
             }
             if (!notifyHold) {
                 notifySndVibr("MsgSub")
@@ -227,13 +223,10 @@ PageStackWindow {
             dialog.source = "qrc:/dialogs/Contact/Subscribe"
         }
         onTypingChanged: {
-            if (settings.gBool("notifications", "notifyTyping") == true) {
+            if (settings.gBool("notifications", "notifyTyping") == true && (xmppClient.chatJid !== bareJid || !isActive) && xmppClient.myBareJid !== bareJid) {
                 if (isTyping) {
-                    sb.text = getNameByJid(bareJid) + " is typing."
-                } else {
-                    sb.text = getNameByJid(bareJid) + " stopped typing."
-                }
-                sb.open()
+                    avkon.showPopup(getNameByJid(bareJid),"is typing a message...",settings.gBool("behavior","linkInDiscrPopup"))
+                } else { avkon.showPopup(getNameByJid(bareJid),"stopped typing.",settings.gBool("behavior","linkInDiscrPopup")) }
             }
         }
     } //XmppClient
@@ -345,8 +338,6 @@ PageStackWindow {
                         }
                     }
                 }
-        InfoBanner { id: sb }
-
     }
 
     function notifySndVibr(how) {

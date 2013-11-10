@@ -52,9 +52,6 @@ Page {
                 //settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Message_Received.wav", "notifications","soundMsgRecvFile")
                 //settings.sInt(100,"notifications","soundMsgRecvVolume")
 
-                //settings.sBool(true,"notifications","notifyMsgRecv")
-                //settings.sBool(true,"notifications","useGlobalNote")
-
                 //settings.sInt(400,"notifications","vibraMsgSentDuration")
                 //settings.sInt(100,"notifications","vibraMsgSentIntensity")
 
@@ -84,9 +81,6 @@ Page {
                 //settings.sInt(60,"behavior","keepAliveInterval")
 
                 //settings.sBool(true,"behavior","storeStatusText")
-
-                //settings.sBool(true,"behavior","linkInDiscrPopup")
-                //settings.sBool(true,"behavior","msgInDiscrPopup")
             }
         }
 

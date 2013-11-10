@@ -86,5 +86,9 @@
         <file alias="05">qml/FirstRun/05_skinSettings.qml</file>
         <file alias="06">qml/FirstRun/06_rosterLayoutSettings.qml</file>
         <file alias="07">qml/FirstRun/07_congratulations.qml</file>
+        <file alias="img/popup01">qml/images/popupLayout01.png</file>
+        <file alias="img/popup02">qml/images/popupLayout02.png</file>
+        <file alias="img/black">qml/images/black.png</file>
+        <file alias="img/white">qml/images/white.png</file>
     </qresource>
 </RCC>

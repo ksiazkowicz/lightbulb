@@ -85,7 +85,7 @@ QString MyCache::getAvatarCache(const QString &jid) const
         return avatarJid;
     }
 
-    return QString("qrc:/qml/images/avatar.png");
+    return "";
 }
 
 QString MyCache::getContactCache(const QString &jid) const

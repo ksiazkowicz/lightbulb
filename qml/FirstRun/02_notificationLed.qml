@@ -10,8 +10,8 @@ Page {
     property int tmpValue: 2
 
     Component.onCompleted: {
-        //settings.sBool(true,"notifications","wibblyWobblyTimeyWimeyStuff")
-        //settings.sInt(tmpValue, "notifications", "blinkScreenDevice");
+        settings.sBool(true,"notifications","wibblyWobblyTimeyWimeyStuff")
+        settings.sInt(tmpValue, "notifications", "blinkScreenDevice");
         blinker.running = true;
         globalUnreadCount++;
         statusBarText.text = qsTr("First run")
@@ -37,19 +37,19 @@ Page {
 
     Button {
         id: ledNo
+        y: 420
         text: "Try again"
         width: parent.width/2 - 10
         platformInverted: main.platformInverted
         height: 40
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors { bottom: toolBarLayout.top; bottomMargin: 186 }
         onClicked: {
             switch (tmpValue) {
                 case 2: tmpValue = 1; break;
                 case 1: tmpValue = 4; break;
                 case 4: tmpValue = 2; break;
             }
-            //settings.sInt(tmpValue, "notifications", "blinkScreenDevice")
+            settings.sInt(tmpValue, "notifications", "blinkScreenDevice")
         }
     }
 

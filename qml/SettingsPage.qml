@@ -90,20 +90,9 @@ Page {
                             }
                         }
                     }
-
-                    CheckBox {
-                            id: notifyMsgReceived
-                            text: qsTr("Info banner")
-                            height: 64
-                            checked: settings.gBool("notifications", "notifyMsgRecv")
-                            platformInverted: main.platformInverted
-                            onCheckedChanged: {
-                                settings.sBool(checked,"notifications", "notifyMsgRecv")
-                            }
-                        }
                     CheckBox {
                            id: usePopupRecv
-                           text: qsTr("Discreet Popup")
+                           text: qsTr("Popup")
                            height: 64
                            checked: settings.gBool("notifications", "usePopupRecv")
                            platformInverted: main.platformInverted
@@ -207,7 +196,7 @@ Page {
                     }
                     CheckBox {
                         id: notifyOnline
-                        text: qsTr("Info banner")
+                        text: qsTr("Popup")
                         height: 64
                         checked: settings.gBool("notifications", "notifyConnection")
                         platformInverted: main.platformInverted
@@ -297,7 +286,7 @@ Page {
 
                     CheckBox {
                         id: subInfo
-                        text: qsTr("Info banner")
+                        text: qsTr("Popup")
                         height: 64
                         checked: settings.gBool("notifications", "notifySubscription")
                         platformInverted: main.platformInverted
@@ -312,7 +301,7 @@ Page {
                     }
                     CheckBox {
                         id: notifyBoxTyping
-                        text: qsTr("Info banner")
+                        text: qsTr("Popup")
                         height: 64
                         checked: settings.gBool("notifications", "notifyTyping")
                         platformInverted: main.platformInverted

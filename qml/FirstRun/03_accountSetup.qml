@@ -168,13 +168,16 @@ Page {
         id: toolBarLayout
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-previous_inverse" : "toolbar-previous"
-            onClicked: pageStack.pop()
+            onClicked: {
+                globalUnreadCount++;
+                pageStack.pop()
+            }
         }
 
         ToolButton {
             text: "Skip"
             platformInverted: main.platformInverted
-            onClicked: pageStack.push("qrc:/FirstRun/07")
+            onClicked: pageStack.push("qrc:/FirstRun/04")
         }
 
         ToolButton {
@@ -189,7 +192,7 @@ Page {
 
                 settings.initListOfAccounts()
 
-                pageStack.push("qrc:/FirstRun/07")
+                pageStack.push("qrc:/FirstRun/04")
             }
         }
     }
