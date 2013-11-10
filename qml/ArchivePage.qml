@@ -90,22 +90,6 @@ Page {
     ListModel {
         id: listModelResources
     }
-    /*--------------------( typing notifications )--------------------*/
-    property bool flTyping: false
-    property bool flSendMsg: false
-    Timer {
-        id: timerTextTyping
-        interval: 3000
-        repeat: true
-        onTriggered: {
-            if( flTyping == false ) {
-                timerTextTyping.stop()
-                xmppClient.typingStop( xmppClient.chatJid, messagesPage.resourceJid )
-            }
-            flTyping = false
-        }
-    }
-
 
     /* ------------( XMPP client and stuff )------------ */
     Connections {

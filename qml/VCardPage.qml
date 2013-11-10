@@ -51,7 +51,7 @@ Page {
     }
     function clearForm()
     {
-        vCardPhoto = "qrc:/qml/images/avatar.png"
+        vCardPhoto = "qrc:/avatar"
         vCardNickName = ""
         vCardName = ""
         vCardMiddleName = ""
@@ -90,7 +90,7 @@ Page {
                     smooth: true
                     height: 128
                     width: height
-                    source: "qrc:/qml/images/avatar.png"
+                    source: "qrc:/avatar"
                     sourceSize.height: height
                     sourceSize.width: width
                     anchors.verticalCenter: parent.verticalCenter

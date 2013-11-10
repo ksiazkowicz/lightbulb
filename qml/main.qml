@@ -149,7 +149,7 @@ PageStackWindow {
                         tempUnreadCount = 0
                     }
                 }
-            } else { suspenderDuration += 1; console.log("Will suspend in "+(900-suspenderDuration)) }
+            }
         }
 
     }
@@ -161,6 +161,7 @@ PageStackWindow {
         }
 
         onErrorHappened: {
+            connecting = false
             if (settings.gBool("behavior", "reconnectOnError")) {
                 dialog.source = ""
                 dialog.source = "qrc:/dialogs/Status/Reconnect"
@@ -388,11 +389,11 @@ PageStackWindow {
     /***************(overlay)**********/
     Rectangle {
         color: main.platformInverted ? "white" : "black"
-        opacity: (xmppClient.rosterNeedsUpdate || connecting) ? 1 : 0.5
+        opacity: (!xmppClient.rosterIsAvailable || connecting) ? 1 : 0.5
         Behavior on opacity { PropertyAnimation { duration: 500 } }
         anchors.fill: parent
 
-        visible: main.pageStack.busy || ( xmppClient.rosterNeedsUpdate && statusBarText.text == "Contacts" ) || connecting
+        visible: main.pageStack.busy || (!xmppClient.rosterIsAvailable && statusBarText.text == "Contacts" ) || connecting
         BusyIndicator {
             id: busyindicator1
             anchors.centerIn: parent
@@ -400,11 +401,11 @@ PageStackWindow {
         }
         Text {
             id: rosterUpdate
-            text: connecting ? "Connecting..." : "Updating contact list..."
+            text: !xmppClient.rosterIsAvailable ? "Updating contact list..." : "Connecting..."
             anchors { horizontalCenter: parent.horizontalCenter; top: busyindicator1.bottom; topMargin: 15 }
             color: main.textColor
             font.pixelSize: 20
-            visible: xmppClient.rosterNeedsUpdate || connecting
+            visible: !xmppClient.rosterIsAvailable || connecting
         }
 
     }

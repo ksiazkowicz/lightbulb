@@ -9,6 +9,7 @@ Page {
     property string resourceJid: ""
 
     Component.onCompleted: {
+        xmppClient.page = 1
         console.log( xmppClient.chatJid )
         xmppClient.openChat( xmppClient.chatJid )
 
@@ -220,7 +221,7 @@ Page {
             interactive: false
             anchors { fill: parent }
             clip: true
-            model: xmppClient.last10messages
+            model: xmppClient.messagesByPage
             delegate: componentWrapperItem
             spacing: 5
             onHeightChanged: {
