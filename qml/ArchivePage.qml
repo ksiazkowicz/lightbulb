@@ -193,7 +193,12 @@ Page {
             }
             Image {
                 id: imgMarkUnread
-                source: "qrc:/qml/images/message_mark.png"
+                source: main.platformInverted ? "qrc:/unread-mark_inverse" : "qrc:/unread-mark"
+                smooth: true
+                sourceSize.width: parent.width
+                sourceSize.height: parent.width
+                width: parent.width
+                height: parent.width
                 visible: globalUnreadCount != 0
                 anchors.centerIn: parent
             }
@@ -204,7 +209,7 @@ Page {
                 anchors.centerIn: parent
                 visible: globalUnreadCount != 0
                 z: 1
-                color: "black"
+                color: main.platformInverted ? "white" : "black"
             }
         }
     }}

@@ -99,7 +99,6 @@ void MyXmppClient::dbUpdatePresence(int acc, QString bareJid, QString presence, 
     QThread* thread = new QThread( this );
     threadCount++;
     DatabaseManager* database = new DatabaseManager( thread );
-    rosterNeedsUpdate = true;
     database->parameters.clear();
     database->parameters.append(QString::number(acc));
     database->parameters.append(bareJid);

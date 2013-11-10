@@ -54,16 +54,26 @@ Page {
                 width: rosterItemHeight-4
                 Image {
                     id: imgUnreadMsg
-                    source: showUnreadCount ? "qrc:/qml/images/message_num.png" : "qrc:/qml/images/message_mark.png"
+                    source: main.platformInverted ? "qrc:/unread-mark_inverse" : "qrc:/unread-mark"
                     sourceSize.height: wrapper.height
                     sourceSize.width: wrapper.height
                     smooth: true
                     visible: markUnread ? unreadMsg != 0 : false
                     anchors.centerIn: parent
                     opacity: unreadMsg != 0 ? 1 : 0
+                    Image {
+                        id: imgUnreadCount
+                        source: "qrc:/unread-count"
+                        sourceSize.height: wrapper.height
+                        sourceSize.width: wrapper.height
+                        smooth: true
+                        visible: showUnreadCount ? unreadMsg != 0 : false
+                        anchors.centerIn: parent
+                        opacity: unreadMsg != 0 ? 1 : 0
+                    }
                     Rectangle {
                         color: "transparent"
-                        width: wrapper.height * 0.29
+                        width: wrapper.height * 0.30
                         height: width
                         anchors.right: parent.right
                         anchors.bottom: parent.bottom
@@ -318,7 +328,12 @@ Page {
 
             Image {
                 id: imgMarkUnread
-                source: "qrc:/qml/images/message_mark.png"
+                source: main.platformInverted ? "qrc:/unread-mark_inverse" : "qrc:/unread-mark"
+                smooth: true
+                sourceSize.width: toolBarButtonChats.width
+                sourceSize.height: toolBarButtonChats.width
+                width: toolBarButtonChats.width
+                height: toolBarButtonChats.width
                 visible: globalUnreadCount != 0
                 anchors.centerIn: parent
             }
@@ -329,7 +344,7 @@ Page {
                 anchors.centerIn: parent
                 visible: globalUnreadCount != 0
                 z: 1
-                color: "black"
+                color: main.platformInverted ? "white" : "black"
             }
         }
         ToolButton {

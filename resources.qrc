@@ -3,11 +3,12 @@
         <file alias="Lightbulb">Lightbulb.svg</file>
         <file>qml/Notifications.qml</file>
         <file>qml/images/avatar.png</file>
-        <file>qml/images/message_mark.png</file>
-        <file>qml/images/message_num.png</file>
         <file>qml/bubble/incTriangle.png</file>
         <file>qml/bubble/ownTriangle.png</file>
         <file>qml/main.qml</file>
+        <file alias="unread-count">qml/images/unread-count.svg</file>
+        <file alias="unread-mark">qml/images/unread-mark.svg</file>
+        <file alias="unread-mark_inverse">qml/images/unread-mark_inverse.svg</file>
     </qresource>
     <qresource prefix="/smileys">
         <file alias=":@">qml/smileys/angry.png</file>
