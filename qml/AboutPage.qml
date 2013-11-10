@@ -81,7 +81,7 @@ Page {
     ToolBarLayout {
         id: toolBarLayout
         ToolButton {
-            iconSource: "toolbar-back"
+            iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: { statusBarText.text = "Contacts"
                 pageStack.pop() }
         }

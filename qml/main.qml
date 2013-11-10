@@ -394,9 +394,9 @@ PageStackWindow {
     }
 
 
-    /***************(uselessshit)**********/
+    /***************(overlay)**********/
     Rectangle {
-        color: "black"
+        color: main.platformInverted ? "white" : "black"
         opacity: (xmppClient.rosterNeedsUpdate || connecting) ? 1 : 0.5
         Behavior on opacity { PropertyAnimation { duration: 500 } }
         anchors.fill: parent
@@ -411,7 +411,7 @@ PageStackWindow {
             id: rosterUpdate
             text: connecting ? "Connecting..." : "Updating contact list..."
             anchors { horizontalCenter: parent.horizontalCenter; top: busyindicator1.bottom; topMargin: 15 }
-            color: "white"
+            color: main.textColor
             font.pixelSize: 20
             visible: xmppClient.rosterNeedsUpdate || connecting
         }

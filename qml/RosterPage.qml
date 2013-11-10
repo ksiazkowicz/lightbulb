@@ -8,6 +8,7 @@ Page {
     objectName: "rosterPage"
     tools: toolBarLayout
 
+
     Connections {
         target: xmppClient
         onErrorHappened: {
@@ -165,6 +166,10 @@ Page {
                 onClicked: main.pageStack.push( "qrc:/pages/Accounts" )
             }
             MenuItem {
+                text: qsTr("First run wizard")
+                onClicked: main.pageStack.push( "qrc:/pages/FirstRun" )
+            }
+            MenuItem {
                 text: qsTr("Settings")
                 onClicked: main.pageStack.push( "qrc:/pages/Settings" )
             }
@@ -277,7 +282,7 @@ Page {
     ToolBarLayout {
         id: toolBarLayout
         ToolButton {
-            iconSource: "toolbar-back"
+            iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             smooth: true
             onClicked: {
                 dialog.source = ""
@@ -285,7 +290,7 @@ Page {
             }
         }
         ToolButton {
-            iconSource: "toolbar-add"
+            iconSource: main.platformInverted ? "toolbar-add_inverse" : "toolbar-add"
             smooth: true
             onClicked: {
                 dialog.source = ""
@@ -293,7 +298,7 @@ Page {
             }
         }
         ToolButton {
-            iconSource: "toolbar-search"
+            iconSource: main.platformInverted ? "toolbar-search_inverse" : "toolbar-search"
             smooth: true
             onClicked: {
                 if (rosterSearch.height == 50) {
@@ -304,7 +309,7 @@ Page {
 
         ToolButton {
             id: toolBarButtonChats
-            iconSource: "qrc:/chats"
+            iconSource: main.platformInverted ? "qrc:/toolbar/chats_inverse" : "qrc:/toolbar/chats"
             smooth: true
             onClicked: {
                 dialog.source = ""
@@ -329,7 +334,7 @@ Page {
         }
         ToolButton {
             id: toolBarButtonOptions
-            iconSource: "toolbar-menu"
+            iconSource: main.platformInverted ? "toolbar-menu_inverse" : "toolbar-menu"
             smooth: true
             onClicked: {
                 rosterMenu.open()
@@ -339,7 +344,7 @@ Page {
 
     Rectangle {
 
-        color: "black"
+        color: main.platformInverted ? "white" : "black"
         opacity: 0.7
         anchors.fill: parent
         NumberAnimation { properties: "visible"; duration: 200 }
@@ -362,7 +367,7 @@ Page {
             }
             Text {
                 id: offlineText
-                color: "white"
+                color: main.textColor
                 anchors { top: sadface.bottom; horizontalCenter: parent.horizontalCenter; topMargin: 5 }
                 visible: parent.visible
                 text: "You're offline"

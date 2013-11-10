@@ -3,13 +3,8 @@
         <file alias="Lightbulb">Lightbulb.svg</file>
         <file>qml/Notifications.qml</file>
         <file>qml/images/avatar.png</file>
-        <file alias="chats">qml/images/bar_open_chats.png</file>
-        <file alias="edit">qml/images/edit.svg</file>
         <file>qml/images/message_mark.png</file>
         <file>qml/images/message_num.png</file>
-        <file alias="ok">qml/images/ok.svg</file>
-        <file alias="message">qml/images/send_message.svg</file>
-        <file alias="settings">qml/images/settings.svg</file>
         <file>qml/bubble/incTriangle.png</file>
         <file>qml/bubble/ownTriangle.png</file>
         <file>qml/main.qml</file>
@@ -39,13 +34,13 @@
         <file alias=";>">qml/smileys/wink3.png</file>
     </qresource>
     <qresource prefix="/presence">
-        <file alias="away">qml/images/presence-away.svg</file>
-        <file alias="busy">qml/images/presence-busy.svg</file>
-        <file alias="chatty">qml/images/presence-chatty.svg</file>
-        <file alias="offline">qml/images/presence-offline.svg</file>
-        <file alias="online">qml/images/presence-online.svg</file>
         <file alias="unknown">qml/images/presence-unknown.png</file>
-        <file alias="xa">qml/images/presence-xa.svg</file>
+        <file alias="away">qml/presence/presence-away.svg</file>
+        <file alias="busy">qml/presence/presence-busy.svg</file>
+        <file alias="chatty">qml/presence/presence-chatty.svg</file>
+        <file alias="offline">qml/presence/presence-offline.svg</file>
+        <file alias="online">qml/presence/presence-online.svg</file>
+        <file alias="xa">qml/presence/presence-xa.svg</file>
     </qresource>
     <qresource prefix="/dialogs">
         <file alias="Contact/Add">qml/Dialogs/AddContact.qml</file>
@@ -71,5 +66,17 @@
         <file alias="Settings">qml/SettingsPage.qml</file>
         <file alias="VCard">qml/VCardPage.qml</file>
         <file alias="FirstRun">qml/FirstRunWizard.qml</file>
+    </qresource>
+    <qresource prefix="/toolbar">
+        <file alias="close">qml/toolbar/toolbar-close.svg</file>
+        <file alias="close_inverse">qml/toolbar/toolbar-close_inverse.svg</file>
+        <file alias="edit">qml/toolbar/toolbar-edit.svg</file>
+        <file alias="edit_inverse">qml/toolbar/toolbar-edit_inverse.svg</file>
+        <file alias="ok">qml/toolbar/toolbar-ok.svg</file>
+        <file alias="ok_inverse">qml/toolbar/toolbar-ok_inverse.svg</file>
+        <file alias="send">qml/toolbar/toolbar-send.svg</file>
+        <file alias="send_inverse">qml/toolbar/toolbar-send_inverse.svg</file>
+        <file alias="chats">qml/toolbar/toolbar-chats.svg</file>
+        <file alias="chats_inverse">qml/toolbar/toolbar-chats_inverse.svg</file>
     </qresource>
 </RCC>

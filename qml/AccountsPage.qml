@@ -122,7 +122,7 @@ Page {
         id: toolBarAccounts
 
         ToolButton {
-            iconSource: "toolbar-back"
+            iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
                 main.initAccount()
                 pageStack.pop()
@@ -131,7 +131,7 @@ Page {
         }
 
         ToolButton {
-            iconSource: "toolbar-delete"
+            iconSource: main.platformInverted ? "toolbar-delete_inverse" : "toolbar-delete"
             onClicked: {
                 if( main.accJid != "" ) {
                     dialog.source = ""
@@ -141,7 +141,7 @@ Page {
         }
 
         ToolButton {
-            iconSource: "qrc:/edit"
+            iconSource: main.platformInverted ? "qrc:/toolbar/edit_inverse" : "qrc:/toolbar/edit"
             onClicked: {
                 if( main.accJid != "" ) {
                     pageStack.push( "qrc:/pages/AccountsAdd" )
@@ -150,7 +150,7 @@ Page {
         }
 
         ToolButton {
-            iconSource: "toolbar-add"
+            iconSource: main.platformInverted ? "toolbar-add_inverse" : "toolbar-add"
             onClicked: {
                 addMenu.open()
             }

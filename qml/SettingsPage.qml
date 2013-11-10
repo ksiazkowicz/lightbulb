@@ -58,7 +58,7 @@ Page {
                         }
                         ToolButton {
                             anchors.right: parent.right
-                            iconSource: "qrc:/settings"
+                            iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
                                 main.nowEditing = "vibraMsgRecv"
                                 dialog.source = ""
@@ -82,7 +82,7 @@ Page {
                         }
                         ToolButton {
                             anchors.right: parent.right
-                            iconSource: "qrc:/settings"
+                            iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
                                 main.nowEditing = "soundMsgRecv"
                                 dialog.source = ""
@@ -167,7 +167,7 @@ Page {
                         }
                         ToolButton {
                             anchors.right: parent.right
-                            iconSource: "qrc:/settings"
+                            iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
                                 main.nowEditing = "vibraMsgSent"
                                 dialog.source = ""
@@ -192,7 +192,7 @@ Page {
                         }
                         ToolButton {
                             anchors.right: parent.right
-                            iconSource: "qrc:/settings"
+                            iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
                                 main.nowEditing = "soundMsgSent"
                                 dialog.source = ""
@@ -231,7 +231,7 @@ Page {
                         }
                         ToolButton {
                             anchors.right: parent.right
-                            iconSource: "qrc:/settings"
+                            iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
                                 main.nowEditing = "soundNotifyConn"
                                 dialog.source = ""
@@ -260,7 +260,7 @@ Page {
                         }
                         ToolButton {
                             anchors.right: parent.right
-                            iconSource: "qrc:/settings"
+                            iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
                                 main.nowEditing = "soundMsgSub"
                                 dialog.source = ""
@@ -286,7 +286,7 @@ Page {
                         }
                         ToolButton {
                             anchors.right: parent.right
-                            iconSource: "qrc:/settings"
+                            iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
                                 main.nowEditing = "vibraMsgSub"
                                 dialog.source = ""
@@ -538,7 +538,7 @@ Page {
     ToolBarLayout {
         id: toolBar
         ToolButton {
-            iconSource: "toolbar-back"
+            iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
                 statusBarText.text = "Contacts"
                 if (shouldIreloadRoster) {

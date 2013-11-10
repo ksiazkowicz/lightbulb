@@ -361,7 +361,7 @@ Page {
 
         /****/
         ToolButton {
-            iconSource: "toolbar-back"
+            iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
                 pageStack.pop()
                 main.isChatInProgress = false
@@ -372,7 +372,7 @@ Page {
         }
         ToolButton {
             id: toolBarButtonSend
-            iconSource: "qrc:/message"
+            iconSource: main.platformInverted ? "qrc:/toolbar/message_inverse" : "qrc:/toolbar/message"
             opacity: enabled ? 1 : 0.5
             enabled: txtMessage.text != ""
             onClicked: {
@@ -380,7 +380,7 @@ Page {
             }
         }
         ToolButton {
-            iconSource: "qrc:/chats"
+            iconSource: main.platformInverted ? "qrc:/toolbar/chats_inverse" : "qrc:/toolbar/chats"
             onClicked: {
                 xmppClient.resetUnreadMessages( xmppClient.chatJid ) //cleans unread count for this JID
                 dialog.source = ""
@@ -403,7 +403,7 @@ Page {
             }
         }
         ToolButton {
-            iconSource: "toolbar-menu"
+            iconSource: main.platformInverted ? "toolbar-menu_inverse" : "toolbar-menu"
             onClicked: {
                 msgOptions.open()
             }

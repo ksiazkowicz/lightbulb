@@ -171,7 +171,7 @@ Page {
     ToolBarLayout {
         id: toolBarLayout
         ToolButton {
-            iconSource: "toolbar-back"
+            iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
                 pageStack.pop()
                 statusBarText.text = "Accounts"
@@ -179,7 +179,7 @@ Page {
         }
 
         ToolButton {
-            iconSource: "qrc:/ok"
+            iconSource: main.platformInverted ? "qrc:/toolbar/ok_inverse" : "qrc:/toolbar/ok"
             onClicked: {
                 var jid = tiJid.text
                 var pass = tiPass.text

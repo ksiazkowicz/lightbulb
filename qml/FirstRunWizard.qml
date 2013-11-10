@@ -4,7 +4,7 @@ import com.nokia.symbian 1.1
 
 Page {
     id: firstRunPage
-    tools: null
+    tools: toolBarLayout
     orientationLock: 1
     property int setupStage:    0
     property int tmpValue:      0
@@ -13,8 +13,6 @@ Page {
     property bool accountSetup: false
 
     Component.onCompleted: {
-        main.showToolBar  = false
-        main.showStatusBar = false
         statusBarText.text = qsTr("First run")
         loadStep()
     }
@@ -30,8 +28,8 @@ Page {
                 chapter.text = "Notification LED";
                 text.text = qsTr("Because every phone is different, we need you do do a couple of tests before proceeding to ensure that all the features will work properly. Lightbulb will now try different ways to access your phones notification LED. \n\nObserve your menu button. Tap on \"Next\" if it's blinking, or \"Try again\" if it isn't.");
                 tmpValue = 2;
-                settings.sBool(true,"notifications","wibblyWobblyTimeyWimeyStuff")
-                settings.sInt(tmpValue, "notifications", "blinkScreenDevice");
+                //settings.sBool(true,"notifications","wibblyWobblyTimeyWimeyStuff")
+                //settings.sInt(tmpValue, "notifications", "blinkScreenDevice");
                 blinker.running = true;
                 globalUnreadCount++;
                 prevButton = true;
@@ -59,96 +57,6 @@ Page {
 
     }
 
-    ButtonRow {
-        id: steps
-        width: 256
-        height: 40
-        anchors { horizontalCenter: parent.horizontalCenter; bottom: parent.bottom; bottomMargin: 10 }
-
-        Button {
-            id: prevBtn
-            text: prevButton ? "Previous" : "Close"
-            onClicked: {
-                if (prevButton) {
-                    if (setupStage == 1)  globalUnreadCount--;
-                    setupStage--;
-                    loadStep();
-                } else {
-                    pageStack.replace("qrc:/pages/Roster")
-                    main.showToolBar  = true
-                    main.showStatusBar = true
-                    settings.sBool(true,"main","not_first_run")
-                    settings.sStr(xmppClient.version,"main","last_used_rel")
-                }
-            }
-        }
-
-        Button {
-            id: nextBtn
-            text: nextButton ? "Next" : "Close"
-            onClicked: {
-                if (nextButton) {
-                    if (setupStage ==2 && !selectionDialog.selectedIndex >= 0) {
-                    } else {
-                        if (setupStage == 1)  globalUnreadCount--;
-                        setupStage++;
-                        loadStep();
-                    }
-                } else {
-                    pageStack.replace("qrc:/pages/Roster")
-                    main.showToolBar  = true
-                    main.showStatusBar = true
-                    settings.sBool(true,"main","not_first_run")
-                    settings.sStr(xmppClient.version,"main","last_used_rel")
-
-                    settings.sBool(true,"notifications","vibraMsgRecv")
-                    settings.sInt(800,"notifications","vibraMsgRecvDuration")
-                    settings.sInt(100,"notifications","vibraMsgRecvIntensity")
-
-                    settings.sBool(true,"notifications","soundMsgRecv")
-                    settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Message_Received.wav", "notifications","soundMsgRecvFile")
-                    settings.sInt(100,"notifications","soundMsgRecvVolume")
-
-                    settings.sBool(true,"notifications","notifyMsgRecv")
-                    settings.sBool(true,"notifications","useGlobalNote")
-
-                    settings.sInt(400,"notifications","vibraMsgSentDuration")
-                    settings.sInt(100,"notifications","vibraMsgSentIntensity")
-
-                    settings.sBool(true,"notifications","soundMsgSent")
-                    settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Message_Sent.wav", "notifications","soundMsgSentFile")
-                    settings.sInt(100,"notifications","soundMsgSentVolume")
-
-                    settings.sInt(500,"notifications","vibraMsgSubDuration")
-                    settings.sInt(50,"notifications","vibraMsgSubIntensity")
-
-                    settings.sBool(true,"notifications","soundMsgSub")
-                    settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Subscription_Request.wav", "notifications","soundMsgSubFile")
-                    settings.sInt(100,"notifications","soundMsgSubVolume")
-
-                    settings.sBool(true,"notifications","notifyConnection")
-
-                    settings.sBool(true,"notifications","notifySubscription")
-
-                    settings.sBool(true,"notifications","notifyTyping")
-
-                    settings.sBool(true,"ui","markUnread")
-                    settings.sBool(true,"ui","showUnreadCount")
-                    settings.sInt(75,"ui","rosterItemHeight")
-                    settings.sBool(true,"ui","showContactStatusText")
-
-                    settings.sBool(true,"behavior","reconnectOnError")
-                    settings.sInt(60,"behavior","keepAliveInterval")
-
-                    settings.sBool(true,"behavior","storeStatusText")
-
-                    settings.sBool(true,"behavior","linkInDiscrPopup")
-                    settings.sBool(true,"behavior","msgInDiscrPopup")
-                }
-            }
-        }
-    }
-
     Text {
         id: text
         color: main.textColor
@@ -168,14 +76,14 @@ Page {
         enabled: visible
         height: 40
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors { bottom: steps.top; bottomMargin: 186 }
+        anchors { bottom: toolBarLayout.top; bottomMargin: 186 }
         onClicked: {
             switch (tmpValue) {
                 case 2: tmpValue = 1; break;
                 case 1: tmpValue = 4; break;
                 case 4: tmpValue = 2; break;
             }
-            settings.sInt(tmpValue, "notifications", "blinkScreenDevice")
+            //settings.sInt(tmpValue, "notifications", "blinkScreenDevice")
         }
     }
 
@@ -188,8 +96,7 @@ Page {
         subTitle: selectionDialog.selectedIndex >= 0
                   ? selectionDialog.model.get(selectionDialog.selectedIndex).name
                   : "FB Chat, GTalk or manual settings"
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 392
+        anchors { top: text.bottom; topMargin: 24 }
         title: "Server"
 
         visible: setupStage == 2
@@ -232,6 +139,89 @@ Page {
         pageStack.push( "qrc:/pages/AccountsAdd" )
         accountSetup = true;
         main.showToolBar = true
+    }
+
+    ToolBarLayout {
+        id: toolBarLayout
+        ToolButton {
+            id: prevBtn
+            iconSource: prevButton ? "toolbar-previous" : "qrc:/toolbar/close"
+            onClicked: {
+                if (prevButton) {
+                    if (setupStage == 1)  globalUnreadCount--;
+                    setupStage--;
+                    loadStep();
+                } else {
+                    pageStack.replace("qrc:/pages/Roster")
+                    //settings.sBool(true,"main","not_first_run")
+                    //settings.sStr(xmppClient.version,"main","last_used_rel")
+                }
+            }
+        }
+
+        ToolButton {
+            id: nextBtn
+            iconSource: "toolbar-next"
+            onClicked: {
+                if (nextButton) {
+                    if (setupStage ==2 && !selectionDialog.selectedIndex >= 0) {
+                    } else {
+                        if (setupStage == 1)  globalUnreadCount--;
+                        setupStage++;
+                        loadStep();
+                    }
+                } else {
+                    pageStack.replace("qrc:/pages/Roster")
+                    //settings.sBool(true,"main","not_first_run")
+                    //settings.sStr(xmppClient.version,"main","last_used_rel")
+
+                    //settings.sBool(true,"notifications","vibraMsgRecv")
+                    //settings.sInt(800,"notifications","vibraMsgRecvDuration")
+                    //settings.sInt(100,"notifications","vibraMsgRecvIntensity")
+
+                    //settings.sBool(true,"notifications","soundMsgRecv")
+                    //settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Message_Received.wav", "notifications","soundMsgRecvFile")
+                    //settings.sInt(100,"notifications","soundMsgRecvVolume")
+
+                    //settings.sBool(true,"notifications","notifyMsgRecv")
+                    //settings.sBool(true,"notifications","useGlobalNote")
+
+                    //settings.sInt(400,"notifications","vibraMsgSentDuration")
+                    //settings.sInt(100,"notifications","vibraMsgSentIntensity")
+
+                    //settings.sBool(true,"notifications","soundMsgSent")
+                    //settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Message_Sent.wav", "notifications","soundMsgSentFile")
+                    //settings.sInt(100,"notifications","soundMsgSentVolume")
+
+                    //settings.sInt(500,"notifications","vibraMsgSubDuration")
+                    //settings.sInt(50,"notifications","vibraMsgSubIntensity")
+
+                    //settings.sBool(true,"notifications","soundMsgSub")
+                    //settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Subscription_Request.wav", "notifications","soundMsgSubFile")
+                    //settings.sInt(100,"notifications","soundMsgSubVolume")
+
+                    //settings.sBool(true,"notifications","notifyConnection")
+
+                    //settings.sBool(true,"notifications","notifySubscription")
+
+                    //settings.sBool(true,"notifications","notifyTyping")
+
+                    //settings.sBool(true,"ui","markUnread")
+                    //settings.sBool(true,"ui","showUnreadCount")
+                    //settings.sInt(75,"ui","rosterItemHeight")
+                    //settings.sBool(true,"ui","showContactStatusText")
+
+                    //settings.sBool(true,"behavior","reconnectOnError")
+                    //settings.sInt(60,"behavior","keepAliveInterval")
+
+                    //settings.sBool(true,"behavior","storeStatusText")
+
+                    //settings.sBool(true,"behavior","linkInDiscrPopup")
+                    //settings.sBool(true,"behavior","msgInDiscrPopup")
+                }
+            }
+        }
+
     }
 
 

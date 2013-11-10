@@ -155,7 +155,7 @@ Page {
 
         /****/
         ToolButton {
-            iconSource: "toolbar-back"
+            iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
                 pageStack.replace("qrc:/pages/Messages")
                 xmppClient.page = 1
@@ -164,7 +164,7 @@ Page {
 
         ButtonRow {
             ToolButton {
-                iconSource: "toolbar-previous"
+                iconSource: main.platformInverted ? "toolbar-previous_inverse" : "toolbar-previous"
                 enabled: xmppClient.messagesCount - (xmppClient.page*20)> 0
                 opacity: enabled ? 1 : 0.2
                 onClicked: {
@@ -172,7 +172,7 @@ Page {
                 }
             }
             ToolButton {
-                iconSource: "toolbar-next"
+                iconSource: main.platformInverted ? "toolbar-next_inverse" : "toolbar-next"
                 enabled: xmppClient.page > 1
                 opacity: enabled ? 1 : 0.2
                 onClicked: {
@@ -183,7 +183,7 @@ Page {
         }
 
         ToolButton {
-            iconSource: "qrc:/chats"
+            iconSource: main.platformInverted ? "qrc:/toolbar/chats_inverse" : "qrc:/toolbar/chats"
             onClicked: {
                 xmppClient.resetUnreadMessages( xmppClient.chatJid ) //cleans unread count for this JID
                 dialog.source = ""
