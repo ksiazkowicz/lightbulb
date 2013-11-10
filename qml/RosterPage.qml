@@ -359,7 +359,7 @@ Page {
             visible: xmppClient.status == XmppClient.Offline
             Text {
                 id: sadface
-                color: "white"
+                color: main.textColor
                 anchors { top: parent.top; left: parent.left }
                 visible: parent.visible
                 text: ":("

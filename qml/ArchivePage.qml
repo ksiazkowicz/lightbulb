@@ -11,7 +11,7 @@ Page {
     Component.onCompleted: {
         xmppClient.openChat( xmppClient.chatJid )
 
-        statusBarText.text = xmppClient.getNameByJid(xmppClient.chatJid)
+        statusBarText.text = xmppClient.contactName
 
         if( xmppClient.bareJidLastMsg == xmppClient.chatJid ) {
             messagesPage.resourceJid = xmppClient.resourceLastMsg
@@ -23,15 +23,17 @@ Page {
             listModelResources.append( {resource:qsTr("(by default)"), checked:false} )
         }
 
-        var listResources = xmppClient.getResourcesByJid(xmppClient.chatJid)
-        for( var z=0; z<listResources.length; z++ )
-        {
-            if( listResources[z] == "" ) { continue; }
-            if( messagesPage.resourceJid ==listResources[z] ) {
-                listModelResources.append( {resource:listResources[z], checked:true} )
-            } else {
-                listModelResources.append( {resource:listResources[z], checked:false} )
-            }
+        if (notify.getStatusName() != "Offline") {
+            var listResources = xmppClient.getResourcesByJid(xmppClient.chatJid)
+            for( var z=0; z<listResources.length; z++ )
+            {
+                if( listResources[z] == "" ) { continue; }
+                if( messagesPage.resourceJid ==listResources[z] ) {
+                    listModelResources.append( {resource:listResources[z], checked:true} )
+                } else {
+                    listModelResources.append( {resource:listResources[z], checked:false} )
+                }
+           }
         }
         main.isChatInProgress = true
     }
@@ -51,7 +53,7 @@ Page {
                   id: message
                   anchors { top: parent.top; left: parent.left; right: parent.right }
                   text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (xmppClient.contactName === "" ? xmppClient.chatJid : xmppClient.contactName) ) + ":</font> " + msgText
-                  color: "white"
+                  color: main.textColor
                   font.pixelSize: 16
                   wrapMode: Text.Wrap
                   onLinkActivated: { main.url=link; linkContextMenu.open()}

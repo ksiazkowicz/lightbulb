@@ -34,7 +34,6 @@
         <file alias=";>">qml/smileys/wink3.png</file>
     </qresource>
     <qresource prefix="/presence">
-        <file alias="unknown">qml/images/presence-unknown.png</file>
         <file alias="away">qml/presence/presence-away.svg</file>
         <file alias="busy">qml/presence/presence-busy.svg</file>
         <file alias="chatty">qml/presence/presence-chatty.svg</file>
