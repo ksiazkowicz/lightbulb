@@ -65,7 +65,6 @@
         <file alias="Roster">qml/RosterPage.qml</file>
         <file alias="Settings">qml/SettingsPage.qml</file>
         <file alias="VCard">qml/VCardPage.qml</file>
-        <file alias="FirstRun">qml/FirstRunWizard.qml</file>
     </qresource>
     <qresource prefix="/toolbar">
         <file alias="close">qml/toolbar/toolbar-close.svg</file>
@@ -78,5 +77,14 @@
         <file alias="send_inverse">qml/toolbar/toolbar-send_inverse.svg</file>
         <file alias="chats">qml/toolbar/toolbar-chats.svg</file>
         <file alias="chats_inverse">qml/toolbar/toolbar-chats_inverse.svg</file>
+    </qresource>
+    <qresource prefix="/FirstRun">
+        <file alias="01">qml/FirstRun/01_gettingStarted.qml</file>
+        <file alias="02">qml/FirstRun/02_notificationLed.qml</file>
+        <file alias="03">qml/FirstRun/03_accountSetup.qml</file>
+        <file alias="04">qml/FirstRun/04_discreetPopupSettings.qml</file>
+        <file alias="05">qml/FirstRun/05_skinSettings.qml</file>
+        <file alias="06">qml/FirstRun/06_rosterLayoutSettings.qml</file>
+        <file alias="07">qml/FirstRun/07_congratulations.qml</file>
     </qresource>
 </RCC>

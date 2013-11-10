@@ -109,7 +109,13 @@ OTHER_FILES += README \
     qml/Dialogs/Chats.qml \
     qml/Dialogs/CloseDialog.qml \
     qml/Dialogs/MuteNotifications.qml \
-    qml/FirstRunWizard.qml
+    qml/FirstRun/01_gettingStarted.qml \
+    qml/FirstRun/02_notificationLed.qml \
+    qml/FirstRun/03_accountSetup.qml \
+    qml/FirstRun/04_discreetPopupSettings.qml \
+    qml/FirstRun/05_skinSettings.qml \
+    qml/FirstRun/06_rosterLayoutSettings.qml \
+    qml/FirstRun/07_congratulations.qml
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)

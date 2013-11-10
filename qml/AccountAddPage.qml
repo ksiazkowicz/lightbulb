@@ -33,7 +33,7 @@ Page {
             spacing: 5
             Text {
                 text: "Jabber ID"
-                color: platformStyle.colorNormalLight
+                color: main.textColor
                 anchors.horizontalCenter: parent.horizontalCenter
             }
             TextField {
@@ -55,7 +55,7 @@ Page {
 
             Text {
                 text: "Password"
-                color: platformStyle.colorNormalLight
+                color: main.textColor
                 anchors.horizontalCenter: parent.horizontalCenter
             }
 
@@ -92,7 +92,7 @@ Page {
 
             Text {
                 text: "Resource (optional)"
-                color: platformStyle.colorNormalLight
+                color: main.textColor
                 anchors.horizontalCenter: parent.horizontalCenter
             }
 

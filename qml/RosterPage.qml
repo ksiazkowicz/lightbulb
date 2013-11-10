@@ -177,7 +177,7 @@ Page {
             }
             MenuItem {
                 text: qsTr("First run wizard")
-                onClicked: main.pageStack.push( "qrc:/pages/FirstRun" )
+                onClicked: main.pageStack.push( "qrc:/FirstRun/01" )
             }
             MenuItem {
                 text: qsTr("Settings")

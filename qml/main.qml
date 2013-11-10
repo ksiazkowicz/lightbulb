@@ -262,7 +262,7 @@ PageStackWindow {
 
     function checkIfFirstRun() {
         if (!settings.gBool("main","not_first_run")) {
-            pageStack.push("qrc:/pages/FirstRun")
+            pageStack.push("qrc:/FirstRun/01")
         } else {
             pageStack.push("qrc:/pages/Roster")
         }
