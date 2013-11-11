@@ -4,6 +4,7 @@ import com.nokia.symbian 1.1
 
 CommonDialog {
     titleText: qsTr("Subscription request")
+    platformInverted: main.platformInverted
 
     buttonTexts: [qsTr("Accept"), qsTr("Decline")]
 
@@ -16,7 +17,7 @@ CommonDialog {
     }
 
     content: Text {
-        color: "white";
+        color: main.textColor
         id: subQueryLabel;
         wrapMode: Text.Wrap;
         anchors { fill: parent; leftMargin: 10; rightMargin:10 }

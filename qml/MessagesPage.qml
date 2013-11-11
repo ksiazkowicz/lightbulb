@@ -292,6 +292,7 @@ Page {
         id: dlgResources
         titleText: qsTr("Resources")
         privateCloseIcon: true
+        platformInverted: main.platformInverted
 
         content: ListView {
                     id: listViewResources
@@ -321,13 +322,14 @@ Page {
                                 font.pixelSize: itemResource.height/2
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 anchors.verticalCenter: parent.verticalCenter
-                                color: "white"
+                                color: main.textColor
                                 font.bold: false
                             }
                             states: State {
                                 name: "Current"
                                 when: itemResource.ListView.isCurrentItem
                                 PropertyChanges { target: itemResource; gradient: gr_press }
+                                PropertyChanges { target: textResource; color: "white" }
                                 PropertyChanges { target: textResource; font.bold: true }
                             }
                             MouseArea {

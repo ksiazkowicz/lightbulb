@@ -11,6 +11,8 @@ CommonDialog {
 
         property bool storeStatus: settings.gBool("behavior","storeLastStatus")
 
+        platformInverted: main.platformInverted
+
         Component.onCompleted: {
             open()
             main.splitscreenY = 0
@@ -76,6 +78,7 @@ CommonDialog {
             }
 
             Tumbler {
+                platformInverted: main.platformInverted
                 id: tumbler
                 anchors { top: parent.top; topMargin: 5; left: parent.left; right: parent.right; bottom: wrapperTextEdit.top; bottomMargin: 5 }
                 columns: [ colStatus ]

@@ -7,6 +7,7 @@ CommonDialog {
         titleText: qsTr("Effect settings")
         privateCloseIcon: true
         height: 216
+        platformInverted: main.platformInverted
 
         Component.onCompleted: {
             open()
@@ -26,7 +27,7 @@ CommonDialog {
                 Text {
                     id: volumeText
                     text: "Volume (" + volumeSlider.value + "%)"
-                    color: "white"
+                    color: main.textColor
                 }
                 Slider {
                     id: volumeSlider
@@ -46,6 +47,7 @@ CommonDialog {
                 Button {
                     width: parent.width
                     text: "Select file"
+                    platformInverted: main.platformInverted
                     onClicked: {
                         main.changeAudioFile()
                     }

@@ -6,6 +6,7 @@ import lightbulb 1.0
 CommonDialog {
         titleText: qsTr("Vibration settings")
         privateCloseIcon: true
+        platformInverted: main.platformInverted
 
         Component.onCompleted: {
             open()
@@ -25,7 +26,7 @@ CommonDialog {
                 Text {
                     id: intensityText
                     text: "Intensity (" + intensitySlider.value + "%)"
-                    color: "white"
+                    color: main.textColor
                 }
                 Slider {
                     id: intensitySlider
@@ -45,7 +46,7 @@ CommonDialog {
                 Text {
                     id: durationText
                     text: "Duration (" + durationSlider.value + " ms)"
-                    color: "white"
+                    color: main.textColor
                 }
                 Slider {
                     id: durationSlider

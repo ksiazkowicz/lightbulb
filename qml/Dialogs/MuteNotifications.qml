@@ -7,6 +7,7 @@ CommonDialog {
     titleText: qsTr("Mute notifications")
 
     buttonTexts: [qsTr("OK"), qsTr("Cancel")]
+    platformInverted: main.platformInverted
 
     Component.onCompleted: {
         open()
@@ -28,7 +29,7 @@ CommonDialog {
 
         Text {
             id: queryLabel;
-            color: "white";
+            color: main.textColor
             anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10; top: parent.top; topMargin: 10 }
             text: qsTr("Mute notifications for...");
         }

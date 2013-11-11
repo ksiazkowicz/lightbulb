@@ -7,6 +7,7 @@ CommonDialog {
     id: reconDialog
     titleText: qsTr("Connection lost")
     property int timeLeft: 10
+    platformInverted: main.platformInverted
 
     buttonTexts: [qsTr("Cancel")]
 
@@ -46,7 +47,7 @@ CommonDialog {
     }
 
     content: Text {
-        color: "white";
+        color: main.textColor
         id: reconLabel;
         wrapMode: Text.Wrap;
         anchors { left: parent.left; right: parent.right; leftMargin: 10; rightMargin:10; verticalCenter: parent.verticalCenter }

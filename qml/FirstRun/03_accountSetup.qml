@@ -44,6 +44,7 @@ Page {
             id: selectionDialog
             titleText: "Available options"
             selectedIndex: -1
+            platformInverted: main.platformInverted
             model: ListModel {
                 ListElement { name: "Facebook Chat" }
                 ListElement { name: "Google Talk" }

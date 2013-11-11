@@ -5,6 +5,8 @@ import com.nokia.symbian 1.1
 CommonDialog {
     titleText: qsTr("Add contact")
 
+    platformInverted: main.platformInverted
+
     buttonTexts: [qsTr("OK"), qsTr("Cancel")]
 
     Component.onCompleted: {
@@ -30,7 +32,7 @@ CommonDialog {
             id: column
             spacing: 5
             width: parent.width
-            Label { id: addNameLabel; anchors.horizontalCenter: parent.horizontalCenter; text: qsTr("Contact name:");}
+            Label { id: addNameLabel; anchors.horizontalCenter: parent.horizontalCenter; text: qsTr("Contact name:"); color: main.textColor }
             TextField {
                 id: addName
                 height: 50
@@ -40,7 +42,7 @@ CommonDialog {
                     splitscreenY = 0
                 }
             }
-            Label { id: addJidLabel; anchors.horizontalCenter: parent.horizontalCenter; text: "JID:";}
+            Label { id: addJidLabel; anchors.horizontalCenter: parent.horizontalCenter; text: "JID:"; color: main.textColor}
             TextField {
                 id: addJid
                 height: 50

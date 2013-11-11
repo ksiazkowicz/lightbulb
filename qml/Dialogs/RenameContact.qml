@@ -4,6 +4,7 @@ import com.nokia.symbian 1.1
 
 CommonDialog {
     titleText: qsTr("Rename contact")
+    platformInverted: main.platformInverted
 
     buttonTexts: [qsTr("OK"), qsTr("Cancel")]
 
@@ -26,7 +27,7 @@ CommonDialog {
 
         Text {
             id: queryLabel;
-            color: "white";
+            color: main.textColor
             anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10; top: parent.top; topMargin: 10 }
             text: qsTr("Choose new name:");
         }
