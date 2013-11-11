@@ -221,7 +221,7 @@ Page {
             interactive: false
             anchors { fill: parent }
             clip: true
-            model: xmppClient.messagesByPage
+            model: xmppClient.messages
             delegate: componentWrapperItem
             spacing: 5
             onHeightChanged: {

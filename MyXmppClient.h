@@ -79,6 +79,7 @@ class MyXmppClient : public QObject
     Q_PROPERTY( QString resource READ getResource WRITE setResource NOTIFY resourceChanged )
     Q_PROPERTY( int messagesCount READ getSqlMessagesCount NOTIFY sqlMessagesChanged )
     Q_PROPERTY( SqlQueryModel* messagesByPage READ getSqlMessagesByPage NOTIFY pageChanged )
+    Q_PROPERTY( SqlQueryModel* messages READ getSqlMessagesByPage NOTIFY sqlMessagesChanged )
     Q_PROPERTY( QString chatJid READ getChatJid WRITE setChatJid NOTIFY chatJidChanged )
     Q_PROPERTY( QString contactName READ getContactName WRITE setContactName NOTIFY contactNameChanged )
     Q_PROPERTY( QMLVCard* vcard READ getVCard NOTIFY vCardChanged )
@@ -313,9 +314,9 @@ private slots:
     void presenceReceived( const QXmppPresence & presence );
     void error(QXmppClient::Error);
     void changeSqlRoster();
-    void updateRosterIfPossible() { if (rosterAvailable)  changeSqlRoster(); }
-    void unlockRoster() { if (requests == 0) rosterAvailable = true; emit rosterStatusUpdated(); }
-    void updThreadCount() { if (requests > 0) requests--; if (rosterNeedsUpdate && !rosterAvailable && requests == 0) { unlockRoster(); QTimer::singleShot(100,this,SLOT(updateRosterIfPossible())); }  }
+    void updateRosterIfPossible() { if (rosterAvailable)  changeSqlRoster(); else QTimer::singleShot(1000,this,SLOT(updateRosterIfPossible()));}
+    void unlockRoster() { if (requests == 0) { rosterAvailable = true; emit rosterStatusUpdated(); } }
+    void updThreadCount() { if (requests > 0) requests--; if (rosterNeedsUpdate && !rosterAvailable && requests == 0) { unlockRoster(); QTimer::singleShot(500,this,SLOT(updateRosterIfPossible())); }  }
 
 private:
     QString m_bareJidLastMessage;
