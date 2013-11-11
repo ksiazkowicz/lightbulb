@@ -14,7 +14,7 @@ QT += declarative \
 # 0x2002CCCF value if protected UID is given to the application
 #symbian:DEPLOYMENT.installer_header = 0x2002CCCF
 
-VERSION = 0.2.0
+VERSION = 0.2.1
 
 symbian {
     TARGET.UID3 = 0xE22AC278
@@ -115,7 +115,8 @@ OTHER_FILES += README \
     qml/FirstRun/04_discreetPopupSettings.qml \
     qml/FirstRun/05_skinSettings.qml \
     qml/FirstRun/06_rosterLayoutSettings.qml \
-    qml/FirstRun/07_congratulations.qml
+    qml/FirstRun/07_congratulations.qml \
+    qml/DiagnosticsPage.qml
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)

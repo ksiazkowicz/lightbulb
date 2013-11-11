@@ -65,6 +65,7 @@
         <file alias="Roster">qml/RosterPage.qml</file>
         <file alias="Settings">qml/SettingsPage.qml</file>
         <file alias="VCard">qml/VCardPage.qml</file>
+        <file alias="Diagnostics">qml/DiagnosticsPage.qml</file>
     </qresource>
     <qresource prefix="/toolbar">
         <file alias="close">qml/toolbar/toolbar-close.svg</file>

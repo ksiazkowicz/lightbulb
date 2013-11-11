@@ -51,14 +51,12 @@ Item {
 
     }
 
-    function postGlobalNote(messageString) {
-        if ((!inputInProgress) && (!Qt.application.active) ) {
-            avkon.displayGlobalNote(messageString)
-        }
+    function postInfo(messageString) {
+        avkon.displayGlobalNote(messageString,false)
     }
 
-    function postInfo(messageString) {
-        avkon.displayGlobalNote(messageString)
+    function postError(messageString) {
+        avkon.displayGlobalNote(messageString,true)
     }
 
     function notifyMessageSent() {

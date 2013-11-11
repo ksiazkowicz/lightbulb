@@ -14,7 +14,7 @@
 #include <QThread>
 #include <QStringList>
 
-QString MyXmppClient::myVersion = "0.2-alphaM2";
+QString MyXmppClient::myVersion = "0.2.1";
 QString MyXmppClient::getBareJidByJid( const QString &jid )
 {
     QString bareJid = jid;
@@ -275,6 +275,7 @@ void MyXmppClient::initRoster()
     rosterAvailable = false;
     emit rosterStatusUpdated();
     QTimer::singleShot(1000,this,SLOT(unlockRoster()));
+    QTimer::singleShot(5000,this,SLOT(updateRosterIfPossible()));
     qDebug() << "MyXmppClient::initRoster() has been called";
     if( ! rosterManager->isRosterReceived() ) {
         qDebug() << "MyXmppClient::initRoster(): roster has not received yet";
@@ -1049,3 +1050,47 @@ SqlQueryModel* MyXmppClient::getSqlChats() {
 }
 
 void MyXmppClient::gotoPage(int nPage) { page = nPage; emit pageChanged(); }
+
+/* --- diagnostics --- */
+bool MyXmppClient::dbRemoveDb() {
+    bool ret = false;
+    DatabaseManager* database = new DatabaseManager();
+    SqlQueryModel* sqlQuery = new SqlQueryModel( 0 );
+    sqlQuery->setQuery("DELETE FROM ROSTER", database->db);
+    sqlQuery->setQuery("DELETE FROM MESSAGES", database->db);
+    database->deleteLater();
+    if (sqlQuery->lastError().text() == " ") ret = true;
+    sqlQuery->deleteLater();
+    return ret;
+}
+
+bool MyXmppClient::cleanCache() {
+    return this->removeDir(cacheIM->getMeegIMCachePath());
+}
+
+bool MyXmppClient::removeDir(const QString &dirName)
+{
+    bool result = true;
+    QDir dir(dirName);
+
+    if (dir.exists(dirName)) {
+        Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst)) {
+            if (info.isDir()) {
+                result = removeDir(info.absoluteFilePath());
+            }
+            else {
+                result = QFile::remove(info.absoluteFilePath());
+            }
+
+            if (!result) {
+                return result;
+            }
+        }
+        result = dir.rmdir(dirName);
+    }
+
+    return result;
+}
+
+bool MyXmppClient::resetSettings() { return QFile::remove(mimOpt->fileConfig); }
+

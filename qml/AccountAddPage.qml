@@ -197,6 +197,7 @@ Page {
 
                 settings.initListOfAccounts()
 
+                pageStack.pop()
                 pageStack.replace( "qrc:/pages/Accounts" )
             }
         }

@@ -130,6 +130,12 @@ public :
     ~MyXmppClient();
 
     void initXmppClient();
+    /* --- diagnostics --- */
+    Q_INVOKABLE bool dbRemoveDb();
+    Q_INVOKABLE bool cleanCache();
+    Q_INVOKABLE bool resetSettings();
+
+    static bool removeDir(const QString &dirName); //workaround for qt not able to remove directory recursively // http://john.nachtimwald.com/2010/06/08/qt-remove-directory-and-its-contents/
 
     /* --- presence --- */
     Q_INVOKABLE void setMyPresence( StatusXmpp status, QString textStatus );
@@ -314,9 +320,9 @@ private slots:
     void presenceReceived( const QXmppPresence & presence );
     void error(QXmppClient::Error);
     void changeSqlRoster();
-    void updateRosterIfPossible() { if (rosterAvailable)  changeSqlRoster(); else QTimer::singleShot(1000,this,SLOT(updateRosterIfPossible()));}
-    void unlockRoster() { if (requests == 0) { rosterAvailable = true; emit rosterStatusUpdated(); } }
-    void updThreadCount() { if (requests > 0) requests--; if (rosterNeedsUpdate && !rosterAvailable && requests == 0) { unlockRoster(); QTimer::singleShot(500,this,SLOT(updateRosterIfPossible())); }  }
+    void updateRosterIfPossible() { if (rosterAvailable)  changeSqlRoster(); else QTimer::singleShot(5000,this,SLOT(updateRosterIfPossible()));}
+    void unlockRoster() { if (requests == 0) { rosterAvailable = true; emit rosterStatusUpdated(); } else QTimer::singleShot(5000,this,SLOT(unlockRoster())); }
+    void updThreadCount() { if (requests > 0) requests--; if (rosterNeedsUpdate && !rosterAvailable && requests == 0) { unlockRoster(); QTimer::singleShot(5000,this,SLOT(updateRosterIfPossible())); }  }
 
 private:
     QString m_bareJidLastMessage;

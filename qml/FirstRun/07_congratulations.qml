@@ -37,50 +37,52 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-next_inverse" : "toolbar-next"
             onClicked: {
+                settings.sBool(true,"main","not_first_run")
+                settings.sStr(xmppClient.version,"main","last_used_rel")
+
+                settings.sBool(true,"notifications","vibraMsgRecv")
+                settings.sInt(800,"notifications","vibraMsgRecvDuration")
+                settings.sInt(100,"notifications","vibraMsgRecvIntensity")
+
+                settings.sBool(true,"notifications","soundMsgRecv")
+                settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Message_Received.wav", "notifications","soundMsgRecvFile")
+                settings.sInt(100,"notifications","soundMsgRecvVolume")
+
+                settings.sInt(400,"notifications","vibraMsgSentDuration")
+                settings.sInt(100,"notifications","vibraMsgSentIntensity")
+
+                settings.sBool(true,"notifications","soundMsgSent")
+                settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Message_Sent.wav", "notifications","soundMsgSentFile")
+                settings.sInt(100,"notifications","soundMsgSentVolume")
+
+                settings.sInt(500,"notifications","vibraMsgSubDuration")
+                settings.sInt(50,"notifications","vibraMsgSubIntensity")
+
+                settings.sBool(true,"notifications","soundMsgSub")
+                settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Subscription_Request.wav", "notifications","soundMsgSubFile")
+                settings.sInt(100,"notifications","soundMsgSubVolume")
+
+                settings.sBool(true,"notifications","notifyConnection")
+
+                settings.sBool(true,"notifications","notifySubscription")
+
+                settings.sBool(true,"notifications","notifyTyping")
+
+                settings.sBool(true,"ui","markUnread")
+                settings.sBool(true,"ui","showUnreadCount")
+                settings.sInt(75,"ui","rosterItemHeight")
+                settings.sBool(true,"ui","showContactStatusText")
+
+                settings.sBool(true,"behavior","reconnectOnError")
+                settings.sInt(60,"behavior","keepAliveInterval")
+
+                settings.sBool(true,"behavior","storeLastStatus")
+                settings.sBool(true,"ui", "hideOffline")
+
                 do {
                     pageStack.pop()
                 } while (pageStack.depth > 1)
                 pageStack.push("qrc:/pages/Roster")
-                settings.sBool(true,"main","not_first_run")
-                settings.sStr(xmppClient.version,"main","last_used_rel")
-
-                //settings.sBool(true,"notifications","vibraMsgRecv")
-                //settings.sInt(800,"notifications","vibraMsgRecvDuration")
-                //settings.sInt(100,"notifications","vibraMsgRecvIntensity")
-
-                //settings.sBool(true,"notifications","soundMsgRecv")
-                //settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Message_Received.wav", "notifications","soundMsgRecvFile")
-                //settings.sInt(100,"notifications","soundMsgRecvVolume")
-
-                //settings.sInt(400,"notifications","vibraMsgSentDuration")
-                //settings.sInt(100,"notifications","vibraMsgSentIntensity")
-
-                //settings.sBool(true,"notifications","soundMsgSent")
-                //settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Message_Sent.wav", "notifications","soundMsgSentFile")
-                //settings.sInt(100,"notifications","soundMsgSentVolume")
-
-                //settings.sInt(500,"notifications","vibraMsgSubDuration")
-                //settings.sInt(50,"notifications","vibraMsgSubIntensity")
-
-                //settings.sBool(true,"notifications","soundMsgSub")
-                //settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Subscription_Request.wav", "notifications","soundMsgSubFile")
-                //settings.sInt(100,"notifications","soundMsgSubVolume")
-
-                //settings.sBool(true,"notifications","notifyConnection")
-
-                //settings.sBool(true,"notifications","notifySubscription")
-
-                //settings.sBool(true,"notifications","notifyTyping")
-
-                //settings.sBool(true,"ui","markUnread")
-                //settings.sBool(true,"ui","showUnreadCount")
-                //settings.sInt(75,"ui","rosterItemHeight")
-                //settings.sBool(true,"ui","showContactStatusText")
-
-                //settings.sBool(true,"behavior","reconnectOnError")
-                //settings.sInt(60,"behavior","keepAliveInterval")
-
-                //settings.sBool(true,"behavior","storeStatusText")
             }
         }
 

@@ -17,7 +17,7 @@ public:
     Q_INVOKABLE void showPopup(QString title,QString message, bool goToApp);
     Q_INVOKABLE void screenBlink();
     Q_INVOKABLE void notificationBlink(int device);
-    Q_INVOKABLE void displayGlobalNote(QString message);
+    Q_INVOKABLE void displayGlobalNote(QString message, bool isError);
     Q_INVOKABLE QString openFileSelectionDlg();
     Q_INVOKABLE void openDefaultBrowser(const QUrl &url) const;
 
@@ -27,6 +27,7 @@ private:
     CHWRMLight* light; // Light control
     CHWRMLight* notifyLight;
     void ShowNoteL(const TDesC& aMessage);
+    void ShowErrorL(const TDesC& aMessage);
     
 signals:
     

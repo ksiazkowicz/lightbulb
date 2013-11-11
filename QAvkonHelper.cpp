@@ -48,16 +48,22 @@ void QAvkonHelper::notificationBlink(int device) {
     }
 }
 
-void QAvkonHelper::displayGlobalNote(QString message)
+void QAvkonHelper::displayGlobalNote(QString message, bool isError)
 {
    TPtrC16 aMessage(reinterpret_cast<const TUint16*>(message.utf16()));
-   ShowNoteL(aMessage);
+   if (isError) ShowErrorL(aMessage); else ShowNoteL(aMessage);
 }
 
 void QAvkonHelper::ShowNoteL(const TDesC16& aMessage)
 {
     iNote = CAknGlobalNote::NewL();
-    iNoteId = iNote->ShowNoteL(EAknGlobalInformationNote,aMessage);
+    iNoteId = iNote->ShowNoteL(EAknGlobalConfirmationNote,aMessage);
+}
+
+void QAvkonHelper::ShowErrorL(const TDesC16& aMessage)
+{
+    iNote = CAknGlobalNote::NewL();
+    iNoteId = iNote->ShowNoteL(EAknGlobalErrorNote,aMessage);
 }
 
 QString QAvkonHelper::openFileSelectionDlg()
@@ -68,12 +74,12 @@ QString QAvkonHelper::openFileSelectionDlg()
     QString qString = QString::fromUtf16(filename.Ptr(), filename.Length());
 
     if (qString.right(4) != ".mp3" && qString.right(4) != ".wav" && qString != "") {
-        this->displayGlobalNote("Format not supported.");
+        this->displayGlobalNote("Format not supported.",true);
         return NULL;
     }
 
     if (qString != "") {
-        this->displayGlobalNote("File set to " + qString + ".");
+        this->displayGlobalNote("File set to " + qString + ".",false);
     }
 
     return qString;

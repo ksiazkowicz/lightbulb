@@ -34,9 +34,34 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "qrc:/toolbar/close_inverse" : "qrc:/toolbar/close"
             onClicked: {
-                pageStack.replace("qrc:/pages/Roster")
                 settings.sBool(true,"main","not_first_run")
                 settings.sStr(xmppClient.version,"main","last_used_rel")
+                settings.sBool(true,"ui","markUnread")
+                settings.sBool(true,"ui","showUnreadCount")
+                settings.sInt(75,"ui","rosterItemHeight")
+                settings.sBool(true,"ui","showContactStatusText")
+
+                settings.sBool(true,"behavior","reconnectOnError")
+                settings.sInt(60,"behavior","keepAliveInterval")
+
+                settings.sInt(800,"notifications","vibraMsgRecvDuration")
+                settings.sInt(100,"notifications","vibraMsgRecvIntensity")
+
+                settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Message_Received.wav", "notifications","soundMsgRecvFile")
+                settings.sInt(100,"notifications","soundMsgRecvVolume")
+
+                settings.sInt(400,"notifications","vibraMsgSentDuration")
+                settings.sInt(100,"notifications","vibraMsgSentIntensity")
+
+                settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Message_Sent.wav", "notifications","soundMsgSentFile")
+                settings.sInt(100,"notifications","soundMsgSentVolume")
+
+                settings.sInt(500,"notifications","vibraMsgSubDuration")
+                settings.sInt(50,"notifications","vibraMsgSubIntensity")
+
+                settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Subscription_Request.wav", "notifications","soundMsgSubFile")
+                settings.sInt(100,"notifications","soundMsgSubVolume")
+                pageStack.replace("qrc:/pages/Roster")
             }
         }
 

@@ -87,7 +87,7 @@ Page {
             width: firstRunPage.width - 10
             placeholderText: qsTr("login@server.com")
             onActiveFocusChanged: {
-                main.splitscreenY = inputContext.height - (main.height - tiJid.y) + 1.5*tiPass.height
+                main.splitscreenY = 50
                 console.log(main.splitscreenY)
             }
         }
@@ -111,7 +111,7 @@ Page {
             echoMode: TextInput.Password
             placeholderText: qsTr("Password")
             onActiveFocusChanged: {
-
+                main.splitscreenY = 146
             }
         }
 
@@ -142,7 +142,7 @@ Page {
                 placeholderText: "talk.google.com"
 
                 onActiveFocusChanged: {
-                    main.splitscreenY = inputContext.height - (main.height - somethingInteresting.y) + 1.5*somethingInteresting.height
+                    main.splitscreenY = 240
                 }
             }
             TextField {
@@ -153,7 +153,7 @@ Page {
                placeholderText: "5222"
 
                onActiveFocusChanged: {
-                   main.splitscreenY = inputContext.height - (main.height - somethingInteresting.y) + 1.5*somethingInteresting.height
+                   main.splitscreenY = 240
                }
             }
         }
@@ -184,13 +184,14 @@ Page {
             iconSource: main.platformInverted ? "toolbar-next_inverse" : "toolbar-next"
             onClicked: {
                 if (tiJid.text == "" || tiJid.text == "@gmail.com" || tiJid.text == "@chat.facebook.com" || tiPass.text == "" || tiHost.text == "" || tiPort.text == "") {
-                    notify.postInfo("Incomplete account details. Unable to continue.");
+                    notify.postError("Incomplete account details. Unable to continue.");
                     return
                 }
 
                 settings.setAccount( tiJid.text, tiPass.text, true, "Lightbulb", tiHost.text, tiPort.text, true )
 
                 settings.initListOfAccounts()
+                main.initAccount()
 
                 pageStack.push("qrc:/FirstRun/04")
             }

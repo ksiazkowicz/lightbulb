@@ -176,14 +176,9 @@ Page {
                 onClicked: main.pageStack.push( "qrc:/pages/Accounts" )
             }
             MenuItem {
-                text: qsTr("First run wizard")
-                onClicked: main.pageStack.push( "qrc:/FirstRun/01" )
-            }
-            MenuItem {
                 text: qsTr("Settings")
                 onClicked: main.pageStack.push( "qrc:/pages/Settings" )
             }
-
             MenuItem {
                 text: qsTr("My vCard")
                 onClicked: {if( xmppClient.stateConnect == XmppClient.Online )
@@ -209,6 +204,10 @@ Page {
             MenuItem {
                 text: qsTr("About...")
                 onClicked: main.pageStack.push( "qrc:/pages/About" )
+            }
+            MenuItem {
+                text: qsTr("Maintenance")
+                onClicked: main.pageStack.push( "qrc:/pages/Diagnostics" )
             }
         }
     }
