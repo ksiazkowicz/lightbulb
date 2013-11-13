@@ -80,7 +80,6 @@ HEADERS += MyXmppClient.h \
     qmlvcard.h \
     qhswidget.h \
     lightbulbhswidget.h \
-    qmlclipboardadapter.h \
     DatabaseManager.h \
     QAvkonHelper.h \
     SettingsDBWrapper.h \

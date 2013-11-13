@@ -7,13 +7,18 @@ Page {
     tools: toolBarLayout
 
     Component.onCompleted: {
+        if (main.accJid != "") {
+            statusBarText.text = qsTr("Editing ") + main.accJid
+            if (main.accHost == "chat.facebook.com") {
+                selectionDialog.selectedIndex = 0;
+            } else {
+                if (main.accHost == "talk.google.com") selectionDialog.selectedIndex = 1; else selectionDialog.selectedIndex = 2;
+            }
             tiJid.text = main.accJid
             tiPass.text = main.accPass
             tiHost.text = main.accHost
             tiPort.text = main.accPort
             tiResource.text = main.accResource
-        if (tiJid.text != "") {
-            statusBarText.text = qsTr("Editing ") + tiJid.text
         } else { statusBarText.text = qsTr("New account") }
     }
 
@@ -27,14 +32,55 @@ Page {
         flickableDirection: Flickable.VerticalFlick
 
 
+
+
         Column {
             id: contentPage
             width: accAddPage.width - flickArea.anchors.rightMargin - flickArea.anchors.leftMargin
             spacing: 5
+            SelectionListItem {
+                id: serverSelection
+                platformInverted: main.platformInverted
+                subTitle: selectionDialog.selectedIndex >= 0
+                          ? selectionDialog.model.get(selectionDialog.selectedIndex).name
+                          : "FB Chat, GTalk or manual"
+                anchors { left: parent.left; right: parent.right }
+                title: "Server"
+
+                onClicked: selectionDialog.open()
+
+                SelectionDialog {
+                    id: selectionDialog
+                    titleText: "Available options"
+                    selectedIndex: -1
+                    platformInverted: main.platformInverted
+                    model: ListModel {
+                        ListElement { name: "Facebook Chat" }
+                        ListElement { name: "Google Talk" }
+                        ListElement { name: "Generic XMPP server" }
+                    }
+                    onSelectedIndexChanged: {
+                        tiPass.text = ""
+                        tiPort.text = "5222"
+                        if (selectionDialog.selectedIndex == 0) {
+                            tiJid.text = "@chat.facebook.com";
+                            tiHost.text = "chat.facebook.com";
+                        }
+                        if (selectionDialog.selectedIndex == 1) {
+                                tiJid.text = "@gmail.com";
+                                tiHost.text = "talk.google.com";
+                        }
+                        if (selectionDialog.selectedIndex == 2) {
+                                tiJid.text = "";
+                                tiHost.text = "";
+                        }
+                    }
+                }
+            }
+
             Text {
-                text: "Jabber ID"
+                text: "Login"
                 color: main.textColor
-                anchors.horizontalCenter: parent.horizontalCenter
             }
             TextField {
                 id: tiJid
@@ -49,14 +95,13 @@ Page {
 
             Item {
                 id: spacer2
-                height: 10
+                height: 5
                 width: accAddPage.width
             }
 
             Text {
                 text: "Password"
                 color: main.textColor
-                anchors.horizontalCenter: parent.horizontalCenter
             }
 
             TextField {
@@ -73,7 +118,7 @@ Page {
 
             Item {
                 id: spacer3
-                height: 10
+                height: 5
                 width: accAddPage.width
             }
 
@@ -86,14 +131,13 @@ Page {
 
             Item {
                 id: spacer4
-                height: 10
+                height: 5
                 width: accAddPage.width
             }
 
             Text {
                 text: "Resource (optional)"
                 color: main.textColor
-                anchors.horizontalCenter: parent.horizontalCenter
             }
 
             TextField {
@@ -110,21 +154,14 @@ Page {
 
             Item {
                 id: spacer5
-                height: 10
+                height: 5
                 width: accAddPage.width
             }
 
-            CheckBox {
-                id: checkBoxHostPort
-                text: qsTr("Manually specify server host/port")
-                checked: main.accManualHostPort
-                platformInverted: main.platformInverted
-            }
-
-            Item {
-                id: spacer6
-                height: 10
-                width: accAddPage.width
+            Text {
+                text: "Server details"
+                color: main.textColor
+                visible: selectionDialog.selectedIndex == 2
             }
 
             Rectangle {
@@ -132,6 +169,7 @@ Page {
                 height: 50
                 width: accAddPage.width-20
                 anchors.horizontalCenter: parent.horizontalCenter
+                visible: selectionDialog.selectedIndex == 2
                 color: "transparent"
                 TextField {
                     id: tiHost
@@ -139,7 +177,7 @@ Page {
                     anchors.left: parent.left
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
-                    readOnly: !checkBoxHostPort.checked
+                    readOnly: !somethingInteresting.visible
                     placeholderText: "talk.google.com"
 
                     onActiveFocusChanged: {
@@ -152,7 +190,7 @@ Page {
                    anchors.top: parent.top
                    anchors.bottom: parent.bottom
                    width: 60
-                   readOnly: !checkBoxHostPort.checked
+                   readOnly: !somethingInteresting.visible
                    placeholderText: "5222"
 
                    onActiveFocusChanged: {
@@ -187,13 +225,11 @@ Page {
                 if( (jid=="") || (pass=="") ) {
                     return
                 }
-
                 var host = tiHost.text
                 var port = tiPort.text
                 var resource = tiResource.text
-                var isHostPortManually = checkBoxHostPort.checked == true ? true : false
 
-                settings.setAccount( jid, pass, isDflt, resource, host, port,  isHostPortManually )
+                settings.setAccount( jid, pass, isDflt, resource, host, port,  true )
 
                 settings.initListOfAccounts()
 

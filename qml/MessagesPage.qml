@@ -329,7 +329,7 @@ Page {
                                 name: "Current"
                                 when: itemResource.ListView.isCurrentItem
                                 PropertyChanges { target: itemResource; gradient: gr_press }
-                                PropertyChanges { target: textResource; color: "white" }
+                                PropertyChanges { target: textResource; color: platformStyle.colorNormalLight }
                                 PropertyChanges { target: textResource; font.bold: true }
                             }
                             MouseArea {
@@ -420,10 +420,12 @@ Page {
     /*********************************************************************/
     Menu {
         id: msgOptions
+        platformInverted: main.platformInverted
         // define the items in the menu and corresponding actions
         content: MenuLayout {
             MenuItem {
                 text: qsTr("Set resource")
+                platformInverted: main.platformInverted
                 onClicked: {
                     dlgResources.open();
                 }
@@ -431,6 +433,7 @@ Page {
 
             MenuItem {
                 text: "Archive"
+                platformInverted: main.platformInverted
                 onClicked: {
                     xmppClient.page = 1
                     pageStack.replace("qrc:/pages/Archive")
@@ -438,6 +441,7 @@ Page {
             }
             MenuItem {
                 text: "Close chat"
+                platformInverted: main.platformInverted
                 onClicked: {
                     pageStack.pop()
                     main.isChatInProgress = false

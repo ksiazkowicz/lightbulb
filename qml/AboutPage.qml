@@ -13,10 +13,9 @@ Page {
 
     Image {
         id: logo
-        source: "qrc:/Lightbulb"
+        source: "qrc:/Lightbulb.svg"
         y: 32
-        sourceSize.width: 128
-        sourceSize.height: 128
+        sourceSize { width: 128; height: 128 }
         width: 128
         height: 128
         smooth: true

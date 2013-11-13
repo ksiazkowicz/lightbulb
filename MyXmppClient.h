@@ -320,9 +320,7 @@ private slots:
     void presenceReceived( const QXmppPresence & presence );
     void error(QXmppClient::Error);
     void changeSqlRoster();
-    void updateRosterIfPossible() { if (rosterAvailable)  changeSqlRoster(); else QTimer::singleShot(5000,this,SLOT(updateRosterIfPossible()));}
-    void unlockRoster() { if (requests == 0) { rosterAvailable = true; emit rosterStatusUpdated(); } else QTimer::singleShot(5000,this,SLOT(unlockRoster())); }
-    void updThreadCount() { if (requests > 0) requests--; if (rosterNeedsUpdate && !rosterAvailable && requests == 0) { unlockRoster(); QTimer::singleShot(5000,this,SLOT(updateRosterIfPossible())); }  }
+    void unlockRoster() { if (requests == 0) rosterAvailable = true; emit rosterStatusUpdated(); }
 
 private:
     QString m_bareJidLastMessage;
@@ -343,6 +341,7 @@ private:
 
     bool rosterAvailable;
     bool rosterNeedsUpdate;
+    bool initRosterInProgress;
     int requests;
 
     int page;

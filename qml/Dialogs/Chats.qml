@@ -64,7 +64,7 @@ CommonDialog {
                     onLinkActivated: { main.url=link; linkContextMenu.open()}
                     wrapMode: Text.Wrap
                     font.pixelSize: 16
-                    color: main.textColor
+                    color: unreadMsg > 0 ? platformStyle.colorNormalLight : main.textColor
                     opacity: unreadMsg > 0 ? 1 : 0.7
             }
             MouseArea {

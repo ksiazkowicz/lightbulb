@@ -161,11 +161,13 @@ Page {
 
     Menu {
         id: rosterMenu
+        platformInverted: main.platformInverted
 
         // define the items in the menu and corresponding actions
         content: MenuLayout {
             MenuItem {
                 text: qsTr("Status")
+                platformInverted: main.platformInverted
                 onClicked: {
                     dialog.source = ""
                     dialog.source = "qrc:/dialogs/Status/Change"
@@ -173,14 +175,17 @@ Page {
             }
             MenuItem {
                 text: qsTr("Accounts")
+                platformInverted: main.platformInverted
                 onClicked: main.pageStack.push( "qrc:/pages/Accounts" )
             }
             MenuItem {
                 text: qsTr("Settings")
+                platformInverted: main.platformInverted
                 onClicked: main.pageStack.push( "qrc:/pages/Settings" )
             }
             MenuItem {
                 text: qsTr("My vCard")
+                platformInverted: main.platformInverted
                 onClicked: {if( xmppClient.stateConnect == XmppClient.Online )
                     {
                         main.requestMyVCard = true
@@ -188,6 +193,7 @@ Page {
                     }}
             }
             MenuItem {
+                platformInverted: main.platformInverted
                 text: main.notifyHold ? "Unmute notifications (" + main.notifyHoldDuration + " min.)" : "Mute notifications"
                 onClicked: {
                     if (main.notifyHold) {
@@ -203,10 +209,12 @@ Page {
 
             MenuItem {
                 text: qsTr("About...")
+                platformInverted: main.platformInverted
                 onClicked: main.pageStack.push( "qrc:/pages/About" )
             }
             MenuItem {
                 text: qsTr("Maintenance")
+                platformInverted: main.platformInverted
                 onClicked: main.pageStack.push( "qrc:/pages/Diagnostics" )
             }
         }
@@ -214,22 +222,26 @@ Page {
 
     Menu {
         id: contactMenu
+        platformInverted: main.platformInverted
         // define the items in the menu and corresponding actions
         content: MenuLayout {
             MenuItem {
                 text: qsTr("Remove")
+                platformInverted: main.platformInverted
                 onClicked: { dialog.source = ""
                     xmppClient.chatJid = selectedJid
                     dialog.source = "qrc:/dialogs/Contact/Remove"}
             }
             MenuItem {
                 text: qsTr("Rename")
+                platformInverted: main.platformInverted
                 onClicked: { dialog.source = ""
                     xmppClient.chatJid = selectedJid
                     dialog.source = "qrc:/dialogs/Contact/Rename"}
             }
             MenuItem {
                 text: qsTr("vCard")
+                platformInverted: main.platformInverted
                 onClicked: {
                     main.requestMyVCard = false
                     main.pageStack.push( "qrc:/pages/VCard" )
@@ -238,6 +250,7 @@ Page {
             }
             MenuItem {
                 text: qsTr("Subscribe")
+                platformInverted: main.platformInverted
                 onClicked: {dialogTitle = qsTr("Subscribed")
                     dialogText = qsTr("Sent request to ")+dialogName
                     xmppClient.subscribe( selectedJid )
@@ -246,6 +259,7 @@ Page {
             }
             MenuItem {
                 text: qsTr("Unsubscribe")
+                platformInverted: main.platformInverted
                 onClicked: {dialogTitle = qsTr("Unsuscribed")
                     dialogText = qsTr("Unsuscribed ")+dialogName
                     xmppClient.unsubscribe( selectedJid )

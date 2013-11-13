@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="Lightbulb">Lightbulb.svg</file>
+        <file>Lightbulb.svg</file>
         <file>qml/Notifications.qml</file>
         <file alias="avatar">qml/images/avatar.png</file>
         <file>qml/bubble/incTriangle.png</file>

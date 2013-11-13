@@ -153,56 +153,9 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-add_inverse" : "toolbar-add"
             onClicked: {
-                addMenu.open()
+                main.accJid = "";
+                pageStack.push( "qrc:/pages/AccountsAdd" )
             }
         }
     }
-
-    /*********************************************************************/
-
-    Menu {
-        id: addMenu
-        // define the items in the menu and corresponding actions
-        content: MenuLayout {
-            MenuItem {
-                text: qsTr("Facebook")
-                onClicked: {
-                    main.accJid = "@chat.facebook.com"
-                    main.accPass = ""
-                    main.accDefault = false
-                    main.accManualHostPort = true
-                    main.accResource = ""
-                    main.accHost = "chat.facebook.com"
-                    main.accPort = "5222"
-                    pageStack.push( "qrc:/pages/AccountsAdd" )
-                }
-            }
-            MenuItem {
-                text: qsTr("Google Talk")
-                onClicked: {
-                    main.accJid = "@gmail.com"
-                    main.accPass = ""
-                    main.accDefault = false
-                    main.accManualHostPort = true
-                    main.accResource = ""
-                    main.accHost = "talk.google.com"
-                    main.accPort = "5222"
-                    pageStack.push( "qrc:/pages/AccountsAdd" )
-                }
-            }
-            MenuItem {
-                text: qsTr("Manual")
-                onClicked: {
-                    main.accJid = ""
-                    main.accPass = ""
-                    main.accDefault = false
-                    main.accResource = ""
-                    main.accHost = ""
-                    main.accPort = "5222"
-                    pageStack.push( "qrc:/pages/AccountsAdd" )
-                }
-            }
-        }
-    }
-
 }
