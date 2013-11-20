@@ -225,20 +225,15 @@ Page {
             delegate: componentWrapperItem
             spacing: 5
             onHeightChanged: {
-                if (parent.contentHeight > parent.height) {
-                    parent.contentY = parent.contentHeight-parent.height;
-                }
+                flickable.contentY = flickable.contentHeight;
             }
         }
 
         Component.onCompleted: {
             contentY = contentHeight-height;
         }
-
         onHeightChanged: {
-            if (contentHeight > height) {
-                contentY = contentHeight-height;
-            }
+            contentY = contentHeight;
         }
     }
     /*--------------------( Text input field )--------------------*/

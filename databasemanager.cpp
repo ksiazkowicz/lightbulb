@@ -83,7 +83,7 @@ DatabaseManager::DatabaseManager(QObject *parent) :
         }
     }
     databaseOpen = true;
-    connect(this, SIGNAL(finished()), this, SLOT(deleteLater()));
+    connect(this,SIGNAL(finished()), this, SLOT(getLastError()));
 }
 
 DatabaseManager::~DatabaseManager() {
@@ -92,6 +92,10 @@ DatabaseManager::~DatabaseManager() {
 QSqlError DatabaseManager::lastError()
 {
     return db.lastError();
+}
+
+void DatabaseManager::getLastError() {
+    qDebug () << this->lastError();
 }
 
 bool DatabaseManager::deleteDB()
@@ -164,11 +168,11 @@ bool DatabaseManager::setChatInProgress()
     queryStr += params.at(2);
     queryStr += "' where jid='";
     queryStr += params.at(1);
-    queryStr += "'";
+    queryStr += "' and id_account=";
+    queryStr += params.at(0);
     ret = query.exec(queryStr);
     emit finished();
     return ret;
-
 }
 
 bool DatabaseManager::mkMessagesTable()
@@ -265,7 +269,8 @@ bool DatabaseManager::updateContact()
     QStringList params = parameters;
     bool ret = false;
     QSqlQuery query(db);
-    ret = query.prepare("UPDATE roster SET " + params.at(2) + "=:value where jid=:jid");
+    ret = query.prepare("UPDATE roster SET " + params.at(2) + "=:value where jid=:jid and id_account=:acc");
+    query.bindValue(":acc", params.at(0).toInt());
     query.bindValue(":value",params.at(3));
     query.bindValue(":jid",params.at(1));
     query.exec();
@@ -278,7 +283,8 @@ bool DatabaseManager::updatePresence()
     QStringList params = parameters;
     bool ret = false;
     QSqlQuery query(db);
-    ret = query.prepare("UPDATE roster SET presence=:presence, resource=:resource, statusText=:statusText where jid=:jid");
+    ret = query.prepare("UPDATE roster SET presence=:presence, resource=:resource, statusText=:statusText where jid=:jid and id_account=:acc");
+    query.bindValue(":acc", params.at(0).toInt());
     query.bindValue(":presence",params.at(2));
     query.bindValue(":resource",params.at(3));
     query.bindValue(":statusText",params.at(4));
@@ -294,7 +300,7 @@ bool DatabaseManager::deleteContact()
     bool ret = false;
     QSqlQuery query(db);
     if (databaseOpen)
-        ret = query.exec("DELETE FROM roster WHERE jid='" + params.at(1) + "'");
+        ret = query.exec("DELETE FROM roster WHERE jid='" + params.at(1) + "' and id_account =" + params.at(0));
 
     emit finished();
     return ret;
@@ -312,7 +318,7 @@ bool DatabaseManager::incUnreadMessage()
 
         int nCount = unreadMsgCount.record(0).value("unreadMsg").toInt()+1;
 
-        ret = query.exec("UPDATE roster SET unreadMsg='" + QString::number(nCount) + "' where jid='" + params.at(1) + "'" );
+        ret = query.exec("UPDATE roster SET unreadMsg='" + QString::number(nCount) + "' where jid='" + params.at(1) + "' and id_account =" + params.at(0) );
     }
     emit finished();
     return ret;

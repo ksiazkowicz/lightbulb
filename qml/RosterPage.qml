@@ -403,7 +403,7 @@ Page {
             }
             Text {
                 id: errorText
-                color: "white"
+                color: main.textColor
                 anchors { top: offlineText.bottom; topMargin: 10 }
                 visible: parent.visible
                 text: ""

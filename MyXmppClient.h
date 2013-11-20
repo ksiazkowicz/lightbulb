@@ -15,6 +15,7 @@
 #include <QThread>
 
 #include "DatabaseManager.h"
+#include "DatabaseWorker.h"
 
 #include "mycache.h"
 #include "messagewrapper.h"
@@ -81,6 +82,7 @@ class MyXmppClient : public QObject
     Q_PROPERTY( SqlQueryModel* messagesByPage READ getSqlMessagesByPage NOTIFY pageChanged )
     Q_PROPERTY( SqlQueryModel* messages READ getSqlMessagesByPage NOTIFY sqlMessagesChanged )
     Q_PROPERTY( QString chatJid READ getChatJid WRITE setChatJid NOTIFY chatJidChanged )
+    Q_PROPERTY( int accountId READ getAccountId WRITE setAccountId NOTIFY accountIdChanged )
     Q_PROPERTY( QString contactName READ getContactName WRITE setContactName NOTIFY contactNameChanged )
     Q_PROPERTY( QMLVCard* vcard READ getVCard NOTIFY vCardChanged )
     Q_PROPERTY( int keepAlive READ getKeepAlive WRITE setKeepAlive NOTIFY keepAliveChanged )
@@ -103,6 +105,9 @@ class MyXmppClient : public QObject
 
     QMLVCard * qmlVCard;
     QString flVCardRequest;
+
+    DatabaseWorker *dbWorker;
+    QThread *dbThread;
 
     //QXmppConfiguration xmppConfig;
 
@@ -236,6 +241,14 @@ public :
         }
     }
 
+    int getAccountId() const { return m_accountId; }
+    void setAccountId( const int & value ) {
+        if (value!=m_accountId) {
+            m_accountId = value;
+            emit accountIdChanged();
+        }
+    }
+
     QString getContactName() const { return m_contactName; }
     void setContactName( const QString & value )
     {
@@ -293,6 +306,7 @@ signals:
     void chatClosed( QString bareJid );
     void sqlMessagesChanged();
     void chatJidChanged();
+    void accountIdChanged();
     void contactNameChanged();
     void vCardChanged();
     void errorHappened( const QString &errorString );
@@ -345,6 +359,8 @@ private:
     int requests;
 
     int page;
+
+    int m_accountId;
 
     QString getPicPresence( const QXmppPresence &presence ) const;
     QString getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const;

@@ -67,7 +67,9 @@ SOURCES += main.cpp \
     lightbulbhswidget.cpp \
     DatabaseManager.cpp \
     QAvkonHelper.cpp \
-    SettingsDBWrapper.cpp
+    SettingsDBWrapper.cpp \
+    XmppConnectivity.cpp \
+    DatabaseWorker.cpp
 
 HEADERS += MyXmppClient.h \
     listmodel.h \
@@ -83,7 +85,9 @@ HEADERS += MyXmppClient.h \
     DatabaseManager.h \
     QAvkonHelper.h \
     SettingsDBWrapper.h \
-    SymbiosisAPIClient.h
+    SymbiosisAPIClient.h \
+    XmppConnectivity.h \
+    DatabaseWorker.h
 
 OTHER_FILES += README \
     qml/Dialogs/AddContact.qml \

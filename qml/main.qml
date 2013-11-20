@@ -287,6 +287,8 @@ PageStackWindow {
                     xmppClient.port = 0;
                 }
 
+                xmppClient.accountId = j;
+
                 console.log("QML: main::initAccount():" + xmppClient.myBareJid + "/" + xmppClient.resource);
             } else {
                     _existDefaultAccount = true

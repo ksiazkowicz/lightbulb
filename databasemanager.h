@@ -62,6 +62,8 @@ public:
         bool incUnreadMessage();
         int getUnreadCount();
 
+        void getLastError();
+
         bool insertAccount(QString jid, QString pass, QString resource, int manualHostPort, int enabled, QString host, int port);
 
     };
