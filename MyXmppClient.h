@@ -150,8 +150,8 @@ public :
     Q_INVOKABLE void typingStop( QString bareJid, QString resource );
 
     /*--- unread msg ---*/
-    Q_INVOKABLE void resetUnreadMessages( QString bareJid ) { this->dbUpdateContact(1,bareJid,"unreadMsg","0"); }
-    Q_INVOKABLE void setUnreadMessages( QString bareJid, int count ) { this->dbUpdateContact(1,bareJid,"unreadMsg",QString::number(count)); }
+    Q_INVOKABLE void resetUnreadMessages( QString bareJid ) { this->dbUpdateContact(m_accountId,bareJid,"unreadMsg","0"); }
+    Q_INVOKABLE void setUnreadMessages( QString bareJid, int count ) { this->dbUpdateContact(m_accountId,bareJid,"unreadMsg",QString::number(count)); }
 
     /*--- vCard ---*/
     Q_INVOKABLE void requestVCard( QString bareJid );
@@ -319,8 +319,8 @@ signals:
 public slots:
     void clientStateChanged( QXmppClient::State state );
 
-    Q_INVOKABLE void openChat( QString jid ) { this->dbSetChatInProgress( 1, jid, 1 ); emit chatOpened( jid ); }
-    Q_INVOKABLE void closeChat( QString jid ) { this->resetUnreadMessages( jid ); this->dbSetChatInProgress( 1, jid, 0 ); emit chatClosed( jid ); }
+    Q_INVOKABLE void openChat( QString jid ) { this->dbSetChatInProgress( m_accountId, jid, 1 ); emit chatOpened( jid ); }
+    Q_INVOKABLE void closeChat( QString jid ) { this->resetUnreadMessages( jid ); this->dbSetChatInProgress( m_accountId, jid, 0 ); emit chatClosed( jid ); }
 
 private slots:
     void initRoster();

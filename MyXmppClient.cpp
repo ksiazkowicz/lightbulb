@@ -439,7 +439,7 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
             requests++;
             qDebug() << requests;
             qDebug() << "MyXmppClient::initPresence: updating name for"<< bareJid;
-            this->dbUpdateContact( 1, bareJid, "name", nickName );
+            this->dbUpdateContact( m_accountId, bareJid, "name", nickName );
         }
 
         /* avatar */
@@ -454,7 +454,7 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
                 requests++;
                 qDebug() << requests;
                 qDebug() << "MyXmppClient::initPresence: updating avatar for"<< bareJid<<"with"<<avatarFile;
-                this->dbUpdateContact(1, bareJid, "avatarPath", avatarFile);
+                this->dbUpdateContact(m_accountId, bareJid, "avatarPath", avatarFile);
             }
         }
 
@@ -783,7 +783,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
 
         this->openChat( bareJid_from );
 
-        this->dbIncUnreadMessage( 1, bareJid_from );
+        this->dbIncUnreadMessage( m_accountId, bareJid_from );
         archiveIncMessage(xmppMsg, false);
         emit this->messageReceived( bareJid_from, bareJid_to );
     }
@@ -810,9 +810,9 @@ void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg, bool mine )
     body = msgWrapper->parseEmoticons(body);
 
     if (mine) {
-        this->dbInsertMessage(1,to,body,time,mine);
+        this->dbInsertMessage(m_accountId,to,body,time,mine);
     } else {
-        this->dbInsertMessage(1,from,body,time,mine);
+        this->dbInsertMessage(m_accountId,from,body,time,mine);
         latestMessage = xmppMsg.body().left(30);
     }
 }
@@ -1058,7 +1058,9 @@ void MyXmppClient::changeSqlRoster() {
 
 SqlQueryModel* MyXmppClient::getSqlChats() {
     DatabaseManager* database = new DatabaseManager(this); sqlChats = new SqlQueryModel( 0 );
-    sqlChats->setQuery("select * from roster where isChatInProgress=1 and id_account=" + m_accountId,database->db);
+    sqlChats->setQuery("select * from roster where isChatInProgress=1 and id_account=" + QString::number(m_accountId),database->db);
+    qDebug() << "select * from roster where isChatInProgress=1 and id_account=" + QString::number(m_accountId);
+    qDebug() << sqlChats->lastError();
     database->deleteLater(); return sqlChats;
 }
 

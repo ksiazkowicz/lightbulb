@@ -312,7 +312,7 @@ bool DatabaseManager::incUnreadMessage()
     bool ret = false;
     QSqlQuery query(db);
     if (databaseOpen) {
-        query.exec("select unreadMsg from roster where jid = '" + params.at(1) + "'");
+        query.exec("select unreadMsg from roster where jid = '" + params.at(1) + "' and id_account =" + params.at(0));
         SqlQueryModel unreadMsgCount;
         unreadMsgCount.setQuery(query);
 
@@ -321,6 +321,8 @@ bool DatabaseManager::incUnreadMessage()
         ret = query.exec("UPDATE roster SET unreadMsg='" + QString::number(nCount) + "' where jid='" + params.at(1) + "' and id_account =" + params.at(0) );
     }
     emit finished();
+    qDebug() << query.lastError();
+    qDebug() << query.lastQuery();
     return ret;
 }
 
