@@ -150,7 +150,6 @@ bool DatabaseManager::mkRosterTable()
                          "resource varchar(30), "
                          "presence varchar(12), "
                          "statusText varchar(255), "
-                         "avatarPath varchar(255), "
                          "isChatInProgress int, "
                          "unreadMsg integer)");
     }
@@ -246,8 +245,8 @@ bool DatabaseManager::insertContact()
     QStringList params = parameters;
     bool ret = false;
     QSqlQuery query(db);
-    ret = query.prepare("INSERT INTO roster (id_account, name, jid, resource, presence, statusText, avatarPath, isChatInProgress, unreadMsg) "
-                        "VALUES (:acc, :name, :jid, :resource, :status, :statusText, :avatarPath, :isChatInProgress, :unreadMsg)");
+    ret = query.prepare("INSERT INTO roster (id_account, name, jid, resource, presence, statusText, isChatInProgress, unreadMsg) "
+                        "VALUES (:acc, :name, :jid, :resource, :status, :statusText, :isChatInProgress, :unreadMsg)");
     if (ret) {
         query.bindValue(":acc", params.at(0).toInt());
         query.bindValue(":jid", params.at(1));
@@ -255,7 +254,6 @@ bool DatabaseManager::insertContact()
         query.bindValue(":resource", "");
         query.bindValue(":status", params.at(3));
         query.bindValue(":statusText","");
-        query.bindValue(":avatarPath",params.at(4));
         query.bindValue(":isChatInProgress",0);
         query.bindValue(":unreadMsg",0);
         if (databaseOpen) {
@@ -349,12 +347,12 @@ bool DatabaseManager::incUnreadMessage()
     return ret;
 }
 
-int DatabaseManager::getUnreadCount()
+int DatabaseManager::getUnreadCount(int acc)
 {
     QSqlQuery query(db);
     int count = 0;
     if (databaseOpen) {
-        query.exec("select SUM(unreadMsg) from roster");
+        query.exec("select SUM(unreadMsg) from roster where id_account = " + QString::number(acc));
         SqlQueryModel unreadMsgCount;
         unreadMsgCount.setQuery(query);
         count = unreadMsgCount.record(0).value("SUM(unreadMsg)").toInt();

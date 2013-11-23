@@ -62,7 +62,7 @@ public:
         bool updateContact();
         bool updatePresence();
         bool incUnreadMessage();
-        int getUnreadCount();
+        int getUnreadCount(int acc);
         bool clearPresence();
 
         void getLastError();

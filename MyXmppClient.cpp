@@ -23,19 +23,19 @@ QString MyXmppClient::getBareJidByJid( const QString &jid )
     }
     return bareJid;
 }
+QString MyXmppClient::getAvatarByJid( QString bareJid ) { return cacheIM->getAvatarCache(bareJid); }
 
 /* database code begin */
 
-void MyXmppClient::dbInsertContact(int acc, QString bareJid, QString name, QString presence, QString avatarPath) {
+void MyXmppClient::dbInsertContact(int acc, QString bareJid, QString name, QString presence) {
     rosterNeedsUpdate = true;
-    qDebug() << "MyXmppClient::dbInsertContact() called. acc:"<<acc<<"bareJid"<<bareJid<<"name"<<name<<"presence"<<presence<<"avatar"<<avatarPath;
+    qDebug() << "MyXmppClient::dbInsertContact() called. acc:"<<acc<<"bareJid"<<bareJid<<"name"<<name<<"presence"<<presence;
     QStringList* parameters = new QStringList;
     parameters->append("insertContact");
     parameters->append(QString::number(acc));
     parameters->append(bareJid);
     parameters->append(name);
     parameters->append(presence);
-    parameters->append(avatarPath);
     dbWorker->executeQuery(parameters);
 }
 
@@ -170,7 +170,7 @@ MyXmppClient::MyXmppClient() : QObject(0)
 
 int MyXmppClient::getUnreadCount() {
     DatabaseManager* database = new DatabaseManager(this);
-    return database->getUnreadCount();
+    return database->getUnreadCount(m_accountId);
 }
 
 
@@ -311,7 +311,6 @@ void MyXmppClient::initRoster()
         if ( avatarPath.isEmpty() || vCdata.isEmpty() )
         {
             vCardManager->requestVCard( bareJid );
-             if (bareJid.right(17) == "chat.facebook.com") requests++;
             qDebug() << "MyXmppClient::initRoster():" << bareJid << "has no VCard. Requesting.";
         }
         else
@@ -330,7 +329,7 @@ void MyXmppClient::initRoster()
                 qDebug() << "MyXmppClient::initRoster():" << bareJid << "has a different name than the one on the server. Updating.";
             }
         } else {
-            this->dbInsertContact(m_accountId,bareJid,name,this->getPicPresence(QXmppPresence::Unavailable),cacheIM->getAvatarCache( bareJid ));
+            this->dbInsertContact(m_accountId,bareJid,name,this->getPicPresence(QXmppPresence::Unavailable));
             requests++;
             qDebug() << requests;
             jidCache.append(bareJid);
@@ -462,14 +461,6 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
         if( avatarFile.isEmpty() || (flVCardRequest != "") ) {
             isAvatarCreated =  cacheIM->setAvatarCache( bareJid, vCard.photo() );
             avatarFile = cacheIM->getAvatarCache( bareJid );
-        }
-        if( isAvatarCreated ) {
-            if( jidCache.contains(bareJid) ) {
-                requests++;
-                qDebug() << requests;
-                qDebug() << "MyXmppClient::initPresence: updating avatar for"<< bareJid<<"with"<<avatarFile;
-                this->dbUpdateContact(m_accountId, bareJid, "avatarPath", avatarFile);
-            }
         }
 
         dataVCard.nickName = nickName;
@@ -682,7 +673,7 @@ void MyXmppClient::itemAdded(const QString &bareJid )
     QStringList resourcesList = rosterManager->getResources( bareJid );
 
     if (!jidCache.contains(bareJid)) {        
-        this->dbInsertContact(m_accountId,bareJid,bareJid,this->getPicPresence(QXmppPresence::Unavailable),cacheIM->getAvatarCache( bareJid ));
+        this->dbInsertContact(m_accountId,bareJid,bareJid,this->getPicPresence(QXmppPresence::Unavailable));
         jidCache.append(bareJid);
     }
     for( int L = 0; L<resourcesList.length(); L++ )
@@ -791,7 +782,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         }
 
         if (!jidCache.contains(bareJid_from)) {
-            this->dbInsertContact(m_accountId,bareJid_from,bareJid_from,this->getPicPresence(QXmppPresence::Unsubscribed),cacheIM->getAvatarCache( bareJid_from ));
+            this->dbInsertContact(m_accountId,bareJid_from,bareJid_from,this->getPicPresence(QXmppPresence::Unsubscribed));
             jidCache.append(bareJid_from);
         }
 
@@ -926,7 +917,7 @@ void MyXmppClient::error(QXmppClient::Error e)
 /*--- add/remove contact ---*/
 void MyXmppClient::addContact( QString bareJid, QString nick, QString group, bool sendSubscribe )
 {
-    this->dbInsertContact(m_accountId,bareJid,nick,this->getPicPresence(QXmppPresence::Unavailable),cacheIM->getAvatarCache( bareJid ));
+    this->dbInsertContact(m_accountId,bareJid,nick,this->getPicPresence(QXmppPresence::Unavailable));
     jidCache.append(bareJid);
     if( rosterManager )
     {
@@ -1021,7 +1012,7 @@ SqlQueryModel* MyXmppClient::getSqlMessagesByPage()
     int border = page*20;
     DatabaseManager* database = new DatabaseManager(this);
     sqlMessages = new SqlQueryModel( 0 );
-    if (m_chatJid != "" && m_chatJid == m_bareJidLastMessage) sqlMessages->setQuery("SELECT * FROM (SELECT * FROM messages WHERE bareJid='" + m_chatJid + "' and id_account="+QString::number(m_accountId) + " ORDER BY id DESC limit " + QString::number(border) + ") ORDER BY id ASC limit 20",database->db);
+    if (m_chatJid != "") sqlMessages->setQuery("SELECT * FROM (SELECT * FROM messages WHERE bareJid='" + m_chatJid + "' and id_account="+QString::number(m_accountId) + " ORDER BY id DESC limit " + QString::number(border) + ") ORDER BY id ASC limit 20",database->db);
     database->deleteLater();
     return sqlMessages;
 }

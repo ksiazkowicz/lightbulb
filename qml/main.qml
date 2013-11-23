@@ -241,7 +241,6 @@ PageStackWindow {
         xmppClient.keepAlive = settings.gInt("behavior", "keepAliveInterval")
         xmppClient.archiveIncMessage = settings.gBool("behavior", "archiveIncMessage")
         if (settings.gBool("behavior","goOnlineOnStart")) { xmppClient.setMyPresence( XmppClient.Online, lastStatus ) }
-        globalUnreadCount = xmppClient.getUnreadCount()
     }
 
     function changeAudioFile() {
@@ -288,6 +287,7 @@ PageStackWindow {
                 }
 
                 xmppClient.accountId = j;
+                globalUnreadCount = xmppClient.getUnreadCount()
 
                 console.log("QML: main::initAccount():" + xmppClient.myBareJid + "/" + xmppClient.resource);
             } else {

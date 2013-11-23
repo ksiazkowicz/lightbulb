@@ -46,7 +46,7 @@ Page {
 
             Image {
                 id: imgPresence
-                source: rosterLayoutAvatar ? (avatarPath == "" ? "qrc:/avatar" : avatarPath) : presence
+                source: rosterLayoutAvatar ? xmppClient.getAvatarByJid(jid) : presence
                 sourceSize.height: rosterItemHeight-4
                 sourceSize.width: rosterItemHeight-4
                 anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }

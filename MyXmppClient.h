@@ -113,6 +113,7 @@ class MyXmppClient : public QObject
 
 public :
     static QString getBareJidByJid( const QString &jid );
+    Q_INVOKABLE QString getAvatarByJid( QString bareJid );
 
     enum StateConnect {
         Disconnect = 0,
@@ -367,7 +368,7 @@ private:
 
 
     // threaded db code
-    void dbInsertContact(int acc, QString bareJid, QString name, QString presence, QString avatarPath);
+    void dbInsertContact(int acc, QString bareJid, QString name, QString presence);
     void dbInsertMessage(int acc, QString bareJid, QString msgText, QString time, int mine);
     void dbDeleteContact(int acc, QString bareJid);
     void dbUpdateContact(int acc, QString bareJid, QString property, QString value);

@@ -4,3 +4,4 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
     QObject(parent)
 {
 }
+
