@@ -172,6 +172,7 @@ bool DatabaseManager::setChatInProgress()
     queryStr += params.at(0);
     ret = query.exec(queryStr);
     emit finished();
+    emit rosterChanged();
     return ret;
 }
 
@@ -235,6 +236,7 @@ bool DatabaseManager::insertMessage()
             ret = query.exec();
     }
     emit finished();
+    emit messagesChanged();
     return ret;
 }
 
@@ -261,6 +263,7 @@ bool DatabaseManager::insertContact()
         }
     }
     emit finished();
+    emit rosterChanged();
     return ret;
 }
 
@@ -275,6 +278,7 @@ bool DatabaseManager::updateContact()
     query.bindValue(":jid",params.at(1));
     query.exec();
     emit finished();
+    emit rosterChanged();
     return ret;
 }
 
@@ -291,6 +295,23 @@ bool DatabaseManager::updatePresence()
     query.bindValue(":jid",params.at(1));
     query.exec();
     emit finished();
+    emit rosterChanged();
+    return ret;
+}
+
+bool DatabaseManager::clearPresence()
+{
+    QStringList params = parameters;
+    bool ret = false;
+    QSqlQuery query(db);
+    ret = query.prepare("UPDATE roster SET presence=:presence, resource=:resource, statusText=:statusText where id_account=:acc");
+    query.bindValue(":acc", params.at(0).toInt());
+    query.bindValue(":presence",params.at(1));
+    query.bindValue(":resource",params.at(2));
+    query.bindValue(":statusText",params.at(3));
+    query.exec();
+    emit finished();
+    emit rosterChanged();
     return ret;
 }
 
@@ -303,6 +324,7 @@ bool DatabaseManager::deleteContact()
         ret = query.exec("DELETE FROM roster WHERE jid='" + params.at(1) + "' and id_account =" + params.at(0));
 
     emit finished();
+    emit rosterChanged();
     return ret;
 }
 
@@ -321,6 +343,7 @@ bool DatabaseManager::incUnreadMessage()
         ret = query.exec("UPDATE roster SET unreadMsg='" + QString::number(nCount) + "' where jid='" + params.at(1) + "' and id_account =" + params.at(0) );
     }
     emit finished();
+    emit rosterChanged();
     qDebug() << query.lastError();
     qDebug() << query.lastQuery();
     return ret;

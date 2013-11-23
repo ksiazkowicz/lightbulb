@@ -7,6 +7,8 @@ DatabaseWorker::DatabaseWorker(QObject *parent) :
 {
     database = new DatabaseManager(this);
     connect(database,SIGNAL(finished()), this, SIGNAL(finished()));
+    connect(database,SIGNAL(messagesChanged()), this, SIGNAL(messagesChanged()));
+    connect(database,SIGNAL(rosterChanged()), this, SIGNAL(rosterChanged()));
 }
 
 void DatabaseWorker::executeQuery(QStringList* query) {
@@ -21,4 +23,5 @@ void DatabaseWorker::executeQuery(QStringList* query) {
     if (query->at(0) == "updatePresence") database->updatePresence();
     if (query->at(0) == "incUnreadMessage") database->incUnreadMessage();
     if (query->at(0) == "setChatInProgress") database->setChatInProgress();
+    if (query->at(0) == "clearPresence") database->clearPresence();
 }

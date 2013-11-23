@@ -372,6 +372,7 @@ private:
     void dbDeleteContact(int acc, QString bareJid);
     void dbUpdateContact(int acc, QString bareJid, QString property, QString value);
     void dbUpdatePresence(int acc, QString bareJid, QString presence, QString resource, QString statusText);
+    void dbClearPresence(int acc);
     void dbIncUnreadMessage(int acc, QString bareJid);
     void dbSetChatInProgress(int acc, QString bareJid, int value);
     // threaded db code end

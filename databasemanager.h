@@ -38,6 +38,8 @@ public:
 
     signals:
         void finished();
+        void rosterChanged();
+        void messagesChanged();
 
     public:
         bool deleteDB();
@@ -61,6 +63,7 @@ public:
         bool updatePresence();
         bool incUnreadMessage();
         int getUnreadCount();
+        bool clearPresence();
 
         void getLastError();
 

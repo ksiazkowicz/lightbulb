@@ -13,6 +13,8 @@ public:
     
 signals:
     void finished();
+    void messagesChanged();
+    void rosterChanged();
     
 public slots:
     void executeQuery(QStringList* query);
