@@ -6,6 +6,7 @@ DatabaseWorker::DatabaseWorker(QObject *parent) :
     QObject(parent)
 {
     database = new DatabaseManager(this);
+    database->initDB();
     connect(database,SIGNAL(finished()), this, SIGNAL(finished()));
     connect(database,SIGNAL(messagesChanged()), this, SIGNAL(messagesChanged()));
     connect(database,SIGNAL(rosterChanged()), this, SIGNAL(rosterChanged()));

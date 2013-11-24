@@ -305,10 +305,9 @@ void MyXmppClient::initRoster()
 
         QXmppRosterIq::Item itemRoster = rosterManager->getRosterEntry( bareJid );
         QString name = itemRoster.name();
-        QString avatarPath = cacheIM->getAvatarCache( bareJid );
         vCardData vCdata = cacheIM->getVCard( bareJid );
 
-        if ( avatarPath.isEmpty() || vCdata.isEmpty() )
+        if ( vCdata.isEmpty() )
         {
             vCardManager->requestVCard( bareJid );
             qDebug() << "MyXmppClient::initRoster():" << bareJid << "has no VCard. Requesting.";
