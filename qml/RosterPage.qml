@@ -91,7 +91,7 @@ Page {
             } //imgPresence
             Text {
                     id: txtJid
-                    property string contact: name
+                    property string contact: (name === "" ? jid : name)
                     anchors { left: imgPresence.right; right: imgPresenceR.left; leftMargin: 10; rightMargin: 10; verticalCenter: parent.verticalCenter }
                     width: parent.width
                     maximumLineCount: (rosterItemHeight/22) > 1 ? (rosterItemHeight/22) : 1
@@ -107,7 +107,7 @@ Page {
 
                 onClicked: {
                     xmppClient.chatJid = jid
-                    xmppClient.contactName = name
+                    xmppClient.contactName = txtJid.contact
                     main.globalUnreadCount = main.globalUnreadCount - unreadMsg
                     notify.postHSWidget()
                     main.pageStack.push( "qrc:/pages/Messages" )
@@ -115,7 +115,10 @@ Page {
 
                 onPressAndHold: {
                     selectedJid = jid
-                    dialogName = name
+                    selectedContactStatusText = statusText
+                    selectedContactPresence = presence
+                    xmppClient.contactName = txtJid.contact
+                    dialogName = txtJid.contact
                     contactMenu.open()
                 }
             }
@@ -184,15 +187,6 @@ Page {
                 onClicked: main.pageStack.push( "qrc:/pages/Settings" )
             }
             MenuItem {
-                text: qsTr("My vCard")
-                platformInverted: main.platformInverted
-                onClicked: {if( xmppClient.stateConnect == XmppClient.Online )
-                    {
-                        main.requestMyVCard = true
-                        main.pageStack.push( "qrc:/pages/VCard" )
-                    }}
-            }
-            MenuItem {
                 platformInverted: main.platformInverted
                 text: main.notifyHold ? "Unmute notifications (" + main.notifyHoldDuration + " min.)" : "Mute notifications"
                 onClicked: {
@@ -243,7 +237,7 @@ Page {
                 text: qsTr("vCard")
                 platformInverted: main.platformInverted
                 onClicked: {
-                    main.requestMyVCard = false
+                    xmppClient.chatJid = selectedJid
                     main.pageStack.push( "qrc:/pages/VCard" )
                     xmppClient.chatJid = selectedJid
                 }

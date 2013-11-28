@@ -20,13 +20,8 @@ Page {
     property string vCardUrl: ""
 
     Component.onCompleted: {
-        if( main.requestMyVCard == true ) {
-            console.log("QML::VCargPage: Request vCard for: " + xmppClient.myBareJid )
-            xmppClient.requestVCard( xmppClient.myBareJid )
-        } else {
-            console.log("QML::VCargPage: Request vCard for: " + xmppClient.chatJid )
-            xmppClient.requestVCard( xmppClient.chatJid )
-        }
+        console.log("QML::VCargPage: Request vCard for: " + xmppClient.chatJid )
+        xmppClient.requestVCard( xmppClient.chatJid )
         clearForm()
     }
 
@@ -88,8 +83,8 @@ Page {
                 Image {
                     id: avatar
                     smooth: true
+                    width: 128
                     height: 128
-                    width: height
                     source: "qrc:/avatar"
                     sourceSize.height: height
                     sourceSize.width: width
@@ -102,24 +97,24 @@ Page {
                     Text {
                         id: txtJid
                         width: container.width
-                        text: requestMyVCard ? "Me" : xmppClient.getNameByJid(bareJid)
+                        text: xmppClient.contactName
                         wrapMode: Text.Wrap
                         color: main.textColor
                     }
                     Row {
+                        spacing: 5
                         anchors { top: txtJid.bottom }
                         Image {
                             id: statusImg
-                            source: xmppClient.getPicPresenceByJid(bareJid)
+                            width: 24
+                            source: selectedContactPresence
                             sourceSize.height: 24
                             sourceSize.width: 24
-                            anchors { top: parent.top; left: parent.left }
                         }
                         Text {
-                            anchors { left: parent.left; leftMargin: 24; }
                             width: columnContent.width - 162
                             font.pixelSize: 18
-                            text: xmppClient.getStatusTextByJid(bareJid)
+                            text: selectedContactStatusText
                             color: "gray"
                             wrapMode: Text.Wrap
                         }
@@ -130,118 +125,141 @@ Page {
 
             Text {
                 id: txtNickname
-                text: "<b>" + qsTr("Nickname") + "</b><br />" + vCardNickName
+                anchors { left: parent.left; leftMargin: 10 }
+                text: vCardNickName != "" ? "<b>" + qsTr("Nickname") + "</b><br />" + vCardNickName : ""
                 font.pixelSize: 18
                 color: main.textColor
-                height: vCardNickName != "" ? 41 : 0
-                visible: vCardNickName != ""
+                visible: text != ""
             }
             Rectangle {
                 color: "gray"
                 height: 1
+                opacity: 0.5
                 width: parent.width
                 visible: txtNickname.visible
             }
 
             Text {
                 id: txtName
-                text: "<b>" + qsTr("Name") + "</b><br />" + vCardName
+                anchors { left: parent.left; leftMargin: 10 }
+                text: vCardName != "" ? "<b>" + qsTr("Name") + "</b><br />" + vCardName : ""
                 font.pixelSize: 18
                 color: main.textColor
-                height: vCardName != "" ? 41 : 0
-                visible: vCardName != ""
+                visible: text != ""
             }
             Rectangle {
                 color: "gray"
                 height: 1
+                opacity: 0.5
                 width: parent.width
                 visible: txtName.visible
             }
 
             Text {
                 id: txtMiddleName
-                text: "<b>" + qsTr("Middle name") + "</b><br />" + vCardMiddleName
+                text: vCardMiddleName != "" ? "<b>" + qsTr("Middle name") + "</b><br />" + vCardMiddleName : ""
+                anchors { left: parent.left; leftMargin: 10 }
                 font.pixelSize: 18
                 color: main.textColor
-                height: vCardMiddleName != "" ? 41 : 0
-                visible: vCardMiddleName != ""
+                visible: text != ""
             }
             Rectangle {
                 color: "gray"
                 height: 1
+                opacity: 0.5
                 width: parent.width
                 visible: txtMiddleName.visible
             }
 
             Text {
                 id: txtLastName
-                text: "<b>" + qsTr("Lastname") + "</b><br />" + vCardLastName
+                anchors { left: parent.left; leftMargin: 10 }
+                text: vCardLastName != "" ? "<b>" + qsTr("Lastname") + "</b><br />" + vCardLastName : ""
                 font.pixelSize: 18
                 color: main.textColor
-                height: vCardLastName != "" ? 41 : 0
-                visible: vCardLastName != ""
+                visible: text != ""
             }
             Rectangle {
                 color: "gray"
                 height: 1
+                opacity: 0.5
                 width: parent.width
                 visible: txtLastName.visible
             }
 
             Text {
                 id: txtFullName
-                text: "<b>" + qsTr("Full name") + "</b><br />" + vCardFullName
+                anchors { left: parent.left; leftMargin: 10 }
+                text: vCardFullName != "" ? "<b>" + qsTr("Full name") + "</b><br />" + vCardFullName : ""
                 font.pixelSize: 18
                 color: main.textColor
-                height: vCardFullName != "" ? 41 : 0
-                visible: vCardFullName != ""
+                visible: text != ""
             }
             Rectangle {
                 color: "gray"
                 height: 1
+                opacity: 0.5
                 width: parent.width
                 visible: txtFullName.visible
             }
 
             Text {
-                id: txtEmail
-                text: "<b>" + qsTr("E-mail") + "</b><br />" + vCardEmail
+                id: txtBareJid
+                anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10 }
+                text: "<b>" + qsTr("Jabber ID") + "</b><br />" + bareJid
                 font.pixelSize: 18
                 color: main.textColor
-                height: vCardEmail != "" ? 41 : 0
-                visible: vCardEmail != ""
+                width: parent.width
+                wrapMode: Text.WrapAnywhere
             }
             Rectangle {
                 color: "gray"
                 height: 1
+                opacity: 0.5
+                width: parent.width
+            }
+
+            Text {
+                id: txtEmail
+                anchors { left: parent.left; leftMargin: 10 }
+                text: vCardEmail != "" ? "<b>" + qsTr("E-mail") + "</b><br />" + vCardEmail : ""
+                font.pixelSize: 18
+                color: main.textColor
+                visible: text != ""
+            }
+            Rectangle {
+                color: "gray"
+                height: 1
+                opacity: 0.5
                 width: parent.width
                 visible: txtEmail.visible
             }
 
             Text {
                 id: txtBirthday
-                text: "<b>" + qsTr("Birthday") + "</b><br />" + vCardBirthday
+                anchors { left: parent.left; leftMargin: 10 }
+                text: vCardBirthday != "" ? "<b>" + qsTr("Birthday") + "</b><br />" + vCardBirthday : ""
                 font.pixelSize: 18
                 color: main.textColor
-                height: vCardBirthday != "" ? 41 : 0
-                visible: vCardBirthday != ""
+                visible: text != ""
             }
             Rectangle {
                 color: "gray"
                 height: 1
+                opacity: 0.5
                 width: parent.width
                 visible: txtBirthday.visible
             }
 
             Text {
                 id: txtUrl
-                text: "<b>" + qsTr("Website") + "</b><br /><a href=\"" + vCardUrl + "\">" + vCardUrl + "</a>"
+                anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10 }
+                text: vCardUrl != "" ? "<b>" + qsTr("Website") + "</b><br /><a href=\"" + vCardUrl + "\">" + vCardUrl + "</a>" : ""
                 font.pixelSize: 18
                 color: main.textColor
                 wrapMode: Text.WrapAnywhere
                 width: parent.width
-                height: vCardUrl != "" ? ((txtUrl.lineCount+1)*18)+5 : 0
-                visible: vCardUrl != ""
+                visible: text != ""
                 onLinkActivated: { main.url=link; linkContextMenu.open()}
             }
 

@@ -37,8 +37,6 @@ PageStackWindow {
     property int lastUsedStatus: 0
     signal statusTextChanged
 
-    property bool requestMyVCard:    false
-
     property string dialogJid:       ""
 
     property string dialogTitle:     ""
@@ -56,6 +54,9 @@ PageStackWindow {
     property bool isChatInProgress: false
 
     property int blinkerSet: 0
+
+    property string selectedContactStatusText: ""
+    property string selectedContactPresence: ""
 
     function openChat() {
         if (pageStack.depth > 1) {

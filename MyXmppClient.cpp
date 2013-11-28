@@ -1033,7 +1033,7 @@ SqlQueryModel* MyXmppClient::getSqlRoster()
     emit rosterStatusUpdated();
     DatabaseManager* database = new DatabaseManager(this);
     //sqlRoster->setQuery("DELETE FROM roster", database->db);
-    sqlRoster->setQuery("select * from roster where id_account="+QString::number(m_accountId) +" order by unreadMsg desc, name asc", database->db);
+    sqlRoster->setQuery("select * from roster where id_account="+QString::number(m_accountId), database->db);
     qDebug() << "MyXmppClient::getSqlRoster() called. Updating contact list.";
     database->deleteLater();
     return sqlRoster;
