@@ -10,13 +10,10 @@ PageStackWindow {
 
     showStatusBar:                   true
     platformInverted:                settings.gBool("ui","invertPlatform")
-
     property string textColor:       platformInverted ? platformStyle.colorNormalDark : platformStyle.colorNormalLight
-
     property int                     globalUnreadCount: 0
     property int                     tempUnreadCount: 0
     property bool                    inputInProgress: false
-
     property string                  accJid: ""
     property string                  accPass: ""
     property string                  accResource: ""
@@ -25,38 +22,22 @@ PageStackWindow {
     property bool                    accManualHostPort: false
     property bool                    accDefault: false
     property bool                    connecting: false
-
     property int                     splitscreenY: 0
-
     property string                  lastStatus: settings.gBool("behavior", "lastStatusText") ? settings.gStr("behavior","lastStatusText") : ""
-    property string nowEditing:      ""
-    property string url:             ""
-
-    signal statusChanged
-    property string statStatusText:  xmppClient.statusText
-    property int lastUsedStatus: 0
-    signal statusTextChanged
-
-    property string dialogJid:       ""
-
-    property string dialogTitle:     ""
-    property string dialogText:      ""
-    property string dialogName:      ""
-
-    property bool notifyHold:  false
-    property int notifyHoldDuration: 0
-
-    property int suspenderDuration: 0
-    property bool isSuspended: false
-
-    property bool isActive: true
-
-    property bool isChatInProgress: false
-
-    property int blinkerSet: 0
-
-    property string selectedContactStatusText: ""
-    property string selectedContactPresence: ""
+    property string                  nowEditing: ""
+    property string                  url: ""
+    signal                           statusChanged
+    property int                     lastUsedStatus: 0
+    signal                           statusTextChanged
+    property string                  dialogJid:       ""
+    property string                  dialogTitle:     ""
+    property string                  dialogText:      ""
+    property string                  dialogName:      ""
+    property bool                    isActive: true
+    property bool                    isChatInProgress: false
+    property int                     blinkerSet: 0
+    property string                  selectedContactStatusText: ""
+    property string                  selectedContactPresence: ""
 
     function openChat() {
         if (pageStack.depth > 1) {
@@ -67,35 +48,13 @@ PageStackWindow {
         dialog.source = ""
     }
 
-    SymbiosisAPI {
-        id: symbiosis
-    }
-
-    Timer {
-        id: notifyHoldTimer
-        interval: 60000
-        running: false; repeat: true
-        onTriggered: {
-            if (notifyHoldDuration>0) {
-                notifyHold = true
-                notifyHoldDuration--
-                console.log(notifyHoldDuration + " minutes left till notifications be resumed.")
-            } else {
-                notifyHold = false
-                notifyHoldTimer.running = false
-            }
-        }
-
-
-    }
-
     Timer {
         id: blinker
         interval: 100
         running: true; repeat:true
         onTriggered: {
             if (globalUnreadCount>0) {
-                if (blinkerSet < 4) { avkon.notificationBlink(settings.gInt("notifications", "blinkScreenDevice")); /*symbiosis.sendMessage("blink");*/ blinkerSet++ } else { if (blinkerSet > 6) { blinkerSet = 0} else { blinkerSet++ } }
+                if (blinkerSet < 4) { avkon.notificationBlink(settings.gInt("notifications", "blinkScreenDevice")); blinkerSet++ } else { if (blinkerSet > 6) { blinkerSet = 0} else { blinkerSet++ } }
             } else { blinkerSet = 0; blinker.running = false }
         }
     }
@@ -106,12 +65,6 @@ PageStackWindow {
             if (Qt.application.active) {
                 isActive = true
                 blinker.running = false
-                suspender.running = false
-                suspenderDuration = 0
-                if (isSuspended) {
-                    pageStack.replace("qrc:/pages/Roster")
-                    isSuspended = false
-                }
                 if (xmppClient.chatJid != "") {
                     isChatInProgress = true
                     globalUnreadCount = globalUnreadCount - tempUnreadCount
@@ -125,42 +78,14 @@ PageStackWindow {
                 if (globalUnreadCount>0 && settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff")) {
                     blinker.running = true
                 }
-                suspender.running = true
                 isChatInProgress = false
             }
         }
     }
 
-    Timer {
-        id: suspender
-        running: true; repeat: true
-        onTriggered: {
-            if (suspenderDuration==900) {
-                if (!isSuspended) {
-                    pageStack.pop()
-                    pageStack.pop()
-                    pageStack.clear()
-                    isSuspended = true
-                    console.log("Suspending...")
-                    suspender.running = false
-                    if (xmppClient.chatJid != "") {
-                        xmppClient.setUnreadMessages(xmppClient.chatJid, tempUnreadCount)
-                        xmppClient.chatJid = ""
-                        isChatInProgress = false
-                        tempUnreadCount = 0
-                    }
-                }
-            }
-        }
-
-    }
-
     XmppClient {
         id: xmppClient
-        onRosterUpdated: {
-            connecting = false
-        }
-
+        onRosterUpdated: { connecting = false }
         onErrorHappened: {
             connecting = false
             if (settings.gBool("behavior", "reconnectOnError")) {
@@ -181,31 +106,25 @@ PageStackWindow {
                         }
                 }
                 if (!isActive && settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff")) { blinker.running = true }
-                if (!notifyHold) {
-                    if (settings.gBool("notifications", "usePopupRecv") == true && (xmppClient.chatJid !== bareJidLastMsg || !isActive)) {
-                        if (settings.gBool("behavior","msgInDiscrPopup")) {
-                            avkon.showPopup(getNameByJid(bareJidLastMsg), getLastSqlMessage(),settings.gBool("behavior","linkInDiscrPopup"))
-                        } else {
-                            avkon.showPopup(globalUnreadCount + " unread messages", "New message from "+ getNameByJid(bareJidLastMsg) + ".",settings.gBool("behavior","linkInDiscrPopup"))
+                if (settings.gBool("notifications", "usePopupRecv") == true && (xmppClient.chatJid !== bareJidLastMsg || !isActive)) {
+                    if (settings.gBool("behavior","msgInDiscrPopup")) {
+                        avkon.showPopup(getNameByJid(bareJidLastMsg), getLastSqlMessage(),settings.gBool("behavior","linkInDiscrPopup"))
+                    } else {
+                        avkon.showPopup(globalUnreadCount + " unread messages", "New message from "+ getNameByJid(bareJidLastMsg) + ".",settings.gBool("behavior","linkInDiscrPopup"))
                         }
-                    }
-                    notifySndVibr("MsgRecv")
                 }
-                if (settings.gBool("behavior","enableHsWidget")) {
-                    notify.postHSWidget()
-                }
+                notifySndVibr("MsgRecv")
+                if (settings.gBool("behavior","enableHsWidget")) notify.postHSWidget()
             }
         }
         onStatusChanged: {
             console.log( "XmppClient::onStatusChanged:" + status )
             main.statusChanged()
-            if (!notifyHold) {
-                notifySndVibr("NotifyConn")
-                if (settings.gBool("notifications", "notifyConnection") && !connecting) {
-                    if (xmppClient.statusText == "") {
-                        avkon.showPopup("Status changed to " + notify.getStatusName(),xmppClient.statusText,settings.gBool("behavior","linkInDiscrPopup"))
-                    } else { avkon.showPopup("Status changed to",notify.getStatusName(),settings.gBool("behavior","linkInDiscrPopup")) }
-                }
+            notifySndVibr("NotifyConn")
+            if (settings.gBool("notifications", "notifyConnection") && !connecting) {
+                if (xmppClient.statusText == "") {
+                avkon.showPopup("Status changed to " + notify.getStatusName(),xmppClient.statusText,settings.gBool("behavior","linkInDiscrPopup"))
+                } else { avkon.showPopup("Status changed to",notify.getStatusName(),settings.gBool("behavior","linkInDiscrPopup")) }
             }
             if (settings.gBool("behavior","enableHsWidget")) {
                 notify.postHSWidget()
@@ -217,9 +136,7 @@ PageStackWindow {
             if (settings.gBool("notifications","notifySubscription") == true) {
                 avkon.showPopup("Subscription request",bareJid,settings.gBool("behavior","linkInDiscrPopup"))
             }
-            if (!notifyHold) {
-                notifySndVibr("MsgSub")
-            }
+            notifySndVibr("MsgSub")
             dialogJid = bareJid
             dialog.source = ""
             dialog.source = "qrc:/dialogs/Contact/Subscribe"
@@ -345,17 +262,15 @@ PageStackWindow {
     }
 
     function notifySndVibr(how) {
-        if (!notifyHold) {
-            if( settings.gBool("notifications","vibra"+how )) {
-                hapticsEffect.duration = settings.gInt("notifications","vibra"+how+"Duration" )
-                hapticsEffect.intensity = settings.gInt("notifications","vibra"+how+"Intensity" )/100
-                hapticsEffect.running = true
-            }
-            if( settings.gBool("notifications","sound"+how )) {
-                sndEffect.source = settings.gStr("notifications","sound"+how+"File" )
-                sndEffect.volume = settings.gInt("notifications","sound"+how+"Volume" )/100
-                sndEffect.play()
-            }
+        if( settings.gBool("notifications","vibra"+how )) {
+            hapticsEffect.duration = settings.gInt("notifications","vibra"+how+"Duration" )
+            hapticsEffect.intensity = settings.gInt("notifications","vibra"+how+"Intensity" )/100
+            hapticsEffect.running = true
+        }
+        if( settings.gBool("notifications","sound"+how )) {
+            sndEffect.source = settings.gStr("notifications","sound"+how+"File" )
+            sndEffect.volume = settings.gInt("notifications","sound"+how+"Volume" )/100
+            sndEffect.play()
         }
     }
     Audio { id: sndEffect }

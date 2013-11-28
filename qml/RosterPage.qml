@@ -187,21 +187,6 @@ Page {
                 onClicked: main.pageStack.push( "qrc:/pages/Settings" )
             }
             MenuItem {
-                platformInverted: main.platformInverted
-                text: main.notifyHold ? "Unmute notifications (" + main.notifyHoldDuration + " min.)" : "Mute notifications"
-                onClicked: {
-                    if (main.notifyHold) {
-                        main.notifyHold = false
-                        main.notifyHoldDuration = 0
-                        notifyHoldTimer.running = false
-                    } else {
-                        dialog.source = ""
-                        dialog.source = "qrc:/dialogs/MuteNotifications"
-                    }
-                }
-            }
-
-            MenuItem {
                 text: qsTr("About...")
                 platformInverted: main.platformInverted
                 onClicked: main.pageStack.push( "qrc:/pages/About" )
