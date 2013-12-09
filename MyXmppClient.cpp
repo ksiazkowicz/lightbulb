@@ -14,13 +14,10 @@
 #include <QThread>
 #include <QStringList>
 
-QString MyXmppClient::myVersion = "0.2.1";
-QString MyXmppClient::getBareJidByJid( const QString &jid )
-{
+QString MyXmppClient::myVersion = "0.2.2";
+QString MyXmppClient::getBareJidByJid( const QString &jid ) {
     QString bareJid = jid;
-    if( jid.indexOf('/') >= 0 ) {
-        bareJid = jid.split('/')[0];
-    }
+    if (jid.indexOf('/') >= 0) bareJid = jid.split('/')[0];
     return bareJid;
 }
 QString MyXmppClient::getAvatarByJid( QString bareJid ) { return cacheIM->getAvatarCache(bareJid); }
@@ -37,6 +34,8 @@ void MyXmppClient::dbInsertContact(int acc, QString bareJid, QString name, QStri
     parameters->append(name);
     parameters->append(presence);
     dbWorker->executeQuery(parameters);
+    delete parameters;
+    parameters = NULL;
 }
 
 void MyXmppClient::dbInsertMessage(int acc, QString bareJid, QString msgText, QString time, int mine) {
@@ -48,6 +47,8 @@ void MyXmppClient::dbInsertMessage(int acc, QString bareJid, QString msgText, QS
     parameters->append(time);
     parameters->append(QString::number(mine));
     dbWorker->executeQuery(parameters);
+    delete parameters;
+    parameters = NULL;
 }
 
 void MyXmppClient::dbDeleteContact(int acc, QString bareJid) {
@@ -57,6 +58,8 @@ void MyXmppClient::dbDeleteContact(int acc, QString bareJid) {
     parameters->append(QString::number(acc));
     parameters->append(bareJid);
     dbWorker->executeQuery(parameters);
+    delete parameters;
+    parameters = NULL;
 }
 
 void MyXmppClient::dbUpdateContact(int acc, QString bareJid, QString property, QString value) {
@@ -69,6 +72,8 @@ void MyXmppClient::dbUpdateContact(int acc, QString bareJid, QString property, Q
     parameters->append(property);
     parameters->append(value);
     dbWorker->executeQuery(parameters);
+    delete parameters;
+    parameters = NULL;
 }
 
 void MyXmppClient::dbUpdatePresence(int acc, QString bareJid, QString presence, QString resource, QString statusText) {
@@ -83,6 +88,8 @@ void MyXmppClient::dbUpdatePresence(int acc, QString bareJid, QString presence, 
     parameters->append(resource);
     parameters->append(statusText);
     dbWorker->executeQuery(parameters);
+    delete parameters;
+    parameters = NULL;
 }
 
 void MyXmppClient::dbClearPresence(int acc) {
@@ -95,6 +102,8 @@ void MyXmppClient::dbClearPresence(int acc) {
     parameters->append("Offline");
     qDebug() << "MyXmppClient::dbClearPresence() called. acc:"<<acc<<"resource"<<""<<"presence"<<this->getPicPresence(QXmppPresence::Unavailable)<<"statusText"<<"Offline";
     dbWorker->executeQuery(parameters);
+    delete parameters;
+    parameters = NULL;
 }
 
 void MyXmppClient::dbIncUnreadMessage(int acc, QString bareJid) {
@@ -105,6 +114,8 @@ void MyXmppClient::dbIncUnreadMessage(int acc, QString bareJid) {
     parameters->append(bareJid);
     dbWorker->executeQuery(parameters);
     rosterNeedsUpdate = true;
+    delete parameters;
+    parameters = NULL;
 }
 
 void MyXmppClient::dbSetChatInProgress(int acc, QString bareJid, int value) {
@@ -116,6 +127,8 @@ void MyXmppClient::dbSetChatInProgress(int acc, QString bareJid, int value) {
     parameters->append(QString::number(value));
     dbWorker->executeQuery(parameters);
     rosterNeedsUpdate = true;
+    delete parameters;
+    parameters = NULL;
 }
 
 

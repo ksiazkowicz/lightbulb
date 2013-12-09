@@ -129,13 +129,13 @@ qtcAddDeployment()
 include(qxmpp/qxmpp.pri)
 INCLUDEPATH += qxmpp/base/ qxmpp/client
 
-addFiles.pkg_postrules += "\"C:\\Projekty\\Lightbulb\\HSWidgetPlugin0xE22AC278.dll\" - \"!:\\sys\\bin\\HSWidgetPlugin0xE22AC278.dll\""
-addFiles.pkg_postrules += "\"C:\\Projekty\\Lightbulb\\qml\\images\\LightbulbWidget.png\" - \"!:\\data\\.config\\Lightbulb\\Lightbulb.png\""
-addFiles.pkg_postrules += "\"C:\\Projekty\\Lightbulb\\qml\\images\\LightbulbWidget_attention.png\" - \"!:\\data\\.config\\Lightbulb\\LightbulbA.png\""
+addFiles.pkg_postrules += "\"D:\\Programowanie\\Projekty\\Lightbulb\\HSWidgetPlugin0xE22AC278.dll\" - \"!:\\sys\\bin\\HSWidgetPlugin0xE22AC278.dll\""
+addFiles.pkg_postrules += "\"D:\\Programowanie\\Projekty\\Lightbulb\\qml\\images\\LightbulbWidget.png\" - \"!:\\data\\.config\\Lightbulb\\Lightbulb.png\""
+addFiles.pkg_postrules += "\"D:\\Programowanie\\Projekty\\Lightbulb\\qml\\images\\LightbulbWidget_attention.png\" - \"!:\\data\\.config\\Lightbulb\\LightbulbA.png\""
 
-addFiles.pkg_postrules += "\"C:\\Projekty\\Lightbulb\\sounds\\Message_Received.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Message_Received.wav\""
-addFiles.pkg_postrules += "\"C:\\Projekty\\Lightbulb\\sounds\\Message_Sent.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Message_Sent.wav\""
-addFiles.pkg_postrules += "\"C:\\Projekty\\Lightbulb\\sounds\\New_Message.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Subscription_Request.wav\""
+addFiles.pkg_postrules += "\"D:\\Programowanie\\Projekty\\Lightbulb\\sounds\\Message_Received.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Message_Received.wav\""
+addFiles.pkg_postrules += "\"D:\\Programowanie\\Projekty\\Lightbulb\\sounds\\Message_Sent.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Message_Sent.wav\""
+addFiles.pkg_postrules += "\"D:\\Programowanie\\Projekty\\Lightbulb\\sounds\\New_Message.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Subscription_Request.wav\""
 
 DEPLOYMENT += addFiles
 
