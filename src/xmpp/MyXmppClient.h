@@ -17,13 +17,13 @@
 #include "DatabaseManager.h"
 #include "DatabaseWorker.h"
 
-#include "mycache.h"
-#include "messagewrapper.h"
+#include "MyCache.h"
+#include "MessageWrapper.h"
 #include "SettingsDBWrapper.h"
 #include <QSqlRecord>
 #include "QXmppRosterManager.h"
 
-#include "qmlvcard.h"
+#include "QMLVCard.h"
 
 
 /****************/
@@ -78,7 +78,6 @@ class MyXmppClient : public QObject
     Q_PROPERTY( QString host READ getHost WRITE setHost NOTIFY hostChanged )
     Q_PROPERTY( int port READ getPort WRITE setPort NOTIFY portChanged )
     Q_PROPERTY( QString resource READ getResource WRITE setResource NOTIFY resourceChanged )
-    Q_PROPERTY( int messagesCount READ getSqlMessagesCount NOTIFY sqlMessagesChanged )
     Q_PROPERTY( SqlQueryModel* messagesByPage READ getSqlMessagesByPage NOTIFY pageChanged )
     Q_PROPERTY( SqlQueryModel* messages READ getSqlMessagesByPage NOTIFY sqlMessagesChanged )
     Q_PROPERTY( QString chatJid READ getChatJid WRITE setChatJid NOTIFY chatJidChanged )
@@ -97,9 +96,6 @@ class MyXmppClient : public QObject
     QXmppVCardManager *vCardManager;
 
     SettingsDBWrapper *mimOpt;
-    SqlQueryModel *sqlMessages;
-    SqlQueryModel *sqlRoster;
-    SqlQueryModel *sqlChats;
 
     QStringList jidCache;
 
@@ -108,8 +104,6 @@ class MyXmppClient : public QObject
 
     DatabaseWorker *dbWorker;
     QThread *dbThread;
-
-    //QXmppConfiguration xmppConfig;
 
 public :
     static QString getBareJidByJid( const QString &jid );
@@ -151,12 +145,15 @@ public :
     Q_INVOKABLE void typingStop( QString bareJid, QString resource );
 
     /*--- unread msg ---*/
-    Q_INVOKABLE void resetUnreadMessages( QString bareJid ) { this->dbUpdateContact(m_accountId,bareJid,"unreadMsg","0"); }
-    Q_INVOKABLE void setUnreadMessages( QString bareJid, int count ) { this->dbUpdateContact(m_accountId,bareJid,"unreadMsg",QString::number(count)); }
+    Q_INVOKABLE void resetUnreadMessages( QString bareJid ) {
+        if (dbWorker->sqlRoster->record(dbWorker->getRecordIDbyJid(bareJid)).value("unreadMsg").toInt() != 0) {
+            dbWorker->executeQuery(QStringList() << "updateContact" << QString::number(m_accountId) << bareJid << "unreadMsg" << "0");
+            rosterNeedsUpdate = true; }
+    }
+    Q_INVOKABLE void setUnreadMessages( QString bareJid, int count ) { dbWorker->executeQuery(QStringList() << "updateContact" << QString::number(m_accountId) << bareJid << "unreadMsg" << QString::number(count)); rosterNeedsUpdate = true; }
 
     /*--- vCard ---*/
     Q_INVOKABLE void requestVCard( QString bareJid );
-    //Q_INVOKABLE void setMyVCard( QMLVCard* vCard );
 
     /*--- connect/disconnect ---*/
     Q_INVOKABLE void connectToXmppServer();
@@ -166,7 +163,7 @@ public :
     Q_INVOKABLE bool sendMyMessage( QString bareJid, QString resource, QString msgBody );
 
     /*--- info by jid ---*/
-    Q_INVOKABLE QString getNameByJid( QString bareJid ) { return sqlRoster->record(jidCache.indexOf(bareJid)).value("name").toString(); }
+    Q_INVOKABLE QString getNameByJid( QString bareJid ) { return dbWorker->sqlRoster->record(dbWorker->getRecordIDbyJid(bareJid)).value("name").toString(); }
     Q_INVOKABLE QStringList getResourcesByJid( QString bareJid ) { return rosterManager->getResources(bareJid); }
 
     /*--- add/remove contact ---*/
@@ -208,8 +205,8 @@ public :
     bool checkIfRosterIsAvailable() const { return rosterAvailable; }
     void setTyping( QString &jid, const bool isTyping ) { m_flTyping = isTyping; emit typingChanged(jid, isTyping); }
 
-    SqlQueryModel* getSqlRoster();
-    SqlQueryModel* getSqlChats();
+    SqlQueryModel* getSqlRoster() { return dbWorker->sqlRoster; }
+    SqlQueryModel* getSqlChats() { return dbWorker->sqlChats; }
 
     QString latestMessage;
 
@@ -228,8 +225,7 @@ public :
     QString getResource() const { return m_resource; }
     void setResource( const QString & value ) { if(value!=m_resource) {m_resource=value; emit resourceChanged(); } }
 
-    int getSqlMessagesCount();
-    SqlQueryModel* getSqlMessagesByPage();
+    SqlQueryModel* getSqlMessagesByPage() { return dbWorker->sqlMessages; }
     Q_INVOKABLE QString getLastSqlMessage() { return latestMessage; }
     Q_INVOKABLE int getUnreadCount();
 
@@ -320,8 +316,15 @@ signals:
 public slots:
     void clientStateChanged( QXmppClient::State state );
 
-    Q_INVOKABLE void openChat( QString jid ) { this->dbSetChatInProgress( m_accountId, jid, 1 ); emit chatOpened( jid ); }
-    Q_INVOKABLE void closeChat( QString jid ) { this->resetUnreadMessages( jid ); this->dbSetChatInProgress( m_accountId, jid, 0 ); emit chatClosed( jid ); }
+    Q_INVOKABLE void openChat( QString jid ) {
+        if (dbWorker->sqlRoster->record(dbWorker->getRecordIDbyJid(jid)).value("isChatInProgress").toInt() != 1) {
+                dbWorker->executeQuery(QStringList() << "setChatInProgress" << QString::number(m_accountId) << jid << "1");
+                rosterNeedsUpdate = true; }
+        emit chatOpened( jid );
+    }
+    Q_INVOKABLE void closeChat( QString jid ) { this->resetUnreadMessages( jid ); dbWorker->executeQuery(QStringList() << "setChatInProgress" << QString::number(m_accountId) << jid << "0"); rosterNeedsUpdate = true; emit chatClosed( jid ); }
+
+    Q_INVOKABLE void updateMessages() { dbWorker->updateMessages(m_accountId,m_chatJid,page); }
 
 private slots:
     void initRoster();
@@ -350,6 +353,7 @@ private:
     int m_port;
     QString m_resource;
     QString m_chatJid;
+    QString m_lastChatJid;
     QString m_contactName;
     int accounts;
     void archiveIncMessage( const QXmppMessage &xmppMsg, bool mine );
@@ -365,19 +369,6 @@ private:
 
     QString getPicPresence( const QXmppPresence &presence ) const;
     QString getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const;
-
-
-    // threaded db code
-    void dbInsertContact(int acc, QString bareJid, QString name, QString presence);
-    void dbInsertMessage(int acc, QString bareJid, QString msgText, QString time, int mine);
-    void dbDeleteContact(int acc, QString bareJid);
-    void dbUpdateContact(int acc, QString bareJid, QString property, QString value);
-    void dbUpdatePresence(int acc, QString bareJid, QString presence, QString resource, QString statusText);
-    void dbClearPresence(int acc);
-    void dbIncUnreadMessage(int acc, QString bareJid);
-    void dbSetChatInProgress(int acc, QString bareJid, int value);
-    // threaded db code end
-
 
     int m_keepAlive;
     bool m_reconnectOnError;

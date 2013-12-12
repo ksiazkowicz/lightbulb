@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "DatabaseManager.h"
 #include <QDebug>
 #include <QSqlQuery>
+#include <QSqlRecord>
 
 DatabaseWorker::DatabaseWorker(QObject *parent) :
     QObject(parent)
@@ -39,9 +40,17 @@ DatabaseWorker::DatabaseWorker(QObject *parent) :
     connect(database,SIGNAL(messagesChanged()), this, SIGNAL(messagesChanged()));
     connect(database,SIGNAL(rosterChanged()), this, SIGNAL(rosterChanged()));
 
+    //initialize SqlQueryModels
+    sqlRoster = new SqlQueryModel( 0 );
+    this->updateRoster(1);
+    sqlMessages = new SqlQueryModel( 0 );
+    this->updateMessages(1,"",1);
+    sqlChats = new SqlQueryModel( 0 );
+    this->updateChats(1);
+
+    // populates queryType list so I could use switch with QStrings. I like switches.
     queryType << "begin" << "end" << "insertMessage" << "insertContact" << "deleteContact" <<
-                 "updateContact" << "updatePresence" << "incUnreadMessage" << "setChatInProgress" << "clearPresence"; // populates queryType list so I could use
-                                                                                                                      // switch with QStrings. I like switches.
+                 "updateContact" << "updatePresence" << "incUnreadMessage" << "setChatInProgress" << "clearPresence";
 }
 
 void DatabaseWorker::executeQuery(QStringList& query) {
@@ -71,4 +80,30 @@ void DatabaseWorker::executeQuery(QStringList& query) {
             qDebug() << "DatabaseWorker::executeQuery(): query " + query.at(0) + " not recognized.";
             break;
     }
+}
+
+void DatabaseWorker::updateChats(int m_accountId) {
+    qDebug() << "DatabaseWorker::updateChats(): updating chats list.";
+    sqlChats->setQuery("select * from roster where isChatInProgress=1 and id_account=" + QString::number(m_accountId)+" order by unreadMsg desc",database->db);
+    if (!sqlChats->lastError().NoError) qDebug() << sqlChats->lastError();
+    emit sqlChatsUpdated();
+}
+
+void DatabaseWorker::updateRoster(int m_accountId) {
+    qDebug() << "DatabaseWorker::updateRoster(): updating contact list.";
+    sqlRoster->setQuery("select * from roster where id_account="+QString::number(m_accountId), database->db);
+    emit sqlRosterUpdated();
+}
+
+void DatabaseWorker::updateMessages(int m_accountId, QString bareJid, int page) {
+    qDebug() << "DatabaseWorker::updateMessages(): updating messages query model.";
+    int border = page*20;
+    sqlMessages = new SqlQueryModel( 0 );
+    if (bareJid != "") sqlMessages->setQuery("SELECT * FROM (SELECT * FROM messages WHERE bareJid='" + bareJid + "' and id_account="+QString::number(m_accountId) + " ORDER BY id DESC limit " + QString::number(border) + ") ORDER BY id ASC limit 20",database->db);
+    emit sqlMessagesUpdated();
+}
+
+int DatabaseWorker::getRecordIDbyJid(QString bareJid) {
+    for (int i=0; i<sqlRoster->rowCount(); i++) if (sqlRoster->record(i).value("jid").toString() == bareJid) return i;
+    return -1;
 }

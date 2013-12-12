@@ -34,20 +34,30 @@ class DatabaseWorker : public QObject
     Q_OBJECT
 public:
     explicit DatabaseWorker(QObject *parent = 0);
+    int getRecordIDbyJid(QString bareJid);
+
+    SqlQueryModel* sqlRoster;
+    SqlQueryModel* sqlChats;
+    SqlQueryModel* sqlMessages;
     
 signals:
     void finished();
     void messagesChanged();
     void rosterChanged();
+
+    void sqlRosterUpdated();
+    void sqlChatsUpdated();
+    void sqlMessagesUpdated();
     
 public slots:
     void executeQuery(QStringList &query);
+    void updateChats(int m_accountId);
+    void updateRoster(int m_accountId);
+    void updateMessages(int m_accountId, QString bareJid, int page);
 
 private:
     DatabaseManager* database;
     QStringList queryType;
-
-    
 };
 
 #endif // DATABASEWORKER_H

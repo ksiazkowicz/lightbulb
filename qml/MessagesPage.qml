@@ -16,9 +16,7 @@ Page {
 
         statusBarText.text = xmppClient.contactName
 
-        if( xmppClient.bareJidLastMsg == xmppClient.chatJid ) {
-            messagesPage.resourceJid = xmppClient.resourceLastMsg
-        }
+        if( xmppClient.bareJidLastMsg == xmppClient.chatJid ) messagesPage.resourceJid = xmppClient.resourceLastMsg
 
         if( messagesPage.resourceJid == "" ) {
             listModelResources.append( {resource:qsTr("(by default)"), checked:true} )
