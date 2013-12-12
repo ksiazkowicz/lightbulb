@@ -1,6 +1,7 @@
 import QtQuick 1.1
 import lightbulb 1.0
 import com.nokia.symbian 1.1
+import "qrc:/JavaScript/EmoticonInterpreter.js" as Emotion
 
 Page {
     id: messagesPage
@@ -56,7 +57,7 @@ Page {
                 anchors.top: parent.top
                 anchors.right: parent.right
                 anchors.rightMargin: 16
-                source: "qrc:/qml/bubble/incTriangle.png"
+                source: "qrc:/images/bubble_incTriangle.png"
                 width: 13
                 height: isMine == true ? 0 : 13
             }
@@ -109,7 +110,7 @@ Page {
                 anchors.bottom: parent.bottom
                 anchors.left: parent.left
                 anchors.leftMargin: 16
-                source: "qrc:/qml/bubble/ownTriangle.png"
+                source: "qrc:/images/bubble_outTriangle.png"
                 width: 13
                 height: isMine == true ? 13 : 0
             }
@@ -121,7 +122,7 @@ Page {
                   anchors.topMargin: -10
                   anchors.left: parent.left
                   anchors.right: parent.right
-                  text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (xmppClient.contactName === "" ? xmppClient.chatJid : xmppClient.contactName) ) + ":</font> " + msgText
+                  text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (xmppClient.contactName === "" ? xmppClient.chatJid : xmppClient.contactName) ) + ":</font> " + Emotion.parseEmoticons(msgText)
                   color: isMine == true ? "white" : "black"
                   font.pixelSize: 16
                   wrapMode: Text.Wrap

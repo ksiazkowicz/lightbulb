@@ -1,6 +1,31 @@
+/********************************************************************
+
+src/avkon/QAvkonHelper.cpp
+-- interface to native Symbian APIs
+
+Copyright (c) 2013 Maciej Janiszewski,
+                   Fabian Hüllmantel,
+                   Dickson Leong
+
+This file is part of Lightbulb.
+
+Lightbulb is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*********************************************************************/
+
 #include "QAvkonHelper.h"
 #include <akndiscreetpopup.h>
-#include <aknkeylock.h>
 #include <aknnotewrappers.h>
 #include <aknglobalnote.h>
 #include <CAknFileSelectionDialog.h>
@@ -19,7 +44,6 @@ static const TUid KUidBrowser = { 0x10008D39 };
 QAvkonHelper::QAvkonHelper(QObject *parent) :
     QObject(parent)
 {
-    light = CHWRMLight::NewL();
     notifyLight = CHWRMLight::NewL();
 }
 
@@ -29,13 +53,7 @@ void QAvkonHelper::showPopup(QString title, QString message, bool goToApp) {
 
     if (goToApp) {
         TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(sTitle, sMessage,KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL, {0xE22AC278}));
-    } else {
-        TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(sTitle, sMessage,KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL));
-    }
-}
-
-void QAvkonHelper::screenBlink() {
-    light->LightBlinkL(CHWRMLight::EPrimaryDisplay | CHWRMLight::EPrimaryKeyboard, 1000, 1000, 1000, KHWRMDefaultIntensity);
+    } else TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(sTitle, sMessage,KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL));
 }
 
 void QAvkonHelper::notificationBlink(int device) {
@@ -48,46 +66,38 @@ void QAvkonHelper::notificationBlink(int device) {
     }
 }
 
-void QAvkonHelper::displayGlobalNote(QString message, bool isError)
-{
+void QAvkonHelper::displayGlobalNote(QString message, bool isError) {
    TPtrC16 aMessage(reinterpret_cast<const TUint16*>(message.utf16()));
    if (isError) ShowErrorL(aMessage); else ShowNoteL(aMessage);
 }
 
-void QAvkonHelper::ShowNoteL(const TDesC16& aMessage)
-{
+void QAvkonHelper::ShowNoteL(const TDesC16& aMessage) {
     iNote = CAknGlobalNote::NewL();
     iNoteId = iNote->ShowNoteL(EAknGlobalConfirmationNote,aMessage);
 }
 
-void QAvkonHelper::ShowErrorL(const TDesC16& aMessage)
-{
+void QAvkonHelper::ShowErrorL(const TDesC16& aMessage) {
     iNote = CAknGlobalNote::NewL();
     iNoteId = iNote->ShowNoteL(EAknGlobalErrorNote,aMessage);
 }
 
-QString QAvkonHelper::openFileSelectionDlg()
-{
+QString QAvkonHelper::openFileSelectionDlg() {
     TBuf16<255> filename;
-    if (!AknCommonDialogs::RunSelectDlgLD(filename, 0))
-            return NULL;
+    //open native FileSelection dialog
+    if (!AknCommonDialogs::RunSelectDlgLD(filename, 0)) return NULL;
+    // convert Symbian string to QString
     QString qString = QString::fromUtf16(filename.Ptr(), filename.Length());
 
     if (qString.right(4) != ".mp3" && qString.right(4) != ".wav" && qString != "") {
+        // if file format different than .mp3 or .wav, display an error
         this->displayGlobalNote("Format not supported.",true);
         return NULL;
-    }
-
-    if (qString != "") {
-        this->displayGlobalNote("File set to " + qString + ".",false);
-    }
+    } else this->displayGlobalNote("File set to " + qString + ".",false); // SUCCESS! ^^
 
     return qString;
-
 }
 
-void QAvkonHelper::openDefaultBrowser(const QUrl &url) const
-{
+void QAvkonHelper::openDefaultBrowser(const QUrl &url) const {
     // code ported from Tweetian by Dickson
     // https://github.com/dicksonleong/Tweetian/blob/master/src/symbianutils.cpp
 

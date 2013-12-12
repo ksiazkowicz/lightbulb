@@ -24,7 +24,6 @@ public:
     void attention( const QString &bareJid, const bool isMsgMine );
 
     QString parseMsgOnLink( const QString &inString ) const;
-    QString parseEmoticons( QString body );
 };
 
 #endif // MESSAGEWRAPPER_H

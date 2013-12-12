@@ -1,3 +1,26 @@
+/********************************************************************
+
+src/main.cpp
+
+Copyright (c) 2013 Maciej Janiszewski
+
+This file is part of Lightbulb.
+
+Lightbulb is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*********************************************************************/
+
 #include <QtGui/QApplication>
 #include <QUrl>
 #include "qmlapplicationviewer.h"
@@ -12,24 +35,23 @@
 #include "DatabaseManager.h"
 #include "SymbiosisAPIClient.h"
 
-#define LIGHTBULB_NAMESPACE "lightbulb"
-
-Q_DECL_EXPORT int main(int argc, char *argv[])
-{
+Q_DECL_EXPORT int main(int argc, char *argv[]) {
     QScopedPointer<QApplication> app( createApplication(argc, argv) );
 
-    qmlRegisterType<MyXmppClient>(LIGHTBULB_NAMESPACE, 1, 0, "XmppClient" );
-    qmlRegisterType<SettingsDBWrapper>(LIGHTBULB_NAMESPACE, 1, 0, "MeegIMSettings" );
-    qmlRegisterType<QMLVCard>(LIGHTBULB_NAMESPACE, 1, 0, "XmppVCard" );
-    qmlRegisterType<ClipboardAdapter>(LIGHTBULB_NAMESPACE, 1, 0, "Clipboard" );
-    qmlRegisterType<LightbulbHSWidget>(LIGHTBULB_NAMESPACE, 1, 0, "HSWidget" );
-    qmlRegisterType<QAvkonHelper>(LIGHTBULB_NAMESPACE, 1, 0, "Avkon");
+    // expose C++ classes to QML
+    qmlRegisterType<MyXmppClient>("lightbulb", 1, 0, "XmppClient" );
+    qmlRegisterType<SettingsDBWrapper>("lightbulb", 1, 0, "Settings" );
+    qmlRegisterType<QMLVCard>("lightbulb", 1, 0, "XmppVCard" );
+    qmlRegisterType<ClipboardAdapter>("lightbulb", 1, 0, "Clipboard" );
+    qmlRegisterType<LightbulbHSWidget>("lightbulb", 1, 0, "HSWidget" );
+    qmlRegisterType<QAvkonHelper>("lightbulb", 1, 0, "Avkon");
 
-    qmlRegisterType<SymbiosisAPIClient>(LIGHTBULB_NAMESPACE, 1, 0, "SymbiosisAPI" );
+    qmlRegisterType<SymbiosisAPIClient>("lightbulb", 1, 0, "SymbiosisAPI" );
 
-    qmlRegisterUncreatableType<SqlQueryModel>(LIGHTBULB_NAMESPACE, 1, 0, "SqlQuery", "");
-    qmlRegisterUncreatableType<AccountsListModel>(LIGHTBULB_NAMESPACE, 1, 0, "AccountsList", "Use settings.accounts instead");
+    qmlRegisterUncreatableType<SqlQueryModel>("lightbulb", 1, 0, "SqlQuery", "");
+    qmlRegisterUncreatableType<AccountsListModel>("lightbulb", 1, 0, "AccountsList", "Use settings.accounts instead");
 
+    // initialize viewer and set it parameters
     QmlApplicationViewer viewer;
     viewer.setAttribute(Qt::WA_OpaquePaintEvent);
     viewer.setAttribute(Qt::WA_NoSystemBackground);

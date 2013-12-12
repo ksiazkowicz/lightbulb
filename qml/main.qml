@@ -150,7 +150,7 @@ PageStackWindow {
         }
     } //XmppClient
 
-    MeegIMSettings { id: settings }
+    Settings { id: settings }
     XmppVCard { id: xmppVCard }
 
     Component.onCompleted: {

@@ -1,6 +1,7 @@
 import QtQuick 1.1
 import lightbulb 1.0
 import com.nokia.symbian 1.1
+import "qrc:/JavaScript/EmoticonInterpreter.js" as Emotion
 
 Page {
     id: messagesPage
@@ -52,7 +53,7 @@ Page {
             Text {
                   id: message
                   anchors { top: parent.top; left: parent.left; right: parent.right }
-                  text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (xmppClient.contactName === "" ? xmppClient.chatJid : xmppClient.contactName) ) + ":</font> " + msgText
+                  text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (xmppClient.contactName === "" ? xmppClient.chatJid : xmppClient.contactName) ) + ":</font> " + Emotion.parseEmoticons(msgText)
                   color: main.textColor
                   font.pixelSize: 16
                   wrapMode: Text.Wrap

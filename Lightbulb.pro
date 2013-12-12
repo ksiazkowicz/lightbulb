@@ -1,3 +1,25 @@
+#######################################################################
+# Lightbulb.pro
+# -- Lightbulb project file
+#
+# Copyright (c) 2013 Maciej Janiszewski
+#
+# This file is part of Lightbulb.
+#
+# Lightbulb is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#######################################################################
+
 # Add more folders to ship with the application, here
 #folder_01.source = qml
 #folder_01.target = qml
@@ -56,15 +78,15 @@ DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += src/main.cpp \
     src/xmpp/MyXmppClient.cpp \
-    src/listmodel.cpp \
-    src/cache/mycache.cpp \
-    src/cache/storevcard.cpp \
-    src/database/mysettings.cpp \
-    src/xmpp/messagewrapper.cpp \
-    src/accountsitemmodel.cpp \
-    src/accountslistmodel.cpp \
-    src/cache/qmlvcard.cpp \
-    src/avkon/lightbulbhswidget.cpp \
+    src/ListModel.cpp \
+    src/cache/MyCache.cpp \
+    src/cache/StoreVCard.cpp \
+    src/database/MySettings.cpp \
+    src/xmpp/MessageWrapper.cpp \
+    src/AccountsItemModel.cpp \
+    src/AccountsListModel.cpp \
+    src/cache/QMLVCard.cpp \
+    src/avkon/LightbulbHSWidget.cpp \
     src/database/DatabaseManager.cpp \
     src/avkon/QAvkonHelper.cpp \
     src/database/SettingsDBWrapper.cpp \
@@ -72,16 +94,16 @@ SOURCES += src/main.cpp \
     src/database/DatabaseWorker.cpp
 
 HEADERS += src/xmpp/MyXmppClient.h \
-    src/listmodel.h \
-    src/cache/mycache.h \
-    src/cache/storevcard.h \
-    src/database/mysettings.h \
-    src/xmpp/messagewrapper.h \
-    src/accountsitemmodel.h \
-    src/accountslistmodel.h \
-    src/cache/qmlvcard.h \
-    src/avkon/qhswidget.h \
-    src/avkon/lightbulbhswidget.h \
+    src/ListModel.h \
+    src/cache/MyCache.h \
+    src/cache/StoreVCard.h \
+    src/database/MySettings.h \
+    src/xmpp/MessageWrapper.h \
+    src/AccountsItemModel.h \
+    src/AccountsListModel.h \
+    src/cache/QMLVCard.h \
+    src/avkon/QHSWidget.h \
+    src/avkon/LightbulbHSWidget.h \
     src/database/DatabaseManager.h \
     src/avkon/QAvkonHelper.h \
     src/database/SettingsDBWrapper.h \
@@ -119,7 +141,8 @@ OTHER_FILES += README.md \
     qml/FirstRun/05_skinSettings.qml \
     qml/FirstRun/06_rosterLayoutSettings.qml \
     qml/FirstRun/07_congratulations.qml \
-    qml/DiagnosticsPage.qml
+    qml/DiagnosticsPage.qml \
+    qml/JavaScript/EmoticonInterpeter.js
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)

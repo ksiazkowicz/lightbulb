@@ -92,4 +92,7 @@
         <file alias="img/black">images/black.png</file>
         <file alias="img/white">images/white.png</file>
     </qresource>
+    <qresource prefix="/JavaScript">
+        <file alias="EmoticonInterpreter.js">qml/JavaScript/EmoticonInterpreter.js</file>
+    </qresource>
 </RCC>
