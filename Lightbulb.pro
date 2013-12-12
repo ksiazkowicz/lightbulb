@@ -54,42 +54,42 @@ MOBILITY += feedback \
 DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS
 
 # The .cpp file which was generated for your project. Feel free to hack it.
-SOURCES += main.cpp \
-    MyXmppClient.cpp \
-    listmodel.cpp \
-    mycache.cpp \
-    storevcard.cpp \
-    mysettings.cpp \
-    messagewrapper.cpp \
-    accountsitemmodel.cpp \
-    accountslistmodel.cpp \
-    qmlvcard.cpp \
-    lightbulbhswidget.cpp \
-    DatabaseManager.cpp \
-    QAvkonHelper.cpp \
-    SettingsDBWrapper.cpp \
-    XmppConnectivity.cpp \
-    DatabaseWorker.cpp
+SOURCES += src/main.cpp \
+    src/xmpp/MyXmppClient.cpp \
+    src/listmodel.cpp \
+    src/cache/mycache.cpp \
+    src/cache/storevcard.cpp \
+    src/database/mysettings.cpp \
+    src/xmpp/messagewrapper.cpp \
+    src/accountsitemmodel.cpp \
+    src/accountslistmodel.cpp \
+    src/cache/qmlvcard.cpp \
+    src/avkon/lightbulbhswidget.cpp \
+    src/database/DatabaseManager.cpp \
+    src/avkon/QAvkonHelper.cpp \
+    src/database/SettingsDBWrapper.cpp \
+    src/xmpp/XmppConnectivity.cpp \
+    src/database/DatabaseWorker.cpp
 
-HEADERS += MyXmppClient.h \
-    listmodel.h \
-    mycache.h \
-    storevcard.h \
-    mysettings.h \
-    messagewrapper.h \
-    accountsitemmodel.h \
-    accountslistmodel.h \
-    qmlvcard.h \
-    qhswidget.h \
-    lightbulbhswidget.h \
-    DatabaseManager.h \
-    QAvkonHelper.h \
-    SettingsDBWrapper.h \
-    SymbiosisAPIClient.h \
-    XmppConnectivity.h \
-    DatabaseWorker.h
+HEADERS += src/xmpp/MyXmppClient.h \
+    src/listmodel.h \
+    src/cache/mycache.h \
+    src/cache/storevcard.h \
+    src/database/mysettings.h \
+    src/xmpp/messagewrapper.h \
+    src/accountsitemmodel.h \
+    src/accountslistmodel.h \
+    src/cache/qmlvcard.h \
+    src/avkon/qhswidget.h \
+    src/avkon/lightbulbhswidget.h \
+    src/database/DatabaseManager.h \
+    src/avkon/QAvkonHelper.h \
+    src/database/SettingsDBWrapper.h \
+    src/avkon/SymbiosisAPIClient.h \
+    src/xmpp/XmppConnectivity.h \
+    src/database/DatabaseWorker.h
 
-OTHER_FILES += README \
+OTHER_FILES += README.md \
     qml/Dialogs/AddContact.qml \
     qml/Dialogs/ChangeStatus.qml \
     qml/Dialogs/RemoveAccount.qml \
@@ -129,13 +129,13 @@ qtcAddDeployment()
 include(qxmpp/qxmpp.pri)
 INCLUDEPATH += qxmpp/base/ qxmpp/client
 
-addFiles.pkg_postrules += "\"D:\\Programowanie\\Projekty\\Lightbulb\\HSWidgetPlugin0xE22AC278.dll\" - \"!:\\sys\\bin\\HSWidgetPlugin0xE22AC278.dll\""
-addFiles.pkg_postrules += "\"D:\\Programowanie\\Projekty\\Lightbulb\\qml\\images\\LightbulbWidget.png\" - \"!:\\data\\.config\\Lightbulb\\Lightbulb.png\""
-addFiles.pkg_postrules += "\"D:\\Programowanie\\Projekty\\Lightbulb\\qml\\images\\LightbulbWidget_attention.png\" - \"!:\\data\\.config\\Lightbulb\\LightbulbA.png\""
+addFiles.pkg_postrules += "\"HSWidgetPlugin0xE22AC278.dll\" - \"!:\\sys\\bin\\HSWidgetPlugin0xE22AC278.dll\""
+addFiles.pkg_postrules += "\"images\\LightbulbWidget.png\" - \"!:\\data\\.config\\Lightbulb\\Lightbulb.png\""
+addFiles.pkg_postrules += "\"images\\LightbulbWidget_attention.png\" - \"!:\\data\\.config\\Lightbulb\\LightbulbA.png\""
 
-addFiles.pkg_postrules += "\"D:\\Programowanie\\Projekty\\Lightbulb\\sounds\\Message_Received.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Message_Received.wav\""
-addFiles.pkg_postrules += "\"D:\\Programowanie\\Projekty\\Lightbulb\\sounds\\Message_Sent.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Message_Sent.wav\""
-addFiles.pkg_postrules += "\"D:\\Programowanie\\Projekty\\Lightbulb\\sounds\\New_Message.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Subscription_Request.wav\""
+addFiles.pkg_postrules += "\"sounds\\Message_Received.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Message_Received.wav\""
+addFiles.pkg_postrules += "\"sounds\\Message_Sent.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Message_Sent.wav\""
+addFiles.pkg_postrules += "\"sounds\\New_Message.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Subscription_Request.wav\""
 
 DEPLOYMENT += addFiles
 

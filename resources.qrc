@@ -2,45 +2,45 @@
     <qresource prefix="/">
         <file>Lightbulb.svg</file>
         <file>qml/Notifications.qml</file>
-        <file alias="avatar">qml/images/avatar.png</file>
-        <file>qml/bubble/incTriangle.png</file>
-        <file>qml/bubble/ownTriangle.png</file>
+        <file alias="avatar">images/avatar.png</file>
+        <file>images/bubble_incTriangle.png</file>
+        <file>images/bubble_outTriangle.png</file>
         <file>qml/main.qml</file>
-        <file alias="unread-count">qml/images/unread-count.svg</file>
-        <file alias="unread-mark">qml/images/unread-mark.svg</file>
-        <file alias="unread-mark_inverse">qml/images/unread-mark_inverse.svg</file>
+        <file alias="unread-count">images/unread-count.svg</file>
+        <file alias="unread-mark">images/unread-mark.svg</file>
+        <file alias="unread-mark_inverse">images/unread-mark_inverse.svg</file>
     </qresource>
     <qresource prefix="/smileys">
-        <file alias=":@">qml/smileys/angry.png</file>
-        <file alias="%)">qml/smileys/confused.png</file>
-        <file alias="B)">qml/smileys/cool.png</file>
-        <file alias=";(">qml/smileys/cry.png</file>
-        <file alias=">)">qml/smileys/evil.png</file>
-        <file alias=":)">qml/smileys/happy.png</file>
-        <file alias="&lt;3">qml/smileys/heart.png</file>
-        <file alias=":|">qml/smileys/indifference.png</file>
-        <file alias=":*">qml/smileys/kiss.png</file>
-        <file alias=":D">qml/smileys/laugh.png</file>
-        <file alias=":-D">qml/smileys/laugh2.png</file>
-        <file alias="8)">qml/smileys/nerdsmile.png</file>
-        <file alias=":X">qml/smileys/quiet.png</file>
-        <file alias=":(">qml/smileys/sad.png</file>
-        <file alias=":\">qml/smileys/skeptical.png</file>
-        <file alias=":>">qml/smileys/smile.png</file>
-        <file alias=":O">qml/smileys/suprised.png</file>
-        <file alias="=_=">qml/smileys/tired.png</file>
-        <file alias=":P">qml/smileys/tounge.png</file>
-        <file alias=";)">qml/smileys/wink.png</file>
-        <file alias=";D">qml/smileys/wink2.png</file>
-        <file alias=";>">qml/smileys/wink3.png</file>
+        <file alias=":@">images/smileys/angry.png</file>
+        <file alias="%)">images/smileys/confused.png</file>
+        <file alias="B)">images/smileys/cool.png</file>
+        <file alias=";(">images/smileys/cry.png</file>
+        <file alias=">)">images/smileys/evil.png</file>
+        <file alias=":)">images/smileys/happy.png</file>
+        <file alias="&lt;3">images/smileys/heart.png</file>
+        <file alias=":|">images/smileys/indifference.png</file>
+        <file alias=":*">images/smileys/kiss.png</file>
+        <file alias=":D">images/smileys/laugh.png</file>
+        <file alias=":-D">images/smileys/laugh2.png</file>
+        <file alias="8)">images/smileys/nerdsmile.png</file>
+        <file alias=":X">images/smileys/quiet.png</file>
+        <file alias=":(">images/smileys/sad.png</file>
+        <file alias=":\">images/smileys/skeptical.png</file>
+        <file alias=":>">images/smileys/smile.png</file>
+        <file alias=":O">images/smileys/suprised.png</file>
+        <file alias="=_=">images/smileys/tired.png</file>
+        <file alias=":P">images/smileys/tounge.png</file>
+        <file alias=";)">images/smileys/wink.png</file>
+        <file alias=";D">images/smileys/wink2.png</file>
+        <file alias=";>">images/smileys/wink3.png</file>
     </qresource>
     <qresource prefix="/presence">
-        <file alias="away">qml/presence/presence-away.svg</file>
-        <file alias="busy">qml/presence/presence-busy.svg</file>
-        <file alias="chatty">qml/presence/presence-chatty.svg</file>
-        <file alias="offline">qml/presence/presence-offline.svg</file>
-        <file alias="online">qml/presence/presence-online.svg</file>
-        <file alias="xa">qml/presence/presence-xa.svg</file>
+        <file alias="away">images/presence/presence-away.svg</file>
+        <file alias="busy">images/presence/presence-busy.svg</file>
+        <file alias="chatty">images/presence/presence-chatty.svg</file>
+        <file alias="offline">images/presence/presence-offline.svg</file>
+        <file alias="online">images/presence/presence-online.svg</file>
+        <file alias="xa">images/presence/presence-xa.svg</file>
     </qresource>
     <qresource prefix="/dialogs">
         <file alias="Contact/Add">qml/Dialogs/AddContact.qml</file>
@@ -68,16 +68,16 @@
         <file alias="Diagnostics">qml/DiagnosticsPage.qml</file>
     </qresource>
     <qresource prefix="/toolbar">
-        <file alias="close">qml/toolbar/toolbar-close.svg</file>
-        <file alias="close_inverse">qml/toolbar/toolbar-close_inverse.svg</file>
-        <file alias="edit">qml/toolbar/toolbar-edit.svg</file>
-        <file alias="edit_inverse">qml/toolbar/toolbar-edit_inverse.svg</file>
-        <file alias="ok">qml/toolbar/toolbar-ok.svg</file>
-        <file alias="ok_inverse">qml/toolbar/toolbar-ok_inverse.svg</file>
-        <file alias="send">qml/toolbar/toolbar-send.svg</file>
-        <file alias="send_inverse">qml/toolbar/toolbar-send_inverse.svg</file>
-        <file alias="chats">qml/toolbar/toolbar-chats.svg</file>
-        <file alias="chats_inverse">qml/toolbar/toolbar-chats_inverse.svg</file>
+        <file alias="close">images/toolbar/toolbar-close.svg</file>
+        <file alias="close_inverse">images/toolbar/toolbar-close_inverse.svg</file>
+        <file alias="edit">images/toolbar/toolbar-edit.svg</file>
+        <file alias="edit_inverse">images/toolbar/toolbar-edit_inverse.svg</file>
+        <file alias="ok">images/toolbar/toolbar-ok.svg</file>
+        <file alias="ok_inverse">images/toolbar/toolbar-ok_inverse.svg</file>
+        <file alias="send">images/toolbar/toolbar-send.svg</file>
+        <file alias="send_inverse">images/toolbar/toolbar-send_inverse.svg</file>
+        <file alias="chats">images/toolbar/toolbar-chats.svg</file>
+        <file alias="chats_inverse">images/toolbar/toolbar-chats_inverse.svg</file>
     </qresource>
     <qresource prefix="/FirstRun">
         <file alias="01">qml/FirstRun/01_gettingStarted.qml</file>
@@ -87,9 +87,9 @@
         <file alias="05">qml/FirstRun/05_skinSettings.qml</file>
         <file alias="06">qml/FirstRun/06_rosterLayoutSettings.qml</file>
         <file alias="07">qml/FirstRun/07_congratulations.qml</file>
-        <file alias="img/popup01">qml/images/popupLayout01.png</file>
-        <file alias="img/popup02">qml/images/popupLayout02.png</file>
-        <file alias="img/black">qml/images/black.png</file>
-        <file alias="img/white">qml/images/white.png</file>
+        <file alias="img/popup01">images/popupLayout01.png</file>
+        <file alias="img/popup02">images/popupLayout02.png</file>
+        <file alias="img/black">images/black.png</file>
+        <file alias="img/white">images/white.png</file>
     </qresource>
 </RCC>

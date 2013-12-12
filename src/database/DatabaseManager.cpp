@@ -84,7 +84,7 @@ DatabaseManager::DatabaseManager(QObject *parent) :
     }
     databaseOpen = true;
     QSqlQuery("PRAGMA journal_mode = OFF",db);
-    QSqlQuery("PRAGMA page_size = 4096",db);
+    QSqlQuery("PRAGMA page_size = 16384",db);
     QSqlQuery("PRAGMA cache_size = 16384",db);
     QSqlQuery("PRAGMA temp_store = MEMORY",db);
     QSqlQuery("PRAGMA locking_mode = EXCLUSIVE",db);

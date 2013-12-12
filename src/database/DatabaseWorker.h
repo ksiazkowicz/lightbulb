@@ -26,3 +26,18 @@ private:
 };
 
 #endif // DATABASEWORKER_H
+
+
+class ThreadedDB : public QObject
+{
+    Q_OBJECT
+public:
+    explicit ThreadedDB(QObject *parent = 0);
+
+signals:
+
+public slots:
+
+private:
+
+};
