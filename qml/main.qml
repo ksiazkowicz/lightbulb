@@ -108,9 +108,9 @@ PageStackWindow {
                 if (!isActive && settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff")) { blinker.running = true }
                 if (settings.gBool("notifications", "usePopupRecv") == true && (xmppClient.chatJid !== bareJidLastMsg || !isActive)) {
                     if (settings.gBool("behavior","msgInDiscrPopup")) {
-                        avkon.showPopup(getNameByJid(bareJidLastMsg), getLastSqlMessage(),settings.gBool("behavior","linkInDiscrPopup"))
+                        avkon.showPopup(getPropertyByJid(bareJidLastMsg,"name"), getLastSqlMessage(),settings.gBool("behavior","linkInDiscrPopup"))
                     } else {
-                        avkon.showPopup(globalUnreadCount + " unread messages", "New message from "+ getNameByJid(bareJidLastMsg) + ".",settings.gBool("behavior","linkInDiscrPopup"))
+                        avkon.showPopup(globalUnreadCount + " unread messages", "New message from "+ getPropertyByJid(bareJidLastMsg,"name") + ".",settings.gBool("behavior","linkInDiscrPopup"))
                         }
                 }
                 notifySndVibr("MsgRecv")
@@ -144,8 +144,8 @@ PageStackWindow {
         onTypingChanged: {
             if (settings.gBool("notifications", "notifyTyping") == true && (xmppClient.chatJid !== bareJid || !isActive) && xmppClient.myBareJid !== bareJid) {
                 if (isTyping) {
-                    avkon.showPopup(getNameByJid(bareJid),"is typing a message...",settings.gBool("behavior","linkInDiscrPopup"))
-                } else { avkon.showPopup(getNameByJid(bareJid),"stopped typing.",settings.gBool("behavior","linkInDiscrPopup")) }
+                    avkon.showPopup(getPropertyByJid(bareJid,"name"),"is typing a message...",settings.gBool("behavior","linkInDiscrPopup"))
+                } else { avkon.showPopup(getPropertyByJid(bareJid,"name"),"stopped typing.",settings.gBool("behavior","linkInDiscrPopup")) }
             }
         }
     } //XmppClient
@@ -208,6 +208,7 @@ PageStackWindow {
                 globalUnreadCount = xmppClient.getUnreadCount()
 
                 console.log("QML: main::initAccount():" + xmppClient.myBareJid + "/" + xmppClient.resource);
+                xmppClient.updateChats()
             } else {
                     _existDefaultAccount = true
                     accc++

@@ -55,9 +55,13 @@ public slots:
     void updateRoster(int m_accountId);
     void updateMessages(int m_accountId, QString bareJid, int page);
 
+private slots:
+    void chatsMustBeUpdated();
+
 private:
     DatabaseManager* database;
     QStringList queryType;
+    int accountId;
 };
 
 #endif // DATABASEWORKER_H

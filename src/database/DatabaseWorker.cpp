@@ -39,14 +39,13 @@ DatabaseWorker::DatabaseWorker(QObject *parent) :
     connect(database,SIGNAL(finished()), this, SIGNAL(finished()));
     connect(database,SIGNAL(messagesChanged()), this, SIGNAL(messagesChanged()));
     connect(database,SIGNAL(rosterChanged()), this, SIGNAL(rosterChanged()));
+    connect(database,SIGNAL(chatsChanged()), this, SLOT(chatsMustBeUpdated()));
 
     //initialize SqlQueryModels
     sqlRoster = new SqlQueryModel( 0 );
     this->updateRoster(1);
     sqlMessages = new SqlQueryModel( 0 );
-    this->updateMessages(1,"",1);
     sqlChats = new SqlQueryModel( 0 );
-    this->updateChats(1);
 
     // populates queryType list so I could use switch with QStrings. I like switches.
     queryType << "begin" << "end" << "insertMessage" << "insertContact" << "deleteContact" <<
@@ -82,20 +81,25 @@ void DatabaseWorker::executeQuery(QStringList& query) {
     }
 }
 
+void DatabaseWorker::chatsMustBeUpdated() {
+    this->updateChats(accountId);
+}
+
 void DatabaseWorker::updateChats(int m_accountId) {
     qDebug() << "DatabaseWorker::updateChats(): updating chats list.";
-    sqlChats->setQuery("select * from roster where isChatInProgress=1 and id_account=" + QString::number(m_accountId)+" order by unreadMsg desc",database->db);
-    if (!sqlChats->lastError().NoError) qDebug() << sqlChats->lastError();
+    sqlChats->setQuery("select jid from roster where isChatInProgress=1 and id_account=" + QString::number(m_accountId),database->db);
     emit sqlChatsUpdated();
 }
 
 void DatabaseWorker::updateRoster(int m_accountId) {
+    if (accountId != m_accountId) accountId = m_accountId;
     qDebug() << "DatabaseWorker::updateRoster(): updating contact list.";
     sqlRoster->setQuery("select * from roster where id_account="+QString::number(m_accountId), database->db);
     emit sqlRosterUpdated();
 }
 
 void DatabaseWorker::updateMessages(int m_accountId, QString bareJid, int page) {
+    if (accountId != m_accountId) accountId = m_accountId;
     qDebug() << "DatabaseWorker::updateMessages(): updating messages query model.";
     int border = page*20;
     sqlMessages = new SqlQueryModel( 0 );

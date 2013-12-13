@@ -176,7 +176,7 @@ bool DatabaseManager::setChatInProgress()
     queryStr += params.at(0);
     ret = query.exec(queryStr);
     emit finished();
-    emit rosterChanged();
+    emit chatsChanged();
     return ret;
 }
 

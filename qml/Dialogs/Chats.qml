@@ -29,7 +29,7 @@ CommonDialog {
         Rectangle {
             id: wrapper
             width: listViewChats.width
-            gradient: unreadMsg > 0 ? incomingMsg : nihilNovi
+            gradient: txtJid.unreadMsg > 0 ? incomingMsg : nihilNovi
 
             Gradient {
                 id: incomingMsg
@@ -47,7 +47,7 @@ CommonDialog {
 
             Image {
                 id: imgPresence
-                source: rosterLayoutAvatar ? (avatarPath == "" ? "qrc:/avatar" : avatarPath) : presence
+                source: rosterLayoutAvatar ? xmppClient.getAvatarByJid(jid) : xmppClient.getPropertyByJid(jid,"presence")
                 sourceSize.height: rosterItemHeight-4
                 sourceSize.width: rosterItemHeight-4
                 anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
@@ -56,11 +56,12 @@ CommonDialog {
             } //imgPresence
             Text {
                     id: txtJid
-                    property string contact: name
+                    property string contact: xmppClient.getPropertyByJid(jid,"name")
+                    property int unreadMsg: parseInt(xmppClient.getPropertyByJid(jid,"unreadMsg"))
                     anchors { left: imgPresence.right; right: imgPresenceR.left; leftMargin: 10; rightMargin: 10; verticalCenter: parent.verticalCenter }
                     width: parent.width
                     maximumLineCount: (rosterItemHeight/22) > 1 ? (rosterItemHeight/22) : 1
-                    text: (name === "" ? jid : name) + (unreadMsg > 0 ? " [" + unreadMsg + "]" : "")
+                    text: (contact === "" ? jid : contact) + (unreadMsg > 0 ? " [" + unreadMsg + "]" : "")
                     onLinkActivated: { main.url=link; linkContextMenu.open()}
                     wrapMode: Text.Wrap
                     font.pixelSize: 16
@@ -74,8 +75,8 @@ CommonDialog {
                 onClicked: {
                     listViewChats.currentIndex = index
                     xmppClient.chatJid = jid
-                    xmppClient.contactName = name
-                    main.globalUnreadCount = main.globalUnreadCount - unreadMsg
+                    xmppClient.contactName = txtJid.contact
+                    main.globalUnreadCount = main.globalUnreadCount - txtJid.unreadMsg
                     xmppClient.resetUnreadMessages( jid )
                     if (settings.gBool("behavior","enableHsWidget")) {
                         notify.postHSWidget()
@@ -85,7 +86,7 @@ CommonDialog {
             }
             Image {
                 id: imgPresenceR
-                source: rosterLayoutAvatar ? presence : ""
+                source: rosterLayoutAvatar ? xmppClient.getPropertyByJid(jid,"presence") : ""
                 sourceSize.height: (wrapper.height/3) - 4
                 sourceSize.width: (wrapper.height/3) - 4
                 anchors { verticalCenter: parent.verticalCenter; right: parent.right; rightMargin: rosterLayoutAvatar ? 10 : 0 }

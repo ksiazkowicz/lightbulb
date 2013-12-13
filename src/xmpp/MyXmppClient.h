@@ -163,7 +163,7 @@ public :
     Q_INVOKABLE bool sendMyMessage( QString bareJid, QString resource, QString msgBody );
 
     /*--- info by jid ---*/
-    Q_INVOKABLE QString getNameByJid( QString bareJid ) { return dbWorker->sqlRoster->record(dbWorker->getRecordIDbyJid(bareJid)).value("name").toString(); }
+    Q_INVOKABLE QString getPropertyByJid( QString bareJid, QString property ) { return dbWorker->sqlRoster->record(dbWorker->getRecordIDbyJid(bareJid)).value(property).toString(); }
     Q_INVOKABLE QStringList getResourcesByJid( QString bareJid ) { return rosterManager->getResources(bareJid); }
 
     /*--- add/remove contact ---*/
@@ -325,6 +325,7 @@ public slots:
     Q_INVOKABLE void closeChat( QString jid ) { this->resetUnreadMessages( jid ); dbWorker->executeQuery(QStringList() << "setChatInProgress" << QString::number(m_accountId) << jid << "0"); rosterNeedsUpdate = true; emit chatClosed( jid ); }
 
     Q_INVOKABLE void updateMessages() { dbWorker->updateMessages(m_accountId,m_chatJid,page); }
+    Q_INVOKABLE void updateChats() { dbWorker->updateChats(m_accountId); }
 
 private slots:
     void initRoster();

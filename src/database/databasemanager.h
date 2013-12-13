@@ -40,6 +40,7 @@ public:
         void finished();
         void rosterChanged();
         void messagesChanged();
+        void chatsChanged();
 
     public:
         bool deleteDB();
