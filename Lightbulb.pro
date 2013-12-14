@@ -81,23 +81,20 @@ SOURCES += src/main.cpp \
     src/ListModel.cpp \
     src/cache/MyCache.cpp \
     src/cache/StoreVCard.cpp \
-    src/database/MySettings.cpp \
     src/xmpp/MessageWrapper.cpp \
     src/AccountsItemModel.cpp \
-    src/AccountsListModel.cpp \
     src/cache/QMLVCard.cpp \
     src/avkon/LightbulbHSWidget.cpp \
     src/database/DatabaseManager.cpp \
     src/avkon/QAvkonHelper.cpp \
-    src/database/SettingsDBWrapper.cpp \
     src/xmpp/XmppConnectivity.cpp \
-    src/database/DatabaseWorker.cpp
+    src/database/DatabaseWorker.cpp \
+    src/database/Settings.cpp
 
 HEADERS += src/xmpp/MyXmppClient.h \
     src/ListModel.h \
     src/cache/MyCache.h \
     src/cache/StoreVCard.h \
-    src/database/MySettings.h \
     src/xmpp/MessageWrapper.h \
     src/AccountsItemModel.h \
     src/AccountsListModel.h \
@@ -106,10 +103,10 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/avkon/LightbulbHSWidget.h \
     src/database/DatabaseManager.h \
     src/avkon/QAvkonHelper.h \
-    src/database/SettingsDBWrapper.h \
     src/avkon/SymbiosisAPIClient.h \
     src/xmpp/XmppConnectivity.h \
-    src/database/DatabaseWorker.h
+    src/database/DatabaseWorker.h \
+    src/database/Settings.h
 
 OTHER_FILES += README.md \
     qml/Dialogs/AddContact.qml \

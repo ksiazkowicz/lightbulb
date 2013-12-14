@@ -1,13 +1,34 @@
+/********************************************************************
+
+src/ListModel.h
+-- reimplements QAbstractListModel to make use of it in QML.
+http://cdumez.blogspot.com/2010/11/how-to-use-c-list-model-in-qml.html
+
+Copyright (c) 2010 Christophe Dumez
+
+This file is part of Lightbulb.
+
+Lightbulb is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*********************************************************************/
+
 #ifndef LISTMODEL_H
 #define LISTMODEL_H
 
 #include <QAbstractListModel>
 #include <QList>
 #include <QVariant>
-
-/*
- *  Source code from: http://cdumez.blogspot.com/2010/11/how-to-use-c-list-model-in-qml.html
- */
 
 class ListItem: public QObject {
   Q_OBJECT

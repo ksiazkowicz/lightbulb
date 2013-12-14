@@ -14,46 +14,15 @@
 #include <QVariant>
 #include <QThread>
 
-#include "DatabaseManager.h"
 #include "DatabaseWorker.h"
 
 #include "MyCache.h"
 #include "MessageWrapper.h"
-#include "SettingsDBWrapper.h"
+#include "Settings.h"
 #include <QSqlRecord>
 #include "QXmppRosterManager.h"
 
 #include "QMLVCard.h"
-
-
-/****************/
-/* http://www.developer.nokia.com/Community/Wiki/Workaround_to_hide_VKB_in_QML_apps_%28Known_Issue%29 */
-class EventFilter : public QObject
-{
-protected:
-    bool eventFilter(QObject *obj, QEvent *event) {
-        QInputContext *ic = qApp->inputContext();
-        if (ic)
-        {
-            if ( (ic->focusWidget() == 0) && prevFocusWidget)
-            {
-                QEvent closeSIPEvent( QEvent::CloseSoftwareInputPanel );
-                ic->filterEvent(&closeSIPEvent);
-            }
-            else if ( (prevFocusWidget == 0) && (ic->focusWidget()) )
-            {
-                QEvent openSIPEvent( QEvent::RequestSoftwareInputPanel );
-                ic->filterEvent(&openSIPEvent);
-            }
-            prevFocusWidget = ic->focusWidget();
-        }
-        return QObject::eventFilter(obj,event);
-    }
-
-private:
-    QWidget *prevFocusWidget;
-};
-/****************/
 
 typedef QMap<QString, QVariant> Map;
 
@@ -86,7 +55,6 @@ class MyXmppClient : public QObject
     Q_PROPERTY( QMLVCard* vcard READ getVCard NOTIFY vCardChanged )
     Q_PROPERTY( int keepAlive READ getKeepAlive WRITE setKeepAlive NOTIFY keepAliveChanged )
     Q_PROPERTY( bool reconnectOnError READ getReconnectOnError WRITE setReconnectOnError NOTIFY reconnectOnErrorChanged )
-    Q_PROPERTY( bool archiveIncMessage READ getArchiveIncMessage WRITE setArchiveIncMessage NOTIFY archiveIncMessageChanged )
 
     MyCache *cacheIM;
     MessageWrapper *msgWrapper;
@@ -95,7 +63,7 @@ class MyXmppClient : public QObject
     QXmppRosterManager *rosterManager;
     QXmppVCardManager *vCardManager;
 
-    SettingsDBWrapper *mimOpt;
+    Settings *mimOpt;
 
     QStringList jidCache;
 
@@ -247,42 +215,15 @@ public :
     }
 
     QString getContactName() const { return m_contactName; }
-    void setContactName( const QString & value )
-    {
-        if(value!=m_contactName) {
-            m_contactName=value;
-            emit contactNameChanged();
-        }
-    }
+    void setContactName( const QString & value ) { if(value!=m_contactName) { m_contactName=value; emit contactNameChanged(); }  }
 
     QMLVCard* getVCard() const { return qmlVCard; }
 
     int getKeepAlive() const { return m_keepAlive; }
-    void setKeepAlive(int arg)
-    {
-        if (m_keepAlive != arg) {
-            m_keepAlive = arg;
-            emit keepAliveChanged();
-        }
-    }
+    void setKeepAlive(int arg) { if (m_keepAlive != arg) { m_keepAlive = arg; emit keepAliveChanged(); } }
 
     bool getReconnectOnError() const { return m_reconnectOnError; }
-    void setReconnectOnError(bool arg)
-    {
-        if (m_reconnectOnError != arg) {
-            m_reconnectOnError = arg;
-            emit reconnectOnErrorChanged();
-        }
-    }
-
-    bool getArchiveIncMessage() const { return m_archiveIncMessage; }
-    void setArchiveIncMessage(bool arg)
-    {
-        if (m_archiveIncMessage != arg) {
-            m_archiveIncMessage = arg;
-            emit archiveIncMessageChanged();
-        }
-    }
+    void setReconnectOnError(bool arg) { if (m_reconnectOnError != arg) { m_reconnectOnError = arg; emit reconnectOnErrorChanged(); } }
 	
 signals:
     void versionChanged();
@@ -344,6 +285,7 @@ private slots:
 private:
     QString m_bareJidLastMessage;
     QString m_resourceLastMessage;
+
     StateConnect m_stateConnect;
     StatusXmpp m_status;
     QString m_statusText;
@@ -356,8 +298,6 @@ private:
     QString m_chatJid;
     QString m_lastChatJid;
     QString m_contactName;
-    int accounts;
-    void archiveIncMessage( const QXmppMessage &xmppMsg, bool mine );
 
     bool rosterAvailable;
     bool rosterNeedsUpdate;
@@ -373,11 +313,8 @@ private:
 
     int m_keepAlive;
     bool m_reconnectOnError;
-    bool m_archiveIncMessage;
 
     bool flSetPresenceWithoutAck;
 };
-
-QML_DECLARE_TYPE( MyXmppClient )
 
 #endif

@@ -56,12 +56,11 @@ CommonDialog {
             } //imgPresence
             Text {
                     id: txtJid
-                    property string contact: xmppClient.getPropertyByJid(jid,"name")
                     property int unreadMsg: parseInt(xmppClient.getPropertyByJid(jid,"unreadMsg"))
                     anchors { left: imgPresence.right; right: imgPresenceR.left; leftMargin: 10; rightMargin: 10; verticalCenter: parent.verticalCenter }
                     width: parent.width
                     maximumLineCount: (rosterItemHeight/22) > 1 ? (rosterItemHeight/22) : 1
-                    text: (contact === "" ? jid : contact) + (unreadMsg > 0 ? " [" + unreadMsg + "]" : "")
+                    text: (name === "" ? jid : name) + (unreadMsg > 0 ? " [" + unreadMsg + "]" : "")
                     onLinkActivated: { main.url=link; linkContextMenu.open()}
                     wrapMode: Text.Wrap
                     font.pixelSize: 16
@@ -75,7 +74,7 @@ CommonDialog {
                 onClicked: {
                     listViewChats.currentIndex = index
                     xmppClient.chatJid = jid
-                    xmppClient.contactName = txtJid.contact
+                    xmppClient.contactName = name
                     main.globalUnreadCount = main.globalUnreadCount - txtJid.unreadMsg
                     xmppClient.resetUnreadMessages( jid )
                     if (settings.gBool("behavior","enableHsWidget")) {

@@ -53,11 +53,14 @@ DatabaseWorker::DatabaseWorker(QObject *parent) :
 }
 
 void DatabaseWorker::executeQuery(QStringList& query) {
-    // pass the parameters to DatabaseManager
+    // Pass the parameters to DatabaseManager
     database->parameters.clear();
     for (int j=1;j<query.count();j++) database->parameters.append(query.at(j));
 
-    // check the type of query and execute
+    // Used for debugging. I like debugging. Debugging is nice.
+    qDebug() << "DatabaseWorker::executeQuery(): executing query with parameters: " << database->parameters;
+
+    // Check the type of query and execute
     switch (queryType.indexOf(query.at(0))) {
         case 0:
             qDebug() << "DatabaseWorker::executeQuery(): beginning transaction";
@@ -81,13 +84,11 @@ void DatabaseWorker::executeQuery(QStringList& query) {
     }
 }
 
-void DatabaseWorker::chatsMustBeUpdated() {
-    this->updateChats(accountId);
-}
+void DatabaseWorker::chatsMustBeUpdated() { this->updateChats(accountId); } //updates chat list
 
 void DatabaseWorker::updateChats(int m_accountId) {
     qDebug() << "DatabaseWorker::updateChats(): updating chats list.";
-    sqlChats->setQuery("select jid from roster where isChatInProgress=1 and id_account=" + QString::number(m_accountId),database->db);
+    sqlChats->setQuery("select jid, name from roster where isChatInProgress=1 and id_account=" + QString::number(m_accountId),database->db);
     emit sqlChatsUpdated();
 }
 

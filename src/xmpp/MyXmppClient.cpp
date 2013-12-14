@@ -5,6 +5,7 @@
 #include "QXmppConfiguration.h"
 #include "QXmppClient.h"
 #include "DatabaseManager.h"
+#include "QXmppMessage.h"
 
 #include <QDebug>
 #include <QCryptographicHash>
@@ -22,6 +23,7 @@ MyXmppClient::MyXmppClient() : QObject(0) {
     cacheIM = new MyCache(this);
     msgWrapper = new MessageWrapper(this);
 
+    // initialize DatabaseWorker and QThread
     dbWorker = new DatabaseWorker;
     dbThread = new QThread(this);
     dbWorker->moveToThread(dbThread);
@@ -52,7 +54,6 @@ MyXmppClient::MyXmppClient() : QObject(0) {
     m_chatJid = "";
     m_contactName = "";
     m_keepAlive = 60;
-    accounts = 0;
     page = 1;
 
     flVCardRequest = "";
@@ -643,7 +644,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         if( xmppMsg.isAttentionRequested() )
         {
             //qDebug() << "ZZZ: attentionRequest !!! from:" <<xmppMsg.from();
-            msgWrapper->attention( bareJid_from, false );
+            //msgWrapper->attention( bareJid_from, false );
         }
         qDebug() << "MessageWrapper::messageReceived(): xmppMsg.state():" << xmppMsg.state();
     }
@@ -666,25 +667,18 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
 
         dbWorker->executeQuery(QStringList() << "incUnreadMessage" << QString::number(m_accountId) << bareJid_from);
         rosterNeedsUpdate = true;
-        archiveIncMessage(xmppMsg, false);
+
+        QString body = xmppMsg.body();
+        body = body.replace(">", "&gt;");  //fix for > stuff
+        body = body.replace("<", "&lt;");  //and < stuff too ^^
+        body = msgWrapper->parseMsgOnLink(body);
+
+        dbWorker->executeQuery(QStringList() << "insertMessage" << QString::number(m_accountId) << this->getBareJidByJid(xmppMsg.from())
+                               << body << QDateTime::currentDateTime().toString("dd-MM-yy hh:mm") << "0");
+        latestMessage = xmppMsg.body().left(30);
+
         emit this->messageReceived( bareJid_from, bareJid_to );
     }
-}
-
-void MyXmppClient::archiveIncMessage( const QXmppMessage &xmppMsg, bool mine ) {
-    QDateTime currTime = QDateTime::currentDateTime();
-    QString from = this->getBareJidByJid(xmppMsg.from());
-    QString to = this->getBareJidByJid(xmppMsg.to());
-    QString time = currTime.toString("dd-MM-yy hh:mm");
-
-    QString body = xmppMsg.body();
-    body = body.replace(">", "&gt;");  //fix for > stuff
-    body = body.replace("<", "&lt;");  //and < stuff too ^^
-    body = msgWrapper->parseMsgOnLink(body);
-
-    if (mine) dbWorker->executeQuery(QStringList() << "insertMessage" << QString::number(m_accountId) << to << body << time << QString::number(mine));
-    else { dbWorker->executeQuery(QStringList() << "insertMessage" << QString::number(m_accountId) << from << body << time << QString::number(mine));
-           latestMessage = xmppMsg.body().left(30); }
 }
 
 bool MyXmppClient::sendMyMessage(QString bareJid, QString resource, QString msgBody) //Q_INVOKABLE
@@ -694,11 +688,7 @@ bool MyXmppClient::sendMyMessage(QString bareJid, QString resource, QString msgB
     QXmppMessage xmppMsg;
 
     QString jid_from = bareJid;
-    if( resource == "" ) {
-        jid_from += "/resource";
-    } else {
-        jid_from += "/" + resource;
-    }
+    if( resource == "" ) jid_from += "/resource"; else jid_from += "/" + resource;
 
     xmppMsg.setTo( jid_from );
     QString jid_to = m_myjid + "/" + xmppClient->configuration().resource();
@@ -712,7 +702,12 @@ bool MyXmppClient::sendMyMessage(QString bareJid, QString resource, QString msgB
 
     this->messageReceivedSlot( xmppMsg );
 
-    archiveIncMessage(xmppMsg, true);
+    QString body = msgBody.replace(">", "&gt;"); //fix for > stuff
+    body = body.replace("<", "&lt;");  //and < stuff too ^^
+    body = msgWrapper->parseMsgOnLink(body);
+
+    dbWorker->executeQuery(QStringList() << "insertMessage" << QString::number(m_accountId) << this->getBareJidByJid(xmppMsg.to())
+                           << body << QDateTime::currentDateTime().toString("dd-MM-yy hh:mm") << "1");
 
     return true;
 }
@@ -728,48 +723,29 @@ void MyXmppClient::presenceReceived( const QXmppPresence & presence )
     }
     QString myResource = xmppClient->configuration().resource();
 
-    //qDebug() << "### MyXmppClient::presenceReceived():" << bareJid << "|" << resource << "|" << myResource << "|" << presence.from() << "|" << presence.type()<< "|" << presence.availableStatusType();
-    if( (((presence.from()).indexOf( m_myjid ) >= 0) && (resource == myResource)) || ((bareJid == "") && (resource == "")) )
-    {
+    if( (((presence.from()).indexOf( m_myjid ) >= 0) && (resource == myResource)) || ((bareJid == "") && (resource == "")) ) {
         QXmppPresence::Type __type = presence.type();
-        if( __type == QXmppPresence::Unavailable )
-        {
-            m_status = Offline;
-        }
-        else
-        {
+        if( __type == QXmppPresence::Unavailable ) m_status = Offline;
+        else {
             QXmppPresence::AvailableStatusType __status = presence.availableStatusType();
-            if( __status == QXmppPresence::Online ) {
-                m_status = Online;
-            } else if( __status ==  QXmppPresence::Chat ) {
-                m_status = Chat;
-            } else if ( __status == QXmppPresence::Away ) {
-                m_status = Away;
-            } else if ( __status == QXmppPresence::XA ) {
-                m_status = XA;
-            } else if( __status == QXmppPresence::DND ) {
-                m_status = DND;
-            }
+            if( __status == QXmppPresence::Online ) m_status = Online;
+            else if( __status ==  QXmppPresence::Chat ) m_status = Chat;
+            else if ( __status == QXmppPresence::Away ) m_status = Away;
+            else if ( __status == QXmppPresence::XA ) m_status = XA;
+            else if( __status == QXmppPresence::DND ) m_status = DND;
         }
-
         emit statusChanged();
     }
 }
 
 
-void MyXmppClient::error(QXmppClient::Error e)
-{
+void MyXmppClient::error(QXmppClient::Error e) {
     QString errString;
-    if( e == QXmppClient::SocketError ) {
-        errString = "SOCKET_ERROR";
-    } else if( e == QXmppClient::KeepAliveError ) {
-        errString = "KEEP_ALIVE_ERROR";
-    } else if( e == QXmppClient::XmppStreamError ) {
-        errString = "XMPP_STREAM_ERROR";
-    }
+    if( e == QXmppClient::SocketError ) errString = "SOCKET_ERROR";
+    else if( e == QXmppClient::KeepAliveError ) errString = "KEEP_ALIVE_ERROR";
+    else if( e == QXmppClient::XmppStreamError ) errString = "XMPP_STREAM_ERROR";
 
-    if( !errString.isNull() )
-    {
+    if( !errString.isNull() ) {
         QXmppPresence pr = xmppClient->clientPresence();
         this->presenceReceived( pr );
         QXmppPresence presence( QXmppPresence::Unavailable );
@@ -797,13 +773,7 @@ void MyXmppClient::addContact( QString bareJid, QString nick, QString group, boo
 
 void MyXmppClient::removeContact( QString bareJid ) { if( rosterManager ) rosterManager->removeItem( bareJid ); }
 
-void MyXmppClient::renameContact(QString bareJid, QString name) //Q_INVOKABLE
-{
-    //qDebug() << "MyXmppClient::renameContact(" << bareJid << ", " << name << ")" ;
-    if( rosterManager ) {
-        rosterManager->renameItem( bareJid, name );
-    }
-}
+void MyXmppClient::renameContact(QString bareJid, QString name) { if( rosterManager ) rosterManager->renameItem( bareJid, name ); }
 
 bool MyXmppClient::subscribe(const QString bareJid) //Q_INVOKABLE
 {
@@ -865,8 +835,6 @@ void MyXmppClient::attentionSend( QString bareJid, QString resource )
     xmppMsg.setAttentionRequested( true );
 
     xmppClient->sendPacket( xmppMsg );
-
-    msgWrapper->attention( bareJid, true );
 }
 
 void MyXmppClient::changeSqlRoster() {
@@ -894,7 +862,7 @@ void MyXmppClient::changeSqlRoster() {
     }
 }
 
-void MyXmppClient::gotoPage(int nPage) { if (page != nPage || m_chatJid != m_lastChatJid ) { page = nPage; m_lastChatJid = m_chatJid; this->updateMessages(); } emit pageChanged(); }
+void MyXmppClient::gotoPage(int nPage) { page = nPage; this->updateMessages(); emit pageChanged(); }
 
 /* --- diagnostics --- */
 bool MyXmppClient::dbRemoveDb() {
@@ -926,5 +894,5 @@ bool MyXmppClient::removeDir(const QString &dirName) {
     return result;
 }
 
-bool MyXmppClient::resetSettings() { return QFile::remove(mimOpt->fileConfig); }
+bool MyXmppClient::resetSettings() { return QFile::remove(mimOpt->confFile); }
 

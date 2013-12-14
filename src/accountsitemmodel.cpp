@@ -1,10 +1,32 @@
+/********************************************************************
+
+src/AccountsItemModel.cpp
+-- implements item model for account
+
+Copyright (c) 2012 Anatoliy Kozlov
+
+This file is part of Lightbulb and was derived from MeegIM.
+
+Lightbulb is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*********************************************************************/
+
 #include "accountsitemmodel.h"
 
 
 AccountsItemModel::AccountsItemModel( const QString &_accountJid,
                                       const QString &_accountPasswd,
-                                      const QString &_accountIcon,
-                                      const QString &_accountType,
                                       const QString &_accountResource,
                                       const QString &_accountHost,
                                       const int _accountPort,
@@ -14,8 +36,6 @@ AccountsItemModel::AccountsItemModel( const QString &_accountJid,
     ListItem(parent),
     m_jid(_accountJid),
     m_passwd(_accountPasswd),
-    m_icon(_accountIcon),
-    m_type(_accountType),
     m_resource(_accountResource),
     m_host(_accountHost),
     m_port(_accountPort),
@@ -40,34 +60,10 @@ void AccountsItemModel::setPasswd(QString &_accountPasswd)
   }
 }
 
-void AccountsItemModel::setIcon(QString &_accountIcon)
-{
-  if(m_icon != _accountIcon) {
-    m_icon = _accountIcon;
-    emit dataChanged();
-  }
-}
-
 void AccountsItemModel::setDefault(bool &_accountDefault)
 {
   if(m_default != _accountDefault) {
     m_default = _accountDefault;
-    emit dataChanged();
-  }
-}
-
-void AccountsItemModel::setType(QString &_accountType)
-{
-  if(m_type!= _accountType) {
-    m_type = _accountType;
-    emit dataChanged();
-  }
-}
-
-void AccountsItemModel::setResource(QString &_accountResource)
-{
-  if(m_type!= _accountResource) {
-    m_type = _accountResource;
     emit dataChanged();
   }
 }
@@ -104,9 +100,7 @@ QHash<int, QByteArray> AccountsItemModel::roleNames() const
   QHash<int, QByteArray> names;
   names[accJid] = "accJid";
   names[accPasswd] = "accPasswd";
-  names[accIcon] = "accIcon";
   names[accDefault] = "accDefault";
-  names[accType] = "accType";
   names[accResource] = "accResource";
   names[accHost] = "accHost";
   names[accPort] = "accPort";
@@ -121,12 +115,8 @@ QVariant AccountsItemModel::data(int role) const
     return jid();
   case accPasswd:
     return passwd();
-  case accIcon:
-    return icon();
   case accDefault:
     return isDefault();
-  case accType:
-    return type();
   case accResource:
     return resource();
   case accHost:

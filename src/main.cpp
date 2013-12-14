@@ -27,10 +27,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "MyXmppClient.h"
 
-#include "accountslistmodel.h"
-#include "qmlvcard.h"
-#include "SettingsDBWrapper.h"
-#include "lightbulbhswidget.h"
+#include "AccountsListModel.h"
+#include "QMLVCard.h"
+#include "Settings.h"
+#include "LightbulbHSWidget.h"
 #include "QAvkonHelper.h"
 #include "DatabaseManager.h"
 #include "SymbiosisAPIClient.h"
@@ -40,7 +40,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
 
     // expose C++ classes to QML
     qmlRegisterType<MyXmppClient>("lightbulb", 1, 0, "XmppClient" );
-    qmlRegisterType<SettingsDBWrapper>("lightbulb", 1, 0, "Settings" );
+    qmlRegisterType<Settings>("lightbulb", 1, 0, "Settings" );
     qmlRegisterType<QMLVCard>("lightbulb", 1, 0, "XmppVCard" );
     qmlRegisterType<ClipboardAdapter>("lightbulb", 1, 0, "Clipboard" );
     qmlRegisterType<LightbulbHSWidget>("lightbulb", 1, 0, "HSWidget" );

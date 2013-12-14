@@ -10,7 +10,7 @@
 
 #include <QtDeclarative>
 
-class SettingsDBWrapper : public MySettings
+class SettingsDBWrapper : public Settings
 {
     Q_OBJECT
     Q_DISABLE_COPY( SettingsDBWrapper )

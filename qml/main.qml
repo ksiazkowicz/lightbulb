@@ -157,7 +157,6 @@ PageStackWindow {
         initAccount()
         checkIfFirstRun()
         xmppClient.keepAlive = settings.gInt("behavior", "keepAliveInterval")
-        xmppClient.archiveIncMessage = settings.gBool("behavior", "archiveIncMessage")
         if (settings.gBool("behavior","goOnlineOnStart")) { xmppClient.setMyPresence( XmppClient.Online, lastStatus ) }
     }
 
@@ -185,23 +184,19 @@ PageStackWindow {
         _existDefaultAccount = false
         for( var j=0; j<settings.accounts.count(); j++ )
         {
-            if( settings.accIsDefault( j ) )
+            if( settings.gBool( settings.getJidByIndex( j ),"is_default" ) )
             {
                 _existDefaultAccount = true
-                xmppClient.myBareJid = settings.accGetJid( j );
-                xmppClient.myPassword = settings.accGetPassword( j );
-                xmppClient.resource = settings.accGetResource( j );
+                xmppClient.myBareJid = settings.getJidByIndex( j );
+                xmppClient.myPassword = settings.gStr( settings.getJidByIndex( j ),"passwd" );
+                xmppClient.resource = settings.gStr( settings.getJidByIndex( j ), "resource" )
 
-                if( settings.accIsManuallyHostPort( j ) ) {
-                    xmppClient.host = settings.accGetHost( j  );
+                if(  settings.gBool( settings.getJidByIndex( j ),"use_host_port" ) ) {
+                    xmppClient.host = settings.gStr(settings.getJidByIndex(j), "host")
+                    xmppClient.port = settings.gInt(settings.getJidByIndex(j), "port")
                 } else {
                     xmppClient.host = "";
-                }
-
-                if( settings.accIsManuallyHostPort( j ) ) {
-                    xmppClient.port = settings.accGetPort( j  );
-                } else {
-                    xmppClient.port = 0;
+                    xmppClient.port = 5222;
                 }
 
                 xmppClient.accountId = j;
