@@ -36,6 +36,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <e32base.h>
 #include <hwrmlight.h>
 #include <QUrl>
+#include <MAknFileFilter.h>
+
+#include <f32file.h>
+
+// filters out non-sound files
+class CExtensionFilter : public MAknFileFilter {
+public:
+    TBool Accept(const TDesC &aDriveAndPath, const TEntry &aEntry) const
+    {
+        if (aEntry.IsDir() || aEntry.iName.Right(4) == _L(".wav") || aEntry.iName.Right(4) == _L(".mp3") )
+            return ETrue;
+        else return EFalse;
+    }
+};
 
 class QAvkonHelper : public QObject
 {

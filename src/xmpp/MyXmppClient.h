@@ -272,7 +272,6 @@ private slots:
     void initRoster();
     void initPresence(const QString& bareJid, const QString& resource);
     void initVCard(const QXmppVCardIq &vCard);
-    void subscriptionReceivedSlot( const QString &);
     void itemAdded( const QString &);
     void itemRemoved( const QString &);
     void itemChanged( const QString &);

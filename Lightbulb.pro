@@ -64,6 +64,7 @@ symbian {
             -laknskinsrv \
             -leikcore \
             -lapmime \
+            -lefsrv \
             -lcommondialogs
 }
 

@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <aknnotewrappers.h>
 #include <aknglobalnote.h>
 #include <CAknFileSelectionDialog.h>
-#include <AknCommonDialogs.h>
+#include <AknCommonDialogsDynMem.h>
 #include <hwrmlight.h>
 #include <e32svr.h>
 #include <eikmenup.h>
@@ -82,15 +82,21 @@ void QAvkonHelper::ShowErrorL(const TDesC16& aMessage) {
 }
 
 QString QAvkonHelper::openFileSelectionDlg() {
-    TBuf16<255> filename;
-    //open native FileSelection dialog
-    if (!AknCommonDialogs::RunSelectDlgLD(filename, 0)) return NULL;
+    TBuf16<256> filename;
+    TInt types = AknCommonDialogsDynMem::EMemoryTypeMMCExternal|
+                 AknCommonDialogsDynMem::EMemoryTypeInternalMassStorage|
+                 AknCommonDialogsDynMem::EMemoryTypePhone;
+
+    CExtensionFilter* extensionFilter = new (ELeave) CExtensionFilter;
+    CleanupStack::PushL(extensionFilter);
+    TBool run  = AknCommonDialogsDynMem::RunSelectDlgLD(types, filename, _L(""), 0, 0, _L("Select a sound file"), extensionFilter);
+    CleanupStack::PopAndDestroy(extensionFilter);
+
     // convert Symbian string to QString
     QString qString = QString::fromUtf16(filename.Ptr(), filename.Length());
 
-    if (qString.right(4) != ".mp3" && qString.right(4) != ".wav" && qString != "") {
-        // if file format different than .mp3 or .wav, display an error
-        this->displayGlobalNote("Format not supported.",true);
+    if (!run) {
+        this->displayGlobalNote("Nothing got selected.",true);
         return NULL;
     } else this->displayGlobalNote("File set to " + qString + ".",false); // SUCCESS! ^^
 
