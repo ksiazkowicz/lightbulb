@@ -40,7 +40,8 @@ VERSION = 0.2.1
 
 symbian {
     TARGET.UID3 = 0xE22AC278
-    TARGET.CAPABILITY += NetworkServices
+    TARGET.CAPABILITY += NetworkServices \
+                         WriteDeviceData
     TARGET.EPOCHEAPSIZE = 0x200000 0x1F400000
     CONFIG += qt-components
 
@@ -65,6 +66,7 @@ symbian {
             -leikcore \
             -lapmime \
             -lefsrv \
+            -leuser \
             -lcommondialogs
 }
 

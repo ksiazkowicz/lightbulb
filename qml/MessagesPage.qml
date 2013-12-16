@@ -13,6 +13,7 @@ Page {
         xmppClient.page = 1
         console.log( xmppClient.chatJid )
         xmppClient.openChat( xmppClient.chatJid )
+        notify.updateChatsIcon();
 
         statusBarText.text = xmppClient.contactName
 
@@ -55,7 +56,7 @@ Page {
                 anchors.top: parent.top
                 anchors.right: parent.right
                 anchors.rightMargin: 16
-                source: "qrc:/images/bubble_incTriangle.png"
+                source: isMine == true ? "" : "qrc:/images/bubble_incTriangle.png"
                 width: 13
                 height: isMine == true ? 0 : 13
             }
@@ -72,7 +73,6 @@ Page {
                     GradientStop { position: 0.5; color: isMine == true ? "#56565b" : "#eae9ed" }
                     GradientStop { position: 1.0; color: isMine == true ? "#56565b" : "#eae9ed" }
                 }
-                smooth: true
 
                 radius: 8
             }
@@ -89,7 +89,6 @@ Page {
                     GradientStop { position: 0.5; color: isMine == true ? "#56565b" : "#e6e6eb" }
                     GradientStop { position: 1.0; color: isMine == true ? "#46464b" : "#b9b8bd" }
                 }
-                smooth: true
 
                 radius: 8
             }
@@ -108,7 +107,7 @@ Page {
                 anchors.bottom: parent.bottom
                 anchors.left: parent.left
                 anchors.leftMargin: 16
-                source: "qrc:/images/bubble_outTriangle.png"
+                source: isMine == true ? "qrc:/images/bubble_outTriangle.png" : ""
                 width: 13
                 height: isMine == true ? 13 : 0
             }
@@ -380,8 +379,7 @@ Page {
             iconSource: main.platformInverted ? "qrc:/toolbar/chats_inverse" : "qrc:/toolbar/chats"
             onClicked: {
                 xmppClient.resetUnreadMessages( xmppClient.chatJid ) //cleans unread count for this JID
-                dialog.source = ""
-                dialog.source = "qrc:/dialogs/Chats"
+                dialog.create("qrc:/dialogs/Chats")
             }
             Image {
                 id: imgMarkUnread

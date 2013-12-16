@@ -37,6 +37,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <apgcli.h> // RApaLsSession
 #include <apgtask.h> // TApaTaskList, TApaTask
 #include <QUrl>
+#include <QDebug>
+
+#include <coreapplicationuisdomainpskeys.h> //keys for RProperty
+#include <e32property.h> //http://katastrophos.net/symbian-dev/GUID-C6E5F800-0637-419E-8FE5-1EBB40E725AA/GUID-C4776034-D190-3FC4-AF45-C7F195093AC3.html
 
 _LIT(KBrowserPrefix, "4 " );
 static const TUid KUidBrowser = { 0x10008D39 };
@@ -45,6 +49,19 @@ QAvkonHelper::QAvkonHelper(QObject *parent) :
     QObject(parent)
 {
     notifyLight = CHWRMLight::NewL();
+}
+
+void QAvkonHelper::showChatIcon() {
+    RProperty iProperty;
+    //to enable it:
+    iProperty.Set(KPSUidCoreApplicationUIs, KCoreAppUIsUipInd, ECoreAppUIsShow);
+    qDebug() << "showing chat icon";
+}
+
+void QAvkonHelper::hideChatIcon() {
+    RProperty iProperty;
+    //to disable it:
+    iProperty.Set( KPSUidCoreApplicationUIs, KCoreAppUIsUipInd, ECoreAppUIsDoNotShow);
 }
 
 void QAvkonHelper::showPopup(QString title, QString message, bool goToApp) {

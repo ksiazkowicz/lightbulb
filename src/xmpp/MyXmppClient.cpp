@@ -15,7 +15,7 @@
 #include <QThread>
 #include <QStringList>
 
-QString MyXmppClient::myVersion = "0.2.2";
+QString MyXmppClient::myVersion = "0.2.3";
 QString MyXmppClient::getBareJidByJid( const QString &jid ) { if (jid.indexOf('/') >= 0) return jid.split('/')[0]; else return jid; }
 QString MyXmppClient::getAvatarByJid( QString bareJid ) { return cacheIM->getAvatarCache(bareJid); }
 
@@ -596,7 +596,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
             if( sl.count() > 1 ) m_resourceLastMessage = sl[1];
         } else m_bareJidLastMessage = xmppMsg.from();
 
-        if (!jidCache.contains(bareJid_from)) {
+        if (dbWorker->getRecordIDbyJid(bareJid_from) == -1) {
             rosterNeedsUpdate = true;
             dbWorker->executeQuery(QStringList() << "insertContact" << QString::number(m_accountId) << bareJid_from << bareJid_from << this->getPicPresence(QXmppPresence::Unsubscribed));
             jidCache.append(bareJid_from);

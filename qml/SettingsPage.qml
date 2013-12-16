@@ -61,8 +61,7 @@ Page {
                             iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
                                 main.nowEditing = "vibraMsgRecv"
-                                dialog.source = ""
-                                dialog.source = "qrc:/dialogs/Settings/Vibration"
+                                dialog.create("qrc:/dialogs/Settings/Vibration")
                             }
                         }
                     }
@@ -85,8 +84,7 @@ Page {
                             iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
                                 main.nowEditing = "soundMsgRecv"
-                                dialog.source = ""
-                                dialog.source = "qrc:/dialogs/Settings/Sound"
+                                dialog.create("qrc:/dialogs/Settings/Sound")
                             }
                         }
                     }
@@ -159,8 +157,7 @@ Page {
                             iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
                                 main.nowEditing = "vibraMsgSent"
-                                dialog.source = ""
-                                dialog.source = "qrc:/dialogs/Settings/Vibration"
+                                dialog.create("qrc:/dialogs/Settings/Vibration")
                             }
                         }
                     }
@@ -184,8 +181,7 @@ Page {
                             iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
                                 main.nowEditing = "soundMsgSent"
-                                dialog.source = ""
-                                dialog.source = "qrc:/dialogs/Settings/Sound"
+                                dialog.create("qrc:/dialogs/Settings/Sound")
                             }
                         }
                     }
@@ -223,8 +219,7 @@ Page {
                             iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
                                 main.nowEditing = "soundNotifyConn"
-                                dialog.source = ""
-                                dialog.source = "qrc:/dialogs/Settings/Sound"
+                                dialog.create("qrc:/dialogs/Settings/Sound")
                             }
                         }
                     }
@@ -252,8 +247,7 @@ Page {
                             iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
                                 main.nowEditing = "soundMsgSub"
-                                dialog.source = ""
-                                dialog.source = "qrc:/dialogs/Settings/Sound"
+                                dialog.create("qrc:/dialogs/Settings/Sound")
                             }
                         }
                     }
@@ -278,8 +272,7 @@ Page {
                             iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
                                 main.nowEditing = "vibraMsgSub"
-                                dialog.source = ""
-                                dialog.source = "qrc:/dialogs/Settings/Vibration"
+                                dialog.create("qrc:/dialogs/Settings/Vibration")
                             }
                         }
                     }

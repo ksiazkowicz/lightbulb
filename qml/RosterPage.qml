@@ -171,10 +171,7 @@ Page {
             MenuItem {
                 text: qsTr("Status")
                 platformInverted: main.platformInverted
-                onClicked: {
-                    dialog.source = ""
-                    dialog.source = "qrc:/dialogs/Status/Change"
-                }
+                onClicked: dialog.create("qrc:/dialogs/Status/Change")
             }
             MenuItem {
                 text: qsTr("Accounts")
@@ -207,16 +204,14 @@ Page {
             MenuItem {
                 text: qsTr("Remove")
                 platformInverted: main.platformInverted
-                onClicked: { dialog.source = ""
-                    xmppClient.chatJid = selectedJid
-                    dialog.source = "qrc:/dialogs/Contact/Remove"}
+                onClicked: { xmppClient.chatJid = selectedJid
+                    dialog.create("qrc:/dialogs/Contact/Remove") }
             }
             MenuItem {
                 text: qsTr("Rename")
                 platformInverted: main.platformInverted
-                onClicked: { dialog.source = ""
-                    xmppClient.chatJid = selectedJid
-                    dialog.source = "qrc:/dialogs/Contact/Rename"}
+                onClicked: { xmppClient.chatJid = selectedJid
+                    dialog.create("qrc:/dialogs/Contact/Rename") }
             }
             MenuItem {
                 text: qsTr("vCard")
@@ -286,18 +281,12 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             smooth: true
-            onClicked: {
-                dialog.source = ""
-                dialog.source = "qrc:/dialogs/Close"
-            }
+            onClicked: dialog.create("qrc:/dialogs/Close")
         }
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-add_inverse" : "toolbar-add"
             smooth: true
-            onClicked: {
-                dialog.source = ""
-                dialog.source = "qrc:/dialogs/Contact/Add"
-            }
+            onClicked: dialog.create("qrc:/dialogs/Contact/Add")
         }
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-search_inverse" : "toolbar-search"
@@ -313,10 +302,7 @@ Page {
             id: toolBarButtonChats
             iconSource: main.platformInverted ? "qrc:/toolbar/chats_inverse" : "qrc:/toolbar/chats"
             smooth: true
-            onClicked: {
-                dialog.source = ""
-                dialog.source = "qrc:/dialogs/Chats"
-            }
+            onClicked: dialog.create("qrc:/dialogs/Chats")
 
             Image {
                 id: imgMarkUnread

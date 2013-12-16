@@ -42,10 +42,7 @@ PageStackWindow {
     function openChat() {
         if (pageStack.depth > 1) {
             pageStack.replace("qrc:/pages/Messages")
-        } else {
-            pageStack.push("qrc:/pages/Messages")
-        }
-        dialog.source = ""
+        } else pageStack.push("qrc:/pages/Messages")
     }
 
     Timer {
@@ -68,10 +65,12 @@ PageStackWindow {
                 if (xmppClient.chatJid != "") {
                     isChatInProgress = true
                     globalUnreadCount = globalUnreadCount - tempUnreadCount
+                    notify.updateChatsIcon()
                 }
                 tempUnreadCount = 0
                 if (globalUnreadCount<0) {
                     globalUnreadCount = 0
+                    notify.updateChatsIcon()
                 }
             } else {
                 isActive = false
@@ -89,20 +88,21 @@ PageStackWindow {
         onErrorHappened: {
             connecting = false
             if (settings.gBool("behavior", "reconnectOnError")) {
-                dialog.source = ""
-                dialog.source = "qrc:/dialogs/Status/Reconnect"
+                dialog.create("qrc:/dialogs/Status/Reconnect")
             }
         }
         onMessageReceived: {
             if( xmppClient.myBareJid != bareJidLastMsg ) {
                 if (!isChatInProgress) {
                     globalUnreadCount++
+                    notify.updateChatsIcon()
                     if (bareJidLastMsg == xmppClient.chatJid) {
                         tempUnreadCount++
                     }
                 } else {
                         if (bareJidLastMsg != xmppClient.chatJid || !isActive) {
                             globalUnreadCount++
+                            notify.updateChatsIcon()
                         }
                 }
                 if (!isActive && settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff")) { blinker.running = true }
@@ -138,8 +138,7 @@ PageStackWindow {
             }
             notifySndVibr("MsgSub")
             dialogJid = bareJid
-            dialog.source = ""
-            dialog.source = "qrc:/dialogs/Contact/Subscribe"
+            dialog.create("qrc:/dialogs/Contact/Subscribe")
         }
         onTypingChanged: {
             if (settings.gBool("notifications", "notifyTyping") == true && (xmppClient.chatJid !== bareJid || !isActive) && xmppClient.myBareJid !== bareJid) {
@@ -201,6 +200,7 @@ PageStackWindow {
 
                 xmppClient.accountId = j;
                 globalUnreadCount = xmppClient.getUnreadCount()
+                notify.updateChatsIcon()
 
                 console.log("QML: main::initAccount():" + xmppClient.myBareJid + "/" + xmppClient.resource);
                 xmppClient.updateChats()
@@ -213,7 +213,15 @@ PageStackWindow {
 
     /****************************( Dialog windows, menus and stuff)****************************/
 
-    Loader { id: dialog }
+    QtObject{
+        id:dialog;
+        property Component c:null;
+        function create(qmlfile){
+            c=Qt.createComponent(qmlfile);
+            c.createObject(main)
+        }
+    }
+
     ContextMenu {
         id: linkContextMenu
         MenuLayout {
@@ -265,11 +273,12 @@ PageStackWindow {
         }
         if( settings.gBool("notifications","sound"+how )) {
             sndEffect.source = settings.gStr("notifications","sound"+how+"File" )
-            sndEffect.volume = settings.gInt("notifications","sound"+how+"Volume" )/100
+            //sndEffect.volume = settings.gInt("notifications","sound"+how+"Volume" )/100
             sndEffect.play()
+            console.log(sndEffect.Error);
         }
     }
-    Audio { id: sndEffect }
+    SoundEffect { id: sndEffect }
     HapticsEffect {
         id: hapticsEffect
         attackIntensity: 0
@@ -307,7 +316,7 @@ PageStackWindow {
         Behavior on opacity { PropertyAnimation { duration: 500 } }
         anchors.fill: parent
 
-        visible: main.pageStack.busy || (!xmppClient.rosterIsAvailable && statusBarText.text == "Contacts" ) || connecting
+        visible: (!xmppClient.rosterIsAvailable && statusBarText.text == "Contacts" ) || connecting
         BusyIndicator {
             id: busyindicator1
             anchors.centerIn: parent

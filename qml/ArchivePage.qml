@@ -173,8 +173,7 @@ Page {
             iconSource: main.platformInverted ? "qrc:/toolbar/chats_inverse" : "qrc:/toolbar/chats"
             onClicked: {
                 xmppClient.resetUnreadMessages( xmppClient.chatJid ) //cleans unread count for this JID
-                dialog.source = ""
-                dialog.source = "qrc:/dialogs/Chats"
+                dialog.create("qrc:/dialogs/Chats")
             }
             Image {
                 id: imgMarkUnread

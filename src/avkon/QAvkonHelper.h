@@ -62,6 +62,9 @@ public:
     Q_INVOKABLE QString openFileSelectionDlg();
     Q_INVOKABLE void openDefaultBrowser(const QUrl &url) const;
 
+    Q_INVOKABLE void showChatIcon();
+    Q_INVOKABLE void hideChatIcon();
+
 private:
     TInt iNoteId;
     CAknGlobalNote* iNote;

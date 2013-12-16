@@ -14,6 +14,7 @@ CommonDialog {
 
     onButtonClicked: {
         if (index === 0) {
+            avkon.hideChatIcon();
             Qt.quit()
         }
     }

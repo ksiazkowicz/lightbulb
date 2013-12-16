@@ -32,6 +32,10 @@ Item {
        return statusName;
     }
 
+    function updateChatsIcon() {
+        if (globalUnreadCount > 0) avkon.showChatIcon(); else avkon.hideChatIcon();
+    }
+
     function postHSWidget() {
         getStatusName()
         row1 = globalUnreadCount + qsTr(" ~ unread messages")

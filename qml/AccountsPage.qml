@@ -133,12 +133,7 @@ Page {
 
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-delete_inverse" : "toolbar-delete"
-            onClicked: {
-                if( main.accJid != "" ) {
-                    dialog.source = ""
-                    dialog.source = "qrc:/dialogs/Account/Remove"
-                }
-            }
+            onClicked: if( main.accJid != "" ) dialog.create("qrc:/dialogs/Account/Remove")
         }
 
         ToolButton {

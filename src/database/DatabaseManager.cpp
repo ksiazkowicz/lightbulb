@@ -86,11 +86,11 @@ bool DatabaseManager::mkRosterTable()
     bool ret = false;
     if (db.isOpen()) {
         QSqlQuery query(db);
-        ret = query.exec("create table roster "
+        ret = query.exec("create temp table roster "
                          "(id integer primary key, "
                          "id_account integer, "
                          "name varchar(80), "
-                         "jid varchar(80), "
+                         "jid unique varchar(80), "
                          "resource varchar(30), "
                          "presence varchar(12), "
                          "statusText varchar(255), "
