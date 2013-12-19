@@ -28,6 +28,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "MyXmppClient.h"
 
 #include "AccountsListModel.h"
+#include "RosterListModel.h"
+#include "MessageListModel.h"
 #include "QMLVCard.h"
 #include "Settings.h"
 #include "LightbulbHSWidget.h"
@@ -50,6 +52,8 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
 
     qmlRegisterUncreatableType<SqlQueryModel>("lightbulb", 1, 0, "SqlQuery", "");
     qmlRegisterUncreatableType<AccountsListModel>("lightbulb", 1, 0, "AccountsList", "Use settings.accounts instead");
+    qmlRegisterUncreatableType<RosterListModel>("lightbulb",1,0,"RosterModel","");
+    qmlRegisterUncreatableType<MsgListModel>("lightbulb",1,0,"MessageModel","");
 
     // initialize viewer and set it parameters
     QmlApplicationViewer viewer;

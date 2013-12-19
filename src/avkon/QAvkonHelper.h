@@ -71,6 +71,8 @@ private:
     CHWRMLight* notifyLight;
     void ShowNoteL(const TDesC& aMessage);
     void ShowErrorL(const TDesC& aMessage);
+
+    bool chatIconStatus;
     
 signals:
     

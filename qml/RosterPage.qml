@@ -152,7 +152,7 @@ Page {
             spacing: 0
 
             Repeater {
-                model: xmppClient.sqlRoster
+                model: xmppClient.cachedRoster
                 delegate: componentRosterItem
             }
 

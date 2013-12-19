@@ -49,19 +49,26 @@ QAvkonHelper::QAvkonHelper(QObject *parent) :
     QObject(parent)
 {
     notifyLight = CHWRMLight::NewL();
+    chatIconStatus = false;
 }
 
 void QAvkonHelper::showChatIcon() {
-    RProperty iProperty;
-    //to enable it:
-    iProperty.Set(KPSUidCoreApplicationUIs, KCoreAppUIsUipInd, ECoreAppUIsShow);
-    qDebug() << "showing chat icon";
+    if (!chatIconStatus) {
+        RProperty iProperty;
+        //to enable it:
+        iProperty.Set(KPSUidCoreApplicationUIs, KCoreAppUIsUipInd, ECoreAppUIsShow);
+        qDebug() << "showing chat icon";
+        chatIconStatus = true;
+    }
 }
 
 void QAvkonHelper::hideChatIcon() {
-    RProperty iProperty;
-    //to disable it:
-    iProperty.Set( KPSUidCoreApplicationUIs, KCoreAppUIsUipInd, ECoreAppUIsDoNotShow);
+    if (chatIconStatus) {
+        RProperty iProperty;
+        //to disable it:
+        iProperty.Set( KPSUidCoreApplicationUIs, KCoreAppUIsUipInd, ECoreAppUIsDoNotShow);
+        chatIconStatus = false;
+    }
 }
 
 void QAvkonHelper::showPopup(QString title, QString message, bool goToApp) {

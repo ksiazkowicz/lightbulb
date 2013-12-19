@@ -38,14 +38,9 @@ DatabaseWorker::DatabaseWorker(QObject *parent) :
     // make stuff threaded, because why not?
     connect(database,SIGNAL(finished()), this, SIGNAL(finished()));
     connect(database,SIGNAL(messagesChanged()), this, SIGNAL(messagesChanged()));
-    connect(database,SIGNAL(rosterChanged()), this, SIGNAL(rosterChanged()));
-    connect(database,SIGNAL(chatsChanged()), this, SLOT(chatsMustBeUpdated()));
 
-    //initialize SqlQueryModels
-    sqlRoster = new SqlQueryModel( 0 );
-    this->updateRoster(1);
+    //initialize SqlQueryModel
     sqlMessages = new SqlQueryModel( 0 );
-    sqlChats = new SqlQueryModel( 0 );
 
     // populates queryType list so I could use switch with QStrings. I like switches.
     queryType << "begin" << "end" << "insertMessage" << "insertContact" << "deleteContact" <<
@@ -84,21 +79,6 @@ void DatabaseWorker::executeQuery(QStringList& query) {
     }
 }
 
-void DatabaseWorker::chatsMustBeUpdated() { this->updateChats(accountId); } //updates chat list
-
-void DatabaseWorker::updateChats(int m_accountId) {
-    qDebug() << "DatabaseWorker::updateChats(): updating chats list.";
-    sqlChats->setQuery("select jid, name from roster where isChatInProgress=1 and id_account=" + QString::number(m_accountId),database->db);
-    emit sqlChatsUpdated();
-}
-
-void DatabaseWorker::updateRoster(int m_accountId) {
-    if (accountId != m_accountId) accountId = m_accountId;
-    qDebug() << "DatabaseWorker::updateRoster(): updating contact list.";
-    sqlRoster->setQuery("select * from roster where id_account="+QString::number(m_accountId), database->db);
-    emit sqlRosterUpdated();
-}
-
 void DatabaseWorker::updateMessages(int m_accountId, QString bareJid, int page) {
     if (accountId != m_accountId) accountId = m_accountId;
     qDebug() << "DatabaseWorker::updateMessages(): updating messages query model.";
@@ -106,9 +86,4 @@ void DatabaseWorker::updateMessages(int m_accountId, QString bareJid, int page) 
     sqlMessages = new SqlQueryModel( 0 );
     if (bareJid != "") sqlMessages->setQuery("SELECT * FROM (SELECT * FROM messages WHERE bareJid='" + bareJid + "' and id_account="+QString::number(m_accountId) + " ORDER BY id DESC limit " + QString::number(border) + ") ORDER BY id ASC limit 20",database->db);
     emit sqlMessagesUpdated();
-}
-
-int DatabaseWorker::getRecordIDbyJid(QString bareJid) {
-    for (int i=0; i<sqlRoster->rowCount(); i++) if (sqlRoster->record(i).value("jid").toString() == bareJid) return i;
-    return -1;
 }

@@ -81,26 +81,25 @@ DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += src/main.cpp \
     src/xmpp/MyXmppClient.cpp \
-    src/ListModel.cpp \
     src/cache/MyCache.cpp \
     src/cache/StoreVCard.cpp \
     src/xmpp/MessageWrapper.cpp \
-    src/AccountsItemModel.cpp \
     src/cache/QMLVCard.cpp \
     src/avkon/LightbulbHSWidget.cpp \
     src/database/DatabaseManager.cpp \
     src/avkon/QAvkonHelper.cpp \
     src/xmpp/XmppConnectivity.cpp \
     src/database/DatabaseWorker.cpp \
-    src/database/Settings.cpp
+    src/database/Settings.cpp \
+	src/models/AccountsItemModel.cpp \
+	src/models/ListModel.cpp \
+	src/models/MessageItemModel.cpp \
+	src/models/MessageListModel.cpp
 
 HEADERS += src/xmpp/MyXmppClient.h \
-    src/ListModel.h \
     src/cache/MyCache.h \
     src/cache/StoreVCard.h \
     src/xmpp/MessageWrapper.h \
-    src/AccountsItemModel.h \
-    src/AccountsListModel.h \
     src/cache/QMLVCard.h \
     src/avkon/QHSWidget.h \
     src/avkon/LightbulbHSWidget.h \
@@ -109,7 +108,14 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/avkon/SymbiosisAPIClient.h \
     src/xmpp/XmppConnectivity.h \
     src/database/DatabaseWorker.h \
-    src/database/Settings.h
+    src/database/Settings.h \
+	src/models/AccountsItemModel.h \
+	src/models/AccountsListModel.h \
+	src/models/ListModel.h \
+	src/models/MessageItemModel.h \
+	src/models/MessageListModel.h \
+	src/models/RosterItemModel.h \
+	src/models/RosterListModel.h
 
 OTHER_FILES += README.md \
     qml/Dialogs/AddContact.qml \

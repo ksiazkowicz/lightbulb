@@ -40,6 +40,9 @@ PageStackWindow {
     property string                  selectedContactPresence: ""
 
     function openChat() {
+        xmppClient.resetUnreadMessages( xmppClient.chatJid )
+        if (settings.gBool("behavior","enableHsWidget")) notify.postHSWidget()
+
         if (pageStack.depth > 1) {
             pageStack.replace("qrc:/pages/Messages")
         } else pageStack.push("qrc:/pages/Messages")
@@ -84,7 +87,7 @@ PageStackWindow {
 
     XmppClient {
         id: xmppClient
-        onRosterUpdated: { connecting = false }
+        onRosterChanged: { connecting = false }
         onErrorHappened: {
             connecting = false
             if (settings.gBool("behavior", "reconnectOnError")) {
@@ -203,7 +206,6 @@ PageStackWindow {
                 notify.updateChatsIcon()
 
                 console.log("QML: main::initAccount():" + xmppClient.myBareJid + "/" + xmppClient.resource);
-                xmppClient.updateChats()
             } else {
                     _existDefaultAccount = true
                     accc++
@@ -312,11 +314,11 @@ PageStackWindow {
     /***************(overlay)**********/
     Rectangle {
         color: main.platformInverted ? "white" : "black"
-        opacity: (!xmppClient.rosterIsAvailable || connecting) ? 1 : 0.5
+        opacity: 0.5
         Behavior on opacity { PropertyAnimation { duration: 500 } }
         anchors.fill: parent
 
-        visible: (!xmppClient.rosterIsAvailable && statusBarText.text == "Contacts" ) || connecting
+        visible: connecting
         BusyIndicator {
             id: busyindicator1
             anchors.centerIn: parent
@@ -324,11 +326,11 @@ PageStackWindow {
         }
         Text {
             id: rosterUpdate
-            text: !xmppClient.rosterIsAvailable ? "Updating contact list..." : "Connecting..."
+            text: "Connecting..."
             anchors { horizontalCenter: parent.horizontalCenter; top: busyindicator1.bottom; topMargin: 15 }
             color: main.textColor
             font.pixelSize: 20
-            visible: !xmppClient.rosterIsAvailable || connecting
+            visible: connecting
         }
 
     }

@@ -15,6 +15,9 @@
 #include <QThread>
 #include <QStringList>
 
+#include "RosterListModel.h"
+#include "RosterItemModel.h"
+
 QString MyXmppClient::myVersion = "0.2.3";
 QString MyXmppClient::getBareJidByJid( const QString &jid ) { if (jid.indexOf('/') >= 0) return jid.split('/')[0]; else return jid; }
 QString MyXmppClient::getAvatarByJid( QString bareJid ) { return cacheIM->getAvatarCache(bareJid); }
@@ -27,10 +30,7 @@ MyXmppClient::MyXmppClient() : QObject(0) {
     dbWorker = new DatabaseWorker;
     dbThread = new QThread(this);
     dbWorker->moveToThread(dbThread);
-    connect(dbWorker, SIGNAL(rosterChanged()), this, SLOT(changeSqlRoster()), Qt::UniqueConnection);
     connect(dbWorker, SIGNAL(messagesChanged()), this, SLOT(updateMessages()), Qt::UniqueConnection);
-    connect(dbWorker, SIGNAL(sqlChatsUpdated()), this, SIGNAL(openChatsChanged()), Qt::UniqueConnection);
-    connect(dbWorker, SIGNAL(sqlRosterUpdated()), this, SIGNAL(rosterUpdated()), Qt::UniqueConnection);
     connect(dbWorker, SIGNAL(sqlMessagesUpdated()), this, SIGNAL(sqlMessagesChanged()), Qt::UniqueConnection);
     dbThread->start();
 
@@ -62,8 +62,7 @@ MyXmppClient::MyXmppClient() : QObject(0) {
     this->initXmppClient();
 
     rosterManager = 0;
-    requests = 0;
-    rosterAvailable = true;
+    cachedRoster = new RosterListModel( this );
 
     flSetPresenceWithoutAck = true;
 }
@@ -94,7 +93,7 @@ void MyXmppClient::clientStateChanged(QXmppClient::State state) {
             qDebug() << Q_FUNC_INFO << " QObject::connect( rosterManager, SIGNAL(........).....)";
             QObject::connect( rosterManager, SIGNAL(presenceChanged(QString,QString)), this, SLOT(initPresence(const QString, const QString)), Qt::UniqueConnection );
             QObject::connect( rosterManager, SIGNAL(rosterReceived()), this, SLOT(initRoster()), Qt::UniqueConnection );
-            QObject::connect( rosterManager, SIGNAL(subscriptionReceived(QString)), this, SLOT(subscriptionReceived(QString)), Qt::UniqueConnection );
+            QObject::connect( rosterManager, SIGNAL(subscriptionReceived(QString)), this, SIGNAL(subscriptionReceived(QString)), Qt::UniqueConnection );
             QObject::connect( rosterManager, SIGNAL(itemAdded(QString)), this, SLOT(itemAdded(QString)), Qt::UniqueConnection );
             QObject::connect( rosterManager, SIGNAL(itemRemoved(QString)), this, SLOT(itemRemoved(QString)), Qt::UniqueConnection );
             QObject::connect( rosterManager, SIGNAL(itemChanged(QString)), this, SLOT(itemChanged(QString)), Qt::UniqueConnection );
@@ -133,16 +132,6 @@ void MyXmppClient::connectToXmppServer() {
 void MyXmppClient::disconnectFromXmppServer() { xmppClient->disconnectFromServer(); }
 
 void MyXmppClient::initRoster() {
-    //initializes contact list
-
-    requests++;
-    rosterNeedsUpdate = true;
-    dbWorker->executeQuery(QStringList() << "clearPresence" << QString::number(m_accountId) << this->getPicPresence(QXmppPresence::Unavailable) << "" << "Offline");
-    if (rosterAvailable) { rosterAvailable = false;
-                           dbWorker->executeQuery(QStringList() << "begin"); }
-    emit rosterStatusUpdated();
-    dbWorker->updateRoster(m_accountId);
-    initRosterInProgress = true;
     qDebug() << "MyXmppClient::initRoster() has been called";
     if( ! rosterManager->isRosterReceived() ) {
         qDebug() << "MyXmppClient::initRoster(): roster has not received yet";
@@ -156,22 +145,9 @@ void MyXmppClient::initRoster() {
                           Qt::UniqueConnection  );
     }
 
-    QStringList listBareJids = rosterManager->getRosterBareJids();
-    jidCache.clear();
+    cachedRoster->takeRows(0, cachedRoster->count()); // cleans the cache
 
-    for( int i=0; i < dbWorker->sqlRoster->rowCount(); i++)    // clean the roster, remove contacts which are not on the server
-    {
-        QString bareJid = dbWorker->sqlRoster->record(i).value("jid").toString();
-        if (!listBareJids.contains(bareJid)) {
-            requests++;
-            qDebug() << requests;
-            rosterNeedsUpdate = true;
-            dbWorker->executeQuery(QStringList() << "deleteContact" << QString::number(m_accountId) << bareJid);
-            jidCache.removeAt(jidCache.indexOf(bareJid));
-            qDebug() << "MyXmppClient::initRoster():" << bareJid << "not on a contact list. Removing.";
-        }
-        jidCache.append(bareJid);
-    }
+    QStringList listBareJids = rosterManager->getRosterBareJids();
 
     for( int j=0; j < listBareJids.length(); j++ )
     {
@@ -196,32 +172,25 @@ void MyXmppClient::initRoster() {
             }
         }
 
-        if (jidCache.contains(bareJid)) {
-            if (dbWorker->sqlRoster->record(jidCache.indexOf(bareJid)).value("name").toString() != name) {
-                requests++;
-                qDebug() << requests;
-                rosterNeedsUpdate = true;
-                dbWorker->executeQuery(QStringList() << "updateContact" << QString::number(m_accountId) << bareJid << "name" << name);
-                qDebug() << "MyXmppClient::initRoster():" << bareJid << "has a different name than the one on the server. Updating.";
-            }
-        } else {
-            rosterNeedsUpdate = true;
-            dbWorker->executeQuery(QStringList() << "insertContact" << QString::number(m_accountId) << bareJid << name << this->getPicPresence(QXmppPresence::Unavailable));
-            requests++;
-            qDebug() << requests;
-            jidCache.append(bareJid);
-            qDebug() << "MyXmppClient::initRoster():" << bareJid << "not found in cache. Inserting.";
-        }
+        RosterItemModel *itemModel = new RosterItemModel( );
+        itemModel->setPresence( this->getPicPresence( QXmppPresence::Unavailable ) );
+        itemModel->setContactName( name );
+        itemModel->setJid( bareJid );
+        itemModel->setUnreadMsg( 0 );
+        itemModel->setStatusText( "Offline ");
+        cachedRoster->append(itemModel);
     }
+    emit rosterChanged();
 }
 
 void MyXmppClient::initPresence(const QString& bareJid, const QString& resource)
 {
-    if (rosterAvailable) {
-        rosterAvailable = false;
-        dbWorker->executeQuery(QStringList() << "begin");
+    int indxItem = -1;
+    RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid, indxItem );
+
+    if( item == 0 ) {
+        return;
     }
-    if( !jidCache.contains(bareJid) ) { return; }
 
     QXmppPresence xmppPresence = rosterManager->getPresence( bareJid, resource );
     QXmppPresence::Type statusJid = xmppPresence.type();
@@ -235,46 +204,40 @@ void MyXmppClient::initPresence(const QString& bareJid, const QString& resource)
         }
     }
 
-    //QString presenceOld = sqlRoster->record(jidCache.indexOf(bareJid)).value("presence").toString();
-    //QString statusTextOld = sqlRoster->record(jidCache.indexOf(bareJid)).value("statusText").toString();
-    QString presence = this->getPicPresence( xmppPresence );
-    QString statusText = this->getTextStatus( xmppPresence.statusText(), xmppPresence );
+    item->setResource( resource );
 
-    //if (presence != presenceOld || statusText != statusTextOld) {
-        requests++;
-        qDebug() << requests;
-        qDebug() << "MyXmppClient::initPresence: updating presence for"<< bareJid;
+    QString picStatus = this->getPicPresence( xmppPresence );
+    item->setPresence( picStatus );
 
-        rosterNeedsUpdate = true;
-        dbWorker->executeQuery(QStringList() << "updatePresence" << QString::number(m_accountId) << bareJid << presence << resource << statusText);
-    /*} else {
-        qDebug() << "MyXmppClient::initPresence: " << bareJid << ";" << presence << "=" << presenceOld << ";" << statusText << "=" << statusTextOld;
-    }*/
+    QString txtStatus = this->getTextStatus( xmppPresence.statusText(), xmppPresence );
+    item->setStatusText( txtStatus );
+
+    RosterItemModel *itemExists = (RosterItemModel*)cachedRoster->find( bareJid, indxItem );
+
+    if( itemExists != 0 ) {
+        itemExists->copy( item );
+        QString picStatusPrev = itemExists->presence();
+        if( picStatusPrev != picStatus )
+        {
+            //emit presenceJidChanged( bareJid, txtStatus, picStatus );
+            emit rosterChanged();
+        }
+    }
 }
 
 QString MyXmppClient::getPicPresence( const QXmppPresence &presence ) const
 {
-    QString picPresenceName = "qrc:/qml/images/presence-unknown.png";
-
+    QString picPresenceName;
     QXmppPresence::Type status = presence.type();
-    if( status != QXmppPresence::Available )
-    {
-        picPresenceName = "qrc:/presence/offline";
-    }
+    if( status != QXmppPresence::Available ) picPresenceName = "qrc:/presence/offline";
     else
     {
         QXmppPresence::AvailableStatusType availableStatus = presence.availableStatusType();
-        if( availableStatus == QXmppPresence::Online ) {
-            picPresenceName = "qrc:/presence/online";
-        } else if ( availableStatus == QXmppPresence::Chat ) {
-            picPresenceName = "qrc:/presence/chatty";
-        } else if ( availableStatus == QXmppPresence::Away ) {
-            picPresenceName = "qrc:/presence/away";
-        } else if ( availableStatus == QXmppPresence::XA ) {
-            picPresenceName = "qrc:/presence/xa";
-        } else if ( availableStatus == QXmppPresence::DND ) {
-            picPresenceName = "qrc:/presence/busy";
-        }
+        if( availableStatus == QXmppPresence::Online ) picPresenceName = "qrc:/presence/online";
+        else if ( availableStatus == QXmppPresence::Chat ) picPresenceName = "qrc:/presence/chatty";
+        else if ( availableStatus == QXmppPresence::Away ) picPresenceName = "qrc:/presence/away";
+        else if ( availableStatus == QXmppPresence::XA ) picPresenceName = "qrc:/presence/xa";
+        else if ( availableStatus == QXmppPresence::DND ) picPresenceName = "qrc:/presence/busy";
     }
 
     return picPresenceName;
@@ -321,7 +284,7 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
     QString bareJid = vCard.from();
     //qDebug() << "## initVCard: " << bareJid;
 
-    if (bareJid.right(17) == "chat.facebook.com") requests--;
+    RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid );
 
     vCardData dataVCard;
 
@@ -331,11 +294,8 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
         QXmppRosterIq::Item itemRoster = rosterManager->getRosterEntry( bareJid );
         QString nickName = vCard.nickName();
         if( (!nickName.isEmpty()) && (!nickName.isNull()) && (itemRoster.name().isEmpty()) ) {
-            requests++;
-            qDebug() << requests;
             qDebug() << "MyXmppClient::initPresence: updating name for"<< bareJid;
-            rosterNeedsUpdate = true;
-            dbWorker->executeQuery(QStringList() << "updateContact" << QString::number(m_accountId) << bareJid << "name" << nickName);
+            item->setContactName( nickName );
         }
 
         /* avatar */
@@ -518,11 +478,13 @@ void MyXmppClient::itemAdded(const QString &bareJid ) {
     qDebug() << "MyXmppClient::itemAdded(): " << bareJid;
     QStringList resourcesList = rosterManager->getResources( bareJid );
 
-    if (!jidCache.contains(bareJid)) {
-        rosterNeedsUpdate = true;
-        dbWorker->executeQuery(QStringList() << "insertContact" << QString::number(m_accountId) << bareJid << bareJid << this->getPicPresence(QXmppPresence::Unavailable));
-        jidCache.append(bareJid);
-    }
+    RosterItemModel *itemModel = new RosterItemModel( );
+    itemModel->setPresence( this->getPicPresence(QXmppPresence::Unavailable) );
+    itemModel->setContactName("");
+    itemModel->setJid( bareJid );
+    itemModel->setUnreadMsg( 0 );
+    cachedRoster->append( itemModel );
+
     for( int L = 0; L<resourcesList.length(); L++ ) {
         QString resource = resourcesList.at(L);
         this->initPresence( bareJid, resource );
@@ -530,23 +492,26 @@ void MyXmppClient::itemAdded(const QString &bareJid ) {
 }
 
 
+
 void MyXmppClient::itemChanged(const QString &bareJid ) {
     qDebug() << "MyXmppClient::itemChanged(): " << bareJid;
 
     QXmppRosterIq::Item rosterEntry = rosterManager->getRosterEntry( bareJid );
 
-    if (rosterEntry.name() != "") { rosterNeedsUpdate = true;
-                                    dbWorker->executeQuery(QStringList() << "updateContact" << QString::number(m_accountId) << bareJid << "name" <<
-                                                           rosterEntry.name()); }
+    if (rosterEntry.name() != "") {
+        RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid );
+        if( item ) item->setContactName( rosterEntry.name() );
+    }
+
 }
 
 
 void MyXmppClient::itemRemoved(const QString &bareJid ) {
     qDebug() << "MyXmppClient::itemRemoved(): " << bareJid;
 
-    rosterNeedsUpdate = true;
-    dbWorker->executeQuery(QStringList() << "deleteContact" << QString::number(m_accountId) << bareJid);
-    jidCache.removeAt(jidCache.indexOf(bareJid));
+    int indxItem = -1;
+    RosterItemModel *itemExists = (RosterItemModel*)cachedRoster->find( bareJid, indxItem );
+    if( itemExists ) if( indxItem >= 0 ) cachedRoster->takeRow( indxItem );
 }
 
 void MyXmppClient::requestVCard(QString bareJid) //Q_INVOKABLE
@@ -596,16 +561,10 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
             if( sl.count() > 1 ) m_resourceLastMessage = sl[1];
         } else m_bareJidLastMessage = xmppMsg.from();
 
-        if (dbWorker->getRecordIDbyJid(bareJid_from) == -1) {
-            rosterNeedsUpdate = true;
-            dbWorker->executeQuery(QStringList() << "insertContact" << QString::number(m_accountId) << bareJid_from << bareJid_from << this->getPicPresence(QXmppPresence::Unsubscribed));
-            jidCache.append(bareJid_from);
-        }
-
         this->openChat( bareJid_from );
 
-        dbWorker->executeQuery(QStringList() << "incUnreadMessage" << QString::number(m_accountId) << bareJid_from);
-        rosterNeedsUpdate = true;
+        RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid_from );
+        if( item != 0 ) { int cnt = item->unreadMsg(); item->setUnreadMsg( ++cnt ); }
 
         QString body = xmppMsg.body();
         body = body.replace(">", "&gt;");  //fix for > stuff
@@ -696,9 +655,6 @@ void MyXmppClient::error(QXmppClient::Error e) {
 
 /*--- add/remove contact ---*/
 void MyXmppClient::addContact( QString bareJid, QString nick, QString group, bool sendSubscribe ) {
-    rosterNeedsUpdate = true;
-    dbWorker->executeQuery(QStringList() << "insertContact" << QString::number(m_accountId) << bareJid << nick << this->getPicPresence(QXmppPresence::Unavailable));
-    jidCache.append(bareJid);
     if( rosterManager ) {
         QSet<QString> gr;
         QString n;
@@ -774,31 +730,6 @@ void MyXmppClient::attentionSend( QString bareJid, QString resource )
     xmppMsg.setAttentionRequested( true );
 
     xmppClient->sendPacket( xmppMsg );
-}
-
-void MyXmppClient::changeSqlRoster() {
-    disconnect(this, SLOT(changeSqlRoster()));
-    if (requests > 0) requests--;
-    qDebug () << "MyXmppClient::changeSqlRoster() called. Requests:" << requests << "Needs update?" << rosterNeedsUpdate << "Available?" << rosterAvailable;
-    if (!rosterAvailable && !rosterNeedsUpdate) {
-        rosterNeedsUpdate = true;
-        qDebug() << "MyXmppClient::changeSqlRoster() called. Roster unavailable. Update delayed.";
-    }
-    if (requests > 0 && rosterAvailable) {
-        if (rosterAvailable) {
-            rosterAvailable = false;
-            dbWorker->executeQuery(QStringList() << "begin");
-        }
-        emit rosterStatusUpdated();
-        qDebug() << "MyXmppClient::changeSqlRoster() called. Number of db access requests:"<< requests << "Roster unavailable.";
-    }
-    if (rosterAvailable && requests < 1 && rosterNeedsUpdate)  dbWorker->updateRoster(m_accountId);
-    if (!rosterAvailable && requests < 1 && rosterNeedsUpdate) {
-        rosterAvailable = true;
-        dbWorker->executeQuery(QStringList() << "end");
-        emit rosterStatusUpdated();
-        dbWorker->updateRoster(m_accountId);
-    }
 }
 
 void MyXmppClient::gotoPage(int nPage) { page = nPage; this->updateMessages(); emit pageChanged(); }
