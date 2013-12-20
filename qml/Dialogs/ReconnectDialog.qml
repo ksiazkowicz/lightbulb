@@ -1,4 +1,3 @@
-// import QtQuick 1.0 // to target S60 5th Edition or Maemo 5
 import QtQuick 1.1
 import com.nokia.symbian 1.1
 import lightbulb 1.0
@@ -11,9 +10,7 @@ CommonDialog {
 
     buttonTexts: [qsTr("Cancel")]
 
-    Component.onCompleted: {
-        open()
-    }
+    Component.onCompleted: open()
 
     onButtonClicked: {
         timeLeftTimer.running = false

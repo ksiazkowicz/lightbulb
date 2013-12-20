@@ -8,9 +8,7 @@ CommonDialog {
         privateCloseIcon: true
         platformInverted: main.platformInverted
 
-        Component.onCompleted: {
-            open()
-        }
+        Component.onCompleted: open()
 
         content: Rectangle {
             width: parent.width-20

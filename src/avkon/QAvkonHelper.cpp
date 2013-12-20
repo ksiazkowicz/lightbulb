@@ -28,21 +28,36 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <akndiscreetpopup.h>
 #include <aknnotewrappers.h>
 #include <aknglobalnote.h>
-#include <CAknFileSelectionDialog.h>
 #include <AknCommonDialogsDynMem.h>
 #include <hwrmlight.h>
 #include <e32svr.h>
 #include <eikmenup.h>
-#include <eikenv.h> // CEikonEnv
+#include <coemain.h>
 #include <apgcli.h> // RApaLsSession
 #include <apgtask.h> // TApaTaskList, TApaTask
 #include <QUrl>
-#include <QDebug>
 
 #include <coreapplicationuisdomainpskeys.h> //keys for RProperty
 #include <e32property.h> //http://katastrophos.net/symbian-dev/GUID-C6E5F800-0637-419E-8FE5-1EBB40E725AA/GUID-C4776034-D190-3FC4-AF45-C7F195093AC3.html
 
-_LIT(KBrowserPrefix, "4 " );
+#include <MAknFileFilter.h>
+
+#include <f32file.h>
+
+#include <QDebug>
+
+
+// filters out non-sound files
+class CExtensionFilter : public MAknFileFilter {
+public:
+    TBool Accept(const TDesC &aDriveAndPath, const TEntry &aEntry) const
+    {
+        if (aEntry.IsDir() || aEntry.iName.Right(4) == _L(".wav") || aEntry.iName.Right(4) == _L(".mp3") )
+            return ETrue;
+        else return EFalse;
+    }
+};
+
 static const TUid KUidBrowser = { 0x10008D39 };
 
 QAvkonHelper::QAvkonHelper(QObject *parent) :
@@ -116,18 +131,23 @@ QString QAvkonHelper::openFileSelectionDlg() {
     TBool run  = AknCommonDialogsDynMem::RunSelectDlgLD(types, filename, _L(""), 0, 0, _L("Select a sound file"), extensionFilter);
     CleanupStack::PopAndDestroy(extensionFilter);
 
-    // convert Symbian string to QString
-    QString qString = QString::fromUtf16(filename.Ptr(), filename.Length());
 
     if (!run) {
         this->displayGlobalNote("Nothing got selected.",true);
         return NULL;
-    } else this->displayGlobalNote("File set to " + qString + ".",false); // SUCCESS! ^^
+    } else {
 
-    return qString;
+        // convert Symbian string to QString
+        QString qString = QString::fromUtf16(filename.Ptr(), filename.Length());
+
+        this->displayGlobalNote("File set to " + qString + ".",false); // SUCCESS! ^^
+
+        return qString;
+    }
 }
 
 void QAvkonHelper::openDefaultBrowser(const QUrl &url) const {
+    _LIT(KBrowserPrefix, "4 " );
     // code ported from Tweetian by Dickson
     // https://github.com/dicksonleong/Tweetian/blob/master/src/symbianutils.cpp
 
@@ -161,7 +181,7 @@ void QAvkonHelper::openDefaultBrowser(const QUrl &url) const {
     buf16->Des().Copy(KBrowserPrefix); // Prefix used to launch correct browser view
     buf16->Des().Append(tUrl);
 
-    TApaTaskList taskList(CEikonEnv::Static()->WsSession());
+    TApaTaskList taskList(CCoeEnv::Static()->WsSession());
     TApaTask task = taskList.FindApp(handlerUID);
     if (task.Exists()) {
         // Switch to existing browser instance

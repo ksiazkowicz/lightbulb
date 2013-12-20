@@ -38,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "SymbiosisAPIClient.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[]) {
-    QScopedPointer<QApplication> app( createApplication(argc, argv) );
+    QApplication app(argc, argv);
 
     // expose C++ classes to QML
     qmlRegisterType<MyXmppClient>("lightbulb", 1, 0, "XmppClient" );
@@ -61,11 +61,10 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     viewer.setAttribute(Qt::WA_NoSystemBackground);
     viewer.viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
     viewer.viewport()->setAttribute(Qt::WA_NoSystemBackground);
-    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
 
     viewer.setSource( QUrl(QLatin1String("qrc:/qml/main.qml")) );
     viewer.showFullScreen();
 
-    return app->exec();
+    return app.exec();
 }
 

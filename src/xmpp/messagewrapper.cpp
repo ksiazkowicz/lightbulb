@@ -40,6 +40,7 @@ QString MessageWrapper::parseMsgOnLink( const QString &inString ) const
     bool strangeTagClose = false;
 
     qDebug() << inString;
+
     while( (pos = inString.indexOf("http", pos)) >= 0 )
     {
         outString += inString.mid(pos_space, pos - pos_space);
@@ -62,6 +63,7 @@ QString MessageWrapper::parseMsgOnLink( const QString &inString ) const
         }
 
         //qDebug() << "pos="<<pos<<" pos_space="<<pos_space<<" ["<<link<<"]";
+
         outString += nLink;
 
         pos = pos_space;
@@ -72,7 +74,6 @@ QString MessageWrapper::parseMsgOnLink( const QString &inString ) const
     if( pos_space >= 0 ) {
         outString += inString.mid(pos_space);
     }
-
     //qDebug() << outString;
     return outString;
 }

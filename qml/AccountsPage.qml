@@ -5,8 +5,6 @@ Page {
     id: accountsPage
     tools: toolBarAccounts
 
-    /********************************************************************************/
-
     Component {
         id: componentAccountItem
         Rectangle {

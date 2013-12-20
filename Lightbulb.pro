@@ -20,28 +20,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #######################################################################
 
-# Add more folders to ship with the application, here
-#folder_01.source = qml
-#folder_01.target = qml
-#DEPLOYMENTFOLDERS = folder_01
+QT += declarative network sql
 
-QT += declarative \
-      network \
-      sql
-
-# Smart Installer package's UID
-# This UID is from the protected range and therefore the package will
-# fail to install if self-signed. By default qmake uses the unprotected
-# range value if unprotected UID is defined for the application and
-# 0x2002CCCF value if protected UID is given to the application
-#symbian:DEPLOYMENT.installer_header = 0x2002CCCF
-
-VERSION = 0.2.1
+VERSION = 0.2.3
 
 symbian {
     TARGET.UID3 = 0xE22AC278
-    TARGET.CAPABILITY += NetworkServices \
-                         WriteDeviceData
+    TARGET.CAPABILITY += NetworkServices WriteDeviceData
     TARGET.EPOCHEAPSIZE = 0x200000 0x1F400000
     CONFIG += qt-components
 
@@ -54,7 +39,6 @@ symbian {
 
     LIBS += -lavkon \
             -laknnotify \
-            -leiksrv \
             -lhwrmlightclient \
             -lapgrfx \
             -lcone \
@@ -91,10 +75,10 @@ SOURCES += src/main.cpp \
     src/xmpp/XmppConnectivity.cpp \
     src/database/DatabaseWorker.cpp \
     src/database/Settings.cpp \
-	src/models/AccountsItemModel.cpp \
-	src/models/ListModel.cpp \
-	src/models/MessageItemModel.cpp \
-	src/models/MessageListModel.cpp
+    src/models/AccountsItemModel.cpp \
+    src/models/ListModel.cpp \
+    src/models/MessageItemModel.cpp \
+    src/models/MessageListModel.cpp
 
 HEADERS += src/xmpp/MyXmppClient.h \
     src/cache/MyCache.h \
@@ -109,46 +93,20 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/xmpp/XmppConnectivity.h \
     src/database/DatabaseWorker.h \
     src/database/Settings.h \
-	src/models/AccountsItemModel.h \
-	src/models/AccountsListModel.h \
-	src/models/ListModel.h \
-	src/models/MessageItemModel.h \
-	src/models/MessageListModel.h \
-	src/models/RosterItemModel.h \
-	src/models/RosterListModel.h
+    src/models/AccountsItemModel.h \
+    src/models/AccountsListModel.h \
+    src/models/ListModel.h \
+    src/models/MessageItemModel.h \
+    src/models/MessageListModel.h \
+    src/models/RosterItemModel.h \
+    src/models/RosterListModel.h
 
 OTHER_FILES += README.md \
-    qml/Dialogs/AddContact.qml \
-    qml/Dialogs/ChangeStatus.qml \
-    qml/Dialogs/RemoveAccount.qml \
-    qml/Dialogs/RemoveContact.qml \
-    qml/Dialogs/RenameContact.qml \
-    qml/Dialogs/QuerySubscribtion.qml \
-    qml/Dialogs/VibrationSettings.qml \
-    qml/Dialogs/SoundSettings.qml \
-    qml/AccountAddPage.qml \
-    qml/VCardPage.qml \
-    qml/SettingsPage.qml \
-    qml/main.qml \
-    qml/RosterPage.qml \
-    qml/MessagesPage.qml \
-    qml/AccountsPage.qml \
-    qml/AboutPage.qml \
-    qml/Notifications.qml \
-    qml/ArchivePage.qml \
-    qml/Dialogs/ReconnectDialog.qml \
-    qml/Dialogs/Chats.qml \
-    qml/Dialogs/CloseDialog.qml \
-    qml/Dialogs/MuteNotifications.qml \
-    qml/FirstRun/01_gettingStarted.qml \
-    qml/FirstRun/02_notificationLed.qml \
-    qml/FirstRun/03_accountSetup.qml \
-    qml/FirstRun/04_discreetPopupSettings.qml \
-    qml/FirstRun/05_skinSettings.qml \
-    qml/FirstRun/06_rosterLayoutSettings.qml \
-    qml/FirstRun/07_congratulations.qml \
-    qml/DiagnosticsPage.qml \
-    qml/JavaScript/EmoticonInterpeter.js
+    qml/Dialogs/*.* \
+    qml/*.* \
+    qml/FirstRun/*.* \
+    qml/JavaScript/*.*
+
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -159,8 +117,8 @@ include(qxmpp/qxmpp.pri)
 INCLUDEPATH += qxmpp/base/ qxmpp/client
 
 addFiles.pkg_postrules += "\"HSWidgetPlugin0xE22AC278.dll\" - \"!:\\sys\\bin\\HSWidgetPlugin0xE22AC278.dll\""
-addFiles.pkg_postrules += "\"images\\LightbulbWidget.png\" - \"!:\\data\\.config\\Lightbulb\\Lightbulb.png\""
-addFiles.pkg_postrules += "\"images\\LightbulbWidget_attention.png\" - \"!:\\data\\.config\\Lightbulb\\LightbulbA.png\""
+addFiles.pkg_postrules += "\"images\\LightbulbWidget.png\" - \"C:\\data\\.config\\Lightbulb\\Lightbulb.png\""
+addFiles.pkg_postrules += "\"images\\LightbulbWidget_attention.png\" - \"C:\\data\\.config\\Lightbulb\\LightbulbA.png\""
 
 addFiles.pkg_postrules += "\"sounds\\Message_Received.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Message_Received.wav\""
 addFiles.pkg_postrules += "\"sounds\\Message_Sent.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Message_Sent.wav\""
@@ -168,5 +126,4 @@ addFiles.pkg_postrules += "\"sounds\\New_Message.wav\" - \"!:\\data\\.config\\Li
 
 DEPLOYMENT += addFiles
 
-RESOURCES += \
-    resources.qrc
+RESOURCES += resources.qrc

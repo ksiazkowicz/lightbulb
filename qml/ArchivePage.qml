@@ -6,7 +6,6 @@ import "qrc:/JavaScript/EmoticonInterpreter.js" as Emotion
 Page {
     id: messagesPage
     tools: toolBar
-    /************************************************************/
     property string resourceJid: ""
 
     Component.onCompleted: {

@@ -1,37 +1,29 @@
 #include "lightbulbhswidget.h"
-#include <QDebug>
 #include <apgtask.h>
 #include <eikenv.h>
 
-const QString sw_type = "threerows";
-const QString sw_name = "Lightbulb";
-const QString sw_id = "0xE22AC278"; //can be any unique string
-
 const QString sw_image ("image1");
-const QString row1 ("text1");
-const QString row2 ("text2");
-const QString row3 ("text3");
 
 
 LightbulbHSWidget::LightbulbHSWidget(QObject *parent) :
     QObject(parent)
 {
 
-    /*widget = QHSWidget::create(sw_type, sw_name, sw_id, this);
+    widget = QHSWidget::create("threerows", "Lightbulb", "0xE22AC278", this);
     connect(widget, SIGNAL(handleEvent(QHSWidget*, QHSEvent)), this, SLOT(handleEvent(QHSWidget*, QHSEvent) ));
-    connect(widget, SIGNAL(handleItemEvent(QHSWidget*, QString, QHSItemEvent)), this, SLOT(handleItemEvent(QHSWidget*, QString, QHSItemEvent)));*/
+    connect(widget, SIGNAL(handleItemEvent(QHSWidget*, QString, QHSItemEvent)), this, SLOT(handleItemEvent(QHSWidget*, QString, QHSItemEvent)));
 }
 
 void LightbulbHSWidget::registerWidget()
 {
-   // widget->RegisterWidget();
+    widget->RegisterWidget();
 
 }
 
 void LightbulbHSWidget::publishWidget()
 {
     try {
-        //widget->PublishWidget();
+        widget->PublishWidget();
     }
     catch (...) {
     }
@@ -39,7 +31,7 @@ void LightbulbHSWidget::publishWidget()
 
 void LightbulbHSWidget::removeWidget()
 {
-   // widget->RemoveWidget();
+    widget->RemoveWidget();
 }
 
 void LightbulbHSWidget::handleEvent( QHSWidget* /*aSender*/, QHSEvent aEvent )
@@ -49,7 +41,7 @@ void LightbulbHSWidget::handleEvent( QHSWidget* /*aSender*/, QHSEvent aEvent )
                     case EActivate:
                     case EResume:
                             {
-                            //publishWidget();
+                            publishWidget();
                             }
                             break;
                     default:
@@ -63,7 +55,7 @@ void LightbulbHSWidget::handleItemEvent( QHSWidget* /*aSender*/, QString aTempla
 {
     if(aTemplateItemName.compare(sw_image)==0)
                     {
-                    //publishWidget();
+                        publishWidget();
                     }
             else
                     {
@@ -74,15 +66,15 @@ void LightbulbHSWidget::handleItemEvent( QHSWidget* /*aSender*/, QString aTempla
 
 void LightbulbHSWidget::updateWidget( QString icon )
 {
-    //widget->SetItem(sw_image, icon);
+    widget->SetItem(sw_image, icon);
     publishWidget();
 }
 
 void LightbulbHSWidget::postWidget( QString nRow1, QString nRow2, QString nRow3 )
 {
-    //widget->SetItem(row1, nRow1);
-    //widget->SetItem(row2, nRow2);
-    //widget->SetItem(row3, nRow3);
+    widget->SetItem("text1", nRow1);
+    widget->SetItem("text2", nRow2);
+    widget->SetItem("text3", nRow3);
     publishWidget();
 }
 
@@ -94,6 +86,7 @@ void LightbulbHSWidget::bringToFront()
 }
 
 void LightbulbHSWidget::postNotification(QString message) {
+    Q_UNUSED(message)
     /*QMessageBox msgBox;
     msgBox.setText(message);
     msgBox.exec();*/

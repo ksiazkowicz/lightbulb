@@ -8,6 +8,7 @@
 #include "QXmppMessage.h"
 
 #include <QDebug>
+
 #include <QCryptographicHash>
 #include <QFile>
 #include <QDir>
@@ -90,7 +91,9 @@ void MyXmppClient::clientStateChanged(QXmppClient::State state) {
 
         if( !rosterManager ) {
             rosterManager = &xmppClient->rosterManager();
+
             qDebug() << Q_FUNC_INFO << " QObject::connect( rosterManager, SIGNAL(........).....)";
+
             QObject::connect( rosterManager, SIGNAL(presenceChanged(QString,QString)), this, SLOT(initPresence(const QString, const QString)), Qt::UniqueConnection );
             QObject::connect( rosterManager, SIGNAL(rosterReceived()), this, SLOT(initRoster()), Qt::UniqueConnection );
             QObject::connect( rosterManager, SIGNAL(subscriptionReceived(QString)), this, SIGNAL(subscriptionReceived(QString)), Qt::UniqueConnection );

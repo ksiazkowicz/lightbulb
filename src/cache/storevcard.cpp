@@ -76,7 +76,9 @@ bool StoreVCard::setVCard( const QString &bareJid, vCardData &vCard )
     txtNickname = vCardXMLDoc.createTextNode( vCard.fullName );
     nodeNickname.appendChild( txtNickname );
 
+    #ifdef QT_DEBUG
     //qDebug() << "doc=" << vCardXMLDoc.toString();
+    #endif
 
     QString fileVCard = pathCache + QDir::separator() + bareJid + QDir::separator() +"vCard.xml";
     QFile xmlVCardFile(fileVCard);
@@ -123,7 +125,10 @@ vCardData StoreVCard::getVCard( const QString &bareJid )
     data.eMail = getElementStore( &vCardXMLDoc, "eMail" );
     data.fullName = getElementStore( &vCardXMLDoc, "fullName" );
 
+    #ifdef QT_DEBUG
     //qDebug() << "isVCardEmpty ? " << data.isEmpty();
+    #endif
+
 
     return data;
 }

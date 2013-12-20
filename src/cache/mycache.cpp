@@ -1,15 +1,12 @@
 #include "mycache.h"
-
-#include <QDebug>
 #include <QBuffer>
 #include <QImageReader>
 #include <QFile>
+#include <QDebug>
 
 MyCache::MyCache(QObject *parent) : StoreVCard(parent)
 {
-    appName = "Lightbulb";
-
-    pathMeegIMHome = QDir::homePath() + "\\" + ".config" + "\\" + appName;
+    pathMeegIMHome = QDir::homePath() + "\\" + ".config" + "\\" + "Lightbulb";
     pathMeegIMCache = pathMeegIMHome + "\\" + QString("cache");
 
     this->setCachePath( pathMeegIMCache );

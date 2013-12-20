@@ -1,4 +1,3 @@
-// import QtQuick 1.0 // to target S60 5th Edition or Maemo 5
 import QtQuick 1.1
 import com.nokia.symbian 1.1
 import lightbulb 1.0
@@ -9,9 +8,7 @@ CommonDialog {
         height: 216
         platformInverted: main.platformInverted
 
-        Component.onCompleted: {
-            open()
-        }
+        Component.onCompleted: open()
 
         content: Rectangle {
             width: parent.width-20
@@ -35,7 +32,6 @@ CommonDialog {
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: parent.width
                     maximumValue: 100
-                    //minimumValue: 24
                     value: settings.gInt("notifications", nowEditing + "Volume")
                     orientation: 1
                     platformInverted: main.platformInverted

@@ -8,7 +8,6 @@ import lightbulb 1.0
 PageStackWindow {
     id: main
 
-    showStatusBar:                   true
     platformInverted:                settings.gBool("ui","invertPlatform")
     property string textColor:       platformInverted ? platformStyle.colorNormalDark : platformStyle.colorNormalLight
     property int                     globalUnreadCount: 0
@@ -332,7 +331,5 @@ PageStackWindow {
             font.pixelSize: 20
             visible: connecting
         }
-
     }
-
 }

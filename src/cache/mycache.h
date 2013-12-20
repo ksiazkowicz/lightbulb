@@ -12,7 +12,6 @@ class MyCache : public StoreVCard
 
     QString pathMeegIMHome;
     QString pathMeegIMCache;
-    QString appName;
 
 public:
     explicit MyCache(QObject *parent = 0);

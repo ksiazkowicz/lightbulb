@@ -24,7 +24,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "DatabaseWorker.h"
 #include "DatabaseManager.h"
+
 #include <QDebug>
+
 #include <QSqlQuery>
 #include <QSqlRecord>
 
@@ -53,16 +55,22 @@ void DatabaseWorker::executeQuery(QStringList& query) {
     for (int j=1;j<query.count();j++) database->parameters.append(query.at(j));
 
     // Used for debugging. I like debugging. Debugging is nice.
+
     qDebug() << "DatabaseWorker::executeQuery(): executing query with parameters: " << database->parameters;
+
 
     // Check the type of query and execute
     switch (queryType.indexOf(query.at(0))) {
         case 0:
+
             qDebug() << "DatabaseWorker::executeQuery(): beginning transaction";
+
             QSqlQuery("begin",database->db);
             break;
         case 1:
+
             qDebug() << "DatabaseWorker::executeQuery(): ending transaction";
+
             QSqlQuery("end",database->db);
             break;
         case 2: database->insertMessage(); break;
@@ -74,14 +82,18 @@ void DatabaseWorker::executeQuery(QStringList& query) {
         case 8: database->setChatInProgress(); break;
         case 9: database->clearPresence(); break;
         default:
+            #ifdef QT_DEBUG
             qDebug() << "DatabaseWorker::executeQuery(): query " + query.at(0) + " not recognized.";
+            #endif
             break;
     }
 }
 
 void DatabaseWorker::updateMessages(int m_accountId, QString bareJid, int page) {
     if (accountId != m_accountId) accountId = m_accountId;
+    #ifdef QT_DEBUG
     qDebug() << "DatabaseWorker::updateMessages(): updating messages query model.";
+    #endif
     int border = page*20;
     sqlMessages = new SqlQueryModel( 0 );
     if (bareJid != "") sqlMessages->setQuery("SELECT * FROM (SELECT * FROM messages WHERE bareJid='" + bareJid + "' and id_account="+QString::number(m_accountId) + " ORDER BY id DESC limit " + QString::number(border) + ") ORDER BY id ASC limit 20",database->db);

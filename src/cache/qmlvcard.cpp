@@ -28,7 +28,10 @@ void QMLVCard::setVCard( QMLVCard *value )
     m_email = value->getEMail();
     m_url = value->getUrl();
     m_jid = value->getJid();
-    //qDebug()<<"***>"<<m_photo <<m_nickname<<m_name<<m_middlename<<m_lastname<<m_fullname<<m_birthday<<m_email<<m_url<<m_jid;
+    #ifdef QT_DEBUG
+        //qDebug()<<"***>"<<m_photo <<m_nickname<<m_name<<m_middlename<<m_lastname<<m_fullname<<m_birthday<<m_email<<m_url<<m_jid;
+    #endif
+
 
     emit vCardChanged();
 }

@@ -26,7 +26,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QFile>
 #include <QSqlRecord>
 #include <QSqlField>
+
 #include <QDebug>
+
 #include <QSqlDatabase>
 
 DatabaseManager::DatabaseManager(QObject *parent) :
@@ -63,7 +65,10 @@ DatabaseManager::~DatabaseManager() {
 
 QSqlError DatabaseManager::lastError() { return db.lastError(); }
 
-void DatabaseManager::getLastError() { if (this->lastError().text() != " ") qDebug () << this->lastError(); }
+void DatabaseManager::getLastError() {
+    if (this->lastError().text() != " ")
+    qDebug () << this->lastError();
+}
 
 bool DatabaseManager::deleteDB() {
     // Close database
