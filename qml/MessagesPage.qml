@@ -365,6 +365,14 @@ Page {
                 xmppClient.resetUnreadMessages( xmppClient.chatJid )
                 xmppClient.chatJid = ""
             }
+            onPlatformPressAndHold: {
+                pageStack.pop()
+                main.isChatInProgress = false
+                xmppClient.closeChat(xmppClient.chatJid )
+                statusBarText.text = "Contacts"
+                xmppClient.resetUnreadMessages( xmppClient.chatJid )
+                xmppClient.chatJid = ""
+            }
         }
         ToolButton {
             id: toolBarButtonSend

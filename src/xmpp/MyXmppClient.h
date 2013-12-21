@@ -197,7 +197,11 @@ public :
         for (int i=0; i<chats.count(); i++) {
             QString msg;
             if (getPropertyByChatID(i,"unreadMsg") != "0") msg = "<b>[" + getPropertyByChatID(i,"unreadMsg") + "]</b> ";
-            chatsNames.append("<img width=24 height=24 src=\"" + getPropertyByChatID(i,"presence") + "\" /> " + msg + getPropertyByChatID(i,"name"));
+            if (getPropertyByChatID(i,"name") != "") {
+                chatsNames.append("<img width=24 height=24 src=\"" + getPropertyByChatID(i,"presence") + "\" /> " + msg + getPropertyByChatID(i,"name"));
+            } else {
+                chatsNames.append("<img width=24 height=24 src=\"" + getPropertyByChatID(i,"presence") + "\" /> " + msg + getPropertyByChatID(i,"jid"));
+            }
         }
         return chatsNames;
     }
@@ -221,7 +225,6 @@ public :
 
     SqlQueryModel* getSqlMessagesByPage() { return dbWorker->getSqlMessages(); }
     Q_INVOKABLE QString getLastSqlMessage() { return latestMessage; }
-    Q_INVOKABLE int getUnreadCount();
 
     QString getChatJid() const { return m_chatJid; }
     void setChatJid( const QString & value )

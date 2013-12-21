@@ -68,9 +68,6 @@ MyXmppClient::MyXmppClient() : QObject(0) {
     flSetPresenceWithoutAck = true;
 }
 
-int MyXmppClient::getUnreadCount() { DatabaseManager* database = new DatabaseManager(this);
-                                     return database->getUnreadCount(m_accountId); }
-
 MyXmppClient::~MyXmppClient() {
     if( cacheIM != NULL) delete cacheIM;
     if( msgWrapper != NULL) delete msgWrapper; }
@@ -742,7 +739,6 @@ bool MyXmppClient::dbRemoveDb() {
     bool ret = false;
     DatabaseManager* database = new DatabaseManager();
     SqlQueryModel* sqlQuery = new SqlQueryModel( 0 );
-    sqlQuery->setQuery("DELETE FROM ROSTER", database->db);
     sqlQuery->setQuery("DELETE FROM MESSAGES", database->db);
     database->deleteLater();
     if (sqlQuery->lastError().text() == " ") ret = true;

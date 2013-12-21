@@ -53,8 +53,8 @@ DatabaseManager::DatabaseManager(QObject *parent) :
 
     // set up some pragma parameters to get this thing working faster
     QSqlQuery("PRAGMA journal_mode = OFF",db);
-    QSqlQuery("PRAGMA page_size = 16384",db);
-    QSqlQuery("PRAGMA cache_size = 163840",db);
+    QSqlQuery("PRAGMA page_size = 4648",db);
+    QSqlQuery("PRAGMA cache_size = 5120",db);
     QSqlQuery("PRAGMA temp_store = MEMORY",db);
     QSqlQuery("PRAGMA locking_mode = EXCLUSIVE",db);
     connect(this,SIGNAL(finished()), this, SLOT(getLastError()));
@@ -79,41 +79,10 @@ bool DatabaseManager::deleteDB() {
 }
 
 bool DatabaseManager::initDB() {
-    mkRosterTable();
     mkMessagesTable();
 
     emit finished();
     return true;
-}
-
-bool DatabaseManager::mkRosterTable()
-{
-    bool ret = false;
-    if (db.isOpen()) {
-        QSqlQuery query(db);
-        ret = query.exec("create temp table roster "
-                         "(id integer primary key, "
-                         "id_account integer, "
-                         "name varchar(80), "
-                         "jid unique varchar(80), "
-                         "resource varchar(30), "
-                         "presence varchar(12), "
-                         "statusText varchar(255), "
-                         "isChatInProgress int, "
-                         "unreadMsg integer)");
-    }
-    emit finished();
-    return ret;
-}
-
-bool DatabaseManager::setChatInProgress() {
-    QStringList params = parameters;
-    bool ret = false;
-    QSqlQuery query(db);
-    ret = query.exec("UPDATE roster SET isChatInProgress='" + params.at(2) +  "' where jid='" + params.at(1) + "' and id_account=" + params.at(0));
-    emit finished();
-    emit chatsChanged();
-    return ret;
 }
 
 bool DatabaseManager::mkMessagesTable() {
@@ -132,171 +101,16 @@ bool DatabaseManager::mkMessagesTable() {
     return ret;
 }
 
-bool DatabaseManager::insertAccount(QString jid,
-                                    QString pass,
-                                    QString resource,
-                                    int manualHostPort,
-                                    int enabled,
-                                    QString host,
-                                    int port)
-{
-    bool ret = false;
-    QSqlQuery query(db);
-    ret = query.prepare("INSERT INTO accounts (jid, pass, resource, manualHostPort, enabled, host, port) "
-                        "VALUES (:jid, :pass, :resource, :manualHostPort, :enabled, :host, :port)");
-    if (ret) {
-        query.bindValue(":jid", jid);
-        query.bindValue(":pass", pass);
-        query.bindValue(":resource", resource);
-        query.bindValue(":manualHostPort", manualHostPort);
-        query.bindValue(":enabled", enabled);
-        query.bindValue(":host", host);
-        query.bindValue(":port", port);
-        ret = query.exec();
-    }
-    emit finished();
-    return ret;
-}
-
 bool DatabaseManager::insertMessage()
 {
     QStringList params = parameters;
     bool ret = false;
     QSqlQuery query(db);
-    ret = query.prepare("INSERT INTO messages (id_account, bareJid, msgText, dateTime, isMine) "
-                        "VALUES (:acc, :jid, :msgText, :time, :mine)");
-    if (ret) {
-        query.bindValue(":acc", params.at(0).toInt());
-        query.bindValue(":jid", params.at(1));
-        query.bindValue(":msgText", params.at(2));
-        query.bindValue(":time", params.at(3));
-        query.bindValue(":mine", params.at(4).toInt());
-        if (databaseOpen)
-            ret = query.exec();
-    }
+    query.exec("INSERT INTO messages (id_account, bareJid, msgText, dateTime, isMine) "
+               "VALUES (" + params.at(0) + ", '" + params.at(1) + "', '" + params.at(2) + "', '" + params.at(3) + "', " + params.at(4) + ")");
     emit finished();
     emit messagesChanged();
     return ret;
-}
-
-
-bool DatabaseManager::insertContact()
-{
-    QStringList params = parameters;
-    bool ret = false;
-    QSqlQuery query(db);
-    ret = query.prepare("INSERT INTO roster (id_account, name, jid, resource, presence, statusText, isChatInProgress, unreadMsg) "
-                        "VALUES (:acc, :name, :jid, :resource, :status, :statusText, :isChatInProgress, :unreadMsg)");
-    if (ret) {
-        query.bindValue(":acc", params.at(0).toInt());
-        query.bindValue(":jid", params.at(1));
-        query.bindValue(":name", params.at(2));
-        query.bindValue(":resource", "");
-        query.bindValue(":status", params.at(3));
-        query.bindValue(":statusText","");
-        query.bindValue(":isChatInProgress",0);
-        query.bindValue(":unreadMsg",0);
-        if (databaseOpen) {
-            ret = query.exec();
-        }
-    }
-    emit finished();
-    emit rosterChanged();
-    return ret;
-}
-
-bool DatabaseManager::updateContact()
-{
-    QStringList params = parameters;
-    bool ret = false;
-    QSqlQuery query(db);
-    ret = query.prepare("UPDATE roster SET " + params.at(2) + "=:value where jid=:jid and id_account=:acc");
-    query.bindValue(":acc", params.at(0).toInt());
-    query.bindValue(":value",params.at(3));
-    query.bindValue(":jid",params.at(1));
-    query.exec();
-    emit finished();
-    emit rosterChanged();
-    return ret;
-}
-
-bool DatabaseManager::updatePresence()
-{
-    QStringList params = parameters;
-    bool ret = false;
-    QSqlQuery query(db);
-    ret = query.prepare("UPDATE roster SET presence=:presence, resource=:resource, statusText=:statusText where jid=:jid and id_account=:acc");
-    query.bindValue(":acc", params.at(0).toInt());
-    query.bindValue(":presence",params.at(2));
-    query.bindValue(":resource",params.at(3));
-    query.bindValue(":statusText",params.at(4));
-    query.bindValue(":jid",params.at(1));
-    query.exec();
-    emit finished();
-    emit rosterChanged();
-    return ret;
-}
-
-bool DatabaseManager::clearPresence()
-{
-    QStringList params = parameters;
-    bool ret = false;
-    QSqlQuery query(db);
-    ret = query.prepare("UPDATE roster SET presence=:presence, resource=:resource, statusText=:statusText where id_account=:acc");
-    query.bindValue(":acc", params.at(0).toInt());
-    query.bindValue(":presence",params.at(1));
-    query.bindValue(":resource",params.at(2));
-    query.bindValue(":statusText",params.at(3));
-    query.exec();
-    emit finished();
-    emit rosterChanged();
-    return ret;
-}
-
-bool DatabaseManager::deleteContact()
-{
-    QStringList params = parameters;
-    bool ret = false;
-    QSqlQuery query(db);
-    if (databaseOpen)
-        ret = query.exec("DELETE FROM roster WHERE jid='" + params.at(1) + "' and id_account =" + params.at(0));
-
-    emit finished();
-    emit rosterChanged();
-    return ret;
-}
-
-bool DatabaseManager::incUnreadMessage()
-{
-    QStringList params = parameters;
-    bool ret = false;
-    QSqlQuery query(db);
-    if (databaseOpen) {
-        query.exec("select unreadMsg from roster where jid = '" + params.at(1) + "' and id_account =" + params.at(0));
-        SqlQueryModel unreadMsgCount;
-        unreadMsgCount.setQuery(query);
-
-        int nCount = unreadMsgCount.record(0).value("unreadMsg").toInt()+1;
-
-        ret = query.exec("UPDATE roster SET unreadMsg='" + QString::number(nCount) + "' where jid='" + params.at(1) + "' and id_account =" + params.at(0) );
-    }
-    emit finished();
-    emit rosterChanged();
-    return ret;
-}
-
-int DatabaseManager::getUnreadCount(int acc)
-{
-    QSqlQuery query(db);
-    int count = 0;
-    if (databaseOpen) {
-        query.exec("select SUM(unreadMsg) from roster where id_account = " + QString::number(acc));
-        SqlQueryModel unreadMsgCount;
-        unreadMsgCount.setQuery(query);
-        count = unreadMsgCount.record(0).value("SUM(unreadMsg)").toInt();
-    }
-    emit finished();
-    return count;
 }
 
 /*******************************************************************************/

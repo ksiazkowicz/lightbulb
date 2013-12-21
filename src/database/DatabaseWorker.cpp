@@ -45,8 +45,7 @@ DatabaseWorker::DatabaseWorker(QObject *parent) :
     sqlMessages = new SqlQueryModel( 0 );
 
     // populates queryType list so I could use switch with QStrings. I like switches.
-    queryType << "begin" << "end" << "insertMessage" << "insertContact" << "deleteContact" <<
-                 "updateContact" << "updatePresence" << "incUnreadMessage" << "setChatInProgress" << "clearPresence";
+    queryType << "begin" << "end" << "insertMessage";
 }
 
 void DatabaseWorker::executeQuery(QStringList& query) {
@@ -74,13 +73,6 @@ void DatabaseWorker::executeQuery(QStringList& query) {
             QSqlQuery("end",database->db);
             break;
         case 2: database->insertMessage(); break;
-        case 3: database->insertContact(); break;
-        case 4: database->deleteContact(); break;
-        case 5: database->updateContact(); break;
-        case 6: database->updatePresence(); break;
-        case 7: database->incUnreadMessage(); break;
-        case 8: database->setChatInProgress(); break;
-        case 9: database->clearPresence(); break;
         default:
             #ifdef QT_DEBUG
             qDebug() << "DatabaseWorker::executeQuery(): query " + query.at(0) + " not recognized.";

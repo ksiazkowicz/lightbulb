@@ -201,7 +201,6 @@ PageStackWindow {
                 }
 
                 xmppClient.accountId = j;
-                globalUnreadCount = xmppClient.getUnreadCount()
                 notify.updateChatsIcon()
 
                 console.log("QML: main::initAccount():" + xmppClient.myBareJid + "/" + xmppClient.resource);
@@ -238,7 +237,7 @@ PageStackWindow {
 
     Notifications { id: notify }
 
-    StatusBar { id: sbar; x: 0; y: -main.y; opacity: showStatusBar ? 1 : 0
+    StatusBar { id: sbar; y: -main.y
         Rectangle {
                   anchors { left: parent.left; leftMargin: 6; verticalCenter: parent.verticalCenter }
                   width: sbar.width - 183; height: parent.height
@@ -249,7 +248,6 @@ PageStackWindow {
                       id: statusBarText
                       anchors.verticalCenter: parent.verticalCenter
                       maximumLineCount: 1
-                      x: 0
                       color: "white"
                       font.pointSize: 6
                     }
@@ -313,8 +311,6 @@ PageStackWindow {
     /***************(overlay)**********/
     Rectangle {
         color: main.platformInverted ? "white" : "black"
-        opacity: 0.5
-        Behavior on opacity { PropertyAnimation { duration: 500 } }
         anchors.fill: parent
 
         visible: connecting
@@ -324,12 +320,10 @@ PageStackWindow {
             running: true
         }
         Text {
-            id: rosterUpdate
             text: "Connecting..."
             anchors { horizontalCenter: parent.horizontalCenter; top: busyindicator1.bottom; topMargin: 15 }
             color: main.textColor
             font.pixelSize: 20
-            visible: connecting
         }
     }
 }

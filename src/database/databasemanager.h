@@ -62,16 +62,12 @@ public:
 
     signals:
         void finished();
-        void rosterChanged();
         void messagesChanged();
-        void chatsChanged();
 
     public:
         bool deleteDB();
 
         // create database structure
-        bool mkAccTable();
-        bool mkRosterTable();
         bool mkMessagesTable();
         QSqlError lastError();
         QSqlDatabase db;
@@ -81,19 +77,7 @@ public:
         Q_INVOKABLE bool initDB();
         bool insertMessage();
 
-        bool insertContact();
-        bool deleteContact();
-        bool setChatInProgress();
-        bool updateContact();
-        bool updatePresence();
-        bool incUnreadMessage();
-        int getUnreadCount(int acc);
-        bool clearPresence();
-
         void getLastError();
-
-        bool insertAccount(QString jid, QString pass, QString resource, int manualHostPort, int enabled, QString host, int port);
-
     };
 
 #endif // DATABASEMANAGER_H

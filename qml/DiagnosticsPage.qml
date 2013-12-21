@@ -16,7 +16,7 @@ Page {
         width: parent.width - 20
         height: 64
         color: main.textColor
-        text: "This option will remove all the archived messages and contact list cache."
+        text: "This option will remove all the archived messages."
         verticalAlignment: Text.AlignVCenter
         wrapMode: Text.WordWrap
         anchors { top: removeDb.bottom; horizontalCenterOffset: 1; horizontalCenter: parent.horizontalCenter }
