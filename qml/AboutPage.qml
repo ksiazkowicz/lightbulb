@@ -34,20 +34,11 @@ Page {
     }
 
     Text {
-        id: myName
-        anchors { top: programName.bottom; horizontalCenterOffset: 2; horizontalCenter: parent.horizontalCenter }
+        id: names
+        anchors { top: programName.bottom; horizontalCenterOffset: 2; horizontalCenter: parent.horizontalCenter; leftMargin: 10; rightMargin: 10; left: parent.left; right: parent.right }
         color: main.textColor
         wrapMode: Text.Wrap
-        text: "Maciej Janiszewski (pisarzk@gmail.com)"
-        font.pixelSize: platformStyle.fontSizeSmall
-        horizontalAlignment: Text.AlignHCenter
-    }
-
-    Text {
-        id: authorName
-        color: main.textColor
-        text: "Fabian Hüllmantel"
-        anchors { top: myName.bottom; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
+        text: "Maciej Janiszewski (pisarzk@gmail.com) with help from Fabian Hüllmantel and Paul Wallace\nbased on MeegIM by Anatoliy Kozlov"
         font.pixelSize: platformStyle.fontSizeSmall
         horizontalAlignment: Text.AlignHCenter
     }
@@ -69,7 +60,7 @@ Page {
         color: main.textColor
         text: qsTr("During development of this software, no mobile device was harmed.")
         width: parent.width
-        anchors { top: authorName.bottom; topMargin: 64; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
+        anchors { top: names.bottom; topMargin: 24; horizontalCenter: parent.horizontalCenter }
         wrapMode: Text.WordWrap
         font.pixelSize: platformStyle.fontSizeSmall
         horizontalAlignment: Text.AlignHCenter
@@ -82,6 +73,15 @@ Page {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: { statusBarText.text = "Contacts"
                 pageStack.pop() }
+        }
+    }
+
+    Button {
+        anchors { horizontalCenter: parent.horizontalCenter; top: niceInfo.top; topMargin: 64 }
+        text: "Donate"
+        onClicked: {
+            main.url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SA8DZYA7PUCCU";
+            linkContextMenu.open()
         }
     }
 }

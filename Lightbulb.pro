@@ -51,7 +51,8 @@ symbian {
             -lapmime \
             -lefsrv \
             -leuser \
-            -lcommondialogs
+            -lcommondialogs \
+            -lesock
 }
 
 # If your application uses the Qt Mobility libraries, uncomment the following
