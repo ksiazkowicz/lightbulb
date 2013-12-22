@@ -25,18 +25,17 @@ Page {
 
     Text {
         id: programName
-        color: main.textColor
+        color: vars.textColor
         text: "Lightbulb " + xmppClient.version + " β"
         anchors { top: logo.bottom; topMargin: 5; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
         horizontalAlignment: Text.AlignHCenter
         font.pixelSize: platformStyle.fontSizeMedium*1.5
-
     }
 
     Text {
         id: names
         anchors { top: programName.bottom; horizontalCenterOffset: 2; horizontalCenter: parent.horizontalCenter; leftMargin: 10; rightMargin: 10; left: parent.left; right: parent.right }
-        color: main.textColor
+        color: vars.textColor
         wrapMode: Text.Wrap
         text: "Maciej Janiszewski (pisarzk@gmail.com) with help from Fabian Hüllmantel and Paul Wallace\nbased on MeegIM by Anatoliy Kozlov"
         font.pixelSize: platformStyle.fontSizeSmall
@@ -57,7 +56,7 @@ Page {
 
     Text {
         id: niceInfo
-        color: main.textColor
+        color: vars.textColor
         text: qsTr("During development of this software, no mobile device was harmed.")
         width: parent.width
         anchors { top: names.bottom; topMargin: 24; horizontalCenter: parent.horizontalCenter }
@@ -80,7 +79,7 @@ Page {
         anchors { horizontalCenter: parent.horizontalCenter; top: niceInfo.top; topMargin: 64 }
         text: "Donate"
         onClicked: {
-            main.url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SA8DZYA7PUCCU";
+            vars.url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SA8DZYA7PUCCU";
             linkContextMenu.open()
         }
     }

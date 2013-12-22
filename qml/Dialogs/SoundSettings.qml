@@ -24,7 +24,7 @@ CommonDialog {
                 Text {
                     id: volumeText
                     text: "Volume (" + volumeSlider.value + "%)"
-                    color: main.textColor
+                    color: vars.textColor
                 }
                 Slider {
                     id: volumeSlider
@@ -32,12 +32,12 @@ CommonDialog {
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: parent.width
                     maximumValue: 100
-                    value: settings.gInt("notifications", nowEditing + "Volume")
+                    value: settings.gInt("notifications", vars.vars.nowEditing + "Volume")
                     orientation: 1
                     platformInverted: main.platformInverted
 
                     onValueChanged: {
-                        settings.sInt(value,"notifications", nowEditing + "Volume")
+                        settings.sInt(value,"notifications", vars.vars.nowEditing + "Volume")
                     }
                 }
                 Button {

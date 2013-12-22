@@ -99,7 +99,7 @@ Page {
                         width: container.width
                         text: xmppClient.contactName
                         wrapMode: Text.Wrap
-                        color: main.textColor
+                        color: vars.textColor
                     }
                     Row {
                         spacing: 5
@@ -128,7 +128,7 @@ Page {
                 anchors { left: parent.left; leftMargin: 10 }
                 text: vCardNickName != "" ? "<b>" + qsTr("Nickname") + "</b><br />" + vCardNickName : ""
                 font.pixelSize: 18
-                color: main.textColor
+                color: vars.textColor
                 visible: text != ""
             }
             Rectangle {
@@ -144,7 +144,7 @@ Page {
                 anchors { left: parent.left; leftMargin: 10 }
                 text: vCardName != "" ? "<b>" + qsTr("Name") + "</b><br />" + vCardName : ""
                 font.pixelSize: 18
-                color: main.textColor
+                color: vars.textColor
                 visible: text != ""
             }
             Rectangle {
@@ -160,7 +160,7 @@ Page {
                 text: vCardMiddleName != "" ? "<b>" + qsTr("Middle name") + "</b><br />" + vCardMiddleName : ""
                 anchors { left: parent.left; leftMargin: 10 }
                 font.pixelSize: 18
-                color: main.textColor
+                color: vars.textColor
                 visible: text != ""
             }
             Rectangle {
@@ -176,7 +176,7 @@ Page {
                 anchors { left: parent.left; leftMargin: 10 }
                 text: vCardLastName != "" ? "<b>" + qsTr("Lastname") + "</b><br />" + vCardLastName : ""
                 font.pixelSize: 18
-                color: main.textColor
+                color: vars.textColor
                 visible: text != ""
             }
             Rectangle {
@@ -192,7 +192,7 @@ Page {
                 anchors { left: parent.left; leftMargin: 10 }
                 text: vCardFullName != "" ? "<b>" + qsTr("Full name") + "</b><br />" + vCardFullName : ""
                 font.pixelSize: 18
-                color: main.textColor
+                color: vars.textColor
                 visible: text != ""
             }
             Rectangle {
@@ -208,7 +208,7 @@ Page {
                 anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10 }
                 text: "<b>" + qsTr("Jabber ID") + "</b><br />" + bareJid
                 font.pixelSize: 18
-                color: main.textColor
+                color: vars.textColor
                 width: parent.width
                 wrapMode: Text.WrapAnywhere
             }
@@ -224,7 +224,7 @@ Page {
                 anchors { left: parent.left; leftMargin: 10 }
                 text: vCardEmail != "" ? "<b>" + qsTr("E-mail") + "</b><br />" + vCardEmail : ""
                 font.pixelSize: 18
-                color: main.textColor
+                color: vars.textColor
                 visible: text != ""
             }
             Rectangle {
@@ -240,7 +240,7 @@ Page {
                 anchors { left: parent.left; leftMargin: 10 }
                 text: vCardBirthday != "" ? "<b>" + qsTr("Birthday") + "</b><br />" + vCardBirthday : ""
                 font.pixelSize: 18
-                color: main.textColor
+                color: vars.textColor
                 visible: text != ""
             }
             Rectangle {
@@ -256,11 +256,11 @@ Page {
                 anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10 }
                 text: vCardUrl != "" ? "<b>" + qsTr("Website") + "</b><br /><a href=\"" + vCardUrl + "\">" + vCardUrl + "</a>" : ""
                 font.pixelSize: 18
-                color: main.textColor
+                color: vars.textColor
                 wrapMode: Text.WrapAnywhere
                 width: parent.width
                 visible: text != ""
-                onLinkActivated: { main.url=link; linkContextMenu.open()}
+                onLinkActivated: { vars.url=link; linkContextMenu.open()}
             }
 
 

@@ -9,6 +9,7 @@
         <file alias="unread-count">images/unread-count.svg</file>
         <file alias="unread-mark">images/unread-mark.svg</file>
         <file alias="unread-mark_inverse">images/unread-mark_inverse.svg</file>
+        <file>qml/Globals.qml</file>
     </qresource>
     <qresource prefix="/smileys">
         <file alias=":@">images/smileys/angry.png</file>
@@ -54,18 +55,17 @@
         <file alias="Settings/Vibration">qml/Dialogs/VibrationSettings.qml</file>
         <file alias="Chats">qml/Dialogs/Chats.qml</file>
         <file alias="Close">qml/Dialogs/CloseDialog.qml</file>
-        <file alias="MuteNotifications">qml/Dialogs/MuteNotifications.qml</file>
     </qresource>
     <qresource prefix="/pages">
-        <file alias="About">qml/AboutPage.qml</file>
-        <file alias="AccountsAdd">qml/AccountAddPage.qml</file>
-        <file alias="Accounts">qml/AccountsPage.qml</file>
-        <file alias="Archive">qml/ArchivePage.qml</file>
-        <file alias="Messages">qml/MessagesPage.qml</file>
-        <file alias="Roster">qml/RosterPage.qml</file>
-        <file alias="Settings">qml/SettingsPage.qml</file>
-        <file alias="VCard">qml/VCardPage.qml</file>
-        <file alias="Diagnostics">qml/DiagnosticsPage.qml</file>
+        <file alias="About">qml/Pages/AboutPage.qml</file>
+        <file alias="AccountsAdd">qml/Pages/AccountAddPage.qml</file>
+        <file alias="Accounts">qml/Pages/AccountsPage.qml</file>
+        <file alias="Archive">qml/Pages/ArchivePage.qml</file>
+        <file alias="Messages">qml/Pages/MessagesPage.qml</file>
+        <file alias="Roster">qml/Pages/RosterPage.qml</file>
+        <file alias="Settings">qml/Pages/SettingsPage.qml</file>
+        <file alias="VCard">qml/Pages/VCardPage.qml</file>
+        <file alias="Diagnostics">qml/Pages/DiagnosticsPage.qml</file>
     </qresource>
     <qresource prefix="/toolbar">
         <file alias="close">images/toolbar/toolbar-close.svg</file>

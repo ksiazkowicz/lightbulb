@@ -14,8 +14,7 @@ CommonDialog {
 
         Component.onCompleted: {
             open()
-            main.splitscreenY = 0
-            colStatus.selectedIndex = main.lastUsedStatus
+            colStatus.selectedIndex = vars.lastUsedStatus
         }
 
         onButtonClicked: {
@@ -34,22 +33,20 @@ CommonDialog {
                 default: ret = XmppClient.Unknown; break;
             }
 
-            if (notify.getStatusName() === "Offline" && ret !== XmppClient.Offline) {
-                main.connecting = true;
-            }
+            if (notify.getStatusName() === "Offline" && ret !== XmppClient.Offline) vars.connecting = true;
 
             xmppClient.setMyPresence( ret, wrapperTextEdit.text )
-            main.lastStatus = wrapperTextEdit.text
-            main.lastUsedStatus = colStatus.selectedIndex
+            vars.lastStatus = wrapperTextEdit.text
+            vars.lastUsedStatus = colStatus.selectedIndex
 
-            if (storeStatus) { settings.sStr(wrapperTextEdit.text,"behavior","lastStatusText") } else { settings.sStr("","behavior","lastStatusText") }
+            if (storeStatus) settings.sStr(wrapperTextEdit.text,"behavior","lastStatusText")
+            else settings.sStr("","behavior","lastStatusText")
         }
 
-        content: Rectangle {
+        content: Item {
             width: parent.width-20
             height: 200
             anchors.horizontalCenter: parent.horizontalCenter
-            color: "transparent"
 
             TumblerColumn {
                 id: colStatus
@@ -88,7 +85,7 @@ CommonDialog {
                 height: 50
                 anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
                 placeholderText: qsTr("Status text")
-                text: main.lastStatus
+                text: vars.lastStatus
             }
         }
     }

@@ -105,8 +105,10 @@ HEADERS += src/xmpp/MyXmppClient.h \
 OTHER_FILES += README.md \
     qml/Dialogs/*.* \
     qml/*.* \
+    qml/Pages/*.* \
     qml/FirstRun/*.* \
-    qml/JavaScript/*.*
+    qml/JavaScript/*.* \
+    qml/Globals.qml
 
 
 # Please do not modify the following two lines. Required for deployment.

@@ -96,10 +96,10 @@ Page {
                     width: parent.width
                     maximumLineCount: (rosterItemHeight/22) > 1 ? (rosterItemHeight/22) : 1
                     text: (name === "" ? jid : name) + (showContactStatusText ? ("\n" + statusText) : "")
-                    onLinkActivated: { main.url=link; linkContextMenu.open()}
+                    onLinkActivated: { vars.url=link; linkContextMenu.open()}
                     wrapMode: Text.Wrap
                     font.pixelSize: (showContactStatusText ? 16 : 0)
-                    color: main.textColor
+                    color: vars.textColor
             }
             MouseArea {
                 id: mouseAreaItem;
@@ -108,8 +108,8 @@ Page {
                 onClicked: {
                     xmppClient.chatJid = jid
                     xmppClient.contactName = txtJid.contact
-                    main.globalUnreadCount = main.globalUnreadCount - unreadMsg
-                    notify.postHSWidget()
+                    vars.globalUnreadCount = vars.globalUnreadCount - unreadMsg
+                    notify.updateNotifiers()
                     main.pageStack.push( "qrc:/pages/Messages" )
                 }
 
@@ -134,7 +134,7 @@ Page {
             Rectangle {
                 height: 1
                 anchors { top: parent.bottom; left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
-                color: main.textColor
+                color: vars.textColor
                 opacity: 0.2
             }
         } //Rectangle
@@ -265,13 +265,13 @@ Page {
             State {
                 name: "Visible"; when: inputContext.visible
                 PropertyChanges { target: splitViewInput; height: inputContext.height - toolBarLayout.height }
-                PropertyChanges { target: main; inputInProgress: true }
+                PropertyChanges { target: vars; inputInProgress: true }
             },
 
             State {
                 name: "Hidden"; when: !inputContext.visible
                 PropertyChanges { target: splitViewInput; }
-                PropertyChanges { target: main; inputInProgress: false }
+                PropertyChanges { target: vars; inputInProgress: false }
             }
         ]
     }
@@ -280,17 +280,14 @@ Page {
         id: toolBarLayout
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
-            smooth: true
             onClicked: dialog.create("qrc:/dialogs/Close")
         }
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-add_inverse" : "toolbar-add"
-            smooth: true
             onClicked: dialog.create("qrc:/dialogs/Contact/Add")
         }
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-search_inverse" : "toolbar-search"
-            smooth: true
             onClicked: {
                 if (rosterSearch.height == 50) {
                     rosterSearch.height = 0;
@@ -301,7 +298,6 @@ Page {
         ToolButton {
             id: toolBarButtonChats
             iconSource: main.platformInverted ? "qrc:/toolbar/chats_inverse" : "qrc:/toolbar/chats"
-            smooth: true
             onClicked: dialog.create("qrc:/dialogs/Chats")
 
             Image {
@@ -312,15 +308,15 @@ Page {
                 sourceSize.height: toolBarButtonChats.width
                 width: toolBarButtonChats.width
                 height: toolBarButtonChats.width
-                visible: globalUnreadCount != 0
+                visible: vars.globalUnreadCount != 0
                 anchors.centerIn: parent
             }
             Text {
                 id: txtUnreadMsg
-                text: globalUnreadCount
+                text: vars.globalUnreadCount
                 font.pixelSize: 16
                 anchors.centerIn: parent
-                visible: globalUnreadCount != 0
+                visible: vars.globalUnreadCount != 0
                 z: 1
                 color: main.platformInverted ? "white" : "black"
             }
@@ -329,9 +325,7 @@ Page {
             id: toolBarButtonOptions
             iconSource: main.platformInverted ? "toolbar-menu_inverse" : "toolbar-menu"
             smooth: true
-            onClicked: {
-                rosterMenu.open()
-            }
+            onClicked: rosterMenu.open()
         }
     }
 
@@ -352,7 +346,7 @@ Page {
             visible: xmppClient.status == XmppClient.Offline
             Text {
                 id: sadface
-                color: main.textColor
+                color: vars.textColor
                 anchors { top: parent.top; left: parent.left }
                 visible: parent.visible
                 text: ":("
@@ -360,7 +354,7 @@ Page {
             }
             Text {
                 id: offlineText
-                color: main.textColor
+                color: vars.textColor
                 anchors { top: sadface.bottom; horizontalCenter: parent.horizontalCenter; topMargin: 5 }
                 visible: parent.visible
                 text: "You're offline"
@@ -368,7 +362,7 @@ Page {
             }
             Text {
                 id: errorText
-                color: main.textColor
+                color: vars.textColor
                 anchors { top: offlineText.bottom; topMargin: 10 }
                 visible: parent.visible
                 text: ""

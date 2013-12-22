@@ -6,36 +6,12 @@ import "qrc:/JavaScript/EmoticonInterpreter.js" as Emotion
 Page {
     id: messagesPage
     tools: toolBar
-    property string resourceJid: ""
 
     Component.onCompleted: {
         xmppClient.openChat( xmppClient.chatJid )
 
         statusBarText.text = xmppClient.contactName
-
-        if( xmppClient.bareJidLastMsg == xmppClient.chatJid ) {
-            messagesPage.resourceJid = xmppClient.resourceLastMsg
-        }
-
-        if( messagesPage.resourceJid == "" ) {
-            listModelResources.append( {resource:qsTr("(by default)"), checked:true} )
-        } else {
-            listModelResources.append( {resource:qsTr("(by default)"), checked:false} )
-        }
-
-        if (notify.getStatusName() != "Offline") {
-            var listResources = xmppClient.getResourcesByJid(xmppClient.chatJid)
-            for( var z=0; z<listResources.length; z++ )
-            {
-                if( listResources[z] == "" ) { continue; }
-                if( messagesPage.resourceJid ==listResources[z] ) {
-                    listModelResources.append( {resource:listResources[z], checked:true} )
-                } else {
-                    listModelResources.append( {resource:listResources[z], checked:false} )
-                }
-           }
-        }
-        main.isChatInProgress = true
+        vars.isChatInProgress = true
     }
     /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
     Component {
@@ -53,10 +29,10 @@ Page {
                   id: message
                   anchors { top: parent.top; left: parent.left; right: parent.right }
                   text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (xmppClient.contactName === "" ? xmppClient.chatJid : xmppClient.contactName) ) + ":</font> " + Emotion.parseEmoticons(msgText)
-                  color: main.textColor
+                  color: vars.textColor
                   font.pixelSize: 16
                   wrapMode: Text.Wrap
-                  onLinkActivated: { main.url=link; linkContextMenu.open()}
+                  onLinkActivated: { vars.url=link; linkContextMenu.open()}
             }
             Text {
                   id: time
@@ -67,29 +43,8 @@ Page {
             }
 
             width: listViewMessages.width - 10
-
-            states: State {
-                name: "Current"
-                when: (wrapper.ListView.isCurrentItem )
-            }
         }
     } //Component
-    /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
-    function sendMessage() {
-        var ret = xmppClient.sendMyMessage( xmppClient.chatJid, messagesPage.resourceJid, txtMessage.text )
-        if( ret ) {
-              flSendMsg = true
-              timerTextTyping.stop()
-              txtMessage.text = ""
-              flTyping = false
-              flSendMsg = false
-              main.notifySndVibr("MsgSent")
-        }
-    }
-    /* --------------------( resources )-------------------- */
-    ListModel {
-        id: listModelResources
-    }
 
     /* ------------( XMPP client and stuff )------------ */
     Connections {
@@ -97,9 +52,7 @@ Page {
         onMessageReceived: {
             if( xmppClient.bareJidLastMsg == xmppClient.chatJid ) {
                 messagesPage.resourceJid = xmppClient.resourceLastMsg
-                if (settings.gBool("behavior","enableHsWidget")) {
-                    notify.postHSWidget()
-                }
+                notify.updateNotifiers()
             }
         }
     }
@@ -108,9 +61,7 @@ Page {
     Timer {
         running: true
         interval: 30
-        onTriggered: {
-            flickable.contentY = flickable.contentHeight-flickable.height;
-        }
+        onTriggered:  flickable.contentY = flickable.contentHeight-flickable.height;
     }
 
     Flickable {
@@ -131,9 +82,7 @@ Page {
             spacing: 2
         }
 
-        Component.onCompleted: {
-            contentY = contentHeight-height;
-        }
+        Component.onCompleted: contentY = contentHeight-height;
     }
    /********************************( Toolbar )************************************/
     ToolBarLayout {
@@ -153,9 +102,7 @@ Page {
                 iconSource: main.platformInverted ? "toolbar-previous_inverse" : "toolbar-previous"
                 enabled: xmppClient.messagesCount - (xmppClient.page*20)> 0
                 opacity: enabled ? 1 : 0.2
-                onClicked: {
-                   xmppClient.page++;
-                }
+                onClicked: xmppClient.page++;
             }
             ToolButton {
                 iconSource: main.platformInverted ? "toolbar-next_inverse" : "toolbar-next"
@@ -182,15 +129,15 @@ Page {
                 sourceSize.height: parent.width
                 width: parent.width
                 height: parent.width
-                visible: globalUnreadCount != 0
+                visible: vars.globalUnreadCount != 0
                 anchors.centerIn: parent
             }
             Text {
                 id: txtUnreadMsg
-                text: globalUnreadCount
+                text: vars.globalUnreadCount
                 font.pixelSize: 16
                 anchors.centerIn: parent
-                visible: globalUnreadCount != 0
+                visible: vars.globalUnreadCount != 0
                 z: 1
                 color: main.platformInverted ? "white" : "black"
             }

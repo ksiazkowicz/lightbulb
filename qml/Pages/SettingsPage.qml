@@ -39,7 +39,7 @@ Page {
 
                     Text {
                         text: "Message received"
-                        color: main.textColor
+                        color: vars.textColor
                     }
                     Rectangle {
                         width: tabNotifications.width-20
@@ -59,7 +59,7 @@ Page {
                             anchors.right: parent.right
                             iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
-                                main.nowEditing = "vibraMsgRecv"
+                                vars.nowEditing = "vibraMsgRecv"
                                 dialog.create("qrc:/dialogs/Settings/Vibration")
                             }
                         }
@@ -82,7 +82,7 @@ Page {
                             anchors.right: parent.right
                             iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
-                                main.nowEditing = "soundMsgRecv"
+                                vars.nowEditing = "soundMsgRecv"
                                 dialog.create("qrc:/dialogs/Settings/Sound")
                             }
                         }
@@ -135,7 +135,7 @@ Page {
                     //
                     Text {
                         text: "Message sent"
-                        color: main.textColor
+                        color: vars.textColor
                     }
                     Rectangle {
                         width: tabNotifications.width-20
@@ -155,7 +155,7 @@ Page {
                             anchors.right: parent.right
                             iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
-                                main.nowEditing = "vibraMsgSent"
+                                vars.nowEditing = "vibraMsgSent"
                                 dialog.create("qrc:/dialogs/Settings/Vibration")
                             }
                         }
@@ -179,7 +179,7 @@ Page {
                             anchors.right: parent.right
                             iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
-                                main.nowEditing = "soundMsgSent"
+                                vars.nowEditing = "soundMsgSent"
                                 dialog.create("qrc:/dialogs/Settings/Sound")
                             }
                         }
@@ -187,7 +187,7 @@ Page {
 
                     Text {
                         text: "Connecting changed"
-                        color: main.textColor
+                        color: vars.textColor
                     }
                     CheckBox {
                         id: notifyOnline
@@ -217,7 +217,7 @@ Page {
                             anchors.right: parent.right
                             iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
-                                main.nowEditing = "soundNotifyConn"
+                                vars.nowEditing = "soundNotifyConn"
                                 dialog.create("qrc:/dialogs/Settings/Sound")
                             }
                         }
@@ -225,7 +225,7 @@ Page {
 
                     Text {
                         text: "Subscription request"
-                        color: main.textColor
+                        color: vars.textColor
                     }
                     Rectangle {
                         width: tabNotifications.width-20
@@ -245,7 +245,7 @@ Page {
                             anchors.right: parent.right
                             iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
-                                main.nowEditing = "soundMsgSub"
+                                vars.nowEditing = "soundMsgSub"
                                 dialog.create("qrc:/dialogs/Settings/Sound")
                             }
                         }
@@ -270,7 +270,7 @@ Page {
                             anchors.right: parent.right
                             iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                             onClicked: {
-                                main.nowEditing = "vibraMsgSub"
+                                vars.nowEditing = "vibraMsgSub"
                                 dialog.create("qrc:/dialogs/Settings/Vibration")
                             }
                         }
@@ -289,7 +289,7 @@ Page {
                     //
                     Text {
                         text: "Contact is typing"
-                        color: main.textColor
+                        color: vars.textColor
                     }
                     CheckBox {
                         id: notifyBoxTyping
@@ -326,7 +326,7 @@ Page {
                        onCheckedChanged: {
                           settings.sBool(checked,"ui", "invertPlatform")
                           main.platformInverted = checked
-                          main.textColor = checked ? platformStyle.colorNormalDark : platformStyle.colorNormalLight
+                          vars.textColor = checked ? platformStyle.colorNormalDark : platformStyle.colorNormalLight
                        }
                     }
                     CheckBox {
@@ -387,7 +387,7 @@ Page {
                     Text {
                         id: rosterItemHeightText
                         text: "Roster item height (" + rosterItemHeight.value + " px)"
-                        color: main.textColor
+                        color: vars.textColor
                     }
                     Slider {
                             id: rosterItemHeight
@@ -436,7 +436,7 @@ Page {
                         text: qsTr("Keep alive interval (secs)")
                         font.pixelSize: 20
                         font.bold: true
-                        color: main.textColor
+                        color: vars.textColor
                     }
                     TextField {
                         id: tiKeepAlive

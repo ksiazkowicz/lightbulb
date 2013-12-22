@@ -15,10 +15,10 @@ CommonDialog {
     }
 
     content: Text {
-        color: main.textColor
+        color: vars.textColor
         id: dialogQueryLabel;
         wrapMode: Text.Wrap;
         anchors { left: parent.left; right: parent.right; leftMargin: 10; rightMargin:10; verticalCenter: parent.verticalCenter }
-        text: qsTr("Are you sure you want to remove ") + dialogName + qsTr(" from your contact list?");
+        text: qsTr("Are you sure you want to remove ") + vars.dialogName + qsTr(" from your contact list?");
     }
 }

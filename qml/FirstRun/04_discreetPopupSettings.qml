@@ -10,7 +10,7 @@ Page {
 
     Text {
         id: chapter
-        color: main.textColor
+        color: vars.textColor
         anchors { top: parent.top; topMargin: 32; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
         horizontalAlignment: Text.AlignHCenter
         font.pixelSize: platformStyle.fontSizeMedium*1.5
@@ -19,7 +19,7 @@ Page {
 
     Text {
         id: text
-        color: main.textColor
+        color: vars.textColor
         anchors { top: chapter.bottom; topMargin: 24; left: parent.left; right: parent.right; leftMargin: 10; rightMargin: 10 }
         wrapMode: Text.WordWrap
         font.pixelSize: 20
@@ -104,7 +104,7 @@ Page {
         x: 10
         y: 453
         width: 177
-        color: main.textColor
+        color: vars.textColor
         text: qsTr("Switch to app on interaction")
         verticalAlignment: Text.AlignTop
         horizontalAlignment: Text.AlignLeft

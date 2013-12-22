@@ -13,31 +13,23 @@ Page {
         xmppClient.page = 1
         console.log( xmppClient.chatJid )
         xmppClient.openChat( xmppClient.chatJid )
-        notify.updateChatsIcon();
 
         statusBarText.text = xmppClient.contactName
 
         if( xmppClient.bareJidLastMsg == xmppClient.chatJid ) messagesPage.resourceJid = xmppClient.resourceLastMsg
 
-        if( messagesPage.resourceJid == "" ) {
-            listModelResources.append( {resource:qsTr("(by default)"), checked:true} )
-        } else {
-            listModelResources.append( {resource:qsTr("(by default)"), checked:false} )
-        }
+        if( messagesPage.resourceJid == "" ) listModelResources.append( {resource:qsTr("(by default)"), checked:true} )
+        else listModelResources.append( {resource:qsTr("(by default)"), checked:false} )
 
         if (notify.getStatusName() != "Offline") {
             var listResources = xmppClient.getResourcesByJid(xmppClient.chatJid)
-            for( var z=0; z<listResources.length; z++ )
-            {
-                if( listResources[z] == "" ) { continue; }
-                if( messagesPage.resourceJid ==listResources[z] ) {
-                    listModelResources.append( {resource:listResources[z], checked:true} )
-                } else {
-                    listModelResources.append( {resource:listResources[z], checked:false} )
-                }
+            for( var z=0; z<listResources.length; z++ ) {
+                if ( listResources[z] == "" ) { continue; }
+                if ( messagesPage.resourceJid ==listResources[z] ) listModelResources.append( {resource:listResources[z], checked:true} )
+                else listModelResources.append( {resource:listResources[z], checked:false} )
            }
         }
-        main.isChatInProgress = true
+        vars.isChatInProgress = true
     }
     /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
     Component {
@@ -123,7 +115,7 @@ Page {
                   color: isMine == true ? "white" : "black"
                   font.pixelSize: 16
                   wrapMode: Text.Wrap
-                  onLinkActivated: { main.url=link; linkContextMenu.open()}
+                  onLinkActivated: { vars.url=link; linkContextMenu.open()}
             }
             Text {
                   id: time
@@ -135,20 +127,6 @@ Page {
             }
 
             width: listViewMessages.width - 10
-
-            SequentialAnimation {
-                id: animCit
-                NumberAnimation { target: wrapper; property: "rotation"; to:  0.8; duration: 35 }
-                NumberAnimation { target: wrapper; property: "rotation"; to: -0.8; duration: 70 }
-                NumberAnimation { target: wrapper; property: "rotation"; to:  0; duration: 30 }
-                loops: 3
-                alwaysRunToEnd: true
-            }
-
-            states: State {
-                name: "Current"
-                when: (wrapper.ListView.isCurrentItem )
-            }
         }
     } //Component
     /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
@@ -160,13 +138,12 @@ Page {
               txtMessage.text = ""
               flTyping = false
               flSendMsg = false
-              main.notifySndVibr("MsgSent")
+              xmppClient.typingStop( xmppClient.chatJid, messagesPage.resourceJid )
+              notify.notifySndVibr("MsgSent")
         }
     }
     /* --------------------( resources )-------------------- */
-    ListModel {
-        id: listModelResources
-    }
+    ListModel { id: listModelResources }
     /*--------------------( typing notifications )--------------------*/
     property bool flTyping: false
     property bool flSendMsg: false
@@ -190,9 +167,7 @@ Page {
         onMessageReceived: {
             if( xmppClient.bareJidLastMsg == xmppClient.chatJid ) {
                 messagesPage.resourceJid = xmppClient.resourceLastMsg
-                if (settings.gBool("behavior","enableHsWidget")) {
-                    notify.postHSWidget()
-                }
+                if (settings.gBool("behavior","enableHsWidget")) notify.updateNotifiers()
             }
         }
     }
@@ -201,9 +176,7 @@ Page {
     Timer {
         running: true
         interval: 30
-        onTriggered: {
-            flickable.contentY = flickable.contentHeight-flickable.height;
-        }
+        onTriggered: flickable.contentY = flickable.contentHeight-flickable.height;
     }
 
     Flickable {
@@ -222,17 +195,11 @@ Page {
             model: xmppClient.messages
             delegate: componentWrapperItem
             spacing: 5
-            onHeightChanged: {
-                flickable.contentY = flickable.contentHeight;
-            }
+            onHeightChanged: flickable.contentY = flickable.contentHeight;
         }
 
-        Component.onCompleted: {
-            contentY = contentHeight-height;
-        }
-        onHeightChanged: {
-            contentY = contentHeight;
-        }
+        Component.onCompleted: contentY = contentHeight-height;
+        onHeightChanged: contentY = contentHeight;
     }
     /*--------------------( Text input field )--------------------*/
     TextArea {
@@ -242,9 +209,6 @@ Page {
               anchors.right: parent.right;
               placeholderText: qsTr( "Tap here to enter message..." )
 
-              onActiveFocusChanged: {
-                  main.splitscreenY = 0
-              }
               onTextChanged: {
                   if (text.lenght > 0) { flTyping = true } else { flTyping = false }
 
@@ -271,13 +235,13 @@ Page {
             State {
                 name: "Visible"; when: inputContext.visible
                 PropertyChanges { target: splitViewInput; height: inputContext.height-toolBar.height }
-                PropertyChanges { target: main; inputInProgress: true }
+                PropertyChanges { target: vars; inputInProgress: true }
             },
 
             State {
                 name: "Hidden"; when: !inputContext.visible
                 PropertyChanges { target: splitViewInput; }
-                PropertyChanges { target: main; inputInProgress: false }
+                PropertyChanges { target: vars; inputInProgress: false }
             }
         ]
     }
@@ -288,7 +252,6 @@ Page {
         platformInverted: main.platformInverted
 
         content: ListView {
-                    id: listViewResources
                     anchors.fill: parent
                     height: (listModelResources.count*48)+1
                     highlightFollowsCurrentItem: false
@@ -315,7 +278,7 @@ Page {
                                 font.pixelSize: itemResource.height/2
                                 anchors.horizontalCenter: parent.horizontalCenter
                                 anchors.verticalCenter: parent.verticalCenter
-                                color: main.textColor
+                                color: vars.textColor
                                 font.bold: false
                             }
                             states: State {
@@ -330,18 +293,12 @@ Page {
                                 onClicked: {
                                     itemResource.ListView.view.currentIndex = index
 
-                                    if( index == 0 ) {
-                                        messagesPage.resourceJid = ""
-                                    } else {
-                                        messagesPage.resourceJid = resource
-                                    }
+                                    if( index == 0 ) messagesPage.resourceJid = ""
+                                    else messagesPage.resourceJid = resource
 
-                                    for( var i=0; i<listModelResources.count; i++ ) {
-                                        if( index == i ) {
-                                            listModelResources.get( index ).checked = true
-                                        } else {
-                                            listModelResources.get( index ).checked = false
-                                        }
+                                    for (var i=0; i<listModelResources.count; i++) {
+                                        if(index == i) listModelResources.get(index).checked = true
+                                        else listModelResources.get(index).checked = false
                                     }
                                     dlgResources.close()
                                 } //onClicked
@@ -359,15 +316,17 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
+                xmppClient.typingStop( xmppClient.chatJid, messagesPage.resourceJid )
                 pageStack.pop()
-                main.isChatInProgress = false
+                vars.isChatInProgress = false
                 statusBarText.text = "Contacts"
                 xmppClient.resetUnreadMessages( xmppClient.chatJid )
                 xmppClient.chatJid = ""
             }
             onPlatformPressAndHold: {
+                xmppClient.typingStop( xmppClient.chatJid, messagesPage.resourceJid )
                 pageStack.pop()
-                main.isChatInProgress = false
+                vars.isChatInProgress = false
                 xmppClient.closeChat(xmppClient.chatJid )
                 statusBarText.text = "Contacts"
                 xmppClient.resetUnreadMessages( xmppClient.chatJid )
@@ -379,9 +338,7 @@ Page {
             iconSource: main.platformInverted ? "qrc:/toolbar/send_inverse" : "qrc:/toolbar/send"
             opacity: enabled ? 1 : 0.5
             enabled: txtMessage.text != ""
-            onClicked: {
-                sendMessage()
-            }
+            onClicked: sendMessage()
         }
         ToolButton {
             iconSource: main.platformInverted ? "qrc:/toolbar/chats_inverse" : "qrc:/toolbar/chats"
@@ -397,24 +354,22 @@ Page {
                 sourceSize.height: parent.width
                 width: parent.width
                 height: parent.width
-                visible: globalUnreadCount != 0
+                visible: vars.globalUnreadCount != 0
                 anchors.centerIn: parent
             }
             Text {
                 id: txtUnreadMsg
-                text: globalUnreadCount
+                text: vars.globalUnreadCount
                 font.pixelSize: 16
                 anchors.centerIn: parent
-                visible: globalUnreadCount != 0
+                visible: vars.globalUnreadCount != 0
                 z: 1
                 color: main.platformInverted ? "white" : "black"
             }
         }
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-menu_inverse" : "toolbar-menu"
-            onClicked: {
-                msgOptions.open()
-            }
+            onClicked: msgOptions.open()
         }
     }
     /*********************************************************************/
@@ -426,9 +381,7 @@ Page {
             MenuItem {
                 text: qsTr("Set resource")
                 platformInverted: main.platformInverted
-                onClicked: {
-                    dlgResources.open();
-                }
+                onClicked: dlgResources.open()
             }
 
             MenuItem {
@@ -444,7 +397,7 @@ Page {
                 platformInverted: main.platformInverted
                 onClicked: {
                     pageStack.pop()
-                    main.isChatInProgress = false
+                    vars.isChatInProgress = false
                     xmppClient.closeChat(xmppClient.chatJid )
                     statusBarText.text = "Contacts"
                     xmppClient.resetUnreadMessages( xmppClient.chatJid )

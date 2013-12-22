@@ -26,7 +26,7 @@ CommonDialog {
 
         Text {
             id: queryLabel;
-            color: main.textColor
+            color: vars.textColor
             anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10; top: parent.top; topMargin: 10 }
             text: qsTr("Choose new name:");
         }
@@ -36,10 +36,6 @@ CommonDialog {
             height: 50
             anchors { bottom: parent.bottom; bottomMargin: 5; left: parent.left; right: parent.right }
             placeholderText: qsTr("New name")
-
-            onActiveFocusChanged: {
-                splitscreenY = 0
-            }
         }
     }
 }

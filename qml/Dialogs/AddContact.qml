@@ -1,3 +1,27 @@
+/********************************************************************
+
+qml/Dialogs/AddContact.qml
+-- Dialog for adding contacts
+
+Copyright (c) 2013 Maciej Janiszewski
+
+This file is part of Lightbulb.
+
+Lightbulb is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*********************************************************************/
+
 import QtQuick 1.1
 import com.nokia.symbian 1.1
 
@@ -5,53 +29,24 @@ CommonDialog {
     titleText: qsTr("Add contact")
 
     platformInverted: main.platformInverted
-
     buttonTexts: [qsTr("OK"), qsTr("Cancel")]
+    Component.onCompleted: open()
+    onButtonClicked: if (index === 0 && addName.text != "" && addJid.text != "") xmppClient.addContact( addJid.text, addName.text, "", true )
 
-    Component.onCompleted: {
-        open()
-        main.splitscreenY = 0
-    }
-
-    onButtonClicked: {
-        if (index === 0) {
-            if(( addName.text != "" ) && (addJid.text != "") ) {
-                xmppClient.addContact( addJid.text, addName.text, "", true )
-            }
-        }
-    }
-
-    content: Rectangle {
-        width: parent.width-20
-        height: column.height
-        anchors.horizontalCenter: parent.horizontalCenter
-        color: "transparent"
-
-        Column {
-            id: column
-            spacing: 5
-            width: parent.width
-            Label { id: addNameLabel; anchors.horizontalCenter: parent.horizontalCenter; text: qsTr("Contact name:"); color: main.textColor }
+    content: Column {
+            spacing: platformStyle.paddingSmall
+            anchors { left: parent.left; right: parent.right; margins: platformStyle.paddingSmall }
+            Label { anchors.horizontalCenter: parent.horizontalCenter; text: qsTr("Contact name:"); color: vars.textColor }
             TextField {
                 id: addName
-                height: 50
                 anchors { left: parent.left; right: parent.right }
                 placeholderText: qsTr("Name")
-                onActiveFocusChanged: {
-                    splitscreenY = 0
-                }
             }
-            Label { id: addJidLabel; anchors.horizontalCenter: parent.horizontalCenter; text: "JID:"; color: main.textColor}
+            Label { anchors.horizontalCenter: parent.horizontalCenter; text: "JID:"; color: vars.textColor}
             TextField {
                 id: addJid
-                height: 50
                 anchors { left: parent.left; right: parent.right }
                 placeholderText: qsTr("example@server.com")
-                onActiveFocusChanged: {
-                    splitscreenY = 0
-                }
             }
-
         }
-    }
 }

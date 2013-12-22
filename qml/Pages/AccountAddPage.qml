@@ -7,18 +7,18 @@ Page {
     tools: toolBarLayout
 
     Component.onCompleted: {
-        if (main.accJid != "") {
-            statusBarText.text = qsTr("Editing ") + main.accJid
-            if (main.accHost == "chat.facebook.com") {
+        if (vars.accJid != "") {
+            statusBarText.text = qsTr("Editing ") + vars.accJid
+            if (vars.accHost == "chat.facebook.com") {
                 selectionDialog.selectedIndex = 0;
             } else {
-                if (main.accHost == "talk.google.com") selectionDialog.selectedIndex = 1; else selectionDialog.selectedIndex = 2;
+                if (vars.accHost == "talk.google.com") selectionDialog.selectedIndex = 1; else selectionDialog.selectedIndex = 2;
             }
-            tiJid.text = main.accJid
-            tiPass.text = main.accPass
-            tiHost.text = main.accHost
-            tiPort.text = main.accPort
-            tiResource.text = main.accResource
+            tiJid.text = vars.accJid
+            tiPass.text = vars.accPass
+            tiHost.text = vars.accHost
+            tiPort.text = vars.accPort
+            tiResource.text = vars.accResource
         } else { statusBarText.text = qsTr("New account") }
     }
 
@@ -80,7 +80,7 @@ Page {
 
             Text {
                 text: "Login"
-                color: main.textColor
+                color: vars.textColor
             }
             TextField {
                 id: tiJid
@@ -88,20 +88,17 @@ Page {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: accAddPage.width - 10
                 placeholderText: qsTr("login@server.com")
-                onActiveFocusChanged: {
-                    main.splitscreenY = 0
-                }
+                onActiveFocusChanged: main.splitscreenY = 0
             }
 
             Item {
-                id: spacer2
                 height: 5
                 width: accAddPage.width
             }
 
             Text {
                 text: "Password"
-                color: main.textColor
+                color: vars.textColor
             }
 
             TextField {
@@ -111,33 +108,26 @@ Page {
                 height: 50
                 echoMode: TextInput.Password
                 placeholderText: qsTr("Password")
-                onActiveFocusChanged: {
-                    main.splitscreenY = 0
-                }
+                onActiveFocusChanged: main.splitscreenY = 0
             }
 
-            Item {
-                id: spacer3
-                height: 5
-                width: accAddPage.width
-            }
+            Item { height: 5; width: accAddPage.width}
 
             CheckBox {
                 id: checkBoxDefault
                 text: qsTr("Enabled")
-                checked: main.accDefault
+                checked: vars.accDefault
                 platformInverted: main.platformInverted
             }
 
             Item {
-                id: spacer4
                 height: 5
                 width: accAddPage.width
             }
 
             Text {
                 text: "Resource (optional)"
-                color: main.textColor
+                color: vars.textColor
             }
 
             TextField {
@@ -147,20 +137,17 @@ Page {
                 width: accAddPage.width-10
                 placeholderText: qsTr("(default: Lightbulb)")
 
-                onActiveFocusChanged: {
-                    main.splitscreenY = inputContext.height - (main.height - y) + 1.5*height
-                }
+                onActiveFocusChanged: main.splitscreenY = inputContext.height - (main.height - y) + 1.5*height
             }
 
             Item {
-                id: spacer5
                 height: 5
                 width: accAddPage.width
             }
 
             Text {
                 text: "Server details"
-                color: main.textColor
+                color: vars.textColor
                 visible: selectionDialog.selectedIndex == 2
             }
 
@@ -180,9 +167,7 @@ Page {
                     readOnly: !somethingInteresting.visible
                     placeholderText: "talk.google.com"
 
-                    onActiveFocusChanged: {
-                        main.splitscreenY = inputContext.height - (main.height - somethingInteresting.y) + 1.5*somethingInteresting.height
-                    }
+                    onActiveFocusChanged: main.splitscreenY = inputContext.height - (main.height - somethingInteresting.y) + 1.5*somethingInteresting.height
                 }
                 TextField {
                    id: tiPort
@@ -193,9 +178,7 @@ Page {
                    readOnly: !somethingInteresting.visible
                    placeholderText: "5222"
 
-                   onActiveFocusChanged: {
-                       main.splitscreenY = inputContext.height - (main.height - somethingInteresting.y) + 1.5*somethingInteresting.height
-                   }
+                   onActiveFocusChanged: main.splitscreenY = inputContext.height - (main.height - somethingInteresting.y) + 1.5*somethingInteresting.height
                 }
             }
 
@@ -212,6 +195,7 @@ Page {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
                 pageStack.pop()
+                main.splitscreenY = 0
                 statusBarText.text = "Accounts"
             }
         }
@@ -222,9 +206,7 @@ Page {
                 var jid = tiJid.text
                 var pass = tiPass.text
                 var isDflt = checkBoxDefault.checked == true ? true : false
-                if( (jid=="") || (pass=="") ) {
-                    return
-                }
+                if( jid=="" || pass=="" ) return
                 var host = tiHost.text
                 var port = tiPort.text
                 var resource = tiResource.text

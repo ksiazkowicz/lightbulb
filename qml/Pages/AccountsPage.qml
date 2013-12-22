@@ -33,7 +33,7 @@ Page {
                 text: accJid
                 font.pixelSize: 18
                 clip: true
-                color: main.textColor
+                color: vars.textColor
             }
             Switch {
                 id: switch1
@@ -47,8 +47,7 @@ Page {
             }
             states: State {
                 name: "Current"
-                when: (wrapper.ListView.isCurrentItem && (main.accJid != "") )
-                //PropertyChanges { target: wrapper; color: "lightblue" }
+                when: (wrapper.ListView.isCurrentItem && (vars.accJid != "") )
                 PropertyChanges { target: wrapper; gradient: gr_press }
             }
 
@@ -60,24 +59,24 @@ Page {
                 id: maAccItem
                 anchors { left: parent.left; right: switch1.left; top: parent.top; bottom: parent.bottom; }
                 onDoubleClicked: {
-                    main.accJid = accJid
-                    main.accPass = accPasswd
-                    main.accDefault = switch1.checked
-                    main.accResource = accResource
-                    main.accHost = accHost
-                    main.accPort = accPort
-                    main.accManualHostPort = accManualHostPort
+                    vars.accJid = accJid
+                    vars.accPass = accPasswd
+                    vars.accDefault = switch1.checked
+                    vars.accResource = accResource
+                    vars.accHost = accHost
+                    vars.accPort = accPort
+                    vars.accManualHostPort = accManualHostPort
                     pageStack.push( "qrc:/pages/AccountsAdd" )
                 }
                 onClicked: {
                     wrapper.ListView.view.currentIndex = index
-                    main.accJid = accJid
-                    main.accPass = accPasswd
-                    main.accDefault = accDefault
-                    main.accResource = accResource
-                    main.accHost = accHost
-                    main.accPort = accPort
-                    main.accManualHostPort = accManualHostPort
+                    vars.accJid = accJid
+                    vars.accPass = accPasswd
+                    vars.accDefault = accDefault
+                    vars.accResource = accResource
+                    vars.accHost = accHost
+                    vars.accPort = accPort
+                    vars.accManualHostPort = accManualHostPort
                 }
             }
 
@@ -109,7 +108,7 @@ Page {
 
     Component.onCompleted: {
         settings.initListOfAccounts()
-        main.accJid = ""
+        vars.accJid = ""
         statusBarText.text = qsTr("Accounts")
     }
 
@@ -131,22 +130,18 @@ Page {
 
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-delete_inverse" : "toolbar-delete"
-            onClicked: if( main.accJid != "" ) dialog.create("qrc:/dialogs/Account/Remove")
+            onClicked: if( vars.accJid != "" ) dialog.create("qrc:/dialogs/Account/Remove")
         }
 
         ToolButton {
             iconSource: main.platformInverted ? "qrc:/toolbar/edit_inverse" : "qrc:/toolbar/edit"
-            onClicked: {
-                if( main.accJid != "" ) {
-                    pageStack.push( "qrc:/pages/AccountsAdd" )
-                }
-            }
+            onClicked: if( vars.accJid != "" ) pageStack.push( "qrc:/pages/AccountsAdd" )
         }
 
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-add_inverse" : "toolbar-add"
             onClicked: {
-                main.accJid = "";
+                vars.accJid = "";
                 pageStack.push( "qrc:/pages/AccountsAdd" )
             }
         }

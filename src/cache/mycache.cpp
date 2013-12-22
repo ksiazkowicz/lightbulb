@@ -56,9 +56,7 @@ bool MyCache::addCacheJid(const QString &jid)
 
 bool MyCache::setAvatarCache(const QString &jid, const QByteArray &avatar) const
 {
-    if( !(this->existsCacheJid(jid)) ) {
-        return false;
-    }
+    if( !(this->existsCacheJid(jid)) ) return false;
 
     QBuffer buffer;
     buffer.setData( avatar );
@@ -78,9 +76,7 @@ bool MyCache::setAvatarCache(const QString &jid, const QByteArray &avatar) const
 QString MyCache::getAvatarCache(const QString &jid) const
 {
     QString avatarJid = pathMeegIMCache + "\\" + jid + "\\" + QString("avatar.png");
-    if( QFile::exists(avatarJid) ) {
-        return avatarJid;
-    }
+    if( QFile::exists(avatarJid) ) return avatarJid;
 
     return "qrc:/avatar";
 }

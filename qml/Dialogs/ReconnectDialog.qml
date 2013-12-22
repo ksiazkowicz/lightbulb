@@ -44,7 +44,7 @@ CommonDialog {
     }
 
     content: Text {
-        color: main.textColor
+        color: vars.textColor
         id: reconLabel;
         wrapMode: Text.Wrap;
         anchors { left: parent.left; right: parent.right; leftMargin: 10; rightMargin:10; verticalCenter: parent.verticalCenter }
