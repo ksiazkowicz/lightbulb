@@ -3,7 +3,10 @@
 
 #include <QObject>
 #include <QImage>
+#include <QPixmap>
+#include <QPainter>
 #include "qhswidget.h"
+#include <QSvgRenderer>
 
 class LightbulbHSWidget : public QObject
 {
@@ -13,9 +16,9 @@ public:
     Q_INVOKABLE void registerWidget();
     Q_INVOKABLE void publishWidget();
     Q_INVOKABLE void removeWidget();
-    Q_INVOKABLE void updateWidget( QString icon ) { }
     Q_INVOKABLE void postWidget( QString nRow1, int r1Presence, QString nRow2, int r2Presence, QString nRow3, int r3Presence, QString nRow4, int r4Presence, int unreadCount, int presence );
-    Q_INVOKABLE void postNotification( QString message );
+    //Q_INVOKABLE void loadSkin(QString path);
+    //Q_INVOKABLE void renderWidget();
     void bringToFront();
 signals:
     void HomescreenUpdated();
@@ -24,7 +27,47 @@ public slots:
     void handleItemEvent(QHSWidget*, QString aTemplateItemName,
                              QHSItemEvent aEvent);
 private:
-    QHSWidget* widget;
+    QHSWidget*  widget;
+    // load the svgs
+    QSvgRenderer* indicator_online;
+    QSvgRenderer* indicator_chatty;
+    QSvgRenderer* indicator_away;
+    QSvgRenderer* indicator_xa;
+    QSvgRenderer* indicator_busy;
+    QSvgRenderer* indicator_offline;
+    QSvgRenderer* presence_online;
+    QSvgRenderer* presence_chatty;
+    QSvgRenderer* presence_away;
+    QSvgRenderer* presence_xa;
+    QSvgRenderer* presence_busy;
+    QSvgRenderer* presence_offline;
+    //QImage      background;
+    QSvgRenderer* unreadMark;
+
+    QPainter*     painter;
+
+    // widget data
+    /*QStringList        rows;
+    QMap<QString, int> statuses;*/
+
+    // skin variables
+    /*QString     skinPath;
+    QString     contactColor;
+    QString     unreadColor;
+    bool        useNonBuiltInPresence;
+    bool        useNonBuiltInIndicators;
+    QPoint      presencePosition;
+    QPoint      contactsPosition;
+    QPoint      unreadMarkPosition;
+    QPoint      noDataAvailablePosition;
+    QPoint      faderPosition;
+    int         maxRowsCount;
+    int         rowHeight;
+    int         rowWidth;
+    int         presenceSize;
+    int         unreadMarkSize;
+    int         faderWidth;
+    int         faderHeight;*/
 };
 
 #endif // QSAMPLEWIDGET_H

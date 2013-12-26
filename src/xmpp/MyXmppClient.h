@@ -153,6 +153,24 @@ public :
         else if (property == "jid") return item->jid();
     }
 
+    /*--- widget data ---*/
+    Q_INVOKABLE QString getNameByIndex( int index ) {
+        if (latestChats.count() >= index && latestChats.count() > 0) {
+            int unreadMsg = getPropertyByJid(latestChats.at(index-1),"unreadMsg").toInt();
+            if (unreadMsg > 0)
+                return "[" + QString::number(unreadMsg) + "] " + getPropertyByJid(latestChats.at(index-1),"name");
+            else return getPropertyByJid(latestChats.at(index-1),"name");
+        } else return " ";
+    }
+
+    Q_INVOKABLE QString getPresenceByIndex( int index ) {
+        if (latestChats.count() >= index && latestChats.count() > 0) {
+            return getPropertyByJid(latestChats.at(index-1),"presence");
+        } else return "";
+    }
+
+    Q_INVOKABLE int getLatestChatsCount() { return latestChats.count(); }
+
     /*--- add/remove contact ---*/
     Q_INVOKABLE void addContact(QString bareJid, QString nick, QString group, bool sendSubscribe );
     Q_INVOKABLE void removeContact( QString bareJid );
@@ -287,9 +305,15 @@ public slots:
 
     Q_INVOKABLE void openChat( QString jid ) {
         if (!chats.contains(jid)) chats.append(jid);
+
+        if (latestChats.contains(jid)) {
+            latestChats.removeAt(latestChats.indexOf(jid));
+            latestChats.append(jid);
+        } else { latestChats.append(jid); }
+
         emit chatOpened( jid );
     }
-    Q_INVOKABLE void closeChat( QString jid ) { this->resetUnreadMessages( jid ); if (chats.contains(jid)) chats.removeAt(chats.indexOf(jid)); emit chatClosed( jid ); }
+    Q_INVOKABLE void closeChat( QString jid ) { this->resetUnreadMessages( jid ); if (chats.contains(jid)) chats.removeAt(chats.indexOf(jid)); emit chatClosed( jid ); if (latestChats.contains(jid)) latestChats.removeAt(latestChats.indexOf(jid)); }
 
 private slots:
     void initRoster();
@@ -328,6 +352,7 @@ private:
     QString getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const;
 
     QStringList chats;
+    QStringList latestChats;
 
     int m_keepAlive;
     bool m_reconnectOnError;

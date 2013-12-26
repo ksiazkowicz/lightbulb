@@ -107,14 +107,14 @@ Page {
                         Image {
                             id: statusImg
                             width: 24
-                            source: selectedContactPresence
+                            source: vars.selectedContactPresence
                             sourceSize.height: 24
                             sourceSize.width: 24
                         }
                         Text {
                             width: columnContent.width - 162
                             font.pixelSize: 18
-                            text: selectedContactStatusText
+                            text: vars.selectedContactStatusText
                             color: "gray"
                             wrapMode: Text.Wrap
                         }

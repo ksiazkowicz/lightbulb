@@ -115,8 +115,8 @@ Page {
 
                 onPressAndHold: {
                     selectedJid = jid
-                    selectedContactStatusText = statusText
-                    selectedContactPresence = presence
+                    vars.selectedContactStatusText = statusText
+                    vars.selectedContactPresence = presence
                     xmppClient.contactName = txtJid.contact
                     dialogName = txtJid.contact
                     contactMenu.open()

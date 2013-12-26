@@ -20,7 +20,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #######################################################################
 
-QT += declarative network sql
+QT += declarative network sql svg
 
 VERSION = 0.2.3
 
@@ -127,6 +127,8 @@ addFiles.pkg_postrules += "\"sounds\\New_Message.wav\" - \"!:\\data\\.config\\Li
 
 # Belle Albus widget skin
 addFiles.pkg_postrules += "\"widget\\Belle Albus\\background.png\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Belle Albus\\background.png\""
+addFiles.pkg_postrules += "\"widget\\Belle Albus\\fader.png\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Belle Albus\\fader.png\""
+addFiles.pkg_postrules += "\"widget\\Belle Albus\\settings.txt\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Belle Albus\\settings.txt\""
 
 DEPLOYMENT += addFiles
 

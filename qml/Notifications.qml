@@ -42,60 +42,45 @@ Item {
 
     function updateNotifiers() {
         if (vars.globalUnreadCount > 0) avkon.showChatIcon(); else avkon.hideChatIcon();
-
-        if (settings.gBool("behavior","enableHsWidget")) {
-            //hsWidget.postWidget(vars.globalUnreadCount + qsTr(" ~ unread messages"), getStatusName() + qsTr(" ~ status"), " ~ " + Qt.formatDateTime(new Date(), "dd.MM.yyyy ~ hh:mm") + " ~ ","Lucyna Uzarska")
-            postWidget();
-            if (vars.globalUnreadCount>0) hsWidget.updateWidget("C:\\data\\.config\\Lightbulb\\LightbulbA.png")
-            else hsWidget.updateWidget("C:\\data\\.config\\Lightbulb\\Lightbulb.png")
-        }
+        if (settings.gBool("behavior","enableHsWidget")) postWidget();
     }
 
     function postWidget() {
-        /*var index = 0;
-        var found = 0;
+        var row1; var presence1 = -2;
+        var row2; var presence2 = -2;
+        var row3; var presence3 = -2;
+        var row4; var presence4 = -2;
 
-        var row1; var presence1 = -2; var row2; var presence2 = -2; var row3; var presence3 = -2; var row4; var presence4 = -2;
+        var chatsCount = xmppClient.getLatestChatsCount()
 
-        do {
-            if (xmppClient.cachedRoster.get(index).presence !== "qrc:/presence/offline") {
-                found++;
-                if (found == 1) {
-                    row1 = xmppClient.cachedRoster.get(index).name;
-                    presence1 = getPresenceId(xmppClient.cachedRoster.get(index).presence); }
-                if (found == 2) {
-                    row2 = xmppClient.cachedRoster.get(index).name;
-                    presence2 = getPresenceId(xmppClient.cachedRoster.get(index).presence); }
-                if (found == 3) {
-                    row3 = xmppClient.cachedRoster.get(index).name;
-                    presence3 = getPresenceId(xmppClient.cachedRoster.get(index).presence); }
-                if (found == 4) {
-                    row4 = xmppClient.cachedRoster.get(index).name;
-                    presence4 = getPresenceId(xmppClient.cachedRoster.get(index).presence); }
-                index++;
-            } else index++;
-            if (index > xmppClient.cachedRoster.count ) break;
-        } while (found < 4);*/
+        if (chatsCount>0) {
+            row1 = xmppClient.getNameByIndex(chatsCount);
+            presence1 = getPresenceId(xmppClient.getPresenceByIndex(chatsCount));
+            if (chatsCount>1) {
+                row2 = xmppClient.getNameByIndex(chatsCount-1);
+                presence2 = getPresenceId(xmppClient.getPresenceByIndex(chatsCount-1));
+                if (chatsCount>2) {
+                    row3 = xmppClient.getNameByIndex(chatsCount-2);
+                    presence3 = getPresenceId(xmppClient.getPresenceByIndex(chatsCount-2));
+                    if (chatsCount>3) {
+                        row4 = xmppClient.getNameByIndex(chatsCount-3);
+                        presence4 = getPresenceId(xmppClient.getPresenceByIndex(chatsCount-3));
+                    }
+                }
+            }
+        }
 
-        //hsWidget.postWidget(row1,presence1,row2,presence2,row3,presence3,row4,presence4);
-
-        var myPresence;
-        if (xmppClient.status == XmppClient.Online) myPresence = 0;
-        else if (xmppClient.status == XmppClient.Chat) myPresence = 1;
-        else if (xmppClient.status == XmppClient.Away) myPresence = 2;
-        else if (xmppClient.status == XmppClient.DND) myPresence = 3;
-        else if (xmppClient.status == XmppClient.XA) myPresence = 4;
-        else myPresence = 5;
-
-        hsWidget.postWidget("Lucyna Uzarska",0,"Kołysanka",2,"Mateusz Cedro",0,"Ewa",2,vars.globalUnreadCount,myPresence);
+        hsWidget.postWidget(row1,presence1,row2,presence2,row3,presence3,row4,presence4,vars.globalUnreadCount,xmppClient.status);
     }
 
     function getPresenceId(presence) {
         if (presence == "qrc:/presence/online") return 0;
-        if (presence == "qrc:/presence/chatty") return 1;
-        if (presence == "qrc:/presence/away") return 2;
-        if (presence == "qrc:/presence/busy") return 3;
-        if (presence == "qrc:/presence/xa") return 4;
+        else if (presence == "qrc:/presence/chatty") return 1;
+        else if (presence == "qrc:/presence/away") return 2;
+        else if (presence == "qrc:/presence/busy") return 3;
+        else if (presence == "qrc:/presence/xa") return 4;
+        else if (presence == "qrc:/presence/offline") return 5;
+        else return -2;
     }
 
     HSWidget { id: hsWidget }
