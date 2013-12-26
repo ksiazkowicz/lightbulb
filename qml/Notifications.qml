@@ -83,7 +83,12 @@ Item {
         else return -2;
     }
 
-    HSWidget { id: hsWidget }
+    HSWidget {
+        id: hsWidget
+        Component.onCompleted: {
+            hsWidget.loadSkin("C:\\data\\.config\\Lightbulb\\widgets\\Belle Albus");
+        }
+    }
 
     function postInfo(messageString) {
         avkon.displayGlobalNote(messageString,false)

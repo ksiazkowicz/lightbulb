@@ -12,7 +12,10 @@ unreadmark=white
 useNonBuiltInIndicators=false
 useNonBuiltInPresence=false
 useNonBuiltInUnreadMark=false
-maxRowCount=4
+showUnreadMarkText=true
+maxRowsCount=4
+contactFontSize=16
+unreadFontSize=14
 
 [noDataAvailable]
 x=88
@@ -29,9 +32,9 @@ size=64
 x=88
 y=4
 height=18
-width=303
+width=203
 spacing=0
-indicatorSize=11
+indicatorSize=12
 
 [fader]
 x=268
@@ -43,3 +46,9 @@ height=67
 x=6
 y=7
 size=64
+
+[unreadMarkText]
+x=48
+y=54
+width=22
+height=14

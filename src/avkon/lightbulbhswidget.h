@@ -17,8 +17,8 @@ public:
     Q_INVOKABLE void publishWidget();
     Q_INVOKABLE void removeWidget();
     Q_INVOKABLE void postWidget( QString nRow1, int r1Presence, QString nRow2, int r2Presence, QString nRow3, int r3Presence, QString nRow4, int r4Presence, int unreadCount, int presence );
-    //Q_INVOKABLE void loadSkin(QString path);
-    //Q_INVOKABLE void renderWidget();
+    Q_INVOKABLE void loadSkin(QString path);
+    Q_INVOKABLE void renderWidget();
     void bringToFront();
 signals:
     void HomescreenUpdated();
@@ -41,33 +41,41 @@ private:
     QSvgRenderer* presence_xa;
     QSvgRenderer* presence_busy;
     QSvgRenderer* presence_offline;
-    //QImage      background;
     QSvgRenderer* unreadMark;
 
     QPainter*     painter;
 
-    // widget data
-    /*QStringList        rows;
-    QMap<QString, int> statuses;*/
-
     // skin variables
-    /*QString     skinPath;
+    QString     skinPath;
     QString     contactColor;
     QString     unreadColor;
     bool        useNonBuiltInPresence;
     bool        useNonBuiltInIndicators;
+    bool        useNonBuiltInUnreadMark;
+    bool        showUnreadMarkText;
     QPoint      presencePosition;
     QPoint      contactsPosition;
     QPoint      unreadMarkPosition;
     QPoint      noDataAvailablePosition;
     QPoint      faderPosition;
+    QPoint      unreadMarkTextPosition;
+    int         noDataAvailableWidth;
+    int         noDataAvailableHeight;
     int         maxRowsCount;
     int         rowHeight;
     int         rowWidth;
+    int         spacing;
+    int         indicatorSize;
     int         presenceSize;
     int         unreadMarkSize;
     int         faderWidth;
-    int         faderHeight;*/
+    int         faderHeight;
+
+    int         unreadMarkTextWidth;
+    int         unreadMarkTextHeight;
+
+    int         contactFontSize;
+    int         unreadFontSize;
 };
 
 #endif // QSAMPLEWIDGET_H
