@@ -11,8 +11,8 @@ Page {
     Component.onCompleted: {
         settings.sBool(true,"notifications","wibblyWobblyTimeyWimeyStuff")
         settings.sInt(tmpValue, "notifications", "blinkScreenDevice");
-        blinker.running = true;
-        globalUnreadCount++;
+        blink.running = true;
+        vars.globalUnreadCount++;
         statusBarText.text = qsTr("First run")
     }
 
@@ -58,7 +58,7 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-previous_inverse" : "toolbar-previous"
             onClicked: {
-                globalUnreadCount--;
+                vars.globalUnreadCount--;
                 pageStack.pop()
             }
         }
@@ -66,7 +66,7 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-next_inverse" : "toolbar-next"
             onClicked:{
-                globalUnreadCount--;
+                vars.globalUnreadCount--;
                 pageStack.push("qrc:/FirstRun/03")
             }
         }

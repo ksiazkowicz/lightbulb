@@ -120,12 +120,13 @@ include(qxmpp/qxmpp.pri)
 INCLUDEPATH += qxmpp/base/ qxmpp/client
 
 addFiles.pkg_postrules += "\"HSWidgetPlugin0xE22AC278.dll\" - \"!:\\sys\\bin\\HSWidgetPlugin0xE22AC278.dll\""
-addFiles.pkg_postrules += "\"images\\LightbulbWidget.png\" - \"C:\\data\\.config\\Lightbulb\\Lightbulb.png\""
-addFiles.pkg_postrules += "\"images\\LightbulbWidget_attention.png\" - \"C:\\data\\.config\\Lightbulb\\LightbulbA.png\""
 
 addFiles.pkg_postrules += "\"sounds\\Message_Received.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Message_Received.wav\""
 addFiles.pkg_postrules += "\"sounds\\Message_Sent.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Message_Sent.wav\""
 addFiles.pkg_postrules += "\"sounds\\New_Message.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Subscription_Request.wav\""
+
+# Belle Albus widget skin
+addFiles.pkg_postrules += "\"widget\\Belle Albus\\background.png\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Belle Albus\\background.png\""
 
 DEPLOYMENT += addFiles
 

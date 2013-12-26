@@ -26,7 +26,7 @@ PageStackWindow {
         property int blinkStatus: 0
         onTriggered: {
             if (vars.globalUnreadCount>0) {
-                if (blinkStatus < 4) { avkon.notificationBlink(settings.gInt("notifications", "blinkScreenDevice")); blinkStatus++ } else { if (blinkerStatus > 6) { blinkStatus = 0} else { blinkStatus++ } }
+                if (blinkStatus < 4) { avkon.notificationBlink(settings.gInt("notifications", "blinkScreenDevice")); blinkStatus++ } else { if (blinkStatus > 6) { blinkStatus = 0} else { blinkStatus++ } }
             } else { blinkStatus = 0; blink.running = false }
         }
     }
@@ -121,6 +121,10 @@ PageStackWindow {
     function checkIfFirstRun() {
         if (!settings.gBool("main","not_first_run")) pageStack.push("qrc:/FirstRun/01")
         else pageStack.push("qrc:/pages/Roster")
+        if (!settings.gBool("main","christmas2013")) {
+            notify.postInfo("Merry Christmas and a Happy New Year from pisarz1958! Enjoy testing this build. :)")
+            settings.sBool(true,"main","christmas2013");
+        }
     }
 
     property bool _existDefaultAccount: false
@@ -170,7 +174,11 @@ PageStackWindow {
     ContextMenu {
         id: linkContextMenu
         MenuLayout {
-            MenuItem {text: qsTr("Copy"); onClicked: clipboard.setText(vars.url) }
+            MenuItem {text: qsTr("Copy"); onClicked: {
+                    clipboard.setText(vars.url)
+                    avkon.showPopup("URL copied to","clipboard.",false)
+                }
+            }
             MenuItem {text: qsTr("Open in default browser"); onClicked: avkon.openDefaultBrowser(vars.url) }
       }
     }

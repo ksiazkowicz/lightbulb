@@ -95,4 +95,18 @@
     <qresource prefix="/JavaScript">
         <file alias="EmoticonInterpreter.js">qml/JavaScript/EmoticonInterpreter.js</file>
     </qresource>
+    <qresource prefix="/presence-widget">
+        <file alias="away">widget/shared/presence_away.png</file>
+        <file alias="chatty">widget/shared/presence_chatty.png</file>
+        <file alias="dnd">widget/shared/presence_dnd.png</file>
+        <file alias="online">widget/shared/presence_online.png</file>
+        <file alias="xa">widget/shared/presence_xa.png</file>
+        <file alias="m-away">widget/shared/me-away.png</file>
+        <file alias="m-busy">widget/shared/me-busy.png</file>
+        <file alias="m-chatty">widget/shared/me-chatty.png</file>
+        <file alias="m-offline">widget/shared/me-offline.png</file>
+        <file alias="m-online">widget/shared/me-online.png</file>
+        <file alias="m-xa">widget/shared/me-xa.png</file>
+        <file alias="unreadMark">widget/shared/unreadCount.png</file>
+    </qresource>
 </RCC>
