@@ -150,6 +150,7 @@ PageStackWindow {
                 }
 
                 xmppClient.accountId = j;
+                avkon.hideChatIcon()
                 notify.updateNotifiers()
 
                 console.log("QML: main::initAccount():" + xmppClient.myBareJid + "/" + xmppClient.resource);
@@ -184,8 +185,6 @@ PageStackWindow {
     }
 
     Clipboard { id: clipboard }
-
-    Avkon { id: avkon }
 
     Notifications { id: notify }
 

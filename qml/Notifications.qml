@@ -73,6 +73,10 @@ Item {
         hsWidget.postWidget(row1,presence1,row2,presence2,row3,presence3,row4,presence4,vars.globalUnreadCount,xmppClient.status);
     }
 
+    function cleanWidget() {
+        hsWidget.postWidget(" ",-2," ",-2," ",-2," ",-2,0,0);
+    }
+
     function getPresenceId(presence) {
         if (presence == "qrc:/presence/online") return 0;
         else if (presence == "qrc:/presence/chatty") return 1;
@@ -86,8 +90,17 @@ Item {
     HSWidget {
         id: hsWidget
         Component.onCompleted: {
-            hsWidget.loadSkin("C:\\data\\.config\\Lightbulb\\widgets\\Belle Albus");
+            var skinName = settings.gStr("ui","widgetSkin")
+            if (skinName === "false") skinName = "C:\\data\\.config\\Lightbulb\\widgets\\Belle Albus";
+            hsWidget.loadSkin(skinName);
         }
+    }
+
+    function updateSkin() {
+        var skinName = settings.gStr("ui","widgetSkin")
+        if (skinName === "false") skinName = "C:\\data\\.config\\Lightbulb\\widgets\\Belle Albus";
+        hsWidget.loadSkin(skinName);
+        hsWidget.renderWidget();
     }
 
     function postInfo(messageString) {

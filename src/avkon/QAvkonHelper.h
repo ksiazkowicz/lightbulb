@@ -33,12 +33,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <hwrmlight.h>
 #include <QUrl>
 
+class QDeclarativeView;
 
 class QAvkonHelper : public QObject
 {
     Q_OBJECT
 public:
-    explicit QAvkonHelper(QObject *parent = 0);
+    explicit QAvkonHelper(QDeclarativeView *view, QObject *parent = 0);
     Q_INVOKABLE void showPopup(QString title,QString message, bool goToApp);
     Q_INVOKABLE void notificationBlink(int device);
     Q_INVOKABLE void displayGlobalNote(QString message, bool isError);
@@ -47,6 +48,7 @@ public:
 
     Q_INVOKABLE void showChatIcon();
     Q_INVOKABLE void hideChatIcon();
+    Q_INVOKABLE void minimize() const;
 
 private:
     TInt iNoteId;
@@ -54,6 +56,7 @@ private:
     CHWRMLight* notifyLight;
     void ShowNoteL(const TDesC& aMessage);
     void ShowErrorL(const TDesC& aMessage);
+    QDeclarativeView *m_view;
 
     bool chatIconStatus;
     

@@ -66,6 +66,7 @@
         <file alias="Settings">qml/Pages/SettingsPage.qml</file>
         <file alias="VCard">qml/Pages/VCardPage.qml</file>
         <file alias="Diagnostics">qml/Pages/DiagnosticsPage.qml</file>
+        <file alias="SkinSelection">qml/Pages/SkinSelectionPage.qml</file>
     </qresource>
     <qresource prefix="/toolbar">
         <file alias="close">images/toolbar/toolbar-close.svg</file>

@@ -221,8 +221,8 @@ void LightbulbHSWidget::loadSkin(QString path) {
     QSettings skinsettings(path + "\\settings.txt",QSettings::NativeFormat);
 
     skinsettings.beginGroup( "colors" );
-    contactColor = skinsettings.value( "contactColor", false ).toString();
-    unreadColor = skinsettings.value( "unreadColor", false ).toString();
+    contactColor = skinsettings.value( "contacts", false ).toString();
+    unreadColor = skinsettings.value( "unreadmark", false ).toString();
     skinsettings.endGroup();
 
     skinsettings.beginGroup( "settings" );

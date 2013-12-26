@@ -193,6 +193,11 @@ Page {
                 platformInverted: main.platformInverted
                 onClicked: main.pageStack.push( "qrc:/pages/Diagnostics" )
             }
+            MenuItem {
+                text: qsTr("遠い記憶 半透明な夢")
+                platformInverted: main.platformInverted
+                onClicked: main.pageStack.push( "qrc:/pages/SkinSelection" )
+            }
         }
     }
 
@@ -280,7 +285,11 @@ Page {
         id: toolBarLayout
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
-            onClicked: dialog.create("qrc:/dialogs/Close")
+            onClicked: avkon.minimize();
+            onPlatformPressAndHold: {
+                notify.cleanWidget()
+                Qt.quit();
+            }
         }
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-add_inverse" : "toolbar-add"

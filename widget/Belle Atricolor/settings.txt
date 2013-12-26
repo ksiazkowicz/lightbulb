@@ -1,11 +1,11 @@
 [Details]
-name=Belle Albus
+name=Belle Atricolor
 version=1.0
 author=Maciej Janiszewski
 description=Default widget skin in Lightbulb
 
 [colors]
-contacts=#000000
+contacts=#FFFFFF
 unreadmark=#FFFFFF
 
 [settings]

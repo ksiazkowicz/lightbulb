@@ -45,7 +45,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <f32file.h>
 
 #include <QDebug>
-
+#include <QtDeclarative/QDeclarativeView>
 
 // filters out non-sound files
 class CExtensionFilter : public MAknFileFilter {
@@ -60,8 +60,8 @@ public:
 
 static const TUid KUidBrowser = { 0x10008D39 };
 
-QAvkonHelper::QAvkonHelper(QObject *parent) :
-    QObject(parent)
+QAvkonHelper::QAvkonHelper(QDeclarativeView *view, QObject *parent) :
+    QObject(parent), m_view(view)
 {
     notifyLight = CHWRMLight::NewL();
     chatIconStatus = false;
@@ -198,4 +198,8 @@ void QAvkonHelper::openDefaultBrowser(const QUrl &url) const {
 
     CleanupStack::PopAndDestroy(buf16);
     CleanupStack::PopAndDestroy(&appArcSession);
+}
+
+void QAvkonHelper::minimize() const {
+    m_view->lower();
 }

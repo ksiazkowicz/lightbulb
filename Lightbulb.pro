@@ -79,7 +79,8 @@ SOURCES += src/main.cpp \
     src/models/AccountsItemModel.cpp \
     src/models/ListModel.cpp \
     src/models/MessageItemModel.cpp \
-    src/models/MessageListModel.cpp
+    src/models/MessageListModel.cpp \
+    src/database/SkinSelectorHandler.cpp
 
 HEADERS += src/xmpp/MyXmppClient.h \
     src/cache/MyCache.h \
@@ -100,7 +101,8 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/models/MessageItemModel.h \
     src/models/MessageListModel.h \
     src/models/RosterItemModel.h \
-    src/models/RosterListModel.h
+    src/models/RosterListModel.h \
+    src/database/SkinSelectorHandler.h
 
 OTHER_FILES += README.md \
     qml/Dialogs/*.* \
@@ -129,6 +131,11 @@ addFiles.pkg_postrules += "\"sounds\\New_Message.wav\" - \"!:\\data\\.config\\Li
 addFiles.pkg_postrules += "\"widget\\Belle Albus\\background.png\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Belle Albus\\background.png\""
 addFiles.pkg_postrules += "\"widget\\Belle Albus\\fader.png\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Belle Albus\\fader.png\""
 addFiles.pkg_postrules += "\"widget\\Belle Albus\\settings.txt\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Belle Albus\\settings.txt\""
+
+# Belle Atricolor widget skin
+addFiles.pkg_postrules += "\"widget\\Belle Atricolor\\background.png\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Belle Atricolor\\background.png\""
+addFiles.pkg_postrules += "\"widget\\Belle Atricolor\\fader.png\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Belle Atricolor\\fader.png\""
+addFiles.pkg_postrules += "\"widget\\Belle Atricolor\\settings.txt\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Belle Atricolor\\settings.txt\""
 
 DEPLOYMENT += addFiles
 

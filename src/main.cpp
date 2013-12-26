@@ -22,6 +22,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *********************************************************************/
 
 #include <QtGui/QApplication>
+#include <QtDeclarative/QDeclarativeContext>
+#include <QtDeclarative/QDeclarativeView>
+#include <QtDeclarative/qdeclarative.h>
 #include <QUrl>
 #include "qmlapplicationviewer.h"
 
@@ -36,6 +39,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "QAvkonHelper.h"
 #include "DatabaseManager.h"
 #include "SymbiosisAPIClient.h"
+#include "SkinSelectorHandler.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
@@ -46,7 +50,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     qmlRegisterType<QMLVCard>("lightbulb", 1, 0, "XmppVCard" );
     qmlRegisterType<ClipboardAdapter>("lightbulb", 1, 0, "Clipboard" );
     qmlRegisterType<LightbulbHSWidget>("lightbulb", 1, 0, "HSWidget" );
-    qmlRegisterType<QAvkonHelper>("lightbulb", 1, 0, "Avkon");
+    qmlRegisterType<SkinSelectorHandler>("lightbulb",1,0,"SelectorHandler");
 
     qmlRegisterType<SymbiosisAPIClient>("lightbulb", 1, 0, "SymbiosisAPI" );
 
@@ -57,6 +61,9 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
 
     // initialize viewer and set it parameters
     QmlApplicationViewer viewer;
+    QAvkonHelper avkon(&viewer);
+    viewer.rootContext()->setContextProperty("avkon", &avkon);
+
     viewer.setAttribute(Qt::WA_OpaquePaintEvent);
     viewer.setAttribute(Qt::WA_NoSystemBackground);
     viewer.viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
