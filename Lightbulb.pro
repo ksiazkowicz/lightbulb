@@ -137,6 +137,19 @@ addFiles.pkg_postrules += "\"widget\\Belle Atricolor\\background.png\" - \"C:\\d
 addFiles.pkg_postrules += "\"widget\\Belle Atricolor\\fader.png\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Belle Atricolor\\fader.png\""
 addFiles.pkg_postrules += "\"widget\\Belle Atricolor\\settings.txt\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Belle Atricolor\\settings.txt\""
 
+# Jelly Bean by Rudmata
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\background.png\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\background.png\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\fader.png\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\fader.png\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\settings.txt\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\settings.txt\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\unread.svg\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\unread.svg\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\away.svg\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\presence\\away.svg\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\busy.svg\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\presence\\busy.svg\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\chatty.svg\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\presence\\chatty.svg\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\offline.svg\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\presence\\offline.svg\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\online.svg\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\presence\\online.svg\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\xa.svg\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\presence\\xa.svg\""
+
+
 DEPLOYMENT += addFiles
 
 RESOURCES += resources.qrc
