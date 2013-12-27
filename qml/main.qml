@@ -87,11 +87,15 @@ PageStackWindow {
         }
         onVCardChanged: xmppVCard.vcard = xmppClient.vcard
         onSubscriptionReceived: {
-            console.log( "QML: Main: ::onSubscriptionReceived: [" + bareJid + "]" )
+            console.log( "XmppClient::onSubscriptionReceived(" + bareJid + ")" )
             if (settings.gBool("notifications","notifySubscription") == true) avkon.showPopup("Subscription request",bareJid,settings.gBool("behavior","linkInDiscrPopup"))
-            notify.notifySndVibr("MsgSub")
-            vars.dialogJid = bareJid
-            dialog.create("qrc:/dialogs/Contact/Subscribe")
+            notify.notifySndVibr("MsgSub")            
+            if (avkon.displayAvkonQueryDialog("Subscription", qsTr("Do you want to accept subscription request from ") + bareJid + qsTr("?"))) {
+                xmppClient.acceptSubscribtion(bareJid)
+            } else {
+                xmppClient.rejectSubscribtion(bareJid)
+            }
+
         }
         onTypingChanged: {
             if (settings.gBool("notifications", "notifyTyping") == true && (xmppClient.chatJid !== bareJid || !vars.isActive) && xmppClient.myBareJid !== bareJid) {
@@ -109,11 +113,6 @@ PageStackWindow {
         checkIfFirstRun()
         xmppClient.keepAlive = settings.gInt("behavior", "keepAliveInterval")
         if (settings.gBool("behavior","goOnlineOnStart")) xmppClient.setMyPresence( XmppClient.Online, lastStatus )
-    }
-
-    function changeAudioFile() {
-        var filename = avkon.openFileSelectionDlg();
-        if (filename != "") settings.sStr(filename,"notifications",nowEditing+"File")
     }
 
     /************************( stuff to do when running this app )*****************************/

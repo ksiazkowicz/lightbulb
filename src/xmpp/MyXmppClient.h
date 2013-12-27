@@ -155,7 +155,9 @@ public :
 
     /*--- widget data ---*/
     Q_INVOKABLE QString getNameByIndex( int index ) {
-        if (latestChats.count() >= index && latestChats.count() > 0) {
+        qDebug() << "latestChats.count()" << latestChats.count();
+        qDebug() << "index" << index;
+        if (index>0 && latestChats.count() > 0) {
             int unreadMsg = getPropertyByJid(latestChats.at(index-1),"unreadMsg").toInt();
             if (unreadMsg > 0)
                 return "[" + QString::number(unreadMsg) + "] " + getPropertyByJid(latestChats.at(index-1),"name");
@@ -164,12 +166,28 @@ public :
     }
 
     Q_INVOKABLE QString getPresenceByIndex( int index ) {
-        if (latestChats.count() >= index && latestChats.count() > 0) {
+        if (index>0 && latestChats.count() > 0) {
             return getPropertyByJid(latestChats.at(index-1),"presence");
         } else return "";
     }
 
     Q_INVOKABLE int getLatestChatsCount() { return latestChats.count(); }
+
+    Q_INVOKABLE QString getNameByOrderID( int id ) {
+        if (cachedRoster->count() >= id+1) {
+            RosterItemModel *item = (RosterItemModel*)cachedRoster->getElementByID(id);
+            if (item != 0) return item->name(); else return " ";
+        }
+        return " ";
+    }
+
+    Q_INVOKABLE QString getPresenceByOrderID( int id ) {
+        if (cachedRoster->count() >= id+1) {
+            RosterItemModel *item = (RosterItemModel*)cachedRoster->getElementByID(id);
+            if (item != 0) return item->presence(); else return "";
+        }
+        return "";
+    }
 
     /*--- add/remove contact ---*/
     Q_INVOKABLE void addContact(QString bareJid, QString nick, QString group, bool sendSubscribe );

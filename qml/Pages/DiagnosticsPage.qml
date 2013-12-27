@@ -31,7 +31,7 @@ Page {
                ToolButton {
                    iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
                    onClicked: { statusBarText.text = "Contacts"
-                                if (!closeTheApp) pageStack.pop(); else dialog.create("qrc:/dialogs/Close") }
+                       if (!closeTheApp) pageStack.pop(); else avkon.restartApp() }
                 }
     }
 

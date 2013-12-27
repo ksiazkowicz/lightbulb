@@ -51,20 +51,102 @@ public:
                                   const int _accountPort,
                                   const bool _accountDefault,
                                   const bool _manuallyHostPort,
-                                  QObject *parent = 0 );
-
-      virtual QVariant data(int role) const;
-      virtual QHash<int, QByteArray> roleNames() const;
+                                  QObject *parent ) :
+                   ListItem(parent),
+                   m_jid(_accountJid),
+                   m_passwd(_accountPasswd),
+                   m_resource(_accountResource),
+                   m_host(_accountHost),
+                   m_port(_accountPort),
+                   m_default(_accountDefault),
+                   m_manual_host_port(_manuallyHostPort)
+               {
+               }
 
       virtual QString id() const { return m_jid; }
 
-      void setJid( QString &_accountJid );
-      void setPasswd( QString &_accountPasswd );
+      void setJid(QString &_accountJid)
+      {
+        if(m_jid != _accountJid) {
+          m_jid = _accountJid;
+          emit dataChanged();
+        }
+      }
 
-      void setDefault( bool &_accountDefault );
-      void setHost( QString &_accountHost );
-      void setPort( int _accountPort );
-      void setManuallyHostPort( bool _manuallyHostPort );
+      void setPasswd(QString &_accountPasswd)
+      {
+        if(m_passwd != _accountPasswd) {
+          m_passwd = _accountPasswd;
+          emit dataChanged();
+        }
+      }
+
+      void setDefault(bool &_accountDefault)
+      {
+        if(m_default != _accountDefault) {
+          m_default = _accountDefault;
+          emit dataChanged();
+        }
+      }
+
+      void setHost(QString &_accountHost)
+      {
+        if(m_host!= _accountHost) {
+          m_host = _accountHost;
+          emit dataChanged();
+        }
+      }
+
+      void setPort(int _accountPort)
+      {
+        if(m_port!= _accountPort) {
+          m_port = _accountPort;
+          emit dataChanged();
+        }
+      }
+
+      void setManuallyHostPort(bool _manuallyHostPort)
+      {
+        if(m_manual_host_port != _manuallyHostPort) {
+          m_manual_host_port = _manuallyHostPort;
+          emit dataChanged();
+        }
+      }
+
+      virtual QHash<int, QByteArray> roleNames() const
+      {
+        QHash<int, QByteArray> names;
+        names[accJid] = "accJid";
+        names[accPasswd] = "accPasswd";
+        names[accDefault] = "accDefault";
+        names[accResource] = "accResource";
+        names[accHost] = "accHost";
+        names[accPort] = "accPort";
+        names[accManualHostPort] = "accManualHostPort";
+        return names;
+      }
+
+      virtual QVariant data(int role) const
+      {
+        switch(role) {
+        case accJid:
+          return jid();
+        case accPasswd:
+          return passwd();
+        case accDefault:
+          return isDefault();
+        case accResource:
+          return resource();
+        case accHost:
+          return host();
+        case accPort:
+          return port();
+        case accManualHostPort:
+          return isManuallyHostPort();
+        default:
+          return QVariant();
+        }
+      }
 
       inline QString jid() const { return m_jid; }
       inline QString passwd() const { return m_passwd; }
@@ -73,7 +155,6 @@ public:
       inline QString host() const { return m_host; }
       inline int port() const { return m_port; }
       inline bool isManuallyHostPort() const { return m_manual_host_port; }
-
 
     private:
       QString m_jid;

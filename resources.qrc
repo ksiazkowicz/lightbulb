@@ -46,15 +46,11 @@
     <qresource prefix="/dialogs">
         <file alias="Contact/Add">qml/Dialogs/AddContact.qml</file>
         <file alias="Status/Change">qml/Dialogs/ChangeStatus.qml</file>
-        <file alias="Contact/Subscribe">qml/Dialogs/QuerySubscribtion.qml</file>
         <file alias="Status/Reconnect">qml/Dialogs/ReconnectDialog.qml</file>
-        <file alias="Account/Remove">qml/Dialogs/RemoveAccount.qml</file>
-        <file alias="Contact/Remove">qml/Dialogs/RemoveContact.qml</file>
         <file alias="Contact/Rename">qml/Dialogs/RenameContact.qml</file>
         <file alias="Settings/Sound">qml/Dialogs/SoundSettings.qml</file>
         <file alias="Settings/Vibration">qml/Dialogs/VibrationSettings.qml</file>
         <file alias="Chats">qml/Dialogs/Chats.qml</file>
-        <file alias="Close">qml/Dialogs/CloseDialog.qml</file>
     </qresource>
     <qresource prefix="/pages">
         <file alias="About">qml/Pages/AboutPage.qml</file>

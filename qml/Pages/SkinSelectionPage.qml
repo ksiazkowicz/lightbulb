@@ -17,7 +17,7 @@ Page {
         titleText: "Beta"
         buttonTexts: [qsTr("I understand")]
         platformInverted: main.platformInverted
-        height: 250
+        height: 200
 
         Component.onCompleted: open()
 
@@ -44,7 +44,7 @@ Page {
                     width: parent.width
                     Text {
                         anchors { fill: parent; margins: 10 }
-                        text: modelData
+                        text: selector.getSkinName(modelData)
                         color: vars.textColor
                         verticalAlignment: Text.AlignVCenter
                     }

@@ -49,6 +49,8 @@ public:
     Q_INVOKABLE void showChatIcon();
     Q_INVOKABLE void hideChatIcon();
     Q_INVOKABLE void minimize() const;
+    Q_INVOKABLE void restartApp();
+    Q_INVOKABLE bool displayAvkonQueryDialog(QString title, QString message);
 
 private:
     TInt iNoteId;

@@ -3,6 +3,7 @@ import com.nokia.symbian 1.1
 import lightbulb 1.0
 
 CommonDialog {
+        id: dialog
         titleText: qsTr("Effect settings")
         privateCloseIcon: true
         height: 216
@@ -32,12 +33,12 @@ CommonDialog {
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: parent.width
                     maximumValue: 100
-                    value: settings.gInt("notifications", vars.vars.nowEditing + "Volume")
+                    value: settings.gInt("notifications", vars.nowEditing + "Volume")
                     orientation: 1
                     platformInverted: main.platformInverted
 
                     onValueChanged: {
-                        settings.sInt(value,"notifications", vars.vars.nowEditing + "Volume")
+                        settings.sInt(value,"notifications", vars.nowEditing + "Volume")
                     }
                 }
                 Button {
@@ -45,7 +46,8 @@ CommonDialog {
                     text: "Select file"
                     platformInverted: main.platformInverted
                     onClicked: {
-                        main.changeAudioFile()
+                        var filename = avkon.openFileSelectionDlg();
+                        if (filename != "") settings.sStr(filename,"notifications",vars.nowEditing+"File")
                     }
                 }
             }

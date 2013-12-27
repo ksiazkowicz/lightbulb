@@ -307,6 +307,8 @@ void LightbulbHSWidget::loadSkin(QString path) {
     skinsettings.endGroup();
 
     skinsettings.beginGroup( "Details" );
-    qDebug() << "LightbulbHSWidget::loadSkin(" + skinPath + "): loaded " + skinsettings.value("name",false).toString() + " (" + skinsettings.value("version",false).toString() + ") by " + skinsettings.value("author",false).toString();
+    qDebug() << "LightbulbHSWidget::loadSkin(" << skinPath << "): loaded " << skinsettings.value("name",false).toString()
+             << " (" << skinsettings.value("version",false).toString()
+             << ") by " << skinsettings.value("author",false).toString();
     skinsettings.endGroup();
 }

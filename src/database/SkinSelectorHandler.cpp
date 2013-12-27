@@ -7,19 +7,32 @@
 SkinSelectorHandler::SkinSelectorHandler(QObject *parent) :
     QObject(parent)
 {
+    loadAvailableSkins();
 }
 
-QStringList SkinSelectorHandler::getAvailableSkins() {
+void SkinSelectorHandler::loadAvailableSkins() {
     QStringList skins;
     QDir dir("C:\\data\\.config\\Lightbulb\\widgets");
 
     if (dir.exists("C:\\data\\.config\\Lightbulb\\widgets")) {
         Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst)) {
             if (info.isDir() && dir.exists(info.absoluteFilePath() + "/settings.txt")) {
-                skins.append(info.baseName());
+                QString skinName = getSkinName(info.baseName());
+                if (skinName != "-!-404-!-") {
+                    qDebug() << "SkinSelectorHandler::loadAvailableSkins(): found skin " << skinName;
+                    skins.append(info.baseName());
+                }
             }
         }
     }
-    qDebug() << skins;
-    return skins;
+    qDebug() << "SkinSelectorHandler::loadAvailableSkins(): available - "<< skins;
+    availableSkins = skins;
+}
+
+QString SkinSelectorHandler::getSkinName(QString path) {
+    skinVerifier = new QSettings("C:\\data\\.config\\Lightbulb\\widgets\\" + path + "\\settings.txt",QSettings::NativeFormat);
+    skinVerifier->beginGroup("Details");
+    QString skinName = skinVerifier->value("name","-!-404-!-").toString();
+    skinVerifier->endGroup();
+    return skinName;
 }

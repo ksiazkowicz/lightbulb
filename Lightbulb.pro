@@ -76,10 +76,6 @@ SOURCES += src/main.cpp \
     src/xmpp/XmppConnectivity.cpp \
     src/database/DatabaseWorker.cpp \
     src/database/Settings.cpp \
-    src/models/AccountsItemModel.cpp \
-    src/models/ListModel.cpp \
-    src/models/MessageItemModel.cpp \
-    src/models/MessageListModel.cpp \
     src/database/SkinSelectorHandler.cpp
 
 HEADERS += src/xmpp/MyXmppClient.h \
@@ -98,8 +94,6 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/models/AccountsItemModel.h \
     src/models/AccountsListModel.h \
     src/models/ListModel.h \
-    src/models/MessageItemModel.h \
-    src/models/MessageListModel.h \
     src/models/RosterItemModel.h \
     src/models/RosterListModel.h \
     src/database/SkinSelectorHandler.h

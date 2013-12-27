@@ -42,57 +42,79 @@ Item {
 
     function updateNotifiers() {
         if (vars.globalUnreadCount > 0) avkon.showChatIcon(); else avkon.hideChatIcon();
-        if (settings.gBool("behavior","enableHsWidget")) postWidget();
-    }
-
-    function postWidget() {
-        var row1; var presence1 = -2;
-        var row2; var presence2 = -2;
-        var row3; var presence3 = -2;
-        var row4; var presence4 = -2;
-
-        var chatsCount = xmppClient.getLatestChatsCount()
-
-        if (chatsCount>0) {
-            row1 = xmppClient.getNameByIndex(chatsCount);
-            presence1 = getPresenceId(xmppClient.getPresenceByIndex(chatsCount));
-            if (chatsCount>1) {
-                row2 = xmppClient.getNameByIndex(chatsCount-1);
-                presence2 = getPresenceId(xmppClient.getPresenceByIndex(chatsCount-1));
-                if (chatsCount>2) {
-                    row3 = xmppClient.getNameByIndex(chatsCount-2);
-                    presence3 = getPresenceId(xmppClient.getPresenceByIndex(chatsCount-2));
-                    if (chatsCount>3) {
-                        row4 = xmppClient.getNameByIndex(chatsCount-3);
-                        presence4 = getPresenceId(xmppClient.getPresenceByIndex(chatsCount-3));
-                    }
-                }
-            }
+        if (settings.gBool("behavior","enableHsWidget")) {
+            hsWidget.status = xmppClient.status
+            hsWidget.unreadCount = vars.globalUnreadCount
+            hsWidget.getLatest4Chats()
+            //hsWidget.getFirst4Contacts()
+            hsWidget.pushWidget()
         }
-
-        hsWidget.postWidget(row1,presence1,row2,presence2,row3,presence3,row4,presence4,vars.globalUnreadCount,xmppClient.status);
     }
 
     function cleanWidget() {
+        hsWidget.row1 = " "
+        hsWidget.row2 = " "
+        hsWidget.row3 = " "
+        hsWidget.row4 = " "
+        hsWidget.r1presence = -2
+        hsWidget.r2presence = -2
+        hsWidget.r3presence = -2
+        hsWidget.r4presence = -2
+        hsWidget.unreadCount = 0
+        hsWidget.status = 0
         hsWidget.postWidget(" ",-2," ",-2," ",-2," ",-2,0,0);
-    }
-
-    function getPresenceId(presence) {
-        if (presence == "qrc:/presence/online") return 0;
-        else if (presence == "qrc:/presence/chatty") return 1;
-        else if (presence == "qrc:/presence/away") return 2;
-        else if (presence == "qrc:/presence/busy") return 3;
-        else if (presence == "qrc:/presence/xa") return 4;
-        else if (presence == "qrc:/presence/offline") return 5;
-        else return -2;
     }
 
     HSWidget {
         id: hsWidget
+        property string row1: " "
+        property string row2: " "
+        property string row3: " "
+        property string row4: " "
+        property int r1presence: -2
+        property int r2presence: -2
+        property int r3presence: -2
+        property int r4presence: -2
+        property int unreadCount: 0
+        property int status: 0
+
         Component.onCompleted: {
             var skinName = settings.gStr("ui","widgetSkin")
             if (skinName === "false") skinName = "C:\\data\\.config\\Lightbulb\\widgets\\Belle Albus";
-            hsWidget.loadSkin(skinName);
+            loadSkin(skinName);
+        }
+
+        function pushWidget() { postWidget(row1,r1presence,row2,r2presence,row3,r3presence,row4,r4presence,unreadCount,status); }
+
+        function getLatest4Chats() {
+            var chatsCount = xmppClient.getLatestChatsCount()
+            row1 = xmppClient.getNameByIndex(chatsCount);
+            r1presence = getPresenceId(xmppClient.getPresenceByIndex(chatsCount));
+            row2 = xmppClient.getNameByIndex(chatsCount-1);
+            r2presence = getPresenceId(xmppClient.getPresenceByIndex(chatsCount-1));
+            row3 = xmppClient.getNameByIndex(chatsCount-2);
+            r3presence = getPresenceId(xmppClient.getPresenceByIndex(chatsCount-2));
+            row4 = xmppClient.getNameByIndex(chatsCount-3);
+            r4presence = getPresenceId(xmppClient.getPresenceByIndex(chatsCount-3));
+        }
+        function getFirst4Contacts() {
+            row1 = xmppClient.getNameByOrderID(0);
+            r1presence = getPresenceId(xmppClient.getPresenceByOrderID(0));
+            row2 = xmppClient.getNameByOrderID(1);
+            r2presence = getPresenceId(xmppClient.getPresenceByOrderID(1));
+            row3 = xmppClient.getNameByOrderID(2);
+            r3presence = getPresenceId(xmppClient.getPresenceByOrderID(2));
+            row4 = xmppClient.getNameByOrderID(3);
+            r4presence = getPresenceId(xmppClient.getPresenceByOrderID(3));
+        }
+        function getPresenceId(presence) {
+            if (presence == "qrc:/presence/online") return 0;
+            else if (presence == "qrc:/presence/chatty") return 1;
+            else if (presence == "qrc:/presence/away") return 2;
+            else if (presence == "qrc:/presence/busy") return 3;
+            else if (presence == "qrc:/presence/xa") return 4;
+            else if (presence == "qrc:/presence/offline") return 5;
+            else return -2;
         }
     }
 

@@ -29,6 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <aknnotewrappers.h>
 #include <aknglobalnote.h>
 #include <AknCommonDialogsDynMem.h>
+#include <aknglobalmsgquery.h>
 #include <hwrmlight.h>
 #include <e32svr.h>
 #include <eikmenup.h>
@@ -36,6 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <apgcli.h> // RApaLsSession
 #include <apgtask.h> // TApaTaskList, TApaTask
 #include <QUrl>
+#include <QProcess>
 
 #include <coreapplicationuisdomainpskeys.h> //keys for RProperty
 #include <e32property.h> //http://katastrophos.net/symbian-dev/GUID-C6E5F800-0637-419E-8FE5-1EBB40E725AA/GUID-C4776034-D190-3FC4-AF45-C7F195093AC3.html
@@ -131,12 +133,9 @@ QString QAvkonHelper::openFileSelectionDlg() {
     TBool run  = AknCommonDialogsDynMem::RunSelectDlgLD(types, filename, _L(""), 0, 0, _L("Select a sound file"), extensionFilter);
     CleanupStack::PopAndDestroy(extensionFilter);
 
-
     if (!run) {
-        this->displayGlobalNote("Nothing got selected.",true);
-        return NULL;
+        return " ";
     } else {
-
         // convert Symbian string to QString
         QString qString = QString::fromUtf16(filename.Ptr(), filename.Length());
 
@@ -202,4 +201,34 @@ void QAvkonHelper::openDefaultBrowser(const QUrl &url) const {
 
 void QAvkonHelper::minimize() const {
     m_view->lower();
+}
+
+void QAvkonHelper::restartApp() {
+    if (displayAvkonQueryDialog("Close","Are you sure you want to restart the app?"))
+    {
+        QProcess::startDetached(QApplication::applicationFilePath());
+        exit(12);
+    }
+}
+
+bool QAvkonHelper::displayAvkonQueryDialog(QString title, QString message) {
+    // based on https://github.com/huellif/RebootMe/blob/master/main.cpp, Fabian Hüllmantel
+
+    TPtrC16 aTitle(reinterpret_cast<const TUint16*>(title.utf16()));     // convert title to Symbian string
+    TPtrC16 aMessage(reinterpret_cast<const TUint16*>(message.utf16())); // convert message to Symbian string
+
+    CAknGlobalMsgQuery* pDlg = CAknGlobalMsgQuery::NewL();//creating the pointer
+    CleanupStack::PushL(pDlg);                      //exception handling
+    TRequestStatus iStatus;                         //the app should wait until the user selected an option
+    pDlg->ShowMsgQueryL(iStatus, aMessage, R_AVKON_SOFTKEYS_YES_NO, aTitle, KNullDesC,0,-1,CAknQueryDialog::ENoTone);
+    // in the above line iStatus makes it wait for user selection
+    // R_AVKON_SOFTKEYS_YES_NO displays yes and no buttons
+    // KNullDesC means no image in the window
+    // 0 and -1 means no icon
+    // the last one disables sound
+
+    User::WaitForRequest(iStatus);                  //the app should wait until the user selected an option
+
+    CleanupStack::PopAndDestroy(pDlg);              //freeing CleanupStack
+    if (iStatus.Int() == EAknSoftkeyYes) return true; else return false;
 }
