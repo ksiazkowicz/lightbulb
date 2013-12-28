@@ -72,6 +72,9 @@ public:
 
     AccountsListModel* getAccounts() const { return alm; }
 
+    AccountsItemModel* getAccount(int index);
+    int accountsCount() { return alm->count(); }
+
 
 signals:
     void accountsListChanged();

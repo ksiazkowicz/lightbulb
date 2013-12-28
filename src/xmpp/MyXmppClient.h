@@ -72,8 +72,6 @@ class MyXmppClient : public QObject
     DatabaseWorker *dbWorker;
     QThread *dbThread;
 
-    RosterListModel* cachedRoster;
-
 public :
     static QString getBareJidByJid( const QString &jid );
     Q_INVOKABLE QString getAvatarByJid( QString bareJid );
@@ -155,8 +153,6 @@ public :
 
     /*--- widget data ---*/
     Q_INVOKABLE QString getNameByIndex( int index ) {
-        qDebug() << "latestChats.count()" << latestChats.count();
-        qDebug() << "index" << index;
         if (index>0 && latestChats.count() > 0) {
             int unreadMsg = getPropertyByJid(latestChats.at(index-1),"unreadMsg").toInt();
             if (unreadMsg > 0)
@@ -199,6 +195,8 @@ public :
     Q_INVOKABLE bool unsubscribe( const QString bareJid );
     Q_INVOKABLE bool acceptSubscribtion( const QString bareJid );
     Q_INVOKABLE bool rejectSubscribtion( const QString bareJid );
+
+    RosterListModel* cachedRoster;
 
     /*--- version ---*/
     static QString myVersion;

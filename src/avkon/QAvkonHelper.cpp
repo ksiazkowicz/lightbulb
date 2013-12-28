@@ -66,7 +66,8 @@ QAvkonHelper::QAvkonHelper(QDeclarativeView *view, QObject *parent) :
     QObject(parent), m_view(view)
 {
     notifyLight = CHWRMLight::NewL();
-    chatIconStatus = false;
+    chatIconStatus = true;
+    hideChatIcon();
 }
 
 void QAvkonHelper::showChatIcon() {

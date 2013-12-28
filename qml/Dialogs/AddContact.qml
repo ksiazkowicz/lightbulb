@@ -31,7 +31,7 @@ CommonDialog {
     platformInverted: main.platformInverted
     buttonTexts: [qsTr("OK"), qsTr("Cancel")]
     Component.onCompleted: open()
-    onButtonClicked: if (index === 0 && addName.text != "" && addJid.text != "") xmppClient.addContact( addJid.text, addName.text, "", true )
+    onButtonClicked: if (index === 0 && addName.text != "" && addJid.text != "") xmppConnectivity.client.addContact( addJid.text, addName.text, "", true )
 
     content: Column {
             spacing: platformStyle.paddingSmall

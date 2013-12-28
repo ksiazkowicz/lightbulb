@@ -453,7 +453,7 @@ Page {
 
                         onTextChanged: {
                             var interval = parseInt(tiKeepAlive.text)
-                            xmppClient.keepAlive = interval
+                            xmppConnectivity.client.keepAlive = interval
                             settings.sInt(interval,"behavior", "keepAliveInterval")
                         }
                     }

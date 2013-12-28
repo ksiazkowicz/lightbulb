@@ -10,20 +10,12 @@ Page {
 
 
     Connections {
-        target: xmppClient
-        onErrorHappened: {
-            errorText.text = errorString
-        }
-        onStatusChanged: {
-            if (xmppClient.status == XmppClient.Offline) {
-                errorText.text = ""
-            }
-        }
+        target: xmppConnectivity.client
+        onErrorHappened: errorText.text = errorString
+        onStatusChanged: if (xmppConnectivity.client.status == XmppClient.Offline) errorText.text = ""
     }
 
-    Component.onCompleted: {
-        statusBarText.text = "Contacts"
-    }
+    Component.onCompleted: statusBarText.text = "Contacts"
 
     property bool hideOffline: settings.gBool("ui","hideOffline")
     property bool markUnread: settings.gBool("ui","markUnread")
@@ -33,7 +25,62 @@ Page {
     property bool rosterLayoutAvatar: settings.gBool("ui","rosterLayoutAvatar")
     property string selectedJid: ""
 
-  /*******************************************************************************/
+    /*******************************************************************************/
+
+    Rectangle {
+        id: accountSwitcher
+        property string themeColor: "#DE751D"
+
+        height: 64
+        color: "black"
+        z: 1
+
+        anchors { top: parent.top; left: parent.left; right: parent.right }
+
+        Rectangle {
+            color: parent.themeColor
+            anchors.fill: parent
+            radius: 8
+        }
+        Rectangle {
+            color: parent.themeColor
+            anchors { left: parent.left; right: parent.right; bottom: parent.bottom }
+            height: 8
+        }
+        ToolButton {
+            id: button
+            anchors { left: parent.left; leftMargin: platformStyle.paddingSmall; verticalCenter: parent.verticalCenter }
+            iconSource: "qrc:/presence/" + notify.getStatusName()
+            onClicked: dialog.create("qrc:/dialogs/Status/Change")
+        }
+        Text {
+            id: titleText
+            anchors { verticalCenter: parent.verticalCenter; left: button.right; leftMargin: platformStyle.paddingSmall; right: list.left; rightMargin: platformStyle.paddingSmall  }
+            text: xmppConnectivity.client.myBareJid
+            color: "white"
+            font.pixelSize: 20
+        }
+        ToolButton {
+            id: list
+            iconSource: "toolbar-list"
+            anchors { verticalCenter: parent.verticalCenter; right: parent.right; rightMargin: platformStyle.paddingSmall }
+            onClicked: main.pageStack.push( "qrc:/pages/Accounts" )
+        }
+
+        Rectangle {
+            height: 1
+            width: parent.width
+            anchors.bottom: parent.bottom
+            color: "#10000000"
+        }
+        Rectangle {
+            height: 1
+            width: parent.width
+            anchors.top: parent.bottom
+            anchors.topMargin: 1
+            color: "white"
+        }        
+    }
 
     Component {
         id: componentRosterItem
@@ -46,7 +93,7 @@ Page {
 
             Image {
                 id: imgPresence
-                source: rosterLayoutAvatar ? xmppClient.getAvatarByJid(jid) : presence
+                source: rosterLayoutAvatar ? xmppConnectivity.client.getAvatarByJid(jid) : presence
                 sourceSize.height: rosterItemHeight-4
                 sourceSize.width: rosterItemHeight-4
                 anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
@@ -106,8 +153,8 @@ Page {
                 anchors.fill: parent
 
                 onClicked: {
-                    xmppClient.chatJid = jid
-                    xmppClient.contactName = txtJid.contact
+                    xmppConnectivity.client.chatJid = jid
+                    xmppConnectivity.client.contactName = txtJid.contact
                     vars.globalUnreadCount = vars.globalUnreadCount - unreadMsg
                     notify.updateNotifiers()
                     main.pageStack.push( "qrc:/pages/Messages" )
@@ -117,7 +164,7 @@ Page {
                     selectedJid = jid
                     vars.selectedContactStatusText = statusText
                     vars.selectedContactPresence = presence
-                    xmppClient.contactName = txtJid.contact
+                    xmppConnectivity.client.contactName = txtJid.contact
                     vars.dialogName = txtJid.contact
                     contactMenu.open()
                 }
@@ -142,7 +189,7 @@ Page {
 
     Flickable {
         id: rosterView
-        anchors { top: parent.top; left: parent.left; right: parent.right; bottom: rosterSearch.top; }
+        anchors { top: accountSwitcher.bottom; left: parent.left; right: parent.right; bottom: rosterSearch.top; }
         contentHeight: columnContent.height
         contentWidth: columnContent.width
 
@@ -152,7 +199,7 @@ Page {
             spacing: 0
 
             Repeater {
-                model: xmppClient.cachedRoster
+                model: xmppConnectivity.roster
                 delegate: componentRosterItem
             }
 
@@ -168,16 +215,6 @@ Page {
 
         // define the items in the menu and corresponding actions
         content: MenuLayout {
-            MenuItem {
-                text: qsTr("Status")
-                platformInverted: main.platformInverted
-                onClicked: dialog.create("qrc:/dialogs/Status/Change")
-            }
-            MenuItem {
-                text: qsTr("Accounts")
-                platformInverted: main.platformInverted
-                onClicked: main.pageStack.push( "qrc:/pages/Accounts" )
-            }
             MenuItem {
                 text: qsTr("Settings")
                 platformInverted: main.platformInverted
@@ -218,25 +255,25 @@ Page {
                 text: qsTr("Remove")
                 platformInverted: main.platformInverted
                 onClicked: {
-                    xmppClient.chatJid = selectedJid
+                    xmppConnectivity.client.chatJid = selectedJid
                     contactMenu.close()
                     if (avkon.displayAvkonQueryDialog("Remove", qsTr("Are you sure you want to remove ") + vars.dialogName + qsTr(" from your contact list?")))
-                        xmppClient.removeContact( selectedJid );
+                        xmppConnectivity.client.removeContact( selectedJid );
                 }
             }
             MenuItem {
                 text: qsTr("Rename")
                 platformInverted: main.platformInverted
-                onClicked: { xmppClient.chatJid = selectedJid
+                onClicked: { xmppConnectivity.client.chatJid = selectedJid
                     dialog.create("qrc:/dialogs/Contact/Rename") }
             }
             MenuItem {
                 text: qsTr("vCard")
                 platformInverted: main.platformInverted
                 onClicked: {
-                    xmppClient.chatJid = selectedJid
+                    xmppConnectivity.client.chatJid = selectedJid
                     main.pageStack.push( "qrc:/pages/VCard" )
-                    xmppClient.chatJid = selectedJid
+                    xmppConnectivity.client.chatJid = selectedJid
                 }
             }
             MenuItem {
@@ -244,7 +281,7 @@ Page {
                 platformInverted: main.platformInverted
                 onClicked: {dialogTitle = qsTr("Subscribed")
                     dialogText = qsTr("Sent request to ")+vars.dialogName
-                    xmppClient.subscribe( selectedJid )
+                    xmppConnectivity.client.subscribe( selectedJid )
                     notify.postGlobalNote(qsTr("Sent request to ")+vars.dialogName)
                 }
             }
@@ -254,7 +291,7 @@ Page {
                 onClicked: {dialogTitle = qsTr("Unsuscribed")
                     contactMenu.close()
                     dialogText = qsTr("Unsuscribed ")+vars.dialogName
-                    xmppClient.unsubscribe( selectedJid )
+                    xmppConnectivity.client.unsubscribe( selectedJid )
                     notify.postGlobalNote(qsTr("Unsuscribed ")+vars.dialogName)
                 }
             }
@@ -355,17 +392,17 @@ Page {
 
         color: main.platformInverted ? "white" : "black"
         opacity: 0.7
-        anchors.fill: parent
+        anchors { top: accountSwitcher.bottom; left: parent.left; right: parent.right; bottom: parent.bottom }
         NumberAnimation { properties: "visible"; duration: 200 }
 
-        visible: xmppClient.status == XmppClient.Offline
+        visible: xmppConnectivity.client.status == XmppClient.Offline
 
         Rectangle {
             anchors.centerIn: parent
             color: "transparent"
             height: sadface.height + 5 + offlineText.height + 10 + errorText.height
             width: offlineText.width
-            visible: xmppClient.status == XmppClient.Offline
+            visible: xmppConnectivity.client.status == XmppClient.Offline
             Text {
                 id: sadface
                 color: vars.textColor

@@ -37,7 +37,7 @@ Page {
             iconSource: main.platformInverted ? "toolbar-next_inverse" : "toolbar-next"
             onClicked: {
                 settings.sBool(true,"main","not_first_run")
-                settings.sStr(xmppClient.version,"main","last_used_rel")
+                settings.sStr(xmppConnectivity.client.version,"main","last_used_rel")
 
                 settings.sBool(true,"notifications","vibraMsgRecv")
                 settings.sInt(800,"notifications","vibraMsgRecvDuration")

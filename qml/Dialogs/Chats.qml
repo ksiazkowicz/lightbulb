@@ -31,15 +31,15 @@ SelectionDialog {
     selectedIndex: -1
     platformInverted: main.platformInverted
     privateCloseIcon: true
-    model: xmppClient.chats
+    model: xmppConnectivity.client.chats
 
     Component.onCompleted: open()
 
     onSelectedIndexChanged: {
-        if (selectedIndex > -1 && xmppClient.chatJid != xmppClient.getPropertyByChatID(selectedIndex, "jid")) {
-            xmppClient.chatJid = xmppClient.getPropertyByChatID(selectedIndex, "jid")
-            xmppClient.contactName = xmppClient.getPropertyByChatID(selectedIndex, "name")
-            vars.globalUnreadCount = vars.globalUnreadCount - parseInt(xmppClient.getPropertyByChatID(selectedIndex, "unreadMsg"))
+        if (selectedIndex > -1 && xmppConnectivity.client.chatJid != xmppConnectivity.client.getPropertyByChatID(selectedIndex, "jid")) {
+            xmppConnectivity.client.chatJid = xmppConnectivity.client.getPropertyByChatID(selectedIndex, "jid")
+            xmppConnectivity.client.contactName = xmppConnectivity.client.getPropertyByChatID(selectedIndex, "name")
+            vars.globalUnreadCount = vars.globalUnreadCount - parseInt(xmppConnectivity.client.getPropertyByChatID(selectedIndex, "unreadMsg"))
             main.openChat()
         }
     }

@@ -36,7 +36,7 @@ CommonDialog {
                     case 5: ret = XmppClient.Offline; break;
                     default: ret = XmppClient.Unknown; break;
                 }
-                xmppClient.setMyPresence( ret, main.laststatus )
+                xmppConnectivity.client.setMyPresence( ret, main.laststatus )
                 reconDialog.close()
                 running = false
             }

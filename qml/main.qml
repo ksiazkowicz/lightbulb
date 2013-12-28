@@ -11,7 +11,7 @@ PageStackWindow {
     Globals { id: vars }
 
     function openChat() {
-        xmppClient.resetUnreadMessages( xmppClient.chatJid )
+        xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.client.chatJid )
         if (settings.gBool("behavior","enableHsWidget")) notify.updateNotifiers()
 
         if (pageStack.depth > 1) pageStack.replace("qrc:/pages/Messages")
@@ -37,7 +37,7 @@ PageStackWindow {
             if (Qt.application.active) {
                 vars.isActive = true
                 blink.running = false
-                if (xmppClient.chatJid != "") {
+                if (xmppConnectivity.client.chatJid != "") {
                     vars.isChatInProgress = true
                     vars.globalUnreadCount = vars.globalUnreadCount - vars.tempUnreadCount
                 }
@@ -52,23 +52,23 @@ PageStackWindow {
         }
     }
 
-    XmppClient {
-        id: xmppClient
+    Connections {
+        target: xmppConnectivity.client
         onRosterChanged: vars.connecting = false
         onErrorHappened: {
             vars.connecting = false
             if (settings.gBool("behavior", "reconnectOnError")) dialog.create("qrc:/dialogs/Status/Reconnect")
         }
         onMessageReceived: {
-            if( xmppClient.myBareJid != bareJidLastMsg ) {
+            if( xmppConnectivity.client.myBareJid != bareJidLastMsg ) {
                 if (!vars.isChatInProgress) {
                     vars.globalUnreadCount++
-                    if (bareJidLastMsg == xmppClient.chatJid) vars.tempUnreadCount++
-                } else if (bareJidLastMsg != xmppClient.chatJid || !vars.isActive) vars.globalUnreadCount++
+                    if (bareJidLastMsg == xmppConnectivity.client.chatJid) vars.tempUnreadCount++
+                } else if (bareJidLastMsg != xmppConnectivity.client.chatJid || !vars.isActive) vars.globalUnreadCount++
 
                 if (!vars.isActive && settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff")) { blink.running = true }
 
-                if (settings.gBool("notifications", "usePopupRecv") == true && (xmppClient.chatJid !== bareJidLastMsg || !vars.isActive)) {
+                if (settings.gBool("notifications", "usePopupRecv") == true && (xmppConnectivity.client.chatJid !== bareJidLastMsg || !vars.isActive)) {
                     if (settings.gBool("behavior","msgInDiscrPopup")) avkon.showPopup(getPropertyByJid(bareJidLastMsg,"name"), getLastSqlMessage(),settings.gBool("behavior","linkInDiscrPopup"))
                     else avkon.showPopup(globalUnreadCount + " unread messages", "New message from "+ getPropertyByJid(bareJidLastMsg,"name") + ".",settings.gBool("behavior","linkInDiscrPopup"))
                 }
@@ -77,33 +77,37 @@ PageStackWindow {
             }
         }
         onStatusChanged: {
-            console.log( "XmppClient::onStatusChanged:" + status )
+            console.log( "XmppClient::onStatusChanged:" + xmppConnectivity.client.status )
             notify.notifySndVibr("NotifyConn")
             if (settings.gBool("notifications", "notifyConnection") && !vars.connecting) {
-                if (xmppClient.statusText == "") avkon.showPopup("Status changed to " + notify.getStatusName(),xmppClient.statusText,settings.gBool("behavior","linkInDiscrPopup"))
+                if (xmppConnectivity.client.statusText == "") avkon.showPopup("Status changed to " + notify.getStatusName(),xmppConnectivity.client.statusText,settings.gBool("behavior","linkInDiscrPopup"))
                 else avkon.showPopup("Status changed to",notify.getStatusName(),settings.gBool("behavior","linkInDiscrPopup"))
             }
             notify.updateNotifiers()
         }
-        onVCardChanged: xmppVCard.vcard = xmppClient.vcard
+        onVCardChanged: xmppVCard.vcard = xmppConnectivity.client.vcard
         onSubscriptionReceived: {
             console.log( "XmppClient::onSubscriptionReceived(" + bareJid + ")" )
             if (settings.gBool("notifications","notifySubscription") == true) avkon.showPopup("Subscription request",bareJid,settings.gBool("behavior","linkInDiscrPopup"))
             notify.notifySndVibr("MsgSub")            
             if (avkon.displayAvkonQueryDialog("Subscription", qsTr("Do you want to accept subscription request from ") + bareJid + qsTr("?"))) {
-                xmppClient.acceptSubscribtion(bareJid)
+                xmppConnectivity.client.acceptSubscribtion(bareJid)
             } else {
-                xmppClient.rejectSubscribtion(bareJid)
+                xmppConnectivity.client.rejectSubscribtion(bareJid)
             }
 
         }
         onTypingChanged: {
-            if (settings.gBool("notifications", "notifyTyping") == true && (xmppClient.chatJid !== bareJid || !vars.isActive) && xmppClient.myBareJid !== bareJid) {
+            if (settings.gBool("notifications", "notifyTyping") == true && (xmppConnectivity.client.chatJid !== bareJid || !vars.isActive) && xmppConnectivity.client.myBareJid !== bareJid) {
                 if (isTyping) avkon.showPopup(getPropertyByJid(bareJid,"name"),"is typing a message...",settings.gBool("behavior","linkInDiscrPopup"))
                 else avkon.showPopup(getPropertyByJid(bareJid,"name"),"stopped typing.",settings.gBool("behavior","linkInDiscrPopup"))
             }
         }
     } //XmppClient
+
+    XmppConnectivity {
+        id: xmppConnectivity
+    }
 
     Settings { id: settings }
     XmppVCard { id: xmppVCard }
@@ -111,8 +115,8 @@ PageStackWindow {
     Component.onCompleted: {
         initAccount()
         checkIfFirstRun()
-        xmppClient.keepAlive = settings.gInt("behavior", "keepAliveInterval")
-        if (settings.gBool("behavior","goOnlineOnStart")) xmppClient.setMyPresence( XmppClient.Online, lastStatus )
+        xmppConnectivity.client.keepAlive = settings.gInt("behavior", "keepAliveInterval")
+        if (settings.gBool("behavior","goOnlineOnStart")) xmppConnectivity.client.setMyPresence( XmppClient.Online, lastStatus )
     }
 
     /************************( stuff to do when running this app )*****************************/
@@ -120,10 +124,6 @@ PageStackWindow {
     function checkIfFirstRun() {
         if (!settings.gBool("main","not_first_run")) pageStack.push("qrc:/FirstRun/01")
         else pageStack.push("qrc:/pages/Roster")
-        if (!settings.gBool("main","christmas2013")) {
-            notify.postInfo("Merry Christmas and a Happy New Year from pisarz1958! Enjoy testing this build. :)")
-            settings.sBool(true,"main","christmas2013");
-        }
     }
 
     property bool _existDefaultAccount: false
@@ -136,23 +136,9 @@ PageStackWindow {
             if( settings.gBool( settings.getJidByIndex( j ),"is_default" ) )
             {
                 _existDefaultAccount = true
-                xmppClient.myBareJid = settings.getJidByIndex( j );
-                xmppClient.myPassword = settings.gStr( settings.getJidByIndex( j ),"passwd" );
-                xmppClient.resource = settings.gStr( settings.getJidByIndex( j ), "resource" )
-
-                if(  settings.gBool( settings.getJidByIndex( j ),"use_host_port" ) ) {
-                    xmppClient.host = settings.gStr(settings.getJidByIndex(j), "host")
-                    xmppClient.port = settings.gInt(settings.getJidByIndex(j), "port")
-                } else {
-                    xmppClient.host = "";
-                    xmppClient.port = 5222;
-                }
-
-                xmppClient.accountId = j;
+                xmppConnectivity.changeAccount(accc);
                 avkon.hideChatIcon()
                 notify.updateNotifiers()
-
-                console.log("QML: main::initAccount():" + xmppClient.myBareJid + "/" + xmppClient.resource);
             } else {
                     _existDefaultAccount = true
                     accc++

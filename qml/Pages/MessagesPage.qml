@@ -10,19 +10,19 @@ Page {
     property string resourceJid: ""
 
     Component.onCompleted: {
-        xmppClient.page = 1
-        console.log( xmppClient.chatJid )
-        xmppClient.openChat( xmppClient.chatJid )
+        xmppConnectivity.client.page = 1
+        console.log( xmppConnectivity.client.chatJid )
+        xmppConnectivity.client.openChat( xmppConnectivity.client.chatJid )
 
-        statusBarText.text = xmppClient.contactName
+        statusBarText.text = xmppConnectivity.client.contactName
 
-        if( xmppClient.bareJidLastMsg == xmppClient.chatJid ) messagesPage.resourceJid = xmppClient.resourceLastMsg
+        if( xmppConnectivity.client.bareJidLastMsg == xmppConnectivity.client.chatJid ) messagesPage.resourceJid = xmppConnectivity.client.resourceLastMsg
 
         if( messagesPage.resourceJid == "" ) listModelResources.append( {resource:qsTr("(by default)"), checked:true} )
         else listModelResources.append( {resource:qsTr("(by default)"), checked:false} )
 
         if (notify.getStatusName() != "Offline") {
-            var listResources = xmppClient.getResourcesByJid(xmppClient.chatJid)
+            var listResources = xmppConnectivity.client.getResourcesByJid(xmppConnectivity.client.chatJid)
             for( var z=0; z<listResources.length; z++ ) {
                 if ( listResources[z] == "" ) { continue; }
                 if ( messagesPage.resourceJid ==listResources[z] ) listModelResources.append( {resource:listResources[z], checked:true} )
@@ -111,7 +111,7 @@ Page {
                   anchors.topMargin: -10
                   anchors.left: parent.left
                   anchors.right: parent.right
-                  text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (xmppClient.contactName === "" ? xmppClient.chatJid : xmppClient.contactName) ) + ":</font> " + Emotion.parseEmoticons(msgText)
+                  text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (xmppConnectivity.client.contactName === "" ? xmppConnectivity.client.chatJid : xmppConnectivity.client.contactName) ) + ":</font> " + Emotion.parseEmoticons(msgText)
                   color: isMine == true ? "white" : "black"
                   font.pixelSize: 16
                   wrapMode: Text.Wrap
@@ -131,14 +131,14 @@ Page {
     } //Component
     /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
     function sendMessage() {
-        var ret = xmppClient.sendMyMessage( xmppClient.chatJid, messagesPage.resourceJid, txtMessage.text )
+        var ret = xmppConnectivity.client.sendMyMessage( xmppConnectivity.client.chatJid, messagesPage.resourceJid, txtMessage.text )
         if( ret ) {
               flSendMsg = true
               timerTextTyping.stop()
               txtMessage.text = ""
               flTyping = false
               flSendMsg = false
-              xmppClient.typingStop( xmppClient.chatJid, messagesPage.resourceJid )
+              xmppConnectivity.client.typingStop( xmppConnectivity.client.chatJid, messagesPage.resourceJid )
               notify.notifySndVibr("MsgSent")
         }
     }
@@ -154,7 +154,7 @@ Page {
         onTriggered: {
             if( flTyping == false ) {
                 timerTextTyping.stop()
-                xmppClient.typingStop( xmppClient.chatJid, messagesPage.resourceJid )
+                xmppConnectivity.client.typingStop( xmppConnectivity.client.chatJid, messagesPage.resourceJid )
             }
             flTyping = false
         }
@@ -163,10 +163,10 @@ Page {
 
     /* ------------( XMPP client and stuff )------------ */
     Connections {
-        target: xmppClient
+        target: xmppConnectivity.client
         onMessageReceived: {
-            if( xmppClient.bareJidLastMsg == xmppClient.chatJid ) {
-                messagesPage.resourceJid = xmppClient.resourceLastMsg
+            if( xmppConnectivity.client.bareJidLastMsg == xmppConnectivity.client.chatJid ) {
+                messagesPage.resourceJid = xmppConnectivity.client.resourceLastMsg
                 if (settings.gBool("behavior","enableHsWidget")) notify.updateNotifiers()
             }
         }
@@ -192,7 +192,7 @@ Page {
             interactive: false
             anchors { fill: parent }
             clip: true
-            model: xmppClient.messages
+            model: xmppConnectivity.client.messages
             delegate: componentWrapperItem
             spacing: 5
             onHeightChanged: flickable.contentY = flickable.contentHeight;
@@ -219,7 +219,7 @@ Page {
 
                    if( (!timerTextTyping.running) && (flSendMsg==false) ) {
                       timerTextTyping.restart()
-                      xmppClient.typingStart( xmppClient.chatJid, messagesPage.resourceJid )
+                      xmppConnectivity.client.typingStart( xmppConnectivity.client.chatJid, messagesPage.resourceJid )
                       flTyping = false
                    }
               }
@@ -316,21 +316,21 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
-                xmppClient.typingStop( xmppClient.chatJid, messagesPage.resourceJid )
+                xmppConnectivity.client.typingStop( xmppConnectivity.client.chatJid, messagesPage.resourceJid )
                 pageStack.pop()
                 vars.isChatInProgress = false
                 statusBarText.text = "Contacts"
-                xmppClient.resetUnreadMessages( xmppClient.chatJid )
-                xmppClient.chatJid = ""
+                xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.client.chatJid )
+                xmppConnectivity.client.chatJid = ""
             }
             onPlatformPressAndHold: {
-                xmppClient.typingStop( xmppClient.chatJid, messagesPage.resourceJid )
+                xmppConnectivity.client.typingStop( xmppConnectivity.client.chatJid, messagesPage.resourceJid )
                 pageStack.pop()
                 vars.isChatInProgress = false
-                xmppClient.closeChat(xmppClient.chatJid )
+                xmppConnectivity.client.closeChat(xmppConnectivity.client.chatJid )
                 statusBarText.text = "Contacts"
-                xmppClient.resetUnreadMessages( xmppClient.chatJid )
-                xmppClient.chatJid = ""
+                xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.client.chatJid )
+                xmppConnectivity.client.chatJid = ""
             }
         }
         ToolButton {
@@ -343,7 +343,7 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "qrc:/toolbar/chats_inverse" : "qrc:/toolbar/chats"
             onClicked: {
-                xmppClient.resetUnreadMessages( xmppClient.chatJid ) //cleans unread count for this JID
+                xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.client.chatJid ) //cleans unread count for this JID
                 dialog.create("qrc:/dialogs/Chats")
             }
             Image {
@@ -388,7 +388,7 @@ Page {
                 text: "Archive"
                 platformInverted: main.platformInverted
                 onClicked: {
-                    xmppClient.page = 1
+                    xmppConnectivity.client.page = 1
                     pageStack.replace("qrc:/pages/Archive")
                 }
             }
@@ -398,16 +398,16 @@ Page {
                 onClicked: {
                     pageStack.pop()
                     vars.isChatInProgress = false
-                    xmppClient.closeChat(xmppClient.chatJid )
+                    xmppConnectivity.client.closeChat(xmppConnectivity.client.chatJid )
                     statusBarText.text = "Contacts"
-                    xmppClient.resetUnreadMessages( xmppClient.chatJid )
-                    xmppClient.chatJid = ""
+                    xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.client.chatJid )
+                    xmppConnectivity.client.chatJid = ""
                 }
             }
 
             /*MenuItem {
                 text: "Send attention"
-                onClicked: xmppClient.attentionSend( xmppClient.chatJid, messagesPage.resourceJid )
+                onClicked: xmppConnectivity.client.attentionSend( xmppConnectivity.client.chatJid, messagesPage.resourceJid )
             }*/
         }
     }

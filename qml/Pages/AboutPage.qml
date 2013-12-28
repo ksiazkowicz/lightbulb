@@ -26,7 +26,7 @@ Page {
     Text {
         id: programName
         color: vars.textColor
-        text: "Lightbulb " + xmppClient.version + " β"
+        text: "Lightbulb " + xmppConnectivity.client.version + " α"
         anchors { top: logo.bottom; topMargin: 5; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
         horizontalAlignment: Text.AlignHCenter
         font.pixelSize: platformStyle.fontSizeMedium*1.5

@@ -161,6 +161,10 @@ void Settings::setAccount(
     if( ok ) { sInt( p, _jid, "port" ); }
 }
 
+AccountsItemModel* Settings::getAccount(int index) {
+    return (AccountsItemModel*)alm->getElementByID(index);
+}
+
 QString Settings::getJidByIndex(int index) {
     return getListAccounts().at(index);
 }

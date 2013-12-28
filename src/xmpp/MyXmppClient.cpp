@@ -19,7 +19,7 @@
 #include "RosterListModel.h"
 #include "RosterItemModel.h"
 
-QString MyXmppClient::myVersion = "0.2.3";
+QString MyXmppClient::myVersion = "0.3";
 QString MyXmppClient::getBareJidByJid( const QString &jid ) { if (jid.indexOf('/') >= 0) return jid.split('/')[0]; else return jid; }
 QString MyXmppClient::getAvatarByJid( QString bareJid ) { return cacheIM->getAvatarCache(bareJid); }
 
@@ -141,12 +141,12 @@ void MyXmppClient::initRoster() {
         return;
     }
 
-    if( !vCardManager ) {
+    /*if( !vCardManager ) {
         vCardManager = &xmppClient->vCardManager();
         QObject::connect( vCardManager, SIGNAL(vCardReceived(const QXmppVCardIq &)),
                           this, SLOT(initVCard(const QXmppVCardIq &)),
                           Qt::UniqueConnection  );
-    }
+    }*/
 
     cachedRoster->takeRows(0, cachedRoster->count()); // cleans the cache
 
@@ -162,7 +162,7 @@ void MyXmppClient::initRoster() {
         QString name = itemRoster.name();
         vCardData vCdata = cacheIM->getVCard( bareJid );
 
-        if ( vCdata.isEmpty() )
+        /*if ( vCdata.isEmpty() )
         {
             vCardManager->requestVCard( bareJid );
             qDebug() << "MyXmppClient::initRoster():" << bareJid << "has no VCard. Requesting.";
@@ -173,7 +173,7 @@ void MyXmppClient::initRoster() {
             if( (!nickName.isEmpty()) && (!nickName.isNull()) && (itemRoster.name().isEmpty()) ) {
                 name =  nickName;
             }
-        }
+        }*/
 
         RosterItemModel *itemModel = new RosterItemModel( );
         itemModel->setPresence( this->getPicPresence( QXmppPresence::Unavailable ) );
@@ -183,6 +183,8 @@ void MyXmppClient::initRoster() {
         itemModel->setStatusText( "Offline ");
         cachedRoster->append(itemModel);
     }
+
+    qWarning() << "crash in 5...4...3...";
     emit rosterChanged();
 }
 

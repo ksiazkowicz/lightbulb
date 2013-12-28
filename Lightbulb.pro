@@ -22,7 +22,7 @@
 
 QT += declarative network sql svg
 
-VERSION = 0.2.3
+VERSION = 0.3
 
 symbian {
     TARGET.UID3 = 0xE22AC278

@@ -33,20 +33,22 @@ Item {
 
     function getStatusName() {
        var statusName;
-       if( (xmppClient.status == XmppClient.Online) || (xmppClient.status == XmppClient.Chat) ) statusName = qsTr("Online")
-       else if( (xmppClient.status == XmppClient.Away) || (xmppClient.status == XmppClient.XA) ) statusName = qsTr("Away")
-       else if(  xmppClient.status == XmppClient.DND ) statusName = qsTr("Do Not Disturb")
-       else if(  xmppClient.status == XmppClient.Offline ) statusName = qsTr("Offline")
+       if (xmppConnectivity.client.status == XmppClient.Online) statusName = qsTr("online")
+       else if (xmppConnectivity.client.status == XmppClient.Chat) statusName = qsTr("chatty")
+       else if (xmppConnectivity.client.status == XmppClient.Away) statusName = qsTr("away")
+       else if (xmppConnectivity.client.status == XmppClient.XA) statusName = qsTr("xa")
+       else if (xmppConnectivity.client.status == XmppClient.DND) statusName = qsTr("busy")
+       else if (xmppConnectivity.client.status == XmppClient.Offline) statusName = qsTr("offline")
        return statusName;
     }
 
     function updateNotifiers() {
         if (vars.globalUnreadCount > 0) avkon.showChatIcon(); else avkon.hideChatIcon();
         if (settings.gBool("behavior","enableHsWidget")) {
-            hsWidget.status = xmppClient.status
+            hsWidget.status = xmppConnectivity.client.status
             hsWidget.unreadCount = vars.globalUnreadCount
             hsWidget.getLatest4Chats()
-            //hsWidget.getFirst4Contacts()
+            hsWidget.getFirst4Contacts()
             hsWidget.pushWidget()
         }
     }
@@ -87,25 +89,25 @@ Item {
         function pushWidget() { postWidget(row1,r1presence,row2,r2presence,row3,r3presence,row4,r4presence,unreadCount,status); }
 
         function getLatest4Chats() {
-            var chatsCount = xmppClient.getLatestChatsCount()
-            row1 = xmppClient.getNameByIndex(chatsCount);
-            r1presence = getPresenceId(xmppClient.getPresenceByIndex(chatsCount));
-            row2 = xmppClient.getNameByIndex(chatsCount-1);
-            r2presence = getPresenceId(xmppClient.getPresenceByIndex(chatsCount-1));
-            row3 = xmppClient.getNameByIndex(chatsCount-2);
-            r3presence = getPresenceId(xmppClient.getPresenceByIndex(chatsCount-2));
-            row4 = xmppClient.getNameByIndex(chatsCount-3);
-            r4presence = getPresenceId(xmppClient.getPresenceByIndex(chatsCount-3));
+            var chatsCount = xmppConnectivity.client.getLatestChatsCount()
+            row1 = xmppConnectivity.client.getNameByIndex(chatsCount);
+            r1presence = getPresenceId(xmppConnectivity.client.getPresenceByIndex(chatsCount));
+            row2 = xmppConnectivity.client.getNameByIndex(chatsCount-1);
+            r2presence = getPresenceId(xmppConnectivity.client.getPresenceByIndex(chatsCount-1));
+            row3 = xmppConnectivity.client.getNameByIndex(chatsCount-2);
+            r3presence = getPresenceId(xmppConnectivity.client.getPresenceByIndex(chatsCount-2));
+            row4 = xmppConnectivity.client.getNameByIndex(chatsCount-3);
+            r4presence = getPresenceId(xmppConnectivity.client.getPresenceByIndex(chatsCount-3));
         }
         function getFirst4Contacts() {
-            row1 = xmppClient.getNameByOrderID(0);
-            r1presence = getPresenceId(xmppClient.getPresenceByOrderID(0));
-            row2 = xmppClient.getNameByOrderID(1);
-            r2presence = getPresenceId(xmppClient.getPresenceByOrderID(1));
-            row3 = xmppClient.getNameByOrderID(2);
-            r3presence = getPresenceId(xmppClient.getPresenceByOrderID(2));
-            row4 = xmppClient.getNameByOrderID(3);
-            r4presence = getPresenceId(xmppClient.getPresenceByOrderID(3));
+            row1 = xmppConnectivity.client.getNameByOrderID(0);
+            r1presence = getPresenceId(xmppConnectivity.client.getPresenceByOrderID(0));
+            row2 = xmppConnectivity.client.getNameByOrderID(1);
+            r2presence = getPresenceId(xmppConnectivity.client.getPresenceByOrderID(1));
+            row3 = xmppConnectivity.client.getNameByOrderID(2);
+            r3presence = getPresenceId(xmppConnectivity.client.getPresenceByOrderID(2));
+            row4 = xmppConnectivity.client.getNameByOrderID(3);
+            r4presence = getPresenceId(xmppConnectivity.client.getPresenceByOrderID(3));
         }
         function getPresenceId(presence) {
             if (presence == "qrc:/presence/online") return 0;

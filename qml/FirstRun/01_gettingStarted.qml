@@ -34,7 +34,7 @@ Page {
             iconSource: main.platformInverted ? "qrc:/toolbar/close_inverse" : "qrc:/toolbar/close"
             onClicked: {
                 settings.sBool(true,"main","not_first_run")
-                settings.sStr(xmppClient.version,"main","last_used_rel")
+                settings.sStr(xmppConnectivity.client.version,"main","last_used_rel")
                 settings.sBool(true,"ui","markUnread")
                 settings.sBool(true,"ui","showUnreadCount")
                 settings.sInt(75,"ui","rosterItemHeight")
