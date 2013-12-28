@@ -1,6 +1,4 @@
 #include "XmppConnectivity.h"
-#include "MyXmppClient.h"
-#include "Settings.h"
 
 XmppConnectivity::XmppConnectivity(QObject *parent) :
     QObject(parent)
@@ -8,15 +6,17 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
     selectedClient = new MyXmppClient();
     currentClient = -1;
     clients = new QMap<int,MyXmppClient*>;
-    Settings lightbulbConf;
+    lSettings = new Settings();
+    lCache = new MyCache();
+    lCache->createHomeDir();
 
     dbWorker = new DatabaseWorker;
     dbThread = new QThread(this);
     dbWorker->moveToThread(dbThread);
     dbThread->start();
 
-    for (int i=0; i<lightbulbConf.accountsCount(); i++)
-        initializeAccount(i,lightbulbConf.getAccount(i));
+    for (int i=0; i<lSettings->accountsCount(); i++)
+        initializeAccount(i,lSettings->getAccount(i));
 }
 
 bool XmppConnectivity::initializeAccount(int index, AccountsItemModel* account) {
@@ -36,9 +36,9 @@ bool XmppConnectivity::initializeAccount(int index, AccountsItemModel* account) 
         clients->value(index)->setPort(5222);
     }
     clients->value(index)->setAccountId(index);
-    connect(clients->value(index),SIGNAL(rosterChanged()),this,SLOT(changeRoster()),Qt::UniqueConnection);
-    connect(clients->value(index),SIGNAL(updateContact(int,QString,QString,int)),this,SLOT(updateContact(int,QString,QString,int)),Qt::UniqueConnection);
-    connect(clients->value(index),SIGNAL(insertMessage(int,QString,QString,QString,int)),this,SLOT(insertMessage(int,QString,QString,QString,int)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(rosterChanged()),this,SLOT(changeRoster()));
+    connect(clients->value(index),SIGNAL(updateContact(int,QString,QString,int)),this,SLOT(updateContact(int,QString,QString,int)));
+    connect(clients->value(index),SIGNAL(insertMessage(int,QString,QString,QString,int)),this,SLOT(insertMessage(int,QString,QString,QString,int)));
     qDebug() << "XmppConnectivity::initializeAccount(): initialized account " + clients->value(index)->getMyJid() + "/" + clients->value(index)->getResource();
     return true;
 }
@@ -71,7 +71,7 @@ bool XmppConnectivity::dbRemoveDb() {
     sqlQuery->deleteLater();
     return ret;
 }
-bool XmppConnectivity::cleanCache() { /*return this->removeDir(cacheIM->getMeegIMCachePath());*/ }
+bool XmppConnectivity::cleanCache() { return this->removeDir(lCache->getMeegIMCachePath()); }
 bool XmppConnectivity::removeDir(const QString &dirName) {
     bool result = true;
     QDir dir(dirName);
@@ -88,7 +88,6 @@ bool XmppConnectivity::removeDir(const QString &dirName) {
 
     return result;
 }
-
-bool XmppConnectivity::resetSettings() { return /*QFile::remove(mimOpt->confFile)*/true; }
+bool XmppConnectivity::resetSettings() { return QFile::remove(lSettings->confFile); }
 
 

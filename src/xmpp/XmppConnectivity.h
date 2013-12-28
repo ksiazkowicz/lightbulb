@@ -5,6 +5,9 @@
 #include "AccountsItemModel.h"
 #include "MyXmppClient.h"
 #include "DatabaseWorker.h"
+#include "QAvkonHelper.h"
+#include "MyCache.h"
+#include "Settings.h"
 
 class XmppConnectivity : public QObject
 {
@@ -38,6 +41,8 @@ public:
     Q_INVOKABLE bool cleanCache();
     Q_INVOKABLE bool resetSettings();
 
+    Q_INVOKABLE QString getAvatarByJid(QString bareJid) { return lCache->getAvatarCache(bareJid); }
+
 signals:
     void accountChanged();
     void rosterChanged();
@@ -69,6 +74,9 @@ private:
 
     MyXmppClient* selectedClient;
     RosterListModel* roster;
+
+    MyCache* lCache;
+    Settings* lSettings;
 
     DatabaseWorker *dbWorker;
     QThread *dbThread;

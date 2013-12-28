@@ -14,7 +14,6 @@
 #include <QVariant>
 #include <QThread>
 
-#include "MyCache.h"
 #include "MessageWrapper.h"
 #include "Settings.h"
 #include <QSqlRecord>
@@ -50,14 +49,11 @@ class MyXmppClient : public QObject
     Q_PROPERTY( int keepAlive READ getKeepAlive WRITE setKeepAlive NOTIFY keepAliveChanged )
     Q_PROPERTY( bool reconnectOnError READ getReconnectOnError WRITE setReconnectOnError NOTIFY reconnectOnErrorChanged )
 
-    MyCache *cacheIM;
     MessageWrapper *msgWrapper;
 
     QXmppClient *xmppClient;
     QXmppRosterManager *rosterManager;
     QXmppVCardManager *vCardManager;
-
-    Settings *mimOpt;
 
     QMLVCard * qmlVCard;
     QString flVCardRequest;
@@ -66,7 +62,6 @@ class MyXmppClient : public QObject
 
 public :
     static QString getBareJidByJid( const QString &jid );
-    Q_INVOKABLE QString getAvatarByJid( QString bareJid );
 
     enum StateConnect {
         Disconnect = 0,

@@ -21,10 +21,8 @@
 
 QString MyXmppClient::myVersion = "0.3";
 QString MyXmppClient::getBareJidByJid( const QString &jid ) { if (jid.indexOf('/') >= 0) return jid.split('/')[0]; else return jid; }
-QString MyXmppClient::getAvatarByJid( QString bareJid ) { return cacheIM->getAvatarCache(bareJid); }
 
 MyXmppClient::MyXmppClient() : QObject(0) {
-    cacheIM = new MyCache(this);
     msgWrapper = new MessageWrapper(this);
 
     xmppClient = new QXmppClient( this );
@@ -58,13 +56,9 @@ MyXmppClient::MyXmppClient() : QObject(0) {
 }
 
 MyXmppClient::~MyXmppClient() {
-    if( cacheIM != NULL) delete cacheIM;
     if( msgWrapper != NULL) delete msgWrapper; }
 
 void MyXmppClient::initXmppClient() {
-    /* init home directory */
-    cacheIM->createHomeDir();
-
     xmppClient->versionManager().setClientName("Lightbulb");
     xmppClient->versionManager().setClientVersion( MyXmppClient::myVersion );
 }
@@ -99,8 +93,6 @@ void MyXmppClient::clientStateChanged(QXmppClient::State state) {
 }
 
 void MyXmppClient::connectToXmppServer() {
-    //xmppConfig = mimOpt->getDefaultAccount();
-
     QXmppConfiguration xmppConfig;
 
     xmppConfig.setJid( m_myjid );
@@ -145,11 +137,11 @@ void MyXmppClient::initRoster() {
     {
         QString bareJid = listBareJids.at(j);
 
-        cacheIM->addCacheJid( bareJid );
+        //cacheIM->addCacheJid( bareJid );
 
         QXmppRosterIq::Item itemRoster = rosterManager->getRosterEntry( bareJid );
         QString name = itemRoster.name();
-        vCardData vCdata = cacheIM->getVCard( bareJid );
+        //vCardData vCdata = cacheIM->getVCard( bareJid );
 
         /*if ( vCdata.isEmpty() )
         {
@@ -275,17 +267,17 @@ QString MyXmppClient::getTextStatus(const QString &textStatus, const QXmppPresen
 /* SLOT: it will be called when the vCardReceived signal will be received */
 void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
 {
-    QString bareJid = vCard.from();
+    /*QString bareJid = vCard.from();
     //qDebug() << "## initVCard: " << bareJid;
 
     RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid );
 
-    vCardData dataVCard;
+    //vCardData dataVCard;
 
     if( true )
     {
         /* set nickname */
-        QXmppRosterIq::Item itemRoster = rosterManager->getRosterEntry( bareJid );
+        /*QXmppRosterIq::Item itemRoster = rosterManager->getRosterEntry( bareJid );
         QString nickName = vCard.nickName();
         if( (!nickName.isEmpty()) && (!nickName.isNull()) && (itemRoster.name().isEmpty()) ) {
             qDebug() << "MyXmppClient::initPresence: updating name for"<< bareJid;
@@ -293,14 +285,14 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
         }
 
         /* avatar */
-        bool isAvatarCreated = true;
+        /*bool isAvatarCreated = true;
         QString avatarFile = cacheIM->getAvatarCache( bareJid );
         if( avatarFile.isEmpty() || (flVCardRequest != "") ) {
             isAvatarCreated =  cacheIM->setAvatarCache( bareJid, vCard.photo() );
             avatarFile = cacheIM->getAvatarCache( bareJid );
-        }
+        }*/
 
-        dataVCard.nickName = nickName;
+        /*dataVCard.nickName = nickName;
         dataVCard.firstName = vCard.firstName();
         dataVCard.fullName = vCard.fullName();;
         dataVCard.middleName = vCard.middleName();
@@ -323,8 +315,8 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
             emit vCardChanged();
         }
 
-        cacheIM->setVCard( bareJid, dataVCard );
-    }
+        //cacheIM->setVCard( bareJid, dataVCard );
+    }*/
 
 }
 
@@ -338,8 +330,6 @@ void MyXmppClient::setStatusText( const QString &__statusText )
         QXmppPresence myPresence = xmppClient->clientPresence();
         myPresence.setStatusText( __statusText );
         xmppClient->setClientPresence( myPresence );
-
-        //mimOpt->setStatusText( __statusText );
 
         emit statusTextChanged();
     }

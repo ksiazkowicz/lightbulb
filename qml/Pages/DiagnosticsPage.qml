@@ -46,7 +46,7 @@ Page {
             text: "Remove database"
             platformInverted: main.platformInverted
             onClicked: {
-                if (xmppConnectivity.client.dbRemoveDb()) {
+                if (xmppConnectivity.dbRemoveDb()) {
                     notify.postInfo("Database cleaned.")
                     if (!closeTheApp) closeTheApp = true;
                 } else notify.postError("Unable to clean database.")
@@ -66,7 +66,7 @@ Page {
             text: "Clean avatar cache"
             platformInverted: main.platformInverted
             onClicked: {
-                if (xmppConnectivity.client.cleanCache()) {
+                if (xmppConnectivity.cleanCache()) {
                     notify.postInfo("Avatar cache cleaned.")
                     if (!closeTheApp) closeTheApp = true;
                 } else notify.postError("Unable to clean avatar cache.")
@@ -86,7 +86,7 @@ Page {
             text: "Reset settings"
             platformInverted: main.platformInverted
             onClicked: {
-                if (xmppConnectivity.client.resetSettings()) {
+                if (xmppConnectivity.resetSettings()) {
                     notify.postInfo("Settings resetted to default.")
                     if (!closeTheApp) closeTheApp = true;
                 } else notify.postError("Unable to reset settings.")
