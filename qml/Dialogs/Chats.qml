@@ -36,9 +36,9 @@ SelectionDialog {
     Component.onCompleted: open()
 
     onSelectedIndexChanged: {
-        if (selectedIndex > -1 && xmppConnectivity.client.chatJid != xmppConnectivity.client.getPropertyByChatID(selectedIndex, "jid")) {
-            xmppConnectivity.client.chatJid = xmppConnectivity.client.getPropertyByChatID(selectedIndex, "jid")
-            xmppConnectivity.client.contactName = xmppConnectivity.client.getPropertyByChatID(selectedIndex, "name")
+        if (selectedIndex > -1 && xmppConnectivity.chatJid != xmppConnectivity.client.getPropertyByChatID(selectedIndex, "jid")) {
+            xmppConnectivity.chatJid = xmppConnectivity.client.getPropertyByChatID(selectedIndex, "jid")
+            vars.contactName = xmppConnectivity.client.getPropertyByChatID(selectedIndex, "name")
             vars.globalUnreadCount = vars.globalUnreadCount - parseInt(xmppConnectivity.client.getPropertyByChatID(selectedIndex, "unreadMsg"))
             main.openChat()
         }

@@ -8,9 +8,9 @@ Page {
     tools: toolBar
 
     Component.onCompleted: {
-        xmppConnectivity.client.openChat( xmppConnectivity.client.chatJid )
+        xmppConnectivity.client.openChat( xmppConnectivity.chatJid )
 
-        statusBarText.text = xmppConnectivity.client.contactName
+        statusBarText.text = vars.contactName
         vars.isChatInProgress = true
     }
     /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
@@ -28,7 +28,7 @@ Page {
             Text {
                   id: message
                   anchors { top: parent.top; left: parent.left; right: parent.right }
-                  text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (xmppConnectivity.client.contactName === "" ? xmppConnectivity.client.chatJid : xmppConnectivity.client.contactName) ) + ":</font> " + Emotion.parseEmoticons(msgText)
+                  text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (vars.contactName === "" ? xmppConnectivity.chatJid : vars.contactName) ) + ":</font> " + Emotion.parseEmoticons(msgText)
                   color: vars.textColor
                   font.pixelSize: 16
                   wrapMode: Text.Wrap
@@ -50,7 +50,7 @@ Page {
     Connections {
         target: xmppConnectivity.client
         onMessageReceived: {
-            if( xmppConnectivity.client.bareJidLastMsg == xmppConnectivity.client.chatJid ) {
+            if( xmppConnectivity.client.bareJidLastMsg == xmppConnectivity.chatJid ) {
                 messagesPage.resourceJid = xmppConnectivity.client.resourceLastMsg
                 notify.updateNotifiers()
             }
@@ -77,7 +77,7 @@ Page {
             interactive: false
             anchors { top: parent.top; topMargin: 5; bottom: parent.bottom; bottomMargin: 5; left: parent.left; right: parent.right }
             clip: true
-            model: xmppConnectivity.client.messagesByPage
+            model: xmppConnectivity.messagesByPage
             delegate: componentWrapperItem
             spacing: 2
         }
@@ -93,23 +93,23 @@ Page {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
                 pageStack.replace("qrc:/pages/Messages")
-                xmppConnectivity.client.page = 1
+                xmppConnectivity.page = 1
             }
         }
 
         ButtonRow {
             ToolButton {
                 iconSource: main.platformInverted ? "toolbar-previous_inverse" : "toolbar-previous"
-                enabled: xmppConnectivity.client.messagesCount - (xmppConnectivity.client.page*20)> 0
+                enabled: xmppConnectivity.messagesCount - (xmppConnectivity.page*20)> 0
                 opacity: enabled ? 1 : 0.2
-                onClicked: xmppConnectivity.client.page++;
+                onClicked: xmppConnectivity.page++;
             }
             ToolButton {
                 iconSource: main.platformInverted ? "toolbar-next_inverse" : "toolbar-next"
-                enabled: xmppConnectivity.client.page > 1
+                enabled: xmppConnectivity.page > 1
                 opacity: enabled ? 1 : 0.2
                 onClicked: {
-                    xmppConnectivity.client.page--;
+                    xmppConnectivity.page--;
                     flickable.contentY = flickable.contentHeight-flickable.height;
                 }
              }
@@ -118,7 +118,7 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "qrc:/toolbar/chats_inverse" : "qrc:/toolbar/chats"
             onClicked: {
-                xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.client.chatJid ) //cleans unread count for this JID
+                xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.chatJid ) //cleans unread count for this JID
                 dialog.create("qrc:/dialogs/Chats")
             }
             Image {

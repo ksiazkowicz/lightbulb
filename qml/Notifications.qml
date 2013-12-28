@@ -48,7 +48,7 @@ Item {
             hsWidget.status = xmppConnectivity.client.status
             hsWidget.unreadCount = vars.globalUnreadCount
             hsWidget.getLatest4Chats()
-            hsWidget.getFirst4Contacts()
+            //hsWidget.getFirst4Contacts()
             hsWidget.pushWidget()
         }
     }

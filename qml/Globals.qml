@@ -28,5 +28,6 @@ Item {
     property bool                    isChatInProgress: false
     property int                     blinkerSet: 0
     property string                  selectedContactStatusText: ""
+    property string                  contactName: ""
     property string                  selectedContactPresence: ""
 }

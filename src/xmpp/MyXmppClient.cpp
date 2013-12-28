@@ -27,14 +27,6 @@ MyXmppClient::MyXmppClient() : QObject(0) {
     cacheIM = new MyCache(this);
     msgWrapper = new MessageWrapper(this);
 
-    // initialize DatabaseWorker and QThread
-    dbWorker = new DatabaseWorker;
-    dbThread = new QThread(this);
-    dbWorker->moveToThread(dbThread);
-    connect(dbWorker, SIGNAL(messagesChanged()), this, SLOT(updateMessages()), Qt::UniqueConnection);
-    connect(dbWorker, SIGNAL(sqlMessagesUpdated()), this, SIGNAL(sqlMessagesChanged()), Qt::UniqueConnection);
-    dbThread->start();
-
     xmppClient = new QXmppClient( this );
     QObject::connect( xmppClient, SIGNAL(stateChanged(QXmppClient::State)), this, SLOT(clientStateChanged(QXmppClient::State)) );
     QObject::connect( xmppClient, SIGNAL(messageReceived(QXmppMessage)), this, SLOT(messageReceivedSlot(QXmppMessage)) );
@@ -52,10 +44,7 @@ MyXmppClient::MyXmppClient() : QObject(0) {
     m_host = "";
     m_port = 5222;
     m_resource = "";
-    m_chatJid = "";
-    m_contactName = "";
     m_keepAlive = 60;
-    page = 1;
 
     flVCardRequest = "";
     qmlVCard = new QMLVCard();
@@ -576,8 +565,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         body = body.replace("<", "&lt;");  //and < stuff too ^^
         body = msgWrapper->parseMsgOnLink(body);
 
-        dbWorker->executeQuery(QStringList() << "insertMessage" << QString::number(m_accountId) << this->getBareJidByJid(xmppMsg.from())
-                               << body << QDateTime::currentDateTime().toString("dd-MM-yy hh:mm") << "0");
+        emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.from()),body,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0);
         latestMessage = xmppMsg.body().left(30);
 
         emit this->messageReceived( bareJid_from, bareJid_to );
@@ -609,8 +597,7 @@ bool MyXmppClient::sendMyMessage(QString bareJid, QString resource, QString msgB
     body = body.replace("<", "&lt;");  //and < stuff too ^^
     body = msgWrapper->parseMsgOnLink(body);
 
-    dbWorker->executeQuery(QStringList() << "insertMessage" << QString::number(m_accountId) << this->getBareJidByJid(xmppMsg.to())
-                           << body << QDateTime::currentDateTime().toString("dd-MM-yy hh:mm") << "1");
+    emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.to()),body,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),1);
 
     return true;
 }
@@ -736,37 +723,3 @@ void MyXmppClient::attentionSend( QString bareJid, QString resource )
 
     xmppClient->sendPacket( xmppMsg );
 }
-
-void MyXmppClient::gotoPage(int nPage) { page = nPage; this->updateMessages(); emit pageChanged(); }
-
-/* --- diagnostics --- */
-bool MyXmppClient::dbRemoveDb() {
-    bool ret = false;
-    DatabaseManager* database = new DatabaseManager();
-    SqlQueryModel* sqlQuery = new SqlQueryModel( 0 );
-    sqlQuery->setQuery("DELETE FROM MESSAGES", database->db);
-    database->deleteLater();
-    if (sqlQuery->lastError().text() == " ") ret = true;
-    sqlQuery->deleteLater();
-    return ret;
-}
-bool MyXmppClient::cleanCache() { return this->removeDir(cacheIM->getMeegIMCachePath()); }
-bool MyXmppClient::removeDir(const QString &dirName) {
-    bool result = true;
-    QDir dir(dirName);
-
-    if (dir.exists(dirName)) {
-        Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst)) {
-            if (info.isDir()) result = removeDir(info.absoluteFilePath());
-            else result = QFile::remove(info.absoluteFilePath());
-
-            if (!result) return result;
-        }
-        result = dir.rmdir(dirName);
-    }
-
-    return result;
-}
-
-bool MyXmppClient::resetSettings() { return QFile::remove(mimOpt->confFile); }
-

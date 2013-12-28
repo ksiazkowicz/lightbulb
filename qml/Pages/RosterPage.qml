@@ -1,4 +1,4 @@
-import QtQuick 1.1
+﻿import QtQuick 1.1
 import com.nokia.symbian 1.1
 import com.nokia.extras 1.1
 import lightbulb 1.0
@@ -153,8 +153,8 @@ Page {
                 anchors.fill: parent
 
                 onClicked: {
-                    xmppConnectivity.client.chatJid = jid
-                    xmppConnectivity.client.contactName = txtJid.contact
+                    xmppConnectivity.chatJid = jid
+                    vars.contactName = txtJid.contact
                     vars.globalUnreadCount = vars.globalUnreadCount - unreadMsg
                     notify.updateNotifiers()
                     main.pageStack.push( "qrc:/pages/Messages" )
@@ -164,7 +164,7 @@ Page {
                     selectedJid = jid
                     vars.selectedContactStatusText = statusText
                     vars.selectedContactPresence = presence
-                    xmppConnectivity.client.contactName = txtJid.contact
+                    vars.contactName = txtJid.contact
                     vars.dialogName = txtJid.contact
                     contactMenu.open()
                 }
@@ -231,7 +231,7 @@ Page {
                 onClicked: main.pageStack.push( "qrc:/pages/Diagnostics" )
             }
             MenuItem {
-                text: qsTr("遠い記憶 半透明な夢")
+                text: qsTr("é ă„č¨ć†¶ ĺŤŠé€ŹćŽăŞĺ¤˘")
                 platformInverted: main.platformInverted
                 onClicked: main.pageStack.push( "qrc:/pages/SkinSelection" )
             }
@@ -255,7 +255,7 @@ Page {
                 text: qsTr("Remove")
                 platformInverted: main.platformInverted
                 onClicked: {
-                    xmppConnectivity.client.chatJid = selectedJid
+                    xmppConnectivity.chatJid = selectedJid
                     contactMenu.close()
                     if (avkon.displayAvkonQueryDialog("Remove", qsTr("Are you sure you want to remove ") + vars.dialogName + qsTr(" from your contact list?")))
                         xmppConnectivity.client.removeContact( selectedJid );
@@ -264,16 +264,16 @@ Page {
             MenuItem {
                 text: qsTr("Rename")
                 platformInverted: main.platformInverted
-                onClicked: { xmppConnectivity.client.chatJid = selectedJid
+                onClicked: { xmppConnectivity.chatJid = selectedJid
                     dialog.create("qrc:/dialogs/Contact/Rename") }
             }
             MenuItem {
                 text: qsTr("vCard")
                 platformInverted: main.platformInverted
                 onClicked: {
-                    xmppConnectivity.client.chatJid = selectedJid
+                    xmppConnectivity.chatJid = selectedJid
                     main.pageStack.push( "qrc:/pages/VCard" )
-                    xmppConnectivity.client.chatJid = selectedJid
+                    xmppConnectivity.chatJid = selectedJid
                 }
             }
             MenuItem {

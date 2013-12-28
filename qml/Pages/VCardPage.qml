@@ -20,8 +20,8 @@ Page {
     property string vCardUrl: ""
 
     Component.onCompleted: {
-        console.log("QML::VCargPage: Request vCard for: " + xmppConnectivity.client.chatJid )
-        xmppConnectivity.client.requestVCard( xmppConnectivity.client.chatJid )
+        console.log("QML::VCargPage: Request vCard for: " + xmppConnectivity.chatJid )
+        xmppConnectivity.client.requestVCard( xmppConnectivity.chatJid )
         clearForm()
     }
 
@@ -97,7 +97,7 @@ Page {
                     Text {
                         id: txtJid
                         width: container.width
-                        text: xmppConnectivity.client.contactName
+                        text: vars.contactName
                         wrapMode: Text.Wrap
                         color: vars.textColor
                     }
@@ -275,7 +275,7 @@ Page {
             onClicked: {
                 pageStack.pop()
                 statusBarText.text = "Contacts"
-                xmppConnectivity.client.chatJid = ""
+                xmppConnectivity.chatJid = ""
             }
         }
     }

@@ -14,8 +14,6 @@
 #include <QVariant>
 #include <QThread>
 
-#include "DatabaseWorker.h"
-
 #include "MyCache.h"
 #include "MessageWrapper.h"
 #include "Settings.h"
@@ -38,7 +36,6 @@ class MyXmppClient : public QObject
     Q_PROPERTY( QString resourceLastMsg READ getResourceLastMsg NOTIFY messageReceived )
     Q_PROPERTY( StateConnect stateConnect READ getStateConnect NOTIFY connectingChanged )
     Q_PROPERTY( StatusXmpp status READ getStatus WRITE setStatus NOTIFY statusChanged )
-    Q_PROPERTY( int page READ getPage WRITE gotoPage NOTIFY pageChanged )
     Q_PROPERTY( QString statusText READ getStatusText WRITE setStatusText  NOTIFY statusTextChanged )
     Q_PROPERTY( bool isTyping READ getTyping NOTIFY typingChanged )
     Q_PROPERTY( RosterListModel* cachedRoster READ getCachedRoster NOTIFY rosterChanged)
@@ -48,11 +45,7 @@ class MyXmppClient : public QObject
     Q_PROPERTY( QString host READ getHost WRITE setHost NOTIFY hostChanged )
     Q_PROPERTY( int port READ getPort WRITE setPort NOTIFY portChanged )
     Q_PROPERTY( QString resource READ getResource WRITE setResource NOTIFY resourceChanged )
-    Q_PROPERTY( SqlQueryModel* messagesByPage READ getSqlMessagesByPage NOTIFY pageChanged )
-    Q_PROPERTY( SqlQueryModel* messages READ getSqlMessagesByPage NOTIFY sqlMessagesChanged )
-    Q_PROPERTY( QString chatJid READ getChatJid WRITE setChatJid NOTIFY chatJidChanged )
     Q_PROPERTY( int accountId READ getAccountId WRITE setAccountId NOTIFY accountIdChanged )
-    Q_PROPERTY( QString contactName READ getContactName WRITE setContactName NOTIFY contactNameChanged )
     Q_PROPERTY( QMLVCard* vcard READ getVCard NOTIFY vCardChanged )
     Q_PROPERTY( int keepAlive READ getKeepAlive WRITE setKeepAlive NOTIFY keepAliveChanged )
     Q_PROPERTY( bool reconnectOnError READ getReconnectOnError WRITE setReconnectOnError NOTIFY reconnectOnErrorChanged )
@@ -68,9 +61,6 @@ class MyXmppClient : public QObject
 
     QMLVCard * qmlVCard;
     QString flVCardRequest;
-
-    DatabaseWorker *dbWorker;
-    QThread *dbThread;
 
 public :
     static QString getBareJidByJid( const QString &jid );
@@ -97,12 +87,6 @@ public :
     ~MyXmppClient();
 
     void initXmppClient();
-    /* --- diagnostics --- */
-    Q_INVOKABLE bool dbRemoveDb();
-    Q_INVOKABLE bool cleanCache();
-    Q_INVOKABLE bool resetSettings();
-
-    static bool removeDir(const QString &dirName); //workaround for qt not able to remove directory recursively // http://john.nachtimwald.com/2010/06/08/qt-remove-directory-and-its-contents/
 
     /* --- presence --- */
     Q_INVOKABLE void setMyPresence( StatusXmpp status, QString textStatus );
@@ -118,7 +102,7 @@ public :
             item->setUnreadMsg( 0 );
         }
     }
-    Q_INVOKABLE void setUnreadMessages( QString bareJid, int count ) { dbWorker->executeQuery(QStringList() << "updateContact" << QString::number(m_accountId) << bareJid << "unreadMsg" << QString::number(count)); }
+    Q_INVOKABLE void setUnreadMessages( QString bareJid, int count ) { emit updateContact(m_accountId,bareJid,"unreadMsg",count); }
 
     /*--- vCard ---*/
     Q_INVOKABLE void requestVCard( QString bareJid );
@@ -219,9 +203,6 @@ public :
     StatusXmpp getStatus() const { return m_status; }
     void setStatus( StatusXmpp __status );
 
-    int getPage() const { return page; }
-    void gotoPage(int nPage);
-
     bool getTyping() const { return m_flTyping; }
     void setTyping( QString &jid, const bool isTyping ) { m_flTyping = isTyping; emit typingChanged(jid, isTyping); }
 
@@ -257,17 +238,7 @@ public :
     QString getResource() const { return m_resource; }
     void setResource( const QString & value ) { if(value!=m_resource) {m_resource=value; emit resourceChanged(); } }
 
-    SqlQueryModel* getSqlMessagesByPage() { return dbWorker->getSqlMessages(); }
     Q_INVOKABLE QString getLastSqlMessage() { return latestMessage; }
-
-    QString getChatJid() const { return m_chatJid; }
-    void setChatJid( const QString & value )
-    {
-        if(value!=m_chatJid) {
-            m_chatJid=value;
-            emit chatJidChanged();
-        }
-    }
 
     int getAccountId() const { return m_accountId; }
     void setAccountId( const int & value ) {
@@ -276,10 +247,6 @@ public :
             emit accountIdChanged();
         }
     }
-
-    QString getContactName() const { return m_contactName; }
-    void setContactName( const QString & value ) { if(value!=m_contactName) { m_contactName=value; emit contactNameChanged(); }  }
-
     QMLVCard* getVCard() const { return qmlVCard; }
 
     int getKeepAlive() const { return m_keepAlive; }
@@ -295,7 +262,6 @@ signals:
     void statusTextChanged();
     void statusChanged();
     void rosterChanged();
-    void pageChanged();
     void typingChanged( QString bareJid, bool isTyping );
     void myJidChanged();
     void myPasswordChanged();
@@ -315,6 +281,8 @@ signals:
     void keepAliveChanged();
     void reconnectOnErrorChanged();
     void archiveIncMessageChanged();
+    void updateContact(int m_accountId,QString bareJid,QString property,int count);
+    void insertMessage(int m_accountId,QString bareJid,QString body,QString date,int mine);
 
 public slots:
     void clientStateChanged( QXmppClient::State state );
@@ -341,7 +309,6 @@ private slots:
     void messageReceivedSlot( const QXmppMessage &msg );
     void presenceReceived( const QXmppPresence & presence );
     void error(QXmppClient::Error);
-    void updateMessages() { dbWorker->updateMessages(m_accountId,m_chatJid,page); }
 
 private:
     QString m_bareJidLastMessage;
@@ -356,11 +323,7 @@ private:
     QString m_host;
     int m_port;
     QString m_resource;
-    QString m_chatJid;
     QString m_lastChatJid;
-    QString m_contactName;
-
-    int page;
 
     int m_accountId;
 

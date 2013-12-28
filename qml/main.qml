@@ -11,7 +11,7 @@ PageStackWindow {
     Globals { id: vars }
 
     function openChat() {
-        xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.client.chatJid )
+        xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.chatJid )
         if (settings.gBool("behavior","enableHsWidget")) notify.updateNotifiers()
 
         if (pageStack.depth > 1) pageStack.replace("qrc:/pages/Messages")
@@ -37,7 +37,7 @@ PageStackWindow {
             if (Qt.application.active) {
                 vars.isActive = true
                 blink.running = false
-                if (xmppConnectivity.client.chatJid != "") {
+                if (xmppConnectivity.chatJid != "") {
                     vars.isChatInProgress = true
                     vars.globalUnreadCount = vars.globalUnreadCount - vars.tempUnreadCount
                 }
@@ -60,17 +60,17 @@ PageStackWindow {
             if (settings.gBool("behavior", "reconnectOnError")) dialog.create("qrc:/dialogs/Status/Reconnect")
         }
         onMessageReceived: {
-            if( xmppConnectivity.client.myBareJid != bareJidLastMsg ) {
+            if( xmppConnectivity.client.myBareJid != xmppConnectivity.client.bareJidLastMsg ) {
                 if (!vars.isChatInProgress) {
                     vars.globalUnreadCount++
-                    if (bareJidLastMsg == xmppConnectivity.client.chatJid) vars.tempUnreadCount++
-                } else if (bareJidLastMsg != xmppConnectivity.client.chatJid || !vars.isActive) vars.globalUnreadCount++
+                    if (xmppConnectivity.client.bareJidLastMsg == xmppConnectivity.chatJid) vars.tempUnreadCount++
+                } else if (xmppConnectivity.client.bareJidLastMsg != xmppConnectivity.chatJid || !vars.isActive) vars.globalUnreadCount++
 
                 if (!vars.isActive && settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff")) { blink.running = true }
 
-                if (settings.gBool("notifications", "usePopupRecv") == true && (xmppConnectivity.client.chatJid !== bareJidLastMsg || !vars.isActive)) {
-                    if (settings.gBool("behavior","msgInDiscrPopup")) avkon.showPopup(getPropertyByJid(bareJidLastMsg,"name"), getLastSqlMessage(),settings.gBool("behavior","linkInDiscrPopup"))
-                    else avkon.showPopup(globalUnreadCount + " unread messages", "New message from "+ getPropertyByJid(bareJidLastMsg,"name") + ".",settings.gBool("behavior","linkInDiscrPopup"))
+                if (settings.gBool("notifications", "usePopupRecv") == true && (xmppConnectivity.chatJid !== xmppConnectivity.client.bareJidLastMsg || !vars.isActive)) {
+                    if (settings.gBool("behavior","msgInDiscrPopup")) avkon.showPopup(xmppConnectivity.client.getPropertyByJid(xmppConnectivity.client.bareJidLastMsg,"name"), xmppConnectivity.client.getLastSqlMessage(),settings.gBool("behavior","linkInDiscrPopup"))
+                    else avkon.showPopup(globalUnreadCount + " unread messages", "New message from "+ xmppConnectivity.client.getPropertyByJid(xmppConnectivity.client.bareJidLastMsg,"name") + ".",settings.gBool("behavior","linkInDiscrPopup"))
                 }
                 notify.notifySndVibr("MsgRecv")
                 notify.updateNotifiers()
@@ -98,9 +98,9 @@ PageStackWindow {
 
         }
         onTypingChanged: {
-            if (settings.gBool("notifications", "notifyTyping") == true && (xmppConnectivity.client.chatJid !== bareJid || !vars.isActive) && xmppConnectivity.client.myBareJid !== bareJid) {
-                if (isTyping) avkon.showPopup(getPropertyByJid(bareJid,"name"),"is typing a message...",settings.gBool("behavior","linkInDiscrPopup"))
-                else avkon.showPopup(getPropertyByJid(bareJid,"name"),"stopped typing.",settings.gBool("behavior","linkInDiscrPopup"))
+            if (settings.gBool("notifications", "notifyTyping") == true && (xmppConnectivity.chatJid !== bareJid || !vars.isActive) && xmppConnectivity.client.myBareJid !== bareJid) {
+                if (isTyping) avkon.showPopup(xmppConnectivity.client.getPropertyByJid(bareJid,"name"),"is typing a message...",settings.gBool("behavior","linkInDiscrPopup"))
+                else avkon.showPopup(xmppConnectivity.client.getPropertyByJid(bareJid,"name"),"stopped typing.",settings.gBool("behavior","linkInDiscrPopup"))
             }
         }
     } //XmppClient
