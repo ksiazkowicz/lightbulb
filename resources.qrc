@@ -51,6 +51,7 @@
         <file alias="Settings/Sound">qml/Dialogs/SoundSettings.qml</file>
         <file alias="Settings/Vibration">qml/Dialogs/VibrationSettings.qml</file>
         <file alias="Chats">qml/Dialogs/Chats.qml</file>
+        <file alias="AccountSwitcher">qml/Dialogs/AccountSwitcher.qml</file>
     </qresource>
     <qresource prefix="/pages">
         <file alias="About">qml/Pages/AboutPage.qml</file>

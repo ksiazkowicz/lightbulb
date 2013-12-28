@@ -55,16 +55,15 @@ Page {
         }
         Text {
             id: titleText
-            anchors { verticalCenter: parent.verticalCenter; left: button.right; leftMargin: platformStyle.paddingSmall; right: list.left; rightMargin: platformStyle.paddingSmall  }
+            anchors { verticalCenter: parent.verticalCenter; left: button.right; leftMargin: platformStyle.paddingSmall  }
             text: xmppConnectivity.client.myBareJid
             color: "white"
             font.pixelSize: 20
         }
         ToolButton {
-            id: list
             iconSource: "toolbar-list"
             anchors { verticalCenter: parent.verticalCenter; right: parent.right; rightMargin: platformStyle.paddingSmall }
-            onClicked: main.pageStack.push( "qrc:/pages/Accounts" )
+            onClicked: dialog.create("qrc:/dialogs/AccountSwitcher")
         }
 
         Rectangle {
@@ -215,6 +214,12 @@ Page {
 
         // define the items in the menu and corresponding actions
         content: MenuLayout {
+            MenuItem {
+                text: qsTr("Accounts")
+                platformInverted: main.platformInverted
+                onClicked: main.pageStack.push( "qrc:/pages/Accounts" )
+            }
+
             MenuItem {
                 text: qsTr("Settings")
                 platformInverted: main.platformInverted

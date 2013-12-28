@@ -62,6 +62,8 @@ class MyXmppClient : public QObject
     QMLVCard * qmlVCard;
     QString flVCardRequest;
 
+    int unreadCount;
+
 public :
     static QString getBareJidByJid( const QString &jid );
     Q_INVOKABLE QString getAvatarByJid( QString bareJid );
@@ -152,6 +154,14 @@ public :
     }
 
     Q_INVOKABLE int getLatestChatsCount() { return latestChats.count(); }
+
+    Q_INVOKABLE int getUnreadCount() {
+        int unreadCount = 0;
+        for (int i=0; i<chats.count(); i++) {
+            unreadCount = unreadCount + getPropertyByChatID(i,"unreadMsg").toInt();
+        }
+        return unreadCount;
+    }
 
     Q_INVOKABLE QString getNameByOrderID( int id ) {
         if (cachedRoster->count() >= id+1) {

@@ -105,10 +105,7 @@ PageStackWindow {
         }
     } //XmppClient
 
-    XmppConnectivity {
-        id: xmppConnectivity
-    }
-
+    XmppConnectivity { id: xmppConnectivity }
     Settings { id: settings }
     XmppVCard { id: xmppVCard }
 
@@ -136,14 +133,20 @@ PageStackWindow {
             if( settings.gBool( settings.getJidByIndex( j ),"is_default" ) )
             {
                 _existDefaultAccount = true
-                xmppConnectivity.changeAccount(accc);
-                avkon.hideChatIcon()
-                notify.updateNotifiers()
+                changeAccount(accc)
             } else {
                     _existDefaultAccount = true
                     accc++
             }
         }
+        vars.globalUnreadCount = xmppConnectivity.client.getUnreadCount()
+    }
+
+    function changeAccount(acc) {
+        xmppConnectivity.changeAccount(acc);
+        avkon.hideChatIcon()
+        notify.updateNotifiers()
+        vars.globalUnreadCount = xmppConnectivity.client.getUnreadCount()
     }
 
     /****************************( Dialog windows, menus and stuff)****************************/
