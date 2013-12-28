@@ -32,7 +32,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "AccountsListModel.h"
 #include "RosterListModel.h"
-#include "MessageListModel.h"
 #include "QMLVCard.h"
 #include "Settings.h"
 #include "LightbulbHSWidget.h"
@@ -40,24 +39,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "DatabaseManager.h"
 #include "SymbiosisAPIClient.h"
 #include "SkinSelectorHandler.h"
+#include "XmppConnectivity.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
     // expose C++ classes to QML
-    qmlRegisterType<MyXmppClient>("lightbulb", 1, 0, "XmppClient" );
     qmlRegisterType<Settings>("lightbulb", 1, 0, "Settings" );
     qmlRegisterType<QMLVCard>("lightbulb", 1, 0, "XmppVCard" );
     qmlRegisterType<ClipboardAdapter>("lightbulb", 1, 0, "Clipboard" );
     qmlRegisterType<LightbulbHSWidget>("lightbulb", 1, 0, "HSWidget" );
     qmlRegisterType<SkinSelectorHandler>("lightbulb",1,0,"SelectorHandler");
+    qmlRegisterType<XmppConnectivity>("lightbulb",1,0,"XmppConnectivity");
 
     qmlRegisterType<SymbiosisAPIClient>("lightbulb", 1, 0, "SymbiosisAPI" );
 
     qmlRegisterUncreatableType<SqlQueryModel>("lightbulb", 1, 0, "SqlQuery", "");
     qmlRegisterUncreatableType<AccountsListModel>("lightbulb", 1, 0, "AccountsList", "Use settings.accounts instead");
     qmlRegisterUncreatableType<RosterListModel>("lightbulb",1,0,"RosterModel","");
-    qmlRegisterUncreatableType<MsgListModel>("lightbulb",1,0,"MessageModel","");
+    qmlRegisterUncreatableType<MyXmppClient>("lightbulb", 1, 0, "XmppClient", "Use XmppConnectivity.client instead" );
 
     // initialize viewer and set it parameters
     QmlApplicationViewer viewer;
@@ -68,6 +68,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     viewer.setAttribute(Qt::WA_NoSystemBackground);
     viewer.viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
     viewer.viewport()->setAttribute(Qt::WA_NoSystemBackground);
+    viewer.setProperty("orientationMethod", 1);
 
     viewer.setSource( QUrl(QLatin1String("qrc:/qml/main.qml")) );
     viewer.showFullScreen();
