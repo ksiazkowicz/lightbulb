@@ -10,6 +10,7 @@
         <file alias="unread-mark">images/unread-mark.svg</file>
         <file alias="unread-mark_inverse">images/unread-mark_inverse.svg</file>
         <file>qml/Globals.qml</file>
+        <file alias="splash">images/splash.png</file>
     </qresource>
     <qresource prefix="/smileys">
         <file alias=":@">images/smileys/angry.png</file>

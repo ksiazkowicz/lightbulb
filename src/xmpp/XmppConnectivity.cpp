@@ -44,6 +44,9 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
 
     for (int i=0; i<lSettings->accountsCount(); i++)
         initializeAccount(i,lSettings->getAccount(i));
+
+    connect(dbWorker, SIGNAL(messagesChanged()), this, SLOT(updateMessages()), Qt::UniqueConnection);
+    connect(dbWorker, SIGNAL(sqlMessagesUpdated()), this, SIGNAL(sqlMessagesChanged()), Qt::UniqueConnection);
 }
 
 bool XmppConnectivity::initializeAccount(int index, AccountsItemModel* account) {
@@ -75,8 +78,6 @@ void XmppConnectivity::changeAccount(int index) {
     if (index != currentClient) {
         currentClient = index;
         selectedClient = clients->value(index);
-        connect(dbWorker, SIGNAL(messagesChanged()), this, SLOT(updateMessages()), Qt::UniqueConnection);
-        connect(dbWorker, SIGNAL(sqlMessagesUpdated()), this, SIGNAL(sqlMessagesChanged()), Qt::UniqueConnection);
         emit accountChanged();
         changeRoster();
     }

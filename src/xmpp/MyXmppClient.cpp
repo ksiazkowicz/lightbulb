@@ -440,7 +440,7 @@ void MyXmppClient::setMyPresence( StatusXmpp status, QString textStatus ) //Q_IN
 
 /* it sends information about typing : typing is started */
 void MyXmppClient::typingStart(QString bareJid, QString resource) {
-    //qDebug() << bareJid << " " << "start typing...";
+    qDebug() << bareJid << " " << "start typing...";
     QXmppMessage xmppMsg;
 
     QString jid_to = bareJid;
@@ -463,7 +463,7 @@ void MyXmppClient::typingStart(QString bareJid, QString resource) {
 
 /* it sends information about typing : typing is stoped */
 void MyXmppClient::typingStop(QString bareJid, QString resource) {
-    //qDebug() << bareJid << " " << "stop typing...";
+    qDebug() << bareJid << " " << "stop typing...";
     QXmppMessage xmppMsg;
 
     QString jid_to = bareJid;

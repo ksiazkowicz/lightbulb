@@ -84,7 +84,7 @@ void DatabaseWorker::executeQuery(QStringList& query) {
 void DatabaseWorker::updateMessages(int m_accountId, QString bareJid, int page) {
     if (accountId != m_accountId) accountId = m_accountId;
     #ifdef QT_DEBUG
-    qDebug() << "DatabaseWorker::updateMessages(): updating messages query model.";
+    qDebug().nospace() << "DatabaseWorker::updateMessages(): updating messages query model for " << m_accountId << ":"<< qPrintable(bareJid) << " from page "<<page;
     #endif
     int border = page*20;
     sqlMessages = new SqlQueryModel( 0 );

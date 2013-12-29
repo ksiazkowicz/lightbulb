@@ -78,6 +78,8 @@ public:
 
 signals:
     void accountsListChanged();
+    void accountAdded();
+    void accountRemoved();
 public slots:
     
 };

@@ -8,6 +8,7 @@ Page {
     tools: toolBar
     /************************************************************/
     property string resourceJid: ""
+    property bool isTyping: false
 
     Component.onCompleted: {
         xmppConnectivity.page = 1
@@ -133,33 +134,13 @@ Page {
     function sendMessage() {
         var ret = xmppConnectivity.client.sendMyMessage( xmppConnectivity.chatJid, messagesPage.resourceJid, txtMessage.text )
         if( ret ) {
-              flSendMsg = true
-              //timerTextTyping.stop()
               txtMessage.text = ""
-              flTyping = false
-              flSendMsg = false
-              //xmppConnectivity.client.typingStop( xmppConnectivity.chatJid, messagesPage.resourceJid )
+              xmppConnectivity.client.typingStop( xmppConnectivity.chatJid, messagesPage.resourceJid )
               notify.notifySndVibr("MsgSent")
         }
     }
     /* --------------------( resources )-------------------- */
     ListModel { id: listModelResources }
-    /*--------------------( typing notifications )--------------------*/
-    property bool flTyping: false
-    property bool flSendMsg: false
-    /*Timer {
-        id: timerTextTyping
-        interval: 3000
-        repeat: true
-        onTriggered: {
-            if( flTyping == false ) {
-                timerTextTyping.stop()
-                xmppConnectivity.client.typingStop( xmppConnectivity.chatJid, messagesPage.resourceJid )
-            }
-            flTyping = false
-        }
-    }*/
-
 
     /* ------------( XMPP client and stuff )------------ */
     Connections {
@@ -200,18 +181,18 @@ Page {
               placeholderText: qsTr( "Tap here to enter message..." )
 
               onTextChanged: {
-                 //if (text.lenght > 0) { flTyping = true } else { flTyping = false }
-
+                  if (text.lenght > 0 && !isTyping) {
+                    isTyping = true
+                    xmppConnectivity.client.typingStart( xmppConnectivity.chatJid, messagesPage.resourceJid )
+                  }
+                  if (text.length == 0 && isTyping) {
+                      isTyping = false
+                      xmppConnectivity.client.typingStop( xmppConnectivity.chatJid, messagesPage.resourceJid )
+                  }
                   if (text.charCodeAt(text.length-1) === 10) {
                       text = text.substring(0,text.length-1)
                       sendMessage()
                   }
-
-                   /*if( (!timerTextTyping.running) && (flSendMsg==false) ) {
-                      timerTextTyping.restart()
-                      xmppConnectivity.client.typingStart( xmppConnectivity.chatJid, messagesPage.resourceJid )
-                      flTyping = false
-                   }*/
               }
     }
     Item {
@@ -306,7 +287,7 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
-                //xmppConnectivity.client.typingStop( xmppConnectivity.chatJid, messagesPage.resourceJid )
+                if (isTyping) xmppConnectivity.client.typingStop( xmppConnectivity.chatJid, messagesPage.resourceJid )
                 pageStack.pop()
                 vars.isChatInProgress = false
                 statusBarText.text = "Contacts"
