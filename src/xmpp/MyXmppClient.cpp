@@ -556,9 +556,6 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         body = msgWrapper->parseMsgOnLink(body);
 
         emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.from()),body,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0);
-        latestMessage = xmppMsg.body().left(30);
-
-        emit this->messageReceived( bareJid_from, bareJid_to );
     }
 }
 

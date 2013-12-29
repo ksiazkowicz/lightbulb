@@ -226,8 +226,6 @@ public :
         return chatsNames;
     }
 
-    QString latestMessage;
-
     QString getMyJid() const { return m_myjid; }
     void setMyJid( const QString& myjid ) { if(myjid!=m_myjid) {m_myjid=myjid; emit myJidChanged(); } }
 
@@ -242,8 +240,6 @@ public :
 
     QString getResource() const { return m_resource; }
     void setResource( const QString & value ) { if(value!=m_resource) {m_resource=value; emit resourceChanged(); } }
-
-    Q_INVOKABLE QString getLastSqlMessage() { return latestMessage; }
 
     int getAccountId() const { return m_accountId; }
     void setAccountId( const int & value ) {
@@ -262,7 +258,6 @@ public :
 	
 signals:
     void versionChanged();
-    void messageReceived( QString fromBareJid, QString toBareJid );
     void connectingChanged();
     void statusTextChanged();
     void statusChanged();
@@ -276,16 +271,14 @@ signals:
     void openChatsChanged();
     void chatOpened( QString bareJid );
     void chatClosed( QString bareJid );
-    void sqlMessagesChanged();
-    void chatJidChanged();
     void accountIdChanged();
-    void contactNameChanged();
     void vCardChanged();
     void errorHappened( const QString &errorString );
     void subscriptionReceived( const QString bareJid );
     void keepAliveChanged();
     void reconnectOnErrorChanged();
-    void archiveIncMessageChanged();
+
+    // related to XmppConnectivity class
     void updateContact(int m_accountId,QString bareJid,QString property,int count);
     void insertMessage(int m_accountId,QString bareJid,QString body,QString date,int mine);
 

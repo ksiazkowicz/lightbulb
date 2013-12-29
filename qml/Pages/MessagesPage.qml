@@ -163,21 +163,11 @@ Page {
 
     /* ------------( XMPP client and stuff )------------ */
     Connections {
-        target: xmppConnectivity.client
-        onMessageReceived: {
-            if( xmppConnectivity.client.bareJidLastMsg == xmppConnectivity.chatJid ) {
-                messagesPage.resourceJid = xmppConnectivity.client.resourceLastMsg
-                if (settings.gBool("behavior","enableHsWidget")) notify.updateNotifiers()
-            }
-        }
+        target: xmppConnectivity
+        onNotifyMsgReceived: if( jid == xmppConnectivity.chatJid ) messagesPage.resourceJid = xmppConnectivity.client.resourceLastMsg
     }
-    /* --------------------( Messages view )-------------------- */
 
-    Timer {
-        running: true
-        interval: 30
-        onTriggered: flickable.contentY = flickable.contentHeight-flickable.height;
-    }
+    /* --------------------( Messages view )-------------------- */
 
     Flickable {
         id: flickable

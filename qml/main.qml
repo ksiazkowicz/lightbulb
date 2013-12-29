@@ -53,28 +53,37 @@ PageStackWindow {
     }
 
     Connections {
+        target: xmppConnectivity
+        onNotifyMsgReceived: {
+            // show discreet popup if enabled
+            if (settings.gBool("notifications", "usePopupRecv") === true && (xmppConnectivity.chatJid !== jid || !vars.isActive)) {
+                if (settings.gBool("behavior","msgInDiscrPopup")) avkon.showPopup(name,body,settings.gBool("behavior","linkInDiscrPopup"))
+                else avkon.showPopup(globalUnreadCount + " unread messages", "New message from "+ name + ".",settings.gBool("behavior","linkInDiscrPopup"))
+            }
+
+            // handle global unread count. I should have both global and local unread count later
+            if (!vars.isChatInProgress) {
+                vars.globalUnreadCount++
+                if (jid === xmppConnectivity.chatJid) vars.tempUnreadCount++
+            } else if (jid !== xmppConnectivity.chatJid || !vars.isActive) vars.globalUnreadCount++
+
+            // get the blinker running if enabled and app is inactive
+            if (!vars.isActive && settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff")) blink.running = true;
+
+            // play sound and vibration
+            notify.notifySndVibr("MsgRecv")
+
+            // update chats icon and widget if required
+            notify.updateNotifiers()
+        }
+    }
+
+    Connections {
         target: xmppConnectivity.client
         onRosterChanged: vars.connecting = false
         onErrorHappened: {
             vars.connecting = false
             if (settings.gBool("behavior", "reconnectOnError")) dialog.create("qrc:/dialogs/Status/Reconnect")
-        }
-        onMessageReceived: {
-            if( xmppConnectivity.client.myBareJid != xmppConnectivity.client.bareJidLastMsg ) {
-                if (!vars.isChatInProgress) {
-                    vars.globalUnreadCount++
-                    if (xmppConnectivity.client.bareJidLastMsg == xmppConnectivity.chatJid) vars.tempUnreadCount++
-                } else if (xmppConnectivity.client.bareJidLastMsg != xmppConnectivity.chatJid || !vars.isActive) vars.globalUnreadCount++
-
-                if (!vars.isActive && settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff")) { blink.running = true }
-
-                if (settings.gBool("notifications", "usePopupRecv") == true && (xmppConnectivity.chatJid !== xmppConnectivity.client.bareJidLastMsg || !vars.isActive)) {
-                    if (settings.gBool("behavior","msgInDiscrPopup")) avkon.showPopup(xmppConnectivity.client.getPropertyByJid(xmppConnectivity.client.bareJidLastMsg,"name"), xmppConnectivity.client.getLastSqlMessage(),settings.gBool("behavior","linkInDiscrPopup"))
-                    else avkon.showPopup(globalUnreadCount + " unread messages", "New message from "+ xmppConnectivity.client.getPropertyByJid(xmppConnectivity.client.bareJidLastMsg,"name") + ".",settings.gBool("behavior","linkInDiscrPopup"))
-                }
-                notify.notifySndVibr("MsgRecv")
-                notify.updateNotifiers()
-            }
         }
         onStatusChanged: {
             console.log( "XmppClient::onStatusChanged:" + xmppConnectivity.client.status )
@@ -139,7 +148,7 @@ PageStackWindow {
                     accc++
             }
         }
-        vars.globalUnreadCount = xmppConnectivity.client.getUnreadCount()
+        //vars.globalUnreadCount = xmppConnectivity.client.getUnreadCount()
     }
 
     function changeAccount(acc) {

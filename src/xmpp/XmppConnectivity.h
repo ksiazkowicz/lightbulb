@@ -50,6 +50,8 @@ signals:
     void pageChanged();
     void sqlMessagesChanged();
     void chatJidChanged();
+
+    void notifyMsgReceived(QString name,QString jid,QString body);
     
 public slots:
     void changeRoster() {
@@ -60,9 +62,7 @@ public slots:
         dbWorker->executeQuery(QStringList() << "updateContact" << QString::number(m_accountId) << bareJid << property << QString::number(count));
     }
     void updateMessages() { dbWorker->updateMessages(currentClient,currentJid,page); }
-    void insertMessage(int m_accountId,QString bareJid,QString body,QString date,int mine) {
-        dbWorker->executeQuery(QStringList() << "insertMessage" << QString::number(m_accountId) << bareJid << body << date << QString::number(mine));
-    }
+    void insertMessage(int m_accountId,QString bareJid,QString body,QString date,int mine);
 
 private:
     int currentClient;
@@ -86,6 +86,8 @@ private:
 
     static bool removeDir(const QString &dirName); //workaround for qt not able to remove directory recursively
     // http://john.nachtimwald.com/2010/06/08/qt-remove-directory-and-its-contents/
+
+    int globalUnreadCount;
 };
 
 #endif // XMPPCONNECTIVITY_H

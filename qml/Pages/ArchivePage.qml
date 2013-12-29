@@ -4,15 +4,56 @@ import com.nokia.symbian 1.1
 import "qrc:/JavaScript/EmoticonInterpreter.js" as Emotion
 
 Page {
-    id: messagesPage
-    tools: toolBar
+    tools: ToolBarLayout {
+            ToolButton {
+                iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
+                onClicked: {
+                    pageStack.replace("qrc:/pages/Messages")
+                    xmppConnectivity.page = 1
+                }
+            }
+            ButtonRow {
+                ToolButton {
+                    iconSource: main.platformInverted ? "toolbar-previous_inverse" : "toolbar-previous"
+                    enabled: xmppConnectivity.messagesCount - (xmppConnectivity.page*20)> 0
+                    opacity: enabled ? 1 : 0.2
+                    onClicked: xmppConnectivity.page++;
+                }
+                ToolButton {
+                    iconSource: main.platformInverted ? "toolbar-next_inverse" : "toolbar-next"
+                    enabled: xmppConnectivity.page > 1
+                    opacity: enabled ? 1 : 0.2
+                    onClicked: {
+                        xmppConnectivity.page--;
+                        flickable.contentY = flickable.contentHeight-flickable.height;
+                    }
+                }
+            }
+            ToolButton {
+                iconSource: main.platformInverted ? "qrc:/toolbar/chats_inverse" : "qrc:/toolbar/chats"
+                onClicked: dialog.create("qrc:/dialogs/Chats")
+                Image {
+                    source: main.platformInverted ? "qrc:/unread-mark_inverse" : "qrc:/unread-mark"
+                    smooth: true
+                    sourceSize.width: parent.width
+                    sourceSize.height: parent.width
+                    width: parent.width
+                    height: parent.width
+                    visible: vars.globalUnreadCount != 0
+                    anchors.centerIn: parent
+                 }
+                 Text {
+                    text: vars.globalUnreadCount
+                    font.pixelSize: 16
+                    anchors.centerIn: parent
+                    visible: vars.globalUnreadCount != 0
+                    z: 1
+                    color: main.platformInverted ? "white" : "black"
+                 }
+            }
+           }
 
-    Component.onCompleted: {
-        xmppConnectivity.client.openChat( xmppConnectivity.chatJid )
-
-        statusBarText.text = vars.contactName
-        vars.isChatInProgress = true
-    }
+    Component.onCompleted: statusBarText.text = vars.contactName
     /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
     Component {
         id: componentWrapperItem
@@ -45,25 +86,7 @@ Page {
             width: listViewMessages.width - 10
         }
     } //Component
-
-    /* ------------( XMPP client and stuff )------------ */
-    Connections {
-        target: xmppConnectivity.client
-        onMessageReceived: {
-            if( xmppConnectivity.client.bareJidLastMsg == xmppConnectivity.chatJid ) {
-                messagesPage.resourceJid = xmppConnectivity.client.resourceLastMsg
-                notify.updateNotifiers()
-            }
-        }
-    }
     /* --------------------( Messages view )-------------------- */
-
-    Timer {
-        running: true
-        interval: 30
-        onTriggered:  flickable.contentY = flickable.contentHeight-flickable.height;
-    }
-
     Flickable {
         id: flickable
         boundsBehavior: Flickable.DragAndOvershootBounds
@@ -84,62 +107,4 @@ Page {
 
         Component.onCompleted: contentY = contentHeight-height;
     }
-   /********************************( Toolbar )************************************/
-    ToolBarLayout {
-        id: toolBar
-
-        /****/
-        ToolButton {
-            iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
-            onClicked: {
-                pageStack.replace("qrc:/pages/Messages")
-                xmppConnectivity.page = 1
-            }
-        }
-
-        ButtonRow {
-            ToolButton {
-                iconSource: main.platformInverted ? "toolbar-previous_inverse" : "toolbar-previous"
-                enabled: xmppConnectivity.messagesCount - (xmppConnectivity.page*20)> 0
-                opacity: enabled ? 1 : 0.2
-                onClicked: xmppConnectivity.page++;
-            }
-            ToolButton {
-                iconSource: main.platformInverted ? "toolbar-next_inverse" : "toolbar-next"
-                enabled: xmppConnectivity.page > 1
-                opacity: enabled ? 1 : 0.2
-                onClicked: {
-                    xmppConnectivity.page--;
-                    flickable.contentY = flickable.contentHeight-flickable.height;
-                }
-             }
-        }
-
-        ToolButton {
-            iconSource: main.platformInverted ? "qrc:/toolbar/chats_inverse" : "qrc:/toolbar/chats"
-            onClicked: {
-                xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.chatJid ) //cleans unread count for this JID
-                dialog.create("qrc:/dialogs/Chats")
-            }
-            Image {
-                id: imgMarkUnread
-                source: main.platformInverted ? "qrc:/unread-mark_inverse" : "qrc:/unread-mark"
-                smooth: true
-                sourceSize.width: parent.width
-                sourceSize.height: parent.width
-                width: parent.width
-                height: parent.width
-                visible: vars.globalUnreadCount != 0
-                anchors.centerIn: parent
-            }
-            Text {
-                id: txtUnreadMsg
-                text: vars.globalUnreadCount
-                font.pixelSize: 16
-                anchors.centerIn: parent
-                visible: vars.globalUnreadCount != 0
-                z: 1
-                color: main.platformInverted ? "white" : "black"
-            }
-        }
-    }}
+}

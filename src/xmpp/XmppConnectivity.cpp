@@ -90,4 +90,8 @@ bool XmppConnectivity::removeDir(const QString &dirName) {
 }
 bool XmppConnectivity::resetSettings() { return QFile::remove(lSettings->confFile); }
 
-
+// handling stuff from MyXmppClient
+void XmppConnectivity::insertMessage(int m_accountId,QString bareJid,QString body,QString date,int mine) {
+    dbWorker->executeQuery(QStringList() << "insertMessage" << QString::number(m_accountId) << bareJid << body << date << QString::number(mine));
+    if (mine == 0) emit notifyMsgReceived(clients->value(m_accountId)->getPropertyByJid(bareJid,"name"),bareJid,body.left(30));
+}
