@@ -5,9 +5,10 @@
 #include "AccountsItemModel.h"
 #include "MyXmppClient.h"
 #include "DatabaseWorker.h"
-#include "QAvkonHelper.h"
 #include "MyCache.h"
 #include "Settings.h"
+
+#include "ChatsListModel.h"
 
 class XmppConnectivity : public QObject
 {
@@ -15,6 +16,7 @@ class XmppConnectivity : public QObject
 
     Q_PROPERTY(MyXmppClient* client READ getClient NOTIFY accountChanged)
     Q_PROPERTY(RosterListModel* roster READ getRoster NOTIFY rosterChanged)
+    Q_PROPERTY(ChatsListModel* chats READ getChats NOTIFY chatsChanged)
     Q_PROPERTY(int page READ getPage WRITE gotoPage NOTIFY pageChanged)
     Q_PROPERTY(SqlQueryModel* messagesByPage READ getSqlMessagesByPage NOTIFY pageChanged)
     Q_PROPERTY(SqlQueryModel* messages READ getSqlMessagesByPage NOTIFY sqlMessagesChanged)
@@ -51,6 +53,8 @@ signals:
     void sqlMessagesChanged();
     void chatJidChanged();
 
+    void chatsChanged();
+
     void notifyMsgReceived(QString name,QString jid,QString body);
     
 public slots:
@@ -67,13 +71,16 @@ public slots:
 private:
     int currentClient;
     QMap<int,MyXmppClient*> *clients;
+    MyXmppClient* selectedClient;
     MyXmppClient* getClient() { return selectedClient; }
 
+    RosterListModel* roster;
     RosterListModel* getRoster() { return roster; }
+
     SqlQueryModel* getSqlMessagesByPage() { return dbWorker->getSqlMessages(); }
 
-    MyXmppClient* selectedClient;
-    RosterListModel* roster;
+    ChatsListModel* chats;
+    ChatsListModel* getChats() { return chats; }
 
     MyCache* lCache;
     Settings* lSettings;

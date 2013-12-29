@@ -9,6 +9,7 @@
 #include <QMap>
 #include <QSvgRenderer>
 #include <QSettings>
+#include <QDir>
 
 QString row1; int row1presence;
 QString row2; int row2presence;
@@ -142,7 +143,14 @@ void LightbulbHSWidget::renderWidget() {
     statuses[row3] = row3presence;
     statuses[row4] = row4presence;
 
-    QPixmap pixmap( skinPath+"\\background.png" );
+    QPixmap pixmap(312,82);
+
+    QDir test;
+
+    if (test.exists(skinPath+"\\background.png"))
+      pixmap.load(skinPath+"\\background.png");
+    else pixmap.fill(Qt::black);
+
     painter = new QPainter( &pixmap );
 
     painter->setRenderHint(QPainter::Antialiasing);
@@ -200,9 +208,10 @@ void LightbulbHSWidget::renderWidget() {
         }
     }
 
-    QImage fader(skinPath+"\\fader.png");
-    painter->drawImage(faderPosition.x(),faderPosition.y(),fader,faderPosition.x()+faderWidth,faderPosition.y()+faderHeight);
-
+    if (test.exists(skinPath+"\\fader.png")) {
+      QImage fader(skinPath+"\\fader.png");
+      painter->drawImage(faderPosition.x(),faderPosition.y(),fader,faderPosition.x()+faderWidth,faderPosition.y()+faderHeight);
+    }
     widget->SetItem("image1",pixmap.toSymbianCFbsBitmap()->Handle());
     publishWidget();
     painter->end();
@@ -221,8 +230,8 @@ void LightbulbHSWidget::loadSkin(QString path) {
     QSettings skinsettings(path + "\\settings.txt",QSettings::NativeFormat);
 
     skinsettings.beginGroup( "colors" );
-    contactColor = skinsettings.value( "contacts", false ).toString();
-    unreadColor = skinsettings.value( "unreadmark", false ).toString();
+    contactColor = skinsettings.value( "contacts", "#FFFFFF" ).toString();
+    unreadColor = skinsettings.value( "unreadmark", "#FFFFFF" ).toString();
     skinsettings.endGroup();
 
     skinsettings.beginGroup( "settings" );
@@ -264,51 +273,51 @@ void LightbulbHSWidget::loadSkin(QString path) {
     if (useNonBuiltInUnreadMark) unreadMark = new QSvgRenderer(QString(skinPath+"\\unread.svg"));
         else unreadMark = new QSvgRenderer(QString(":/unread-count"));
 
-    showUnreadMarkText = skinsettings.value( "showUnreadMarkText", false ).toBool();
-    contactFontSize = skinsettings.value( "contactFontSize", false ).toInt();
-    unreadFontSize = skinsettings.value( "unreadFontSize", false ).toInt();
-    maxRowsCount = skinsettings.value( "maxRowsCount", false ).toInt();
+    showUnreadMarkText = skinsettings.value( "showUnreadMarkText", true ).toBool();
+    contactFontSize = skinsettings.value( "contactFontSize", 16 ).toInt();
+    unreadFontSize = skinsettings.value( "unreadFontSize", 14 ).toInt();
+    maxRowsCount = skinsettings.value( "maxRowsCount", 4 ).toInt();
     skinsettings.endGroup();
 
     skinsettings.beginGroup( "noDataAvailable" );
-    noDataAvailableWidth = skinsettings.value( "width", false ).toInt();
-    noDataAvailableHeight = skinsettings.value( "height", false ).toInt();
-    noDataAvailablePosition = QPoint(skinsettings.value( "x", false ).toInt(),skinsettings.value( "y", false ).toInt());
+    noDataAvailableWidth = skinsettings.value( "width", 303 ).toInt();
+    noDataAvailableHeight = skinsettings.value( "height", 82 ).toInt();
+    noDataAvailablePosition = QPoint(skinsettings.value( "x", 88 ).toInt(),skinsettings.value( "y", 0 ).toInt());
     skinsettings.endGroup();
 
     skinsettings.beginGroup( "presence" );
-    presencePosition = QPoint(skinsettings.value( "x", false ).toInt(),skinsettings.value( "y", false ).toInt());
-    presenceSize = skinsettings.value( "size", false ).toInt();
+    presencePosition = QPoint(skinsettings.value( "x", 6 ).toInt(),skinsettings.value( "y", 7 ).toInt());
+    presenceSize = skinsettings.value( "size", 64 ).toInt();
     skinsettings.endGroup();
 
     skinsettings.beginGroup( "contacts" );
-    contactsPosition = QPoint(skinsettings.value( "x", false ).toInt(),skinsettings.value( "y", false ).toInt());
-    rowWidth = skinsettings.value( "width", false ).toInt();
-    rowHeight = skinsettings.value( "height", false).toInt();
-    spacing = skinsettings.value( "spacing", false).toInt();
-    indicatorSize = skinsettings.value( "indicatorSize", false).toInt();
+    contactsPosition = QPoint(skinsettings.value( "x", 88 ).toInt(),skinsettings.value( "y", 4 ).toInt());
+    rowWidth = skinsettings.value("width", 203).toInt();
+    rowHeight = skinsettings.value("height", 18).toInt();
+    spacing = skinsettings.value("spacing", 0).toInt();
+    indicatorSize = skinsettings.value("indicatorSize", 12).toInt();
     skinsettings.endGroup();
 
     skinsettings.beginGroup( "fader" );
-    faderPosition = QPoint(skinsettings.value( "x", false ).toInt(),skinsettings.value( "y", false ).toInt());
+    faderPosition = QPoint(skinsettings.value( "x", 268).toInt(),skinsettings.value( "y", 7 ).toInt());
     faderWidth = skinsettings.value( "width", false ).toInt();
     faderHeight = skinsettings.value( "height", false).toInt();
     skinsettings.endGroup();
 
     skinsettings.beginGroup( "unreadMark" );
-    unreadMarkPosition = QPoint(skinsettings.value( "x", false ).toInt(),skinsettings.value( "y", false ).toInt());
-    unreadMarkSize = skinsettings.value( "size", false ).toInt();
+    unreadMarkPosition = QPoint(skinsettings.value( "x", 6 ).toInt(),skinsettings.value( "y", 7 ).toInt());
+    unreadMarkSize = skinsettings.value( "size", 64 ).toInt();
     skinsettings.endGroup();
 
     skinsettings.beginGroup( "unreadMarkText" );
-    unreadMarkTextPosition = QPoint(skinsettings.value( "x", false ).toInt(),skinsettings.value( "y", false ).toInt());
-    unreadMarkTextWidth = skinsettings.value( "width", false ).toInt();
-    unreadMarkTextHeight = skinsettings.value( "height", false).toInt();
+    unreadMarkTextPosition = QPoint(skinsettings.value("x", 48).toInt(),skinsettings.value("y", 54).toInt());
+    unreadMarkTextWidth = skinsettings.value("width", 22 ).toInt();
+    unreadMarkTextHeight = skinsettings.value("height", 14).toInt();
     skinsettings.endGroup();
 
     skinsettings.beginGroup( "Details" );
-    qDebug() << "LightbulbHSWidget::loadSkin(" << skinPath << "): loaded " << skinsettings.value("name",false).toString()
-             << " (" << skinsettings.value("version",false).toString()
-             << ") by " << skinsettings.value("author",false).toString();
+    qDebug().nospace() << "LightbulbHSWidget::loadSkin(" << qPrintable(skinPath) << "): loaded " << qPrintable(skinsettings.value("name","Fallback theme").toString())
+             << " (" << qPrintable(skinsettings.value("version","0.0.0").toString())
+             << ") by " << qPrintable(skinsettings.value("author","/dev/null").toString());
     skinsettings.endGroup();
 }

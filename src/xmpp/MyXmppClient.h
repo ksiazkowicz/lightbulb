@@ -31,8 +31,8 @@ class MyXmppClient : public QObject
     Q_DISABLE_COPY( MyXmppClient )
 
     Q_PROPERTY( QString version READ getVersion NOTIFY versionChanged )
-    Q_PROPERTY( QString bareJidLastMsg READ getJidLastMsg NOTIFY messageReceived )
-    Q_PROPERTY( QString resourceLastMsg READ getResourceLastMsg NOTIFY messageReceived )
+    Q_PROPERTY( QString bareJidLastMsg READ getJidLastMsg )
+    Q_PROPERTY( QString resourceLastMsg READ getResourceLastMsg )
     Q_PROPERTY( StateConnect stateConnect READ getStateConnect NOTIFY connectingChanged )
     Q_PROPERTY( StatusXmpp status READ getStatus WRITE setStatus NOTIFY statusChanged )
     Q_PROPERTY( QString statusText READ getStatusText WRITE setStatusText  NOTIFY statusTextChanged )

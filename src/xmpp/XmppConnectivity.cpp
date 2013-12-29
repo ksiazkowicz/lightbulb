@@ -15,6 +15,8 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
     dbWorker->moveToThread(dbThread);
     dbThread->start();
 
+    chats = new ChatsListModel();
+
     for (int i=0; i<lSettings->accountsCount(); i++)
         initializeAccount(i,lSettings->getAccount(i));
 }
@@ -39,11 +41,12 @@ bool XmppConnectivity::initializeAccount(int index, AccountsItemModel* account) 
     connect(clients->value(index),SIGNAL(rosterChanged()),this,SLOT(changeRoster()));
     connect(clients->value(index),SIGNAL(updateContact(int,QString,QString,int)),this,SLOT(updateContact(int,QString,QString,int)));
     connect(clients->value(index),SIGNAL(insertMessage(int,QString,QString,QString,int)),this,SLOT(insertMessage(int,QString,QString,QString,int)));
-    qDebug() << "XmppConnectivity::initializeAccount(): initialized account " + clients->value(index)->getMyJid() + "/" + clients->value(index)->getResource();
+    qDebug().nospace() << "XmppConnectivity::initializeAccount(): initialized account " << qPrintable(clients->value(index)->getMyJid()) << "/" << qPrintable(clients->value(index)->getResource());
     return true;
 }
 
 void XmppConnectivity::changeAccount(int index) {
+    delete selectedClient;
     if (index != currentClient) {
         currentClient = index;
         selectedClient = clients->value(index);
@@ -52,6 +55,7 @@ void XmppConnectivity::changeAccount(int index) {
         emit accountChanged();
         changeRoster();
     }
+    qDebug() << "XmppConnectivity::changeAccount(): selected" << qPrintable(clients->value(index)->getMyJid());
 }
 
 void XmppConnectivity::gotoPage(int nPage) {
