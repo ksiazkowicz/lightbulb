@@ -71,7 +71,7 @@ bool XmppConnectivity::initializeAccount(int index, AccountsItemModel* account) 
 }
 
 void XmppConnectivity::changeAccount(int index) {
-    delete selectedClient;
+    if (currentClient == -1) delete selectedClient;
     if (index != currentClient) {
         currentClient = index;
         selectedClient = clients->value(index);
