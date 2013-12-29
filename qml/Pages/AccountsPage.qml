@@ -122,7 +122,6 @@ Page {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
                 settings.initListOfAccounts()
-                main.initAccount()
                 pageStack.pop()
                 statusBarText.text = "Contacts"
             }

@@ -119,7 +119,7 @@ PageStackWindow {
     XmppVCard { id: xmppVCard }
 
     Component.onCompleted: {
-        initAccount()
+        selectDefaultAccount()
         checkIfFirstRun()
         xmppConnectivity.client.keepAlive = settings.gInt("behavior", "keepAliveInterval")
         if (settings.gBool("behavior","goOnlineOnStart")) xmppConnectivity.client.setMyPresence( XmppClient.Online, lastStatus )
@@ -134,7 +134,7 @@ PageStackWindow {
 
     property bool _existDefaultAccount: false
 
-    function initAccount() {
+    function selectDefaultAccount() {
         var accc=0
         _existDefaultAccount = false
         for( var j=0; j<settings.accounts.count(); j++ )
@@ -148,7 +148,6 @@ PageStackWindow {
                     accc++
             }
         }
-        //vars.globalUnreadCount = xmppConnectivity.client.getUnreadCount()
     }
 
     function changeAccount(acc) {
