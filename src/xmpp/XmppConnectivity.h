@@ -46,10 +46,12 @@ class XmppConnectivity : public QObject
     Q_PROPERTY(SqlQueryModel* messagesByPage READ getSqlMessagesByPage NOTIFY pageChanged)
     Q_PROPERTY(SqlQueryModel* messages READ getSqlMessagesByPage NOTIFY sqlMessagesChanged)
     Q_PROPERTY(QString chatJid READ getChatJid WRITE setChatJid NOTIFY chatJidChanged)
+    Q_PROPERTY(int currentAccount READ getCurrentAccount WRITE changeAccount NOTIFY accountChanged)
 public:
     explicit XmppConnectivity(QObject *parent = 0);
     bool initializeAccount(int index, AccountsItemModel* account);
     Q_INVOKABLE void changeAccount(int index);
+    int getCurrentAccount() { return currentClient; }
 
     // well, this stuff is needed
     int getPage() const { return page; }
@@ -92,6 +94,15 @@ public slots:
     }
     void updateMessages() { dbWorker->updateMessages(currentClient,currentJid,page); }
     void insertMessage(int m_accountId,QString bareJid,QString body,QString date,int mine);
+
+    // handling chats list
+    void chatOpened(int accountId,QString bareJid);
+    void chatClosed(QString bareJid);
+
+    // handling clients
+    void accountAdded();
+    void accountRemoved(QString bareJid);
+    void accountModified(QString bareJid);
 
 private:
     int currentClient;

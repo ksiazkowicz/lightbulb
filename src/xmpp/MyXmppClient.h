@@ -138,11 +138,13 @@ public :
     /*--- info by jid ---*/
     Q_INVOKABLE QString getPropertyByJid( QString bareJid, QString property ) {
         RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid );
-        if (property == "name") return item->name();
-        else if (property == "presence") return item->presence();
-        else if (property == "resource") return item->resource();
-        else if (property == "statusText") return item->statusText();
-        else if (property == "unreadMsg") return QString::number(item->unreadMsg());
+        if (item != 0) {
+          if (property == "name") return item->name();
+          else if (property == "presence") return item->presence();
+          else if (property == "resource") return item->resource();
+          else if (property == "statusText") return item->statusText();
+          else if (property == "unreadMsg") return QString::number(item->unreadMsg());
+          } else return "";
     }
     Q_INVOKABLE QStringList getResourcesByJid( QString bareJid ) { return rosterManager->getResources(bareJid); }
 
@@ -293,7 +295,7 @@ signals:
     void portChanged();
     void resourceChanged();
     void openChatsChanged();
-    void chatOpened( QString bareJid );
+    void chatOpened( int accountId, QString bareJid );
     void chatClosed( QString bareJid );
     void accountIdChanged();
     void vCardChanged();
@@ -317,7 +319,7 @@ public slots:
             latestChats.append(jid);
         } else { latestChats.append(jid); }
 
-        emit chatOpened( jid );
+        emit chatOpened( m_accountId, jid );
     }
     Q_INVOKABLE void closeChat( QString jid ) { this->resetUnreadMessages( jid ); if (chats.contains(jid)) chats.removeAt(chats.indexOf(jid)); emit chatClosed( jid ); if (latestChats.contains(jid)) latestChats.removeAt(latestChats.indexOf(jid)); }
 

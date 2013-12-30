@@ -215,12 +215,6 @@ Page {
         // define the items in the menu and corresponding actions
         content: MenuLayout {
             MenuItem {
-                text: qsTr("Accounts")
-                platformInverted: main.platformInverted
-                onClicked: main.pageStack.push( "qrc:/pages/Accounts" )
-            }
-
-            MenuItem {
                 text: qsTr("Settings")
                 platformInverted: main.platformInverted
                 onClicked: main.pageStack.push( "qrc:/pages/Settings" )

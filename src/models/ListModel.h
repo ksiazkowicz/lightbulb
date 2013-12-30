@@ -143,6 +143,17 @@ public:
       row = -1;
       return 0;
   }
+
+  bool checkIfExists(const QString &id) const {
+    int row = 0;
+    foreach(ListItem* item, m_list) {
+        if(item->id() == id) return true;
+        row++;
+    }
+    row = -1;
+    return false;
+  }
+
   QModelIndex indexFromItem( const ListItem* item) const {
       Q_ASSERT(item);
       for(int row=0; row<m_list.size(); ++row) {

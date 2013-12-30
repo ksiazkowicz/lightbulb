@@ -6,19 +6,26 @@ CommonDialog {
     id: accountSwitcher
     privateCloseIcon: true
     titleText: qsTr("Available accounts")
+    buttonTexts: [qsTr("Settings")]
+    height: 320
 
     platformInverted: main.platformInverted
+
+    onButtonClicked: {
+        main.pageStack.push( "qrc:/pages/Accounts" )
+    }
 
     content: ListView {
         id: listViewAccounts
         clip: true
         anchors { fill: parent }
+        currentIndex: xmppConnectivity.currentAccount
         delegate: Component {
             Rectangle {
                 id: wrapper
                 clip: true
                 width: parent.width
-                height: 64
+                height: 48
                 gradient: gr_free
                 Gradient {
                     id: gr_free
@@ -31,8 +38,7 @@ CommonDialog {
                     GradientStop { position: 1; color: "#51A8FB" }
                 }
                 Text {
-                    id: txtAcc
-                    anchors { verticalCenter: parent.verticalCenter; left: parent.left; right: parent.right; rightMargin: 5; leftMargin: 5 }
+                    anchors { verticalCenter: parent.verticalCenter; left: parent.left; right: parent.right; rightMargin: 10; leftMargin: 10 }
                     text: accJid
                     font.pixelSize: 18
                     clip: true
@@ -40,15 +46,14 @@ CommonDialog {
                 }
                 states: State {
                     name: "Current"
-                    when: (wrapper.ListView.isCurrentItem && (vars.accJid != "") )
+                    when: wrapper.ListView.isCurrentItem
                     PropertyChanges { target: wrapper; gradient: gr_press }
                 }
                 MouseArea {
-                    id: maAccItem
                     anchors.fill: parent
                     onClicked: {
                         wrapper.ListView.view.currentIndex = index
-                        main.changeAccount(index)
+                        xmppConnectivity.currentAccount = index
                         close()
                     }
                 }

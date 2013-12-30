@@ -69,6 +69,8 @@ bool XmppConnectivity::initializeAccount(int index, AccountsItemModel* account) 
     connect(clients->value(index),SIGNAL(rosterChanged()),this,SLOT(changeRoster()));
     connect(clients->value(index),SIGNAL(updateContact(int,QString,QString,int)),this,SLOT(updateContact(int,QString,QString,int)));
     connect(clients->value(index),SIGNAL(insertMessage(int,QString,QString,QString,int)),this,SLOT(insertMessage(int,QString,QString,QString,int)));
+    connect(clients->value(index),SIGNAL(chatOpened(int,QString)),this,SLOT(chatOpened(int,QString)));
+    connect(clients->value(index),SIGNAL(chatClosed(QString)),this,SLOT(chatClosed(QString)));
     qDebug().nospace() << "XmppConnectivity::initializeAccount(): initialized account " << qPrintable(clients->value(index)->getMyJid()) << "/" << qPrintable(clients->value(index)->getResource());
     return true;
 }
@@ -124,4 +126,35 @@ bool XmppConnectivity::resetSettings() { return QFile::remove(lSettings->confFil
 void XmppConnectivity::insertMessage(int m_accountId,QString bareJid,QString body,QString date,int mine) {
     dbWorker->executeQuery(QStringList() << "insertMessage" << QString::number(m_accountId) << bareJid << body << date << QString::number(mine));
     if (mine == 0) emit notifyMsgReceived(clients->value(m_accountId)->getPropertyByJid(bareJid,"name"),bareJid,body.left(30));
+}
+
+// handling chats list
+void XmppConnectivity::chatOpened(int accountId, QString bareJid) {
+  if (!chats->checkIfExists(bareJid)) {
+    ChatsItemModel* chat = new ChatsItemModel(clients->value(accountId)->getPropertyByJid(bareJid,"name"),bareJid,accountId);
+    chats->append(chat);
+    qDebug() << "XmppConnectivity::chatOpened(): appending"<< qPrintable(bareJid) << "from account" << accountId << "to chats list.";
+    emit chatsChanged();
+  }
+}
+
+void XmppConnectivity::chatClosed(QString bareJid) {
+  int indxItem = -1;
+  ChatsItemModel *itemExists = (ChatsItemModel*)chats->find( bareJid, indxItem );
+  if( itemExists ) if( indxItem >= 0 ) chats->takeRow( indxItem );
+  qDebug() << "XmppConnectivity::chatClosed(): chat closed";
+}
+
+// handling adding and removing accounts
+void XmppConnectivity::accountAdded() {
+  qDebug() << "XmppConnectivity::accountAdded(): this is not being handled right now #yolo";
+}
+
+
+void XmppConnectivity::accountRemoved(QString bareJid) {
+  qDebug() << "XmppConnectivity::accountRemoved(): this is not being handled right now #yolo";
+}
+
+void XmppConnectivity::accountModified(QString bareJid) {
+  qDebug() << "XmppConnectivity::accountModified(): this is not being handled right now #yolo";
 }

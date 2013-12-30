@@ -62,12 +62,12 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     qmlRegisterUncreatableType<SqlQueryModel>("lightbulb", 1, 0, "SqlQuery", "");
     qmlRegisterUncreatableType<AccountsListModel>("lightbulb", 1, 0, "AccountsList", "Use settings.accounts instead");
     qmlRegisterUncreatableType<RosterListModel>("lightbulb",1,0,"RosterModel","");
+    qmlRegisterUncreatableType<ChatsListModel>("lightbulb",1,0,"ChatsModel","because I say so, who cares?");
     qmlRegisterUncreatableType<MyXmppClient>("lightbulb", 1, 0, "XmppClient", "Use XmppConnectivity.client instead" );
 
     // initialize viewer and set it parameters
     QmlApplicationViewer viewer;
     QAvkonHelper avkon(&viewer);
-    splash->showMessage("0.3 beta", Qt::AlignHCenter | Qt::AlignBottom, Qt::white);
     viewer.rootContext()->setContextProperty("avkon", &avkon);
 
     viewer.setAttribute(Qt::WA_OpaquePaintEvent);
