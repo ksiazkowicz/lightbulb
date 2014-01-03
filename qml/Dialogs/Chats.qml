@@ -72,54 +72,19 @@ CommonDialog {
                     GradientStop { position: 0; color: "#1C87DD" }
                     GradientStop { position: 1; color: "#51A8FB" }
                 }
-                /*Image {
+                Image {
                     id: imgPresence
-                    source: rosterLayoutAvatar ? xmppConnectivity.client.getAvatarByJid(jid) : presence
-                    sourceSize.height: rosterItemHeight-4
-                    sourceSize.width: rosterItemHeight-4
+                    source: xmppConnectivity.getPropertyByJid(account,"presence",jid)
+                    sourceSize.height: 24
+                    sourceSize.width: 24
                     anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
-                    height: rosterItemHeight-4
-                    width: rosterItemHeight-4
-                    Image {
-                        id: imgUnreadMsg
-                        source: main.platformInverted ? "qrc:/unread-mark_inverse" : "qrc:/unread-mark"
-                        sourceSize.height: wrapper.height
-                        sourceSize.width: wrapper.height
-                        smooth: true
-                        visible: markUnread ? unreadMsg != 0 : false
-                        anchors.centerIn: parent
-                        opacity: unreadMsg != 0 ? 1 : 0
-                        Image {
-                            id: imgUnreadCount
-                            source: "qrc:/unread-count"
-                            sourceSize.height: wrapper.height
-                            sourceSize.width: wrapper.height
-                            smooth: true
-                            visible: showUnreadCount ? unreadMsg != 0 : false
-                            anchors.centerIn: parent
-                            opacity: unreadMsg != 0 ? 1 : 0
-                        }
-                        Rectangle {
-                            color: "transparent"
-                            width: wrapper.height * 0.30
-                            height: width
-                            anchors.right: parent.right
-                            anchors.bottom: parent.bottom
-                            visible: showUnreadCount ? unreadMsg != 0 : false
-                            Text {
-                                id: txtUnreadMsg
-                                text: unreadMsg
-                                font.pixelSize: 0.72*parent.width
-                                anchors.centerIn: parent
-                                z: 1
-                                color: "white"
-                            }
-                        }
-                    }
-                }*/
+                    height: 24
+                    width: 24
+                }
                 Text {
-                    anchors { verticalCenter: parent.verticalCenter; left: parent.left; right: parent.right; rightMargin: 5; leftMargin: 5 }
-                    text: name
+                    anchors { verticalCenter: parent.verticalCenter; left: imgPresence.right; right: parent.right; rightMargin: 5; leftMargin: 10 }
+                    property int unreadMsg: parseInt(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))
+                    text: unreadMsg > 0 ? "[" + xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid) + "] " + name : name
                     font.pixelSize: 18
                     clip: true
                     color: vars.textColor

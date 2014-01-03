@@ -158,3 +158,7 @@ void XmppConnectivity::accountRemoved(QString bareJid) {
 void XmppConnectivity::accountModified(QString bareJid) {
   qDebug() << "XmppConnectivity::accountModified(): this is not being handled right now #yolo";
 }
+
+QString XmppConnectivity::getPropertyByJid(int account,QString property,QString jid) {
+  return clients->value(account)->getPropertyByJid(jid,property);
+}

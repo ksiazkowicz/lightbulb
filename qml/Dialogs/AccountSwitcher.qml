@@ -19,7 +19,7 @@ CommonDialog {
         id: listViewAccounts
         clip: true
         anchors { fill: parent }
-        currentIndex: xmppConnectivity.currentAccount
+
         delegate: Component {
             Rectangle {
                 id: wrapper
@@ -65,5 +65,6 @@ CommonDialog {
     Component.onCompleted: {
         settings.initListOfAccounts()
         open()
+        listViewAccounts.currentIndex = xmppConnectivity.currentAccount
     }
 }

@@ -189,8 +189,6 @@ void MyXmppClient::initRoster() {
         itemModel->setStatusText( "Offline ");
         cachedRoster->append(itemModel);
     }
-
-    qWarning() << "crash in 5...4...3...";
     emit rosterChanged();
 }
 

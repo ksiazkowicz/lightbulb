@@ -98,6 +98,7 @@ public slots:
     // handling chats list
     void chatOpened(int accountId,QString bareJid);
     void chatClosed(QString bareJid);
+    Q_INVOKABLE QString getPropertyByJid(int account,QString property,QString jid);
 
     // handling clients
     void accountAdded();
