@@ -37,8 +37,17 @@ CommonDialog {
                     GradientStop { position: 0; color: "#1C87DD" }
                     GradientStop { position: 1; color: "#51A8FB" }
                 }
+                Image {
+                    id: imgPresence
+                    source: "qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(index))
+                    sourceSize.height: 24
+                    sourceSize.width: 24
+                    anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
+                    height: 24
+                    width: 24
+                }
                 Text {
-                    anchors { verticalCenter: parent.verticalCenter; left: parent.left; right: parent.right; rightMargin: 10; leftMargin: 10 }
+                    anchors { verticalCenter: parent.verticalCenter; left: imgPresence.right; right: parent.right; rightMargin: 10; leftMargin: 10 }
                     text: accJid
                     font.pixelSize: 18
                     clip: true

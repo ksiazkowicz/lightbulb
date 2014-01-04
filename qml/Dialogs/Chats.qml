@@ -25,25 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import QtQuick 1.1
 import com.nokia.symbian 1.1
 
-/*SelectionDialog {
-    titleText: qsTr("Chats")
-    selectedIndex: -1
-    platformInverted: main.platformInverted
-    privateCloseIcon: true
-    model: xmppConnectivity.client.chats
-
-    Component.onCompleted: open()
-
-    onSelectedIndexChanged: {
-        if (selectedIndex > -1 && xmppConnectivity.chatJid != xmppConnectivity.client.getPropertyByChatID(selectedIndex, "jid")) {
-            xmppConnectivity.chatJid = xmppConnectivity.client.getPropertyByChatID(selectedIndex, "jid")
-            vars.contactName = xmppConnectivity.client.getPropertyByChatID(selectedIndex, "name")
-            vars.globalUnreadCount = vars.globalUnreadCount - parseInt(xmppConnectivity.client.getPropertyByChatID(selectedIndex, "unreadMsg"))
-            main.openChat()
-        }
-    }
-}*/
-
 CommonDialog {
     privateCloseIcon: true
     titleText: qsTr("Chats")

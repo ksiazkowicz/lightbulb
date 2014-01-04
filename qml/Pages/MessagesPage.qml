@@ -194,6 +194,7 @@ Page {
                       sendMessage()
                   }
               }
+              Component.onCompleted: text = xmppConnectivity.getPreservedMsg(xmppConnectivity.chatJid);
     }
     Item {
         id: splitViewInput
@@ -287,6 +288,7 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
+                xmppConnectivity.preserveMsg(xmppConnectivity.chatJid,txtMessage.text)
                 if (isTyping) xmppConnectivity.client.typingStop( xmppConnectivity.chatJid, messagesPage.resourceJid )
                 pageStack.pop()
                 vars.isChatInProgress = false
@@ -308,6 +310,7 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "qrc:/toolbar/chats_inverse" : "qrc:/toolbar/chats"
             onClicked: {
+                xmppConnectivity.preserveMsg(xmppConnectivity.chatJid,txtMessage.text)
                 xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.chatJid ) //cleans unread count for this JID
                 dialog.create("qrc:/dialogs/Chats")
             }
@@ -353,6 +356,7 @@ Page {
                 text: "Archive"
                 platformInverted: main.platformInverted
                 onClicked: {
+                    xmppConnectivity.preserveMsg(xmppConnectivity.chatJid,txtMessage.text)
                     xmppConnectivity.page = 1
                     pageStack.replace("qrc:/pages/Archive")
                 }

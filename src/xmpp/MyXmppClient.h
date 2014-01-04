@@ -144,7 +144,7 @@ public :
           else if (property == "resource") return item->resource();
           else if (property == "statusText") return item->statusText();
           else if (property == "unreadMsg") return QString::number(item->unreadMsg());
-          } else return "";
+          } else return "(unknown)";
     }
     Q_INVOKABLE QStringList getResourcesByJid( QString bareJid ) { return rosterManager->getResources(bareJid); }
 

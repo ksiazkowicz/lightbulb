@@ -99,11 +99,14 @@ public slots:
     void chatOpened(int accountId,QString bareJid);
     void chatClosed(QString bareJid);
     Q_INVOKABLE QString getPropertyByJid(int account,QString property,QString jid);
+    Q_INVOKABLE QString getPreservedMsg(QString jid);
+    Q_INVOKABLE void preserveMsg(QString jid,QString message);
 
     // handling clients
     void accountAdded();
     void accountRemoved(QString bareJid);
     void accountModified(QString bareJid);
+    Q_INVOKABLE int getStatusByIndex(int index);
 
 private:
     int currentClient;

@@ -32,14 +32,16 @@ Item {
     Component.onCompleted: if (settings.gBool("behavior","enableHsWidget")) hsWidget.registerWidget()
 
     function getStatusName() {
-       var statusName;
-       if (xmppConnectivity.client.status == XmppClient.Online) statusName = qsTr("online")
-       else if (xmppConnectivity.client.status == XmppClient.Chat) statusName = qsTr("chatty")
-       else if (xmppConnectivity.client.status == XmppClient.Away) statusName = qsTr("away")
-       else if (xmppConnectivity.client.status == XmppClient.XA) statusName = qsTr("xa")
-       else if (xmppConnectivity.client.status == XmppClient.DND) statusName = qsTr("busy")
-       else if (xmppConnectivity.client.status == XmppClient.Offline) statusName = qsTr("offline")
-       return statusName;
+       return getStatusNameByIndex(xmppConnectivity.client.status)
+    }
+
+    function getStatusNameByIndex(status) {
+       if (status == XmppClient.Online) return "online"
+       else if (status == XmppClient.Chat) return "chatty"
+       else if (status == XmppClient.Away) return "away"
+       else if (status == XmppClient.XA) return "xa"
+       else if (status == XmppClient.DND) return "busy"
+       else if (status == XmppClient.Offline) return "offline"
     }
 
     function updateNotifiers() {

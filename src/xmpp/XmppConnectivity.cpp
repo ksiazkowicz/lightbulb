@@ -138,11 +138,28 @@ void XmppConnectivity::chatOpened(int accountId, QString bareJid) {
   }
 }
 
-void XmppConnectivity::chatClosed(QString bareJid) {
+void XmppConnectivity::chatClosed(QString bareJid) { //this poorly written piece of shit should take care of account id one day
   int indxItem = -1;
   ChatsItemModel *itemExists = (ChatsItemModel*)chats->find( bareJid, indxItem );
   if( itemExists ) if( indxItem >= 0 ) chats->takeRow( indxItem );
   qDebug() << "XmppConnectivity::chatClosed(): chat closed";
+}
+
+QString XmppConnectivity::getPropertyByJid(int account,QString property,QString jid) {
+  if (account <= clients->count() && account >= 0)
+    return clients->value(account)->getPropertyByJid(jid,property);
+  else return "(unknown)";
+}
+
+QString XmppConnectivity::getPreservedMsg(QString jid) {  //this poorly written piece of shit should take care of account id one day
+  ChatsItemModel* chat = (ChatsItemModel*)chats->find(jid);
+  if (chat != 0) return chat->msg();
+  return "";
+}
+
+void XmppConnectivity::preserveMsg(QString jid,QString message) { //this poorly written piece of shit should take care of account id one day
+  ChatsItemModel* chat = (ChatsItemModel*)chats->find(jid);
+  if (chat != 0) chat->setChatMsg(message);
 }
 
 // handling adding and removing accounts
@@ -159,6 +176,8 @@ void XmppConnectivity::accountModified(QString bareJid) {
   qDebug() << "XmppConnectivity::accountModified(): this is not being handled right now #yolo";
 }
 
-QString XmppConnectivity::getPropertyByJid(int account,QString property,QString jid) {
-  return clients->value(account)->getPropertyByJid(jid,property);
+int XmppConnectivity::getStatusByIndex(int index) {
+  if (index <= clients->count() && index > -1)
+    return clients->value(index)->getStatus();
+  else return 0;
 }

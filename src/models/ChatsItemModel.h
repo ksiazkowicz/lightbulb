@@ -34,7 +34,8 @@ public:
     enum Roles {
         roleAccount = Qt::UserRole+1,
         roleName,
-        roleJid
+        roleJid,
+        roleMsg
       };
 
 public:
@@ -42,6 +43,7 @@ public:
           contactName = "";
           contactJid = "";
           contactAccountID = 0;
+          chatMsg = "";
       }
       explicit ChatsItemModel( const QString &_contactName,
                                        const QString &_contactJid,
@@ -61,6 +63,8 @@ public:
           return name();
         case roleJid:
           return jid();
+        case roleMsg:
+          return msg();
         default:
           return QVariant();
         }
@@ -70,6 +74,7 @@ public:
           names[roleAccount] = "account";
           names[roleName] = "name";
           names[roleJid] = "jid";
+          names[roleMsg] = "chatMsg";
           return names;
       }
 
@@ -96,20 +101,25 @@ public:
           }
       }
 
+      void setChatMsg(const QString &_chatMsg) { chatMsg = _chatMsg; }
+
       inline int accountID() const { return contactAccountID; }
       inline QString name() const { return contactName; }
       inline QString jid() const { return contactJid; }
+      inline QString msg() const { return chatMsg; }
 
       void copy( const ChatsItemModel* item ) {
           contactName = item->name();
           contactJid = item->jid();
           contactAccountID = item->accountID();
+          chatMsg = item->msg();
       }
 
     private:
       int contactAccountID;
       QString contactName;
       QString contactJid;
+      QString chatMsg;
 };
 
 #endif // CHATSITEMMODEL_H

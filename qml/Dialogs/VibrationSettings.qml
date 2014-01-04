@@ -29,7 +29,7 @@ import lightbulb 1.0
 CommonDialog {
     titleText: qsTr("Vibration settings")
     privateCloseIcon: true
-    height: 216
+    height: 250
     platformInverted: main.platformInverted
 
     Component.onCompleted: open()
@@ -38,9 +38,9 @@ CommonDialog {
         width: parent.width-20
         anchors.horizontalCenter: parent.horizontalCenter
         Column {
-            spacing: 5
+            spacing: platformStyle.paddingSmall
             width: parent.width
-            anchors { topMargin: 5; bottomMargin: 5; fill: parent }
+            anchors { topMargin: spacing; bottomMargin: spacing; fill: parent }
 
             Text {
                 text: qsTr("Intensity") + " (" + intensitySlider.value + "%)"

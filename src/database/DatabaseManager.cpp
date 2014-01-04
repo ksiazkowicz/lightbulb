@@ -52,9 +52,9 @@ DatabaseManager::DatabaseManager(QObject *parent) :
     databaseOpen = true;
 
     // set up some pragma parameters to get this thing working faster
-    QSqlQuery("PRAGMA journal_mode = OFF",db);
-    QSqlQuery("PRAGMA page_size = 4648",db);
-    QSqlQuery("PRAGMA cache_size = 5120",db);
+    QSqlQuery("PRAGMA journal_mode = ON",db);
+    QSqlQuery("PRAGMA page_size = 8096",db);
+    QSqlQuery("PRAGMA cache_size = 10240",db);
     QSqlQuery("PRAGMA temp_store = MEMORY",db);
     QSqlQuery("PRAGMA locking_mode = EXCLUSIVE",db);
     connect(this,SIGNAL(finished()), this, SLOT(getLastError()));
