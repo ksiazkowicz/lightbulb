@@ -230,7 +230,7 @@ Page {
                 onClicked: main.pageStack.push( "qrc:/pages/Diagnostics" )
             }
             MenuItem {
-                text: qsTr("é ă„č¨ć†¶ ĺŤŠé€ŹćŽăŞĺ¤˘")
+                text: qsTr("Select Widget Skin")
                 platformInverted: main.platformInverted
                 onClicked: main.pageStack.push( "qrc:/pages/SkinSelection" )
             }
