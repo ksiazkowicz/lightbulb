@@ -26,7 +26,7 @@ VERSION = 0.3
 
 symbian {
     TARGET.UID3 = 0xE22AC278
-    TARGET.CAPABILITY += NetworkServices WriteDeviceData
+    TARGET.CAPABILITY += NetworkServices WriteDeviceData ReadDeviceData
     TARGET.EPOCHEAPSIZE = 0x200000 0x1F400000
     CONFIG += qt-components
 
