@@ -31,7 +31,7 @@ Page {
     }
 
     Component.onCompleted: {
-        statusBarText.text = qsTr("声に出したら　消えてしまいそうだから")
+        statusBarText.text = qsTr("Widget Skin")
     }
 
     SelectorHandler { id: selector }
