@@ -47,6 +47,7 @@ class XmppConnectivity : public QObject
     Q_PROPERTY(SqlQueryModel* messages READ getSqlMessagesByPage NOTIFY sqlMessagesChanged)
     Q_PROPERTY(QString chatJid READ getChatJid WRITE setChatJid NOTIFY chatJidChanged)
     Q_PROPERTY(int currentAccount READ getCurrentAccount WRITE changeAccount NOTIFY accountChanged)
+    Q_PROPERTY(QString currentAccountName READ getCurrentAccountName NOTIFY accountChanged)
 public:
     explicit XmppConnectivity(QObject *parent = 0);
     bool initializeAccount(int index, AccountsItemModel* account);
@@ -116,6 +117,8 @@ private:
 
     RosterListModel* roster;
     RosterListModel* getRoster() { return roster; }
+
+    QString getCurrentAccountName();
 
     SqlQueryModel* getSqlMessagesByPage() { return dbWorker->getSqlMessages(); }
 

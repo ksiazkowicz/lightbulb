@@ -58,8 +58,7 @@ symbian {
 # If your application uses the Qt Mobility libraries, uncomment the following
 # lines and add the respective components to the MOBILITY variable.
 CONFIG += mobility
-MOBILITY += feedback \
-            systeminfo
+MOBILITY += mutlimedia feedback systeminfo
 
 DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS
 

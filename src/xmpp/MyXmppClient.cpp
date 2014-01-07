@@ -186,7 +186,7 @@ void MyXmppClient::initRoster() {
         itemModel->setContactName( name );
         itemModel->setJid( bareJid );
         itemModel->setUnreadMsg( 0 );
-        itemModel->setStatusText( "Offline ");
+        itemModel->setStatusText( "");
         cachedRoster->append(itemModel);
     }
     emit rosterChanged();
@@ -254,35 +254,7 @@ QString MyXmppClient::getPicPresence( const QXmppPresence &presence ) const
 
 QString MyXmppClient::getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const
 {
-    if( (!textStatus.isEmpty()) && (!textStatus.isNull()) ) {
-        return textStatus;
-    }
-
-    QXmppPresence::Type status = presence.type();
-
-    QString txtStat = "";
-    if( status == QXmppPresence::Unavailable )
-    {
-        txtStat = "Offline";
-    }
-    else
-    {
-        QXmppPresence::AvailableStatusType availableStatus = presence.availableStatusType();
-
-        if( availableStatus == QXmppPresence::Online ) {
-            txtStat = "Online";
-        } else if ( availableStatus == QXmppPresence::Chat ) {
-            txtStat = "Chatty";
-        } else if ( availableStatus == QXmppPresence::Away ) {
-            txtStat = "Away";
-        } else if ( availableStatus == QXmppPresence::XA ) {
-            txtStat = "Extended away";
-        } else if ( availableStatus == QXmppPresence::DND ) {
-            txtStat = "Do not disturb";
-        }
-    }
-
-    return txtStat;
+  if( (!textStatus.isEmpty()) && (!textStatus.isNull()) ) return textStatus; else return "";
 }
 
 

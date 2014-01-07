@@ -29,24 +29,21 @@ Page {
 
     Rectangle {
         id: accountSwitcher
-        property string themeColor: "#DE751D"
 
-        height: 64
-        color: "black"
+        height: 46
+
+        gradient: Gradient {
+            GradientStop { position: 0; color: "#3c3c3c" }
+            GradientStop { position: 0.04; color: "#6c6c6c" }
+            GradientStop { position: 0.05; color: "#3c3c3c" }
+            GradientStop { position: 0.06; color: "#4c4c4c" }
+            GradientStop { position: 1; color: "#191919" }
+        }
+
         z: 1
 
         anchors { top: parent.top; left: parent.left; right: parent.right }
 
-        Rectangle {
-            color: parent.themeColor
-            anchors.fill: parent
-            radius: 8
-        }
-        Rectangle {
-            color: parent.themeColor
-            anchors { left: parent.left; right: parent.right; bottom: parent.bottom }
-            height: 8
-        }
         ToolButton {
             id: button
             anchors { left: parent.left; leftMargin: platformStyle.paddingSmall; verticalCenter: parent.verticalCenter }
@@ -56,7 +53,7 @@ Page {
         Text {
             id: titleText
             anchors { verticalCenter: parent.verticalCenter; left: button.right; leftMargin: platformStyle.paddingSmall  }
-            text: xmppConnectivity.client.myBareJid
+            text: xmppConnectivity.currentAccountName
             color: "white"
             font.pixelSize: 20
         }
@@ -65,20 +62,6 @@ Page {
             anchors { verticalCenter: parent.verticalCenter; right: parent.right; rightMargin: platformStyle.paddingSmall }
             onClicked: dialog.create("qrc:/dialogs/AccountSwitcher")
         }
-
-        Rectangle {
-            height: 1
-            width: parent.width
-            anchors.bottom: parent.bottom
-            color: "#10000000"
-        }
-        Rectangle {
-            height: 1
-            width: parent.width
-            anchors.top: parent.bottom
-            anchors.topMargin: 1
-            color: "white"
-        }        
     }
 
     Component {
@@ -141,9 +124,9 @@ Page {
                     anchors { left: imgPresence.right; right: imgPresenceR.left; leftMargin: 10; rightMargin: 10; verticalCenter: parent.verticalCenter }
                     width: parent.width
                     maximumLineCount: (rosterItemHeight/22) > 1 ? (rosterItemHeight/22) : 1
-                    text: (name === "" ? jid : name) + (showContactStatusText ? ("\n" + statusText) : "")
+                    text: (name === "" ? jid : name) + ((showContactStatusText && statusText != "") ? (" · <font color='#aaaaaa'><i>" + statusText + "</i></font>") : "")
                     onLinkActivated: { vars.url=link; linkContextMenu.open()}
-                    wrapMode: Text.Wrap
+                    wrapMode: Text.WordWrap
                     font.pixelSize: (showContactStatusText ? 16 : 0)
                     color: vars.textColor
             }

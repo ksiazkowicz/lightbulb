@@ -181,3 +181,13 @@ int XmppConnectivity::getStatusByIndex(int index) {
     return clients->value(index)->getStatus();
   else return 0;
 }
+
+// stub stub stub stub stub hardcoded doesnt matter lol
+QString XmppConnectivity::getCurrentAccountName() {
+  if (selectedClient != 0) {
+    if (selectedClient->getHost() == "talk.google.com") return "Hangouts";
+    if (selectedClient->getHost() == "chat.facebook.com") return "Facebook Chat";
+    if (selectedClient->getHost() != "") return selectedClient->getHost();
+    return selectedClient->getMyJid();
+  } return "No account available";
+}
