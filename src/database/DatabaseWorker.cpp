@@ -51,7 +51,10 @@ DatabaseWorker::DatabaseWorker(QObject *parent) :
 void DatabaseWorker::executeQuery(QStringList& query) {
     // Pass the parameters to DatabaseManager
     database->parameters.clear();
-    for (int j=1;j<query.count();j++) database->parameters.append(query.at(j));
+    for (int j=1;j<query.count();j++) {
+        QString parameter = query.at(j);
+        database->parameters.append(parameter.replace("'","''"));
+    }
 
     // Used for debugging. I like debugging. Debugging is nice.
 

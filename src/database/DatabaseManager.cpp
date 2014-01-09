@@ -108,6 +108,7 @@ bool DatabaseManager::insertMessage()
     QSqlQuery query(db);
     query.exec("INSERT INTO messages (id_account, bareJid, msgText, dateTime, isMine) "
                "VALUES (" + params.at(0) + ", '" + params.at(1) + "', '" + params.at(2) + "', '" + params.at(3) + "', " + params.at(4) + ")");
+    if (query.lastError().text() != " ") qDebug() << query.lastError();
     emit finished();
     emit messagesChanged();
     return ret;
