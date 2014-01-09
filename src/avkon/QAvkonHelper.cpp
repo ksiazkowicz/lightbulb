@@ -38,6 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <apgtask.h> // TApaTaskList, TApaTask
 #include <QUrl>
 #include <QProcess>
+#include <QTimer>
 
 #include <coreapplicationuisdomainpskeys.h> //keys for RProperty
 #include <e32property.h> //http://katastrophos.net/symbian-dev/GUID-C6E5F800-0637-419E-8FE5-1EBB40E725AA/GUID-C4776034-D190-3FC4-AF45-C7F195093AC3.html
@@ -68,6 +69,7 @@ QAvkonHelper::QAvkonHelper(QDeclarativeView *view, QObject *parent) :
     notifyLight = CHWRMLight::NewL();
     chatIconStatus = true;
     hideChatIcon();
+    lastPopup = "";
 }
 
 void QAvkonHelper::showChatIcon() {
@@ -93,9 +95,12 @@ void QAvkonHelper::showPopup(QString title, QString message, bool goToApp) {
     TPtrC16 sTitle(reinterpret_cast<const TUint16*>(title.utf16()));
     TPtrC16 sMessage(reinterpret_cast<const TUint16*>(message.utf16()));
 
+    if (lastPopup != title + ";" + message) lastPopup = title + ";" + message; else return;
+
     if (goToApp) {
         TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(sTitle, sMessage,KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL, {0xE22AC278}));
     } else TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(sTitle, sMessage,KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL));
+    QTimer::singleShot(100,this,SLOT(cleanLastMsg()));
 }
 
 void QAvkonHelper::notificationBlink(int device) {

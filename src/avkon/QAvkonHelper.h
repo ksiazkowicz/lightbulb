@@ -59,12 +59,14 @@ private:
     void ShowNoteL(const TDesC& aMessage);
     void ShowErrorL(const TDesC& aMessage);
     QDeclarativeView *m_view;
+    QString lastPopup;
 
     bool chatIconStatus;
     
 signals:
     
 public slots:
+    void cleanLastMsg() { lastPopup=""; }
     
 };
 
