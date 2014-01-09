@@ -100,7 +100,7 @@ void QAvkonHelper::showPopup(QString title, QString message, bool goToApp) {
     if (goToApp) {
         TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(sTitle, sMessage,KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL, {0xE22AC278}));
     } else TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(sTitle, sMessage,KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL));
-    QTimer::singleShot(100,this,SLOT(cleanLastMsg()));
+    QTimer::singleShot(2000,this,SLOT(cleanLastMsg()));
 }
 
 void QAvkonHelper::notificationBlink(int device) {
@@ -214,6 +214,7 @@ void QAvkonHelper::restartApp() {
     {
         QProcess::startDetached(QApplication::applicationFilePath());
         exit(12);
+        hideChatIcon();
     }
 }
 
