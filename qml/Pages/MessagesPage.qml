@@ -36,12 +36,9 @@ Page {
     Component {
         id: componentWrapperItem
 
-        Rectangle {
+        Item {
             id: wrapper
-            color: "transparent"
-            clip: true
-
-            height: triangleTop.height + bubbleTop.height/2 + time.height + message.height + bubbleBottom.height/2 + triangleBottom.height
+            height: triangleTop.height + bubbleTop.height/2 + time.height + message.height + bubbleBottom.height/2 + triangleBottom.height - 10
 
             anchors.horizontalCenter: parent.horizontalCenter
             Image {
@@ -87,12 +84,24 @@ Page {
             }
             Rectangle {
                 id: bubbleCenter
-                anchors.fill: parent
-                anchors.rightMargin: isMine == true ? 64 : 6
-                anchors.leftMargin: isMine == true ? 6 : 64
-                anchors.topMargin: triangleTop.height+10
-                anchors.bottomMargin: triangleBottom.height+10
+                anchors { fill: parent; rightMargin: isMine == true ? 64 : 6; leftMargin: isMine == true ? 6 : 64; topMargin: triangleTop.height+10; bottomMargin: triangleBottom.height+10 }
                 color: isMine == true ? "#56565b" : "#e6e6eb"
+                Text {
+                      id: message
+                      anchors { top: parent.top; left: parent.left; leftMargin: 5; topMargin: -5; right: parent.right; rightMargin: 5 }
+                      text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (vars.contactName === "" ? xmppConnectivity.chatJid : vars.contactName) ) + ":</font> " + Emotion.parseEmoticons(msgText)
+                      color: isMine == true ? "white" : "black"
+                      font.pixelSize: 16
+                      wrapMode: Text.Wrap
+                      onLinkActivated: { vars.url=link; linkContextMenu.open()}
+                }
+                Text {
+                      id: time
+                      anchors { top: message.bottom; right: parent.right; rightMargin: 5 }
+                      text: dateTime.substr(0,8) == Qt.formatDateTime(new Date(), "dd-MM-yy") ? dateTime.substr(9,5) : dateTime
+                      font.pixelSize: 16
+                      color: "#999999"
+                }
             }
 
             Image {
@@ -104,29 +113,6 @@ Page {
                 width: 13
                 height: isMine == true ? 13 : 0
             }
-            Text {
-                  id: message
-                  anchors.top: bubbleTop.bottom
-                  anchors.rightMargin: isMine == true ? 74 : 16
-                  anchors.leftMargin: isMine == true ? 16 : 74
-                  anchors.topMargin: -10
-                  anchors.left: parent.left
-                  anchors.right: parent.right
-                  text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (vars.contactName === "" ? xmppConnectivity.chatJid : vars.contactName) ) + ":</font> " + Emotion.parseEmoticons(msgText)
-                  color: isMine == true ? "white" : "black"
-                  font.pixelSize: 16
-                  wrapMode: Text.Wrap
-                  onLinkActivated: { vars.url=link; linkContextMenu.open()}
-            }
-            Text {
-                  id: time
-                  anchors.top: message.bottom;
-                  anchors.right: parent.right; anchors.rightMargin: isMine == true ? 80 : 16
-                  text: dateTime.substr(0,8) == Qt.formatDateTime(new Date(), "dd-MM-yy") ? dateTime.substr(9,5) : dateTime
-                  font.pixelSize: 16
-                  color: "#999999"
-            }
-
             width: listViewMessages.width - 10
         }
     } //Component

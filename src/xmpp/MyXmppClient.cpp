@@ -75,9 +75,16 @@ MyXmppClient::MyXmppClient() : QObject(0) {
     this->initXmppClient();
 
     rosterManager = 0;
+    cacheIM = new MyCache();
+
     cachedRoster = new RosterListModel( this );
 
     flSetPresenceWithoutAck = true;
+
+    vCardManager = &xmppClient->vCardManager();
+    QObject::connect( vCardManager, SIGNAL(vCardReceived(const QXmppVCardIq &)),
+                      this, SLOT(initVCard(const QXmppVCardIq &)),
+                      Qt::UniqueConnection  );
 }
 
 MyXmppClient::~MyXmppClient() {
@@ -141,18 +148,11 @@ void MyXmppClient::connectToXmppServer() {
 void MyXmppClient::disconnectFromXmppServer() { xmppClient->disconnectFromServer(); }
 
 void MyXmppClient::initRoster() {
-    qDebug() << "MyXmppClient::initRoster() has been called";
+    qDebug() << "MyXmppClient::initRoster() called";
     if( ! rosterManager->isRosterReceived() ) {
-        qDebug() << "MyXmppClient::initRoster(): roster has not received yet";
+        qDebug() << "MyXmppClient::initRoster(): roster not available yet";
         return;
     }
-
-    /*if( !vCardManager ) {
-        vCardManager = &xmppClient->vCardManager();
-        QObject::connect( vCardManager, SIGNAL(vCardReceived(const QXmppVCardIq &)),
-                          this, SLOT(initVCard(const QXmppVCardIq &)),
-                          Qt::UniqueConnection  );
-    }*/
 
     cachedRoster->takeRows(0, cachedRoster->count()); // cleans the cache
 
@@ -162,24 +162,16 @@ void MyXmppClient::initRoster() {
     {
         QString bareJid = listBareJids.at(j);
 
-        //cacheIM->addCacheJid( bareJid );
+        cacheIM->addCacheJid( bareJid );
 
         QXmppRosterIq::Item itemRoster = rosterManager->getRosterEntry( bareJid );
         QString name = itemRoster.name();
-        //vCardData vCdata = cacheIM->getVCard( bareJid );
+        vCardData vCdata = cacheIM->getVCard( bareJid );
 
-        /*if ( vCdata.isEmpty() )
-        {
-            vCardManager->requestVCard( bareJid );
+        if ( vCdata.isEmpty() ) {
             qDebug() << "MyXmppClient::initRoster():" << bareJid << "has no VCard. Requesting.";
+            vCardManager->requestVCard( bareJid );
         }
-        else
-        {
-            QString nickName = vCdata.nickName;
-            if( (!nickName.isEmpty()) && (!nickName.isNull()) && (itemRoster.name().isEmpty()) ) {
-                name =  nickName;
-            }
-        }*/
 
         RosterItemModel *itemModel = new RosterItemModel( );
         itemModel->setPresence( this->getPicPresence( QXmppPresence::Unavailable ) );
@@ -262,17 +254,16 @@ QString MyXmppClient::getTextStatus(const QString &textStatus, const QXmppPresen
 /* SLOT: it will be called when the vCardReceived signal will be received */
 void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
 {
-    /*QString bareJid = vCard.from();
-    //qDebug() << "## initVCard: " << bareJid;
+    QString bareJid = vCard.from();
 
     RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid );
 
-    //vCardData dataVCard;
+    vCardData dataVCard;
 
-    if( true )
+    if( item != 0 )
     {
         /* set nickname */
-        /*QXmppRosterIq::Item itemRoster = rosterManager->getRosterEntry( bareJid );
+        QXmppRosterIq::Item itemRoster = rosterManager->getRosterEntry( bareJid );
         QString nickName = vCard.nickName();
         if( (!nickName.isEmpty()) && (!nickName.isNull()) && (itemRoster.name().isEmpty()) ) {
             qDebug() << "MyXmppClient::initPresence: updating name for"<< bareJid;
@@ -280,14 +271,13 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
         }
 
         /* avatar */
-        /*bool isAvatarCreated = true;
+        bool isAvatarCreated = true;
         QString avatarFile = cacheIM->getAvatarCache( bareJid );
-        if( avatarFile.isEmpty() || (flVCardRequest != "") ) {
+        if( (avatarFile.isEmpty() || avatarFile == "qrc:/avatar" || (flVCardRequest != "")) && vCard.photo() != "" ) {
             isAvatarCreated =  cacheIM->setAvatarCache( bareJid, vCard.photo() );
-            avatarFile = cacheIM->getAvatarCache( bareJid );
-        }*/
+        }
 
-        /*dataVCard.nickName = nickName;
+        dataVCard.nickName = nickName;
         dataVCard.firstName = vCard.firstName();
         dataVCard.fullName = vCard.fullName();;
         dataVCard.middleName = vCard.middleName();
@@ -310,8 +300,8 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
             emit vCardChanged();
         }
 
-        //cacheIM->setVCard( bareJid, dataVCard );
-    }*/
+        cacheIM->setVCard( bareJid, dataVCard );
+    }
 
 }
 

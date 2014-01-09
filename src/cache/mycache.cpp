@@ -6,8 +6,8 @@
 
 MyCache::MyCache(QObject *parent) : StoreVCard(parent)
 {
-    pathMeegIMHome = QDir::homePath() + "\\" + ".config" + "\\" + "Lightbulb";
-    pathMeegIMCache = pathMeegIMHome + "\\" + QString("cache");
+    pathMeegIMHome = QDir::homePath() + "/" + ".config" + "/" + "Lightbulb";
+    pathMeegIMCache = pathMeegIMHome + "/" + QString("cache");
 
     this->setCachePath( pathMeegIMCache );
 }
@@ -64,26 +64,21 @@ bool MyCache::setAvatarCache(const QString &jid, const QByteArray &avatar) const
     QImageReader imageReader(&buffer);
     QImage avatarImage = imageReader.read();
 
-    QString avatarJid = pathMeegIMCache + "\\" + jid + "\\" + QString("avatar.png");
+    QString avatarJid = pathMeegIMCache + "/" + jid + "/" + QString("avatar.png");
 
-    if( avatarImage.save(avatarJid) ) {
+    if (avatarImage.size() != QSize(0,0)) {
+      if( avatarImage.save(avatarJid) ) {
+        qDebug() << "avatar saved properly to" << avatarJid;
         return true;
+      } else qDebug() << "brick T_T occured while trying to save avatar to" << avatarJid;
     }
-
     return false;
 }
 
 QString MyCache::getAvatarCache(const QString &jid) const
 {
-    QString avatarJid = pathMeegIMCache + "\\" + jid + "\\" + QString("avatar.png");
-    if( QFile::exists(avatarJid) ) return avatarJid;
+    QString avatarJid = pathMeegIMCache + "/" + jid + "/" + QString("avatar.png");
+    if( QFile::exists(avatarJid) ) return "file:///" + avatarJid;
 
     return "qrc:/avatar";
 }
-
-QString MyCache::getContactCache(const QString &jid) const
-{
-    QString contactJid = pathMeegIMHome + "\\" + QString("archive") + "\\" + jid;
-    return contactJid;
-}
-

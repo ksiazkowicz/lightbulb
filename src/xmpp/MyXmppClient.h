@@ -46,6 +46,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "RosterListModel.h"
 
 #include "QMLVCard.h"
+#include "MyCache.h"
 
 typedef QMap<QString, QVariant> Map;
 
@@ -81,6 +82,7 @@ class MyXmppClient : public QObject
 
     QMLVCard * qmlVCard;
     QString flVCardRequest;
+    MyCache* cacheIM;
 
     int unreadCount;
 

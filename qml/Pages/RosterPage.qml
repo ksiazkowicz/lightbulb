@@ -75,7 +75,7 @@ Page {
 
             Image {
                 id: imgPresence
-                source: rosterLayoutAvatar ? xmppConnectivity.client.getAvatarByJid(jid) : presence
+                source: rosterLayoutAvatar ? xmppConnectivity.getAvatarByJid(jid) : presence
                 sourceSize.height: rosterItemHeight-4
                 sourceSize.width: rosterItemHeight-4
                 anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }

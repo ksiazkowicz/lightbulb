@@ -71,8 +71,6 @@ public:
     Q_INVOKABLE bool cleanCache();
     Q_INVOKABLE bool resetSettings();
 
-    Q_INVOKABLE QString getAvatarByJid(QString bareJid) { return lCache->getAvatarCache(bareJid); }
-
 signals:
     void accountChanged();
     void rosterChanged();
@@ -95,6 +93,8 @@ public slots:
     }
     void updateMessages() { dbWorker->updateMessages(currentClient,currentJid,page); }
     void insertMessage(int m_accountId,QString bareJid,QString body,QString date,int mine);
+
+    Q_INVOKABLE QString getAvatarByJid(QString bareJid) { return lCache->getAvatarCache(bareJid); }
 
     // handling chats list
     void chatOpened(int accountId,QString bareJid);
