@@ -172,16 +172,22 @@ void MyXmppClient::initRoster() {
             qDebug() << "MyXmppClient::initRoster():" << bareJid << "has no VCard. Requesting.";
             vCardManager->requestVCard( bareJid );
         }
-
-        RosterItemModel *itemModel = new RosterItemModel( );
-        itemModel->setPresence( this->getPicPresence( QXmppPresence::Unavailable ) );
-        itemModel->setContactName( name );
-        itemModel->setJid( bareJid );
-        itemModel->setUnreadMsg( 0 );
-        itemModel->setStatusText( "");
-        cachedRoster->append(itemModel);
-        itemModel = 0;
-        delete itemModel;
+        RosterItemModel *itemExists = (RosterItemModel*)cachedRoster->find(bareJid);
+        if (itemExists == 0) {
+          RosterItemModel *itemModel = new RosterItemModel( );
+          itemModel->setPresence( this->getPicPresence( QXmppPresence::Unavailable ) );
+          itemModel->setContactName( name );
+          itemModel->setJid( bareJid );
+          itemModel->setUnreadMsg( 0 );
+          itemModel->setStatusText( "");
+          cachedRoster->append(itemModel);
+          itemModel = 0;
+          delete itemModel;
+        } else if (itemExists->name() != name) {
+          itemExists->setContactName(name);
+          emit contactRenamed(bareJid,name);
+        }
+        itemExists = 0; delete itemExists;
     }
     emit rosterChanged();
 }
@@ -451,12 +457,18 @@ void MyXmppClient::itemAdded(const QString &bareJid ) {
     qDebug() << "MyXmppClient::itemAdded(): " << bareJid;
     QStringList resourcesList = rosterManager->getResources( bareJid );
 
-    RosterItemModel *itemModel = new RosterItemModel( );
-    itemModel->setPresence( this->getPicPresence(QXmppPresence::Unavailable) );
-    itemModel->setContactName("");
-    itemModel->setJid( bareJid );
-    itemModel->setUnreadMsg( 0 );
-    cachedRoster->append( itemModel );
+    RosterItemModel *itemExists = (RosterItemModel*)cachedRoster->find(bareJid);
+
+    if (itemExists == 0) {
+      RosterItemModel *itemModel = new RosterItemModel( );
+      itemModel->setPresence( this->getPicPresence(QXmppPresence::Unavailable) );
+      itemModel->setContactName("");
+      itemModel->setJid( bareJid );
+      itemModel->setUnreadMsg( 0 );
+      cachedRoster->append( itemModel );
+      itemModel = 0; delete itemModel;
+    };
+    itemExists = 0; delete itemExists;
 
     for( int L = 0; L<resourcesList.length(); L++ ) {
         QString resource = resourcesList.at(L);
@@ -470,14 +482,12 @@ void MyXmppClient::itemChanged(const QString &bareJid ) {
     qDebug() << "MyXmppClient::itemChanged(): " << bareJid;
 
     QXmppRosterIq::Item rosterEntry = rosterManager->getRosterEntry( bareJid );
-
     if (rosterEntry.name() != "") {
         RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid );
-        if( item ) item->setContactName( rosterEntry.name() );
+        if( item != 0 ) item->setContactName( rosterEntry.name() );
         emit contactRenamed(bareJid,rosterEntry.name());
         item = 0; delete item;
     }
-
 }
 
 

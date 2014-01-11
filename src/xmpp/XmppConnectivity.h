@@ -121,7 +121,7 @@ public slots:
     Q_INVOKABLE int getStatusByIndex(int index);
     void renameChatContact(QString bareJid,QString name) {
       ChatsItemModel* item = (ChatsItemModel*)chats->find(bareJid);
-      item->setContactName(name);
+      if (item != 0) item->setContactName(name);
       item = 0; delete item;
     }
 
