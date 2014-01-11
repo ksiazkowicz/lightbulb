@@ -37,7 +37,7 @@ Page {
         anchors { top: programName.bottom; horizontalCenterOffset: 2; horizontalCenter: parent.horizontalCenter; leftMargin: 10; rightMargin: 10; left: parent.left; right: parent.right }
         color: vars.textColor
         wrapMode: Text.Wrap
-        text: "Maciej Janiszewski (pisarzk@gmail.com) with help from Fabian Hüllmantel and Paul Wallace\nbased on MeegIM by Anatoliy Kozlov"
+        text: "No updates available"
         font.pixelSize: platformStyle.fontSizeSmall
         horizontalAlignment: Text.AlignHCenter
     }
@@ -75,13 +75,20 @@ Page {
         }
     }
 
-    Button {
+    Row {
         anchors { horizontalCenter: parent.horizontalCenter; top: niceInfo.top; topMargin: 64 }
+        spacing: platformStyle.paddingMedium
+    Button {
+        text: "Contributors"
+        onClicked: dialog.create("qrc:/dialogs/Contributors")
+    }
+    Button {
         text: "Donate"
         onClicked: {
             vars.url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SA8DZYA7PUCCU";
             linkContextMenu.open()
         }
+    }
     }
 }
 
