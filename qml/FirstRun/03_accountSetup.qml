@@ -169,7 +169,7 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-previous_inverse" : "toolbar-previous"
             onClicked: {
-                globalUnreadCount++;
+                vars.globalUnreadCount++;
                 pageStack.pop()
             }
         }
@@ -189,10 +189,7 @@ Page {
                 }
 
                 settings.setAccount( tiJid.text, tiPass.text, true, "Lightbulb", tiHost.text, tiPort.text, true )
-
                 settings.initListOfAccounts()
-                main.initAccount()
-
                 pageStack.push("qrc:/FirstRun/04")
             }
         }

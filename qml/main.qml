@@ -8,6 +8,7 @@ PageStackWindow {
     id: main
     property int splitscreenY:       0
     platformInverted:                settings.gBool("ui","invertPlatform")
+    platformSoftwareInputPanelEnabled: true
 
     Globals { id: vars }
 

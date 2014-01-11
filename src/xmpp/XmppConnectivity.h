@@ -45,6 +45,7 @@ class XmppConnectivity : public QObject
     Q_PROPERTY(RosterListModel* roster READ getRoster NOTIFY rosterChanged)
     Q_PROPERTY(ChatsListModel* chats READ getChats NOTIFY chatsChanged)
     Q_PROPERTY(int page READ getPage WRITE gotoPage NOTIFY pageChanged)
+    Q_PROPERTY(int messagesCount READ getMessagesCount NOTIFY pageChanged)
     Q_PROPERTY(SqlQueryModel* messagesByPage READ getSqlMessagesByPage NOTIFY pageChanged)
     Q_PROPERTY(SqlQueryModel* messages READ getSqlMessagesByPage NOTIFY sqlMessagesChanged)
     Q_PROPERTY(MsgListModel* cachedMessages READ getMessages NOTIFY sqlMessagesChanged)
@@ -138,6 +139,8 @@ private:
     QString getCurrentAccountName();
 
     SqlQueryModel* getSqlMessagesByPage() { return dbWorker->getSqlMessages(); }
+    int getMessagesCount() { return dbWorker->getSqlMessages()->rowCount(); } // it wont work, you need a way to get a number of all
+                                                                          // messages, look at the pre-multiple account support code
     MsgListModel* getMessages() {
       return cachedMessages->value(currentJid);
     }

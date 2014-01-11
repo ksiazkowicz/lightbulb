@@ -48,12 +48,14 @@ Page {
             id: button
             anchors { left: parent.left; leftMargin: platformStyle.paddingSmall; verticalCenter: parent.verticalCenter }
             iconSource: "qrc:/presence/" + notify.getStatusName()
-            onClicked: dialog.create("qrc:/dialogs/Status/Change")
+            onClicked: {
+                if (settings.accounts.count() > 0) settings.dialog.create("qrc:/dialogs/Status/Change"); else avkon.displayGlobalNote("You have to set-up an account first.",true)
+            }
         }
         Text {
             id: titleText
             anchors { verticalCenter: parent.verticalCenter; left: button.right; leftMargin: platformStyle.paddingSmall  }
-            text: xmppConnectivity.currentAccountName
+            text: xmppConnectivity.currentAccountName == "" ? "N/A" : xmppConnectivity.currentAccountName
             color: "white"
             font.pixelSize: 20
         }
@@ -285,7 +287,7 @@ Page {
         id: rosterSearch
         height: 0
         width: parent.width
-        anchors.bottom: splitViewInput.top
+        anchors.bottom: parent.bottom
         placeholderText: qsTr("Tap to write")
 
         Behavior on height { SmoothedAnimation { velocity: 200 } }
@@ -398,7 +400,7 @@ Page {
                 color: vars.textColor
                 anchors { top: sadface.bottom; horizontalCenter: parent.horizontalCenter; topMargin: 5 }
                 visible: parent.visible
-                text: "You're offline"
+                text: settings.accounts.count() > 0 ? "You're offline" : "No accounts\navailable"
                 font.pixelSize: 32
             }
             Text {
