@@ -31,6 +31,7 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
     selectedClient = new MyXmppClient();
     currentClient = -1;
     clients = new QMap<int,MyXmppClient*>;
+    cachedMessages = new QMap<QString,MsgListModel*>;
     lSettings = new Settings();
     lCache = new MyCache();
     lCache->createHomeDir();
@@ -124,6 +125,9 @@ bool XmppConnectivity::resetSettings() { return QFile::remove(lSettings->confFil
 
 // handling stuff from MyXmppClient
 void XmppConnectivity::insertMessage(int m_accountId,QString bareJid,QString body,QString date,int mine) {
+    if (!cachedMessages->contains(bareJid)) cachedMessages->insert(bareJid,new MsgListModel());
+    MsgItemModel* message = new MsgItemModel(body,date,mine);
+    cachedMessages->value(bareJid)->append(message);
     dbWorker->executeQuery(QStringList() << "insertMessage" << QString::number(m_accountId) << bareJid << body << date << QString::number(mine));
     if (mine == 0) emit notifyMsgReceived(clients->value(m_accountId)->getPropertyByJid(bareJid,"name"),bareJid,body.left(30));
 }
@@ -136,6 +140,7 @@ void XmppConnectivity::chatOpened(int accountId, QString bareJid) {
     qDebug() << "XmppConnectivity::chatOpened(): appending"<< qPrintable(bareJid) << "from account" << accountId << "to chats list.";
     emit chatsChanged();
   }
+  if (!cachedMessages->contains(bareJid)) cachedMessages->insert(bareJid,new MsgListModel());
 }
 
 void XmppConnectivity::chatClosed(QString bareJid) { //this poorly written piece of shit should take care of account id one day

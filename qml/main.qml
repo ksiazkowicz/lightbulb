@@ -15,8 +15,9 @@ PageStackWindow {
         xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.chatJid )
         if (settings.gBool("behavior","enableHsWidget")) notify.updateNotifiers()
 
-        if (pageStack.depth > 1) pageStack.replace("qrc:/pages/Messages")
-        else pageStack.push("qrc:/pages/Messages")
+        if (pageStack.depth > 1) {
+            if (!vars.isChatInProgress) pageStack.replace("qrc:/pages/Messages"); else xmppConnectivity.emitQmlChat()
+        } else pageStack.push("qrc:/pages/Messages")
     }
 
     Timer {

@@ -34,6 +34,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Settings.h"
 
 #include "ChatsListModel.h"
+#include "MsgListModel.h"
+#include "MsgItemModel.h"
 
 class XmppConnectivity : public QObject
 {
@@ -45,6 +47,7 @@ class XmppConnectivity : public QObject
     Q_PROPERTY(int page READ getPage WRITE gotoPage NOTIFY pageChanged)
     Q_PROPERTY(SqlQueryModel* messagesByPage READ getSqlMessagesByPage NOTIFY pageChanged)
     Q_PROPERTY(SqlQueryModel* messages READ getSqlMessagesByPage NOTIFY sqlMessagesChanged)
+    Q_PROPERTY(MsgListModel* cachedMessages READ getMessages NOTIFY sqlMessagesChanged)
     Q_PROPERTY(QString chatJid READ getChatJid WRITE setChatJid NOTIFY chatJidChanged)
     Q_PROPERTY(int currentAccount READ getCurrentAccount WRITE changeAccount NOTIFY accountChanged)
     Q_PROPERTY(QString currentAccountName READ getCurrentAccountName NOTIFY accountChanged)
@@ -82,6 +85,8 @@ signals:
     void chatsChanged();
 
     void notifyMsgReceived(QString name,QString jid,QString body);
+
+    void qmlChatChanged();
     
 public slots:
     void changeRoster() {
@@ -103,6 +108,11 @@ public slots:
     Q_INVOKABLE QString getPreservedMsg(QString jid);
     Q_INVOKABLE void preserveMsg(QString jid,QString message);
 
+    Q_INVOKABLE void emitQmlChat() {
+      emit qmlChatChanged();
+      emit sqlMessagesChanged();
+    }
+
     // handling clients
     void accountAdded();
     void accountRemoved(QString bareJid);
@@ -115,12 +125,17 @@ private:
     MyXmppClient* selectedClient;
     MyXmppClient* getClient() { return selectedClient; }
 
+    QMap<QString,MsgListModel*> *cachedMessages;
+
     RosterListModel* roster;
     RosterListModel* getRoster() { return roster; }
 
     QString getCurrentAccountName();
 
     SqlQueryModel* getSqlMessagesByPage() { return dbWorker->getSqlMessages(); }
+    MsgListModel* getMessages() {
+      return cachedMessages->value(currentJid);
+    }
 
     ChatsListModel* chats;
     ChatsListModel* getChats() { return chats; }

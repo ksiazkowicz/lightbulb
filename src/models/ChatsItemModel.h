@@ -108,13 +108,6 @@ public:
       inline QString jid() const { return contactJid; }
       inline QString msg() const { return chatMsg; }
 
-      void copy( const ChatsItemModel* item ) {
-          contactName = item->name();
-          contactJid = item->jid();
-          contactAccountID = item->accountID();
-          chatMsg = item->msg();
-      }
-
     private:
       int contactAccountID;
       QString contactName;

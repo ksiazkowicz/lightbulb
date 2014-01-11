@@ -38,7 +38,7 @@ Page {
 
         Item {
             id: wrapper
-            height: triangleTop.height + bubbleTop.height/2 + time.height + message.height + bubbleBottom.height/2 + triangleBottom.height - 10
+            height: triangleTop.height + bubbleTop.height/2 + time.height + message.height + bubbleBottom.height/2 + triangleBottom.height
 
             anchors.horizontalCenter: parent.horizontalCenter
             Image {
@@ -88,7 +88,7 @@ Page {
                 color: isMine == true ? "#56565b" : "#e6e6eb"
                 Text {
                       id: message
-                      anchors { top: parent.top; left: parent.left; leftMargin: 5; topMargin: -5; right: parent.right; rightMargin: 5 }
+                      anchors { top: parent.top; left: parent.left; leftMargin: 5; right: parent.right; rightMargin: 5 }
                       text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (vars.contactName === "" ? xmppConnectivity.chatJid : vars.contactName) ) + ":</font> " + Emotion.parseEmoticons(msgText)
                       color: isMine == true ? "white" : "black"
                       font.pixelSize: 16
@@ -132,6 +132,26 @@ Page {
     Connections {
         target: xmppConnectivity
         onNotifyMsgReceived: if( jid == xmppConnectivity.chatJid ) messagesPage.resourceJid = xmppConnectivity.client.resourceLastMsg
+        onQmlChatChanged: {
+            console.log( "qml chat jid switched to " +xmppConnectivity.chatJid )
+            xmppConnectivity.client.openChat( xmppConnectivity.chatJid )
+
+            statusBarText.text = vars.contactName
+
+            if( xmppConnectivity.client.bareJidLastMsg == xmppConnectivity.chatJid ) messagesPage.resourceJid = xmppConnectivity.client.resourceLastMsg
+
+            if( messagesPage.resourceJid == "" ) listModelResources.append( {resource:qsTr("(by default)"), checked:true} )
+            else listModelResources.append( {resource:qsTr("(by default)"), checked:false} )
+
+            if (notify.getStatusName() != "Offline") {
+                var listResources = xmppConnectivity.client.getResourcesByJid(xmppConnectivity.chatJid)
+                for( var z=0; z<listResources.length; z++ ) {
+                    if ( listResources[z] == "" ) { continue; }
+                    if ( messagesPage.resourceJid ==listResources[z] ) listModelResources.append( {resource:listResources[z], checked:true} )
+                    else listModelResources.append( {resource:listResources[z], checked:false} )
+               }
+            }
+        }
     }
 
     /* --------------------( Messages view )-------------------- */
@@ -149,7 +169,7 @@ Page {
             interactive: false
             anchors { fill: parent }
             clip: true
-            model: xmppConnectivity.messages
+            model: xmppConnectivity.cachedMessages
             delegate: componentWrapperItem
             spacing: 5
             onHeightChanged: flickable.contentY = flickable.contentHeight;

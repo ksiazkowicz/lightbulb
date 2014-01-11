@@ -97,7 +97,9 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/models/RosterListModel.h \
     src/database/SkinSelectorHandler.h \
     src/models/ChatsListModel.h \
-    src/models/ChatsItemModel.h
+    src/models/ChatsItemModel.h \
+    src/models/MsgListModel.h \
+    src/models/MsgItemModel.h
 
 OTHER_FILES += README.md \
     qml/Dialogs/*.* \
