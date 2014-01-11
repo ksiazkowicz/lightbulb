@@ -118,6 +118,11 @@ public slots:
     void accountRemoved(QString bareJid);
     void accountModified(QString bareJid);
     Q_INVOKABLE int getStatusByIndex(int index);
+    void renameChatContact(QString bareJid,QString name) {
+      ChatsItemModel* item = (ChatsItemModel*)chats->find(bareJid);
+      item->setContactName(name);
+      item = 0; delete item;
+    }
 
 private:
     int currentClient;

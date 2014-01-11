@@ -309,12 +309,15 @@ signals:
     // related to XmppConnectivity class
     void updateContact(int m_accountId,QString bareJid,QString property,int count);
     void insertMessage(int m_accountId,QString bareJid,QString body,QString date,int mine);
+    void contactRenamed(QString jid,QString name);
 
 public slots:
     void clientStateChanged( QXmppClient::State state );
 
     Q_INVOKABLE void openChat( QString jid ) {
-        if (!chats.contains(jid)) chats.append(jid);
+        if (!chats.contains(jid)) {
+            chats.append(jid);
+        }
 
         if (latestChats.contains(jid)) {
             latestChats.removeAt(latestChats.indexOf(jid));

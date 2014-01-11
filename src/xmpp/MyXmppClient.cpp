@@ -154,7 +154,7 @@ void MyXmppClient::initRoster() {
         return;
     }
 
-    cachedRoster->takeRows(0, cachedRoster->count()); // cleans the cache
+    cachedRoster->cleanList();
 
     QStringList listBareJids = rosterManager->getRosterBareJids();
 
@@ -180,6 +180,8 @@ void MyXmppClient::initRoster() {
         itemModel->setUnreadMsg( 0 );
         itemModel->setStatusText( "");
         cachedRoster->append(itemModel);
+        itemModel = 0;
+        delete itemModel;
     }
     emit rosterChanged();
 }
@@ -224,6 +226,8 @@ void MyXmppClient::initPresence(const QString& bareJid, const QString& resource)
             emit rosterChanged();
         }
     }
+    item = 0; itemExists = 0;
+    delete item; delete itemExists;
 }
 
 QString MyXmppClient::getPicPresence( const QXmppPresence &presence ) const
@@ -470,6 +474,8 @@ void MyXmppClient::itemChanged(const QString &bareJid ) {
     if (rosterEntry.name() != "") {
         RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid );
         if( item ) item->setContactName( rosterEntry.name() );
+        emit contactRenamed(bareJid,rosterEntry.name());
+        item = 0; delete item;
     }
 
 }
@@ -533,7 +539,18 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         this->openChat( bareJid_from );
 
         RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid_from );
-        if( item != 0 ) { int cnt = item->unreadMsg(); item->setUnreadMsg( ++cnt ); }
+        if( item != 0 ) { int cnt = item->unreadMsg(); item->setUnreadMsg( ++cnt ); } else {
+          RosterItemModel *itemModel = new RosterItemModel( );
+          itemModel->setPresence( this->getPicPresence( QXmppPresence::Unavailable ) );
+          itemModel->setContactName( bareJid_from );
+          itemModel->setJid( bareJid_from );
+          itemModel->setUnreadMsg( 1 );
+          itemModel->setStatusText( "");
+          cachedRoster->append(itemModel);
+          itemModel = 0;
+          delete itemModel;
+        }
+        item = 0; delete item;
 
         QString body = xmppMsg.body();
         body = body.replace(">", "&gt;");  //fix for > stuff

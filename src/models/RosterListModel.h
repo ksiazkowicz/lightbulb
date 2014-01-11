@@ -41,6 +41,15 @@ public:
     Q_INVOKABLE int count() { return this->rowCount(); }
 
     Q_INVOKABLE void clearList() { this->clear(); }
+    void cleanList() {
+      RosterItemModel* item;
+      for (int i=0; i<this->rowCount();i++) {
+          item = (RosterItemModel*)this->getElementByID(i);
+          if (item->unreadMsg() == 0) this->remove(i);
+          item = 0;
+        }
+      delete item;
+    }
 
 signals:
     void rosterChanged();
