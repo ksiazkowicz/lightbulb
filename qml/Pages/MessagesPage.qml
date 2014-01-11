@@ -181,9 +181,7 @@ Page {
     /*--------------------( Text input field )--------------------*/
     TextArea {
               id: txtMessage
-              anchors.bottom: splitViewInput.top
-              anchors.left: parent.left;
-              anchors.right: parent.right;
+              anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
               placeholderText: qsTr( "Tap here to enter message..." )
 
               onTextChanged: {

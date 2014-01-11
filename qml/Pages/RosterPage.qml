@@ -49,7 +49,7 @@ Page {
             anchors { left: parent.left; leftMargin: platformStyle.paddingSmall; verticalCenter: parent.verticalCenter }
             iconSource: "qrc:/presence/" + notify.getStatusName()
             onClicked: {
-                if (settings.accounts.count() > 0) settings.dialog.create("qrc:/dialogs/Status/Change"); else avkon.displayGlobalNote("You have to set-up an account first.",true)
+                if (settings.accounts.count() > 0) dialog.create("qrc:/dialogs/Status/Change"); else avkon.displayGlobalNote("You have to set-up an account first.",true)
             }
         }
         Text {
