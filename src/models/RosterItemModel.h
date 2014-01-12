@@ -41,7 +41,8 @@ public:
         roleResource,
         rolePresence,
         roleStatusText,
-        roleUnreadMsg
+        roleUnreadMsg,
+        roleAvatar
       };
 
 public:
@@ -52,6 +53,7 @@ public:
           contactPresence = "";
           contactStatusText = "";
           contactUnreadMsg = 0;
+          contactAvatar = "qrc:/avatar";
       }
       explicit RosterItemModel( const QString &_contactName,
                                        const QString &_contactJid,
@@ -83,6 +85,8 @@ public:
           return presence();
         case roleUnreadMsg:
           return unreadMsg();
+        case roleAvatar:
+          return avatar();
         default:
           return QVariant();
         }
@@ -95,6 +99,7 @@ public:
           names[rolePresence] = "presence";
           names[roleStatusText] = "statusText";
           names[roleUnreadMsg] = "unreadMsg";
+          names[roleAvatar] = "avatar";
           return names;
         }
 
@@ -143,12 +148,20 @@ public:
           }
       }
 
+      void setAvatar( const QString &_contactAvatar )  {
+          if(contactAvatar != _contactAvatar) {
+            contactAvatar = _contactAvatar;
+            emit dataChanged();
+          }
+      }
+
       inline QString presence() const { return contactPresence; }
       inline QString name() const { return contactName; }
       inline QString jid() const { return contactJid; }
       inline QString resource() const { return contactResource; }
       inline QString statusText() const { return contactStatusText; }
       inline int unreadMsg() const { return contactUnreadMsg; }
+      inline QString avatar() const { return contactAvatar; }
 
       void copy( const RosterItemModel* item ) {
           contactName = item->name();
@@ -158,6 +171,7 @@ public:
           contactResource = item->resource();
           contactStatusText = item->statusText();
           contactUnreadMsg = item->unreadMsg();
+          contactAvatar = item->avatar();
       }
 
     private:
@@ -166,6 +180,7 @@ public:
       QString contactResource;
       QString contactPresence;
       QString contactStatusText;
+      QString contactAvatar;
       int contactUnreadMsg;
 };
 

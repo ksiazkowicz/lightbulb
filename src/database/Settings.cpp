@@ -178,6 +178,9 @@ void Settings::setAccount(
 
     beginGroup( "accounts" ); // get the ID and notify xmppconnectivity because its fun, thats why
     QStringList sl = value( "accounts", QStringList() ).toStringList();
+
+    //this->initListOfAccounts();
+
     emit accountEdited(sl.indexOf(_jid));
     endGroup();
 }

@@ -85,7 +85,6 @@ Page {
     }
 
     Component.onCompleted: {
-        settings.initListOfAccounts()
         vars.accJid = ""
         statusBarText.text = qsTr("Accounts")
     }
@@ -99,7 +98,6 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
-                settings.initListOfAccounts()
                 pageStack.pop()
                 statusBarText.text = "Contacts"
             }
@@ -111,7 +109,6 @@ Page {
                            if (avkon.displayAvkonQueryDialog("Remove","Are you sure you want to remove account " + vars.accJid + "?")) {
                                xmppConnectivity.accountRemoved(accountsPage.currentIndex)
                                settings.removeAccount( vars.accJid )
-                               settings.initListOfAccounts()
                            }
                        }
         }

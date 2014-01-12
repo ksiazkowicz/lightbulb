@@ -180,6 +180,7 @@ void MyXmppClient::initRoster() {
           itemModel->setJid( bareJid );
           itemModel->setUnreadMsg( 0 );
           itemModel->setStatusText( "");
+          itemModel->setAvatar(cacheIM->getAvatarCache(bareJid));
           cachedRoster->append(itemModel);
           itemModel = 0;
           delete itemModel;
@@ -286,6 +287,7 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
         if( (avatarFile.isEmpty() || avatarFile == "qrc:/avatar" || (flVCardRequest != "")) && vCard.photo() != "" ) {
             isAvatarCreated =  cacheIM->setAvatarCache( bareJid, vCard.photo() );
         }
+        item->setAvatar(cacheIM->getAvatarCache(bareJid));
 
         dataVCard.nickName = nickName;
         dataVCard.firstName = vCard.firstName();
@@ -465,6 +467,7 @@ void MyXmppClient::itemAdded(const QString &bareJid ) {
       itemModel->setContactName("");
       itemModel->setJid( bareJid );
       itemModel->setUnreadMsg( 0 );
+      itemModel->setAvatar(cacheIM->getAvatarCache(bareJid));
       cachedRoster->append( itemModel );
       itemModel = 0; delete itemModel;
     };

@@ -213,8 +213,6 @@ Page {
 
                 xmppConnectivity.setAccountData( jid, pass, isDflt, resource, host, port,  true )
 
-                settings.initListOfAccounts()
-
                 pageStack.pop()
                 pageStack.replace( "qrc:/pages/Accounts" )
             }
