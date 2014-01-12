@@ -48,6 +48,10 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
 
     connect(dbWorker, SIGNAL(messagesChanged()), this, SLOT(updateMessages()), Qt::UniqueConnection);
     connect(dbWorker, SIGNAL(sqlMessagesUpdated()), this, SIGNAL(sqlMessagesChanged()), Qt::UniqueConnection);
+
+    connect(lSettings,SIGNAL(accountAdded(int)),this,SLOT(accountAdded(int)),Qt::UniqueConnection);
+    connect(lSettings,SIGNAL(accountEdited(int)),this,SLOT(accountModified(int)),Qt::UniqueConnection);
+    connect(lSettings,SIGNAL(accountRemoved(int)),this,SLOT(accountRemoved(int)),Qt::UniqueConnection);
 }
 
 bool XmppConnectivity::initializeAccount(int index, AccountsItemModel* account) {
@@ -74,6 +78,7 @@ bool XmppConnectivity::initializeAccount(int index, AccountsItemModel* account) 
     connect(clients->value(index),SIGNAL(chatClosed(QString)),this,SLOT(chatClosed(QString)));
     connect(clients->value(index),SIGNAL(contactRenamed(QString,QString)),this,SLOT(renameChatContact(QString,QString)));
     qDebug().nospace() << "XmppConnectivity::initializeAccount(): initialized account " << qPrintable(clients->value(index)->getMyJid()) << "/" << qPrintable(clients->value(index)->getResource());
+    delete account;
     return true;
 }
 
@@ -166,20 +171,30 @@ QString XmppConnectivity::getPreservedMsg(QString jid) {  //this poorly written 
 void XmppConnectivity::preserveMsg(QString jid,QString message) { //this poorly written piece of shit should take care of account id one day
   ChatsItemModel* chat = (ChatsItemModel*)chats->find(jid);
   if (chat != 0) chat->setChatMsg(message);
+  chat = 0; delete chat;
 }
 
 // handling adding and removing accounts
-void XmppConnectivity::accountAdded() {
-  qDebug() << "XmppConnectivity::accountAdded(): this is not being handled right now #yolo";
+void XmppConnectivity::accountAdded(int id) {
+  qDebug().nospace() << "XmppConnectivity::accountAdded(): initializing account "
+                     << qPrintable(QString::number(id))<<"::"<<qPrintable(lSettings->getAccount(id)->jid());
+  initializeAccount(id,lSettings->getAccount(id));
 }
 
 
-void XmppConnectivity::accountRemoved(QString bareJid) {
+void XmppConnectivity::accountRemoved(int id) {
   qDebug() << "XmppConnectivity::accountRemoved(): this is not being handled right now #yolo";
+  clients->remove(id);
+  for (int i=0; i<clients->count(); i++) {
+      if (clients->value(i) != 0) qDebug() << clients->value(i)->getAccountId() << qPrintable(clients->value(i)->getMyJid());
+      else qDebug() << i << "NULL";
+    }
 }
 
-void XmppConnectivity::accountModified(QString bareJid) {
-  qDebug() << "XmppConnectivity::accountModified(): this is not being handled right now #yolo";
+void XmppConnectivity::accountModified(int id) {
+  qDebug().nospace() << "XmppConnectivity::accountModified(): reinitializing account "
+           << qPrintable(QString::number(id))<<"::"<<qPrintable(lSettings->getAccount(id)->jid());
+  initializeAccount(id,lSettings->getAccount(id));
 }
 
 int XmppConnectivity::getStatusByIndex(int index) {

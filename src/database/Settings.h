@@ -78,8 +78,9 @@ public:
 
 signals:
     void accountsListChanged();
-    void accountAdded();
-    void accountRemoved();
+    void accountAdded(int accId);
+    void accountRemoved(int accId);
+    void accountEdited(int accId);
 public slots:
     
 };

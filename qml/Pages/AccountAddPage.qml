@@ -211,7 +211,7 @@ Page {
                 var port = tiPort.text
                 var resource = tiResource.text
 
-                settings.setAccount( jid, pass, isDflt, resource, host, port,  true )
+                xmppConnectivity.setAccountData( jid, pass, isDflt, resource, host, port,  true )
 
                 settings.initListOfAccounts()
 

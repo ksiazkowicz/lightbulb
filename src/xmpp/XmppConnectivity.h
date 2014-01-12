@@ -115,9 +115,16 @@ public slots:
     }
 
     // handling clients
-    void accountAdded();
-    void accountRemoved(QString bareJid);
-    void accountModified(QString bareJid);
+    void accountAdded(int id);
+    Q_INVOKABLE void accountRemoved(int id);
+    void accountModified(int id);
+
+    Q_INVOKABLE void setAccountData( QString _jid, QString _pass, bool isDflt, QString _resource = "",
+                                     QString _host = "", QString _port = "", bool manuallyHostPort = false ) {
+      qDebug() << "XmppConnectivity::setAccountData(): setting account data for" << qPrintable(_jid);
+      lSettings->setAccount(_jid,_pass,isDflt,_resource,_host,_port,manuallyHostPort);
+    }
+
     Q_INVOKABLE int getStatusByIndex(int index);
     void renameChatContact(QString bareJid,QString name) {
       ChatsItemModel* item = (ChatsItemModel*)chats->find(bareJid);

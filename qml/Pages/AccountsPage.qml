@@ -5,6 +5,8 @@ Page {
     id: accountsPage
     tools: toolBarAccounts
 
+    property int currentIndex: -1;
+
     Component {
         id: componentAccountItem
         Rectangle {
@@ -28,22 +30,12 @@ Page {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: 5
-                anchors.right: switch1.left
+                anchors.right: parent.right
                 anchors.rightMargin: 10
                 text: accJid
                 font.pixelSize: 18
                 clip: true
                 color: vars.textColor
-            }
-            Switch {
-                id: switch1
-                anchors.right: parent.right; anchors.rightMargin: 5
-                anchors.verticalCenter: parent.verticalCenter
-                checked: accDefault
-
-                onClicked: {
-                    settings.setAccount( accJid, accPasswd, switch1.checked, accResource, accHost, accPort, accManualHostPort )
-                }
             }
             states: State {
                 name: "Current"
@@ -57,7 +49,7 @@ Page {
 
             MouseArea {
                 id: maAccItem
-                anchors { left: parent.left; right: switch1.left; top: parent.top; bottom: parent.bottom; }
+                anchors { left: parent.left; right: parent.right; top: parent.top; bottom: parent.bottom; }
                 onDoubleClicked: {
                     vars.accJid = accJid
                     vars.accPass = accPasswd
@@ -70,6 +62,7 @@ Page {
                 }
                 onClicked: {
                     wrapper.ListView.view.currentIndex = index
+                    accountsPage.currentIndex = index
                     vars.accJid = accJid
                     vars.accPass = accPasswd
                     vars.accDefault = accDefault
@@ -83,24 +76,9 @@ Page {
         }
     }
 
-    Rectangle {
-        id: thisReallySucks
-        anchors.top: parent.top
-        width: parent.width
-        height: 96
-        color: "red"
-
-        Text {
-            anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10; top: parent.top; topMargin: 10; bottom: parent.bottom; bottomMargin: 10; }
-            text: "Due to limitations of this app, only one account can be enabled at the same time. Sorry."
-            wrapMode: Text.Wrap
-            color: "white"
-        }
-    }
-
     ListView {
         id: listViewAccounts
-        anchors { bottom: parent.bottom; left: parent.left; right: parent.right; top: thisReallySucks.bottom }
+        anchors { fill: parent }
         clip: true
         delegate: componentAccountItem
         model: settings.accounts
@@ -129,7 +107,13 @@ Page {
 
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-delete_inverse" : "toolbar-delete"
-            onClicked: if( vars.accJid != "" ) dialog.create("qrc:/dialogs/Account/Remove")
+            onClicked: if( vars.accJid != "" ) {
+                           if (avkon.displayAvkonQueryDialog("Remove","Are you sure you want to remove account " + vars.accJid + "?")) {
+                               xmppConnectivity.accountRemoved(accountsPage.currentIndex)
+                               settings.removeAccount( vars.accJid )
+                               settings.initListOfAccounts()
+                           }
+                       }
         }
 
         ToolButton {

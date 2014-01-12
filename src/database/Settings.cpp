@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <QDir>
 #include "AccountsListModel.h"
+#include <QDebug>
 
 QString Settings::appName = "Lightbulb";
 QString Settings::confFolder = QDir::homePath() + QDir::separator() + ".config" + QDir::separator() + appName;
@@ -94,6 +95,7 @@ void Settings::addAccount( const QString &acc )
     if( sl.indexOf(acc) < 0 ) {
         sl.append(acc);
         setValue( "accounts", QVariant(sl) );
+        emit accountAdded(sl.indexOf(acc));
     }
     endGroup();
 }
@@ -102,7 +104,8 @@ void Settings::removeAccount( const QString &acc )
     beginGroup( "accounts" );
     QVariant retList = value( "accounts", QStringList() );
     QStringList sl = retList.toStringList();
-    if( sl.indexOf(acc) >= 0 ) {
+    int index = sl.indexOf(acc);
+    if( index >= 0 ) {
         sl.removeOne(acc);
         setValue( "accounts", QVariant(sl) );
     }
@@ -112,13 +115,21 @@ void Settings::removeAccount( const QString &acc )
 void Settings::initListOfAccounts() {
     QStringList listAcc = getListAccounts();
 
-    alm->removeRows( 0, alm->count() );
+    qDebug() << "initializing list";
+
+    alm->takeRows( 0, alm->count() );
+
+    qDebug() << "rows removed";
+    qDebug() << listAcc;
+    qDebug() << alm->count();
 
     QStringList::const_iterator itr = listAcc.begin();
     int i = 0;
     while ( itr != listAcc.end() ) {
         QString jid = *itr;
         itr++;
+
+        qDebug() << "initializing" << jid;
 
         QString passwd = gStr(jid,"passwd");
         bool isDefault = gBool(jid,"is_default");
@@ -129,11 +140,16 @@ void Settings::initListOfAccounts() {
         bool isManuallyHostPort = gBool(jid,"use_host_port");
 
         AccountsItemModel *aim = new AccountsItemModel( jid, passwd, resource, host, port, isDefault, isManuallyHostPort, this );
+        qDebug() << "account item model done";
         alm->append(aim);
+        qDebug() << "account item model appended";
 
         if(i==0) { jid_indx0 = jid; pass_indx0 = passwd; dflt_indx0 = isDefault; }
+        qDebug() << "now it should crash";
         i++;
     }
+
+    qDebug() << "...and it's done";
 
     emit accountsListChanged();
 }
@@ -159,6 +175,11 @@ void Settings::setAccount(
     bool ok = false;
     int p = _port.toInt(&ok);
     if( ok ) { sInt( p, _jid, "port" ); }
+
+    beginGroup( "accounts" ); // get the ID and notify xmppconnectivity because its fun, thats why
+    QStringList sl = value( "accounts", QStringList() ).toStringList();
+    emit accountEdited(sl.indexOf(_jid));
+    endGroup();
 }
 
 AccountsItemModel* Settings::getAccount(int index) {
