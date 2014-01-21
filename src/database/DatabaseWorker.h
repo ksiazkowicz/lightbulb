@@ -40,6 +40,7 @@ public:
 
     SqlQueryModel* sqlMessages;
     SqlQueryModel* getSqlMessages() const { return sqlMessages; }
+    Q_INVOKABLE int getPageCount(int m_accoutId, QString bareJid);
     
 signals:
     void finished();

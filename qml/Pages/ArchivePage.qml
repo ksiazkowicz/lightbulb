@@ -15,7 +15,7 @@ Page {
             ButtonRow {
                 ToolButton {
                     iconSource: main.platformInverted ? "toolbar-previous_inverse" : "toolbar-previous"
-                    enabled: xmppConnectivity.messagesCount - (xmppConnectivity.page*20)> 0
+                    enabled: xmppConnectivity.messagesCount - xmppConnectivity.page> 0
                     opacity: enabled ? 1 : 0.2
                     onClicked: xmppConnectivity.page++;
                 }

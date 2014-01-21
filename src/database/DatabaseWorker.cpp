@@ -94,3 +94,13 @@ void DatabaseWorker::updateMessages(int m_accountId, QString bareJid, int page) 
     if (bareJid != "") sqlMessages->setQuery("SELECT * FROM (SELECT * FROM messages WHERE bareJid='" + bareJid + "' and id_account="+QString::number(m_accountId) + " ORDER BY id DESC limit " + QString::number(border) + ") ORDER BY id ASC limit 20",database->db);
     emit sqlMessagesUpdated();
 }
+
+int DatabaseWorker::getPageCount(int m_accountId, QString bareJid) {
+  #ifdef QT_DEBUG
+  qDebug() << qPrintable("DatabaseWorker::getPageCount(): called for account "+QString::number(m_accountId)+" and JID "+bareJid);
+  #endif
+  SqlQueryModel getMeSomeNumbersCauseNumbersAreAwesome;
+  if (bareJid != "") getMeSomeNumbersCauseNumbersAreAwesome.setQuery("SELECT id FROM messages WHERE bareJid='" + bareJid + "' and id_account="+QString::number(m_accountId),database->db);
+  double pagesCount = getMeSomeNumbersCauseNumbersAreAwesome.rowCount()/20;
+  return ceil(pagesCount);
+}

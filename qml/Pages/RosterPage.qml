@@ -73,14 +73,14 @@ Page {
             width: rosterView.width
             color: "transparent"
             visible: rosterSearch.text !== "" ? (txtJid.contact.substr(0, rosterSearch.text.length) == rosterSearch.text ? true : false ) : presence === "qrc:/presence/offline" ? !hideOffline : true
-            height: rosterItemHeight
+            height: rosterItemHeight - txtJid.font.pixelSize > txtJid.height ? rosterItemHeight : txtJid.height + txtJid.font.pixelSize
 
             Image {
                 id: imgPresence
                 source: rosterLayoutAvatar ? avatar : presence
                 sourceSize.height: rosterItemHeight-4
                 sourceSize.width: rosterItemHeight-4
-                anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
+                anchors { top: parent.top; topMargin: (rosterItemHeight-sourceSize.height)/2; left: parent.left; leftMargin: 10 }
                 height: rosterItemHeight-4
                 width: rosterItemHeight-4
                 Image {

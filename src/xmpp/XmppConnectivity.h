@@ -146,8 +146,7 @@ private:
     QString getCurrentAccountName();
 
     SqlQueryModel* getSqlMessagesByPage() { return dbWorker->getSqlMessages(); }
-    int getMessagesCount() { return dbWorker->getSqlMessages()->rowCount(); } // it wont work, you need a way to get a number of all
-                                                                          // messages, look at the pre-multiple account support code
+    int getMessagesCount() { return dbWorker->getPageCount(currentClient,currentJid); }
     MsgListModel* getMessages() {
       return cachedMessages->value(currentJid);
     }
