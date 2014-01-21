@@ -106,7 +106,8 @@ OTHER_FILES += README.md \
     qml/*.* \
     qml/Pages/*.* \
     qml/FirstRun/*.* \
-    qml/JavaScript/*.*
+    qml/JavaScript/*.* \
+    qml/Preflets/*.*
 
 
 # Please do not modify the following two lines. Required for deployment.

@@ -68,6 +68,7 @@
         <file alias="SkinSelection">qml/Pages/SkinSelectionPage.qml</file>
         <file alias="MessagesWebView">qml/Pages/MessagesWebView.qml</file>
         <file>test.html</file>
+        <file alias="Preferences">qml/Pages/PreferencesPage.qml</file>
     </qresource>
     <qresource prefix="/toolbar">
         <file alias="close">images/toolbar/toolbar-close.svg</file>
@@ -96,5 +97,8 @@
     </qresource>
     <qresource prefix="/JavaScript">
         <file alias="EmoticonInterpreter.js">qml/JavaScript/EmoticonInterpreter.js</file>
+    </qresource>
+    <qresource prefix="/Preflets">
+        <file alias="Popups.qml">qml/Preflets/Popups.qml</file>
     </qresource>
 </RCC>
