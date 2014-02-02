@@ -35,7 +35,6 @@ public:
     enum Roles {
         accJid = Qt::UserRole+1,
         accPasswd,
-        accDefault,
         accResource,
         accHost,
         accPort,
@@ -49,7 +48,6 @@ public:
                                   const QString &_accountResource,
                                   const QString &_accountHost,
                                   const int _accountPort,
-                                  const bool _accountDefault,
                                   const bool _manuallyHostPort,
                                   QObject *parent ) :
                    ListItem(parent),
@@ -58,7 +56,6 @@ public:
                    m_resource(_accountResource),
                    m_host(_accountHost),
                    m_port(_accountPort),
-                   m_default(_accountDefault),
                    m_manual_host_port(_manuallyHostPort)
                {
                }
@@ -77,14 +74,6 @@ public:
       {
         if(m_passwd != _accountPasswd) {
           m_passwd = _accountPasswd;
-          emit dataChanged();
-        }
-      }
-
-      void setDefault(bool &_accountDefault)
-      {
-        if(m_default != _accountDefault) {
-          m_default = _accountDefault;
           emit dataChanged();
         }
       }
@@ -118,7 +107,6 @@ public:
         QHash<int, QByteArray> names;
         names[accJid] = "accJid";
         names[accPasswd] = "accPasswd";
-        names[accDefault] = "accDefault";
         names[accResource] = "accResource";
         names[accHost] = "accHost";
         names[accPort] = "accPort";
@@ -133,8 +121,6 @@ public:
           return jid();
         case accPasswd:
           return passwd();
-        case accDefault:
-          return isDefault();
         case accResource:
           return resource();
         case accHost:
@@ -150,7 +136,6 @@ public:
 
       inline QString jid() const { return m_jid; }
       inline QString passwd() const { return m_passwd; }
-      inline bool isDefault() const { return m_default; }
       inline QString resource() const { return m_resource; }
       inline QString host() const { return m_host; }
       inline int port() const { return m_port; }
@@ -162,7 +147,6 @@ public:
       QString m_resource;
       QString m_host;
       int m_port;
-      bool m_default;
       bool m_manual_host_port;
 
 };

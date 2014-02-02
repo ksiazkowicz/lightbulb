@@ -53,7 +53,6 @@ Page {
                 onDoubleClicked: {
                     vars.accJid = accJid
                     vars.accPass = accPasswd
-                    vars.accDefault = switch1.checked
                     vars.accResource = accResource
                     vars.accHost = accHost
                     vars.accPort = accPort
@@ -65,7 +64,6 @@ Page {
                     accountsPage.currentIndex = index
                     vars.accJid = accJid
                     vars.accPass = accPasswd
-                    vars.accDefault = accDefault
                     vars.accResource = accResource
                     vars.accHost = accHost
                     vars.accPort = accPort

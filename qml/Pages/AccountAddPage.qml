@@ -113,13 +113,6 @@ Page {
 
             Item { height: 5; width: accAddPage.width}
 
-            CheckBox {
-                id: checkBoxDefault
-                text: qsTr("Enabled")
-                checked: vars.accDefault
-                platformInverted: main.platformInverted
-            }
-
             Item {
                 height: 5
                 width: accAddPage.width
@@ -205,13 +198,12 @@ Page {
             onClicked: {
                 var jid = tiJid.text
                 var pass = tiPass.text
-                var isDflt = checkBoxDefault.checked == true ? true : false
                 if( jid=="" || pass=="" ) return
                 var host = tiHost.text
                 var port = tiPort.text
                 var resource = tiResource.text
 
-                xmppConnectivity.setAccountData( jid, pass, isDflt, resource, host, port,  true )
+                xmppConnectivity.setAccountData( jid, pass, false, resource, host, port,  true )
 
                 pageStack.pop()
                 pageStack.replace( "qrc:/pages/Accounts" )

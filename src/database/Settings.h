@@ -36,10 +36,6 @@ class Settings : public QSettings
     Q_PROPERTY( AccountsListModel* accounts READ getAccounts NOTIFY accountsListChanged )
     AccountsListModel *alm;
 
-    QString jid_indx0;
-    QString pass_indx0;
-    bool dflt_indx0;
-
 protected:
     void addAccount(  const QString&  acc );
     QStringList getListAccounts();
@@ -64,11 +60,6 @@ public:
     Q_INVOKABLE void initListOfAccounts();
     Q_INVOKABLE QString getJidByIndex( int index );
     Q_INVOKABLE void setAccount( QString _jid, QString _pass, bool isDflt, QString _resource = "", QString _host = "", QString _port = "", bool manuallyHostPort = false );
-
-    Q_INVOKABLE QString getJid_indx0() { return jid_indx0; }
-    Q_INVOKABLE QString getPass_indx0() { return pass_indx0; }
-    Q_INVOKABLE bool getDef_indx0() { return dflt_indx0; }
-
 
     AccountsListModel* getAccounts() const { return alm; }
 
