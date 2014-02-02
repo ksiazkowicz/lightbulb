@@ -44,21 +44,21 @@ Page {
                 settings.sInt(100,"notifications","vibraMsgRecvIntensity")
 
                 settings.sBool(true,"notifications","soundMsgRecv")
-                settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Message_Received.wav", "notifications","soundMsgRecvFile")
+                settings.sStr("C:\\Data\\.config\\Lightbulb\\sounds\\Message_Received.wav", "notifications","soundMsgRecvFile")
                 settings.sInt(100,"notifications","soundMsgRecvVolume")
 
                 settings.sInt(400,"notifications","vibraMsgSentDuration")
                 settings.sInt(100,"notifications","vibraMsgSentIntensity")
 
                 settings.sBool(true,"notifications","soundMsgSent")
-                settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Message_Sent.wav", "notifications","soundMsgSentFile")
+                settings.sStr("C:\\Data\\.config\\Lightbulb\\sounds\\Message_Sent.wav", "notifications","soundMsgSentFile")
                 settings.sInt(100,"notifications","soundMsgSentVolume")
 
                 settings.sInt(500,"notifications","vibraMsgSubDuration")
                 settings.sInt(50,"notifications","vibraMsgSubIntensity")
 
                 settings.sBool(true,"notifications","soundMsgSub")
-                settings.sStr("file:///C:/Data/.config/Lightbulb/sounds/Subscription_Request.wav", "notifications","soundMsgSubFile")
+                settings.sStr("C:\\Data\\.config\\Lightbulb\\sounds\\Subscription_Request.wav", "notifications","soundMsgSubFile")
                 settings.sInt(100,"notifications","soundMsgSubVolume")
 
                 settings.sBool(true,"notifications","notifyConnection")

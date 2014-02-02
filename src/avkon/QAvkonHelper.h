@@ -33,6 +33,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <hwrmlight.h>
 #include <QUrl>
 
+#include "AvkonMedia.h"
+
+#ifdef Q_OS_SYMBIAN
+#include "AvkonMedia.h"
+class AvkonMedia;
+#endif
+
 class QDeclarativeView;
 
 class QAvkonHelper : public QObject
@@ -62,11 +69,13 @@ private:
     QString lastPopup;
 
     bool chatIconStatus;
+    AvkonMedia* iAudioPlayer;
     
 signals:
     
 public slots:
     void cleanLastMsg() { lastPopup=""; }
+    void playNotification(QString path);
     
 };
 

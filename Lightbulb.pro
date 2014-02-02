@@ -26,7 +26,7 @@ VERSION = 0.3
 
 symbian {
     TARGET.UID3 = 0xE22AC278
-    TARGET.CAPABILITY += NetworkServices WriteDeviceData ReadDeviceData
+    TARGET.CAPABILITY += NetworkServices WriteDeviceData ReadDeviceData ReadUserData WriteUserData LocalServices
     TARGET.EPOCHEAPSIZE = 0x200000 0x1F400000
     CONFIG += qt-components
 
@@ -52,7 +52,10 @@ symbian {
             -lefsrv \
             -leuser \
             -lcommondialogs \
-            -lesock
+            -lesock \
+            -lmediaclientaudio \
+            -lprofileengine \
+            -lcntmodel
 }
 
 # If your application uses the Qt Mobility libraries, uncomment the following
@@ -75,7 +78,8 @@ SOURCES += src/main.cpp \
     src/xmpp/XmppConnectivity.cpp \
     src/database/DatabaseWorker.cpp \
     src/database/Settings.cpp \
-    src/database/SkinSelectorHandler.cpp
+    src/database/SkinSelectorHandler.cpp \
+    src/avkon/AvkonMedia.cpp
 
 HEADERS += src/xmpp/MyXmppClient.h \
     src/cache/MyCache.h \
@@ -99,7 +103,8 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/models/ChatsListModel.h \
     src/models/ChatsItemModel.h \
     src/models/MsgListModel.h \
-    src/models/MsgItemModel.h
+    src/models/MsgItemModel.h \
+    src/avkon/AvkonMedia.h
 
 OTHER_FILES += README.md \
     qml/Dialogs/*.* \

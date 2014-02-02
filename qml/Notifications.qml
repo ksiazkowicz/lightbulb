@@ -24,7 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *********************************************************************/
 
 import QtQuick 1.1
-import QtMultimediaKit 1.1
 import QtMobility.feedback 1.1
 import lightbulb 1.0
 
@@ -137,11 +136,6 @@ Item {
         avkon.displayGlobalNote(messageString,true)
     }
 
-    function notifyMessageSent() {
-        if( vibraMsgSent ) hapticsEffectSentMsg.running = true
-        if( soundMsgSent ) sndEffectSent.play()
-    }
-
     function registerWidget() {
         if (settings.gBool("behavior","enableHsWidget")) {
             hsWidget.registerWidget()
@@ -153,7 +147,6 @@ Item {
         if (settings.gBool("behavior","enableHsWidget")) hsWidget.removeWidget()
     }
 
-    SoundEffect { id: sndEffect }
     HapticsEffect { id: hapticsEffect }
 
     function notifySndVibr(how) {
@@ -163,9 +156,8 @@ Item {
             hapticsEffect.running = true
         }
         if( settings.gBool("notifications","sound"+how )) {
-            sndEffect.source = settings.gStr("notifications","sound"+how+"File" )
             sndEffect.volume = settings.gInt("notifications","sound"+how+"Volume" )/100
-            sndEffect.play()
+            avkon.playNotification(settings.gStr("notifications","sound"+how+"File" ));
         }
     }
 }

@@ -70,6 +70,7 @@ QAvkonHelper::QAvkonHelper(QDeclarativeView *view, QObject *parent) :
     chatIconStatus = true;
     hideChatIcon();
     lastPopup = "";
+    iAudioPlayer = AvkonMedia::NewL();
 }
 
 void QAvkonHelper::showChatIcon() {
@@ -89,6 +90,11 @@ void QAvkonHelper::hideChatIcon() {
         iProperty.Set( KPSUidCoreApplicationUIs, KCoreAppUIsUipInd, ECoreAppUIsDoNotShow);
         chatIconStatus = false;
     }
+}
+
+void QAvkonHelper::playNotification(QString path) {
+  TPtrC16 kPath(reinterpret_cast<const TUint16*>(path.utf16()));
+  iAudioPlayer->PlayL(kPath);
 }
 
 void QAvkonHelper::showPopup(QString title, QString message, bool goToApp) {

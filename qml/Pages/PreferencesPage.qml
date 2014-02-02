@@ -17,6 +17,8 @@ Page {
 
         height: 46
 
+        z: 1
+
         gradient: Gradient {
             GradientStop { position: 0; color: "#3c3c3c" }
             GradientStop { position: 0.04; color: "#6c6c6c" }
