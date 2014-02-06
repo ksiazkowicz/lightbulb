@@ -31,6 +31,7 @@ Page {
            }
         }
         vars.isChatInProgress = true
+        notify.updateNotifiers()
     }
     /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
     Component {

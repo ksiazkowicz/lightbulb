@@ -44,7 +44,10 @@ Item {
     }
 
     function updateNotifiers() {
-        if (vars.globalUnreadCount > 0) avkon.showChatIcon(); else avkon.hideChatIcon();
+        if (vars.globalUnreadCount > 0 && settings.gBool("behavior","enableChatIcon"))
+            avkon.showChatIcon();
+        else avkon.hideChatIcon();
+
         if (settings.gBool("behavior","enableHsWidget")) {
             hsWidget.status = xmppConnectivity.client.status
             hsWidget.unreadCount = vars.globalUnreadCount

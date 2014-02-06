@@ -46,6 +46,7 @@ Page {
         anchors { left: parent.left; right: parent.right; bottom: parent.bottom; top: prefletSwitcher.bottom }
         contentHeight: preflet.height
         contentWidth: preferencesPage.width
+        height: preferencesPage.height
         flickableDirection: Flickable.VerticalFlick
         Loader {
             id: preflet

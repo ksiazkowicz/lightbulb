@@ -106,6 +106,7 @@ void Settings::removeAccount( const QString &acc )
         setValue( "accounts", QVariant(sl) );
     }
     endGroup();
+    emit accountsListChanged();
 }
 
 void Settings::initListOfAccounts() {

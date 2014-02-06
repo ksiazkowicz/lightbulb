@@ -184,11 +184,11 @@ void XmppConnectivity::accountAdded(int id) {
 
 void XmppConnectivity::accountRemoved(int id) {
   qDebug() << "XmppConnectivity::accountRemoved(): this is not being handled right now #yolo";
-  //clients->remove(id);
-  /*for (int i=0; i<clients->count(); i++) {
+  clients->remove(id);
+  for (int i=0; i<clients->count(); i++) {
       if (clients->value(i) != 0) qDebug() << clients->value(i)->getAccountId() << qPrintable(clients->value(i)->getMyJid());
       else qDebug() << i << "NULL";
-    }*/
+    }
 }
 
 void XmppConnectivity::accountModified(int id) {

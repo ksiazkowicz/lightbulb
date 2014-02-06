@@ -491,24 +491,6 @@ Page {
                             }
                         }
                     }
-                    CheckBox {
-                        id: shortMessage
-                        text: qsTr("Message text in discreet popup")
-                        checked: settings.gBool("behavior","msgInDiscrPopup")
-                        platformInverted: main.platformInverted
-                        onCheckedChanged: {
-                            settings.sBool(checked,"behavior","msgInDiscrPopup")
-                        }
-                    }
-                    CheckBox {
-                        id: linkInDiscrPopup
-                        text: qsTr("Discreet popup links to app")
-                        checked: settings.gBool("behavior","linkInDiscrPopup")
-                        platformInverted: main.platformInverted
-                        onCheckedChanged: {
-                            settings.sBool(checked,"behavior","linkInDiscrPopup")
-                        }
-                    }
                 }
             }
         }

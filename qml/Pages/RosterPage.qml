@@ -75,6 +75,28 @@ Page {
             visible: rosterSearch.text !== "" ? (txtJid.contact.substr(0, rosterSearch.text.length) == rosterSearch.text ? true : false ) : presence === "qrc:/presence/offline" ? !hideOffline : true
             height: rosterItemHeight - txtJid.font.pixelSize > txtJid.height ? rosterItemHeight : txtJid.height + txtJid.font.pixelSize
 
+            gradient: gr_free
+            Gradient {
+                id: gr_free
+                GradientStop { id: gr1; position: 0; color: "transparent" }
+                GradientStop { id: gr3; position: 1; color: "transparent" }
+            }
+            Gradient {
+                id: gr_press
+                GradientStop { position: 0; color: "#1C87DD" }
+                GradientStop { position: 1; color: "#51A8FB" }
+            }
+
+            states: [State {
+                name: "Current"
+                when: selectedJid == jid
+                PropertyChanges { target: wrapper; gradient: gr_press }
+            },State {
+                name: "Not current"
+                when: !selectedJid == jid
+                PropertyChanges { target: wrapper; gradient: gr_free }
+            }]
+
             Image {
                 id: imgPresence
                 source: rosterLayoutAvatar ? avatar : presence
@@ -138,10 +160,12 @@ Page {
 
                 onClicked: {
                     xmppConnectivity.chatJid = jid
+                    selectedJid = jid
                     vars.contactName = txtJid.contact
                     vars.globalUnreadCount = vars.globalUnreadCount - unreadMsg
                     notify.updateNotifiers()
                     main.pageStack.push( "qrc:/pages/Messages" )
+                    selectedJid = ""
                 }
 
                 onPressAndHold: {
