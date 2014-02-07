@@ -232,30 +232,20 @@ Page {
         // define the items in the menu and corresponding actions
         content: MenuLayout {
             MenuItem {
-                text: qsTr("Settings")
-                platformInverted: main.platformInverted
-                onClicked: main.pageStack.push( "qrc:/pages/Settings" )
-            }
-            MenuItem {
-                text: "Preflet test"
+                text: qsTr("Preferences")
                 platformInverted: main.platformInverted
                 onClicked: main.pageStack.push( "qrc:/pages/Preferences" )
+            }
+            MenuItem {
+                text: "Settings (old)"
+                platformInverted: main.platformInverted
+                onClicked: main.pageStack.push( "qrc:/pages/Settings" )
             }
 
             MenuItem {
                 text: qsTr("About...")
                 platformInverted: main.platformInverted
                 onClicked: main.pageStack.push( "qrc:/pages/About" )
-            }
-            MenuItem {
-                text: qsTr("Maintenance")
-                platformInverted: main.platformInverted
-                onClicked: main.pageStack.push( "qrc:/pages/Diagnostics" )
-            }
-            MenuItem {
-                text: qsTr("Select Widget Skin")
-                platformInverted: main.platformInverted
-                onClicked: main.pageStack.push( "qrc:/pages/SkinSelection" )
             }
             MenuItem {
                 text: qsTr("Exit")

@@ -25,35 +25,46 @@ Page {
             ListElement { name: "Notification LED" }
             ListElement { name: "Colors" }
             ListElement { name: "Contact list" }
-            //ListElement { name: "Behavior" }
+            ListElement { name: "Advanced" }
         }
         onSelectedIndexChanged: {
             switch (selectedIndex) {
-                case 0:
+                case 0: {
                     titleText.text = "Events";
                     break;
-                case 1:
+                }
+                case 1: {
                     titleText.text = "Discreet popups";
-                    preflet.source = "qrc:/Preflets/Popups.qml";
+                    preflet.source = "qrc:/Preflets/Popups";
                     break;
-                case 2:
+                }
+                case 2: {
                     titleText.text = "Homescreen widget";
+                    preflet.source = "qrc:/Preflets/Widget";
                     break;
-                case 3:
+                }
+                case 3: {
                     titleText.text = "Connection";
                     break;
-                case 4:
+                }
+                case 4: {
                     titleText.text = "Notification LED";
                     break;
-                case 5:
+                }
+                case 5: {
                     titleText.text = "Colors";
+                    preflet.source = "qrc:/Preflets/Colors";
                     break;
-                case 6:
+                }
+                case 6: {
                     titleText.text = "Contact list";
                     break;
-                /*case 7:
-                    titleText.text = "Behavior";
-                    break;*/
+                }
+                case 7: {
+                    titleText.text = "Advanced";
+                    preflet.source = "qrc:/Preflets/Advanced";
+                    break;
+                }
                 default: break;
             }
         }
@@ -101,7 +112,7 @@ Page {
         flickableDirection: Flickable.VerticalFlick
         Loader {
             id: preflet
-            source: "qrc:/Preflets/Popups.qml"
+            source: "qrc:/Preflets/Popups"
             width: preferencesPage.width
         }
     }

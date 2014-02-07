@@ -64,10 +64,7 @@
         <file alias="Roster">qml/Pages/RosterPage.qml</file>
         <file alias="Settings">qml/Pages/SettingsPage.qml</file>
         <file alias="VCard">qml/Pages/VCardPage.qml</file>
-        <file alias="Diagnostics">qml/Pages/DiagnosticsPage.qml</file>
-        <file alias="SkinSelection">qml/Pages/SkinSelectionPage.qml</file>
         <file alias="MessagesWebView">qml/Pages/MessagesWebView.qml</file>
-        <file>test.html</file>
         <file alias="Preferences">qml/Pages/PreferencesPage.qml</file>
     </qresource>
     <qresource prefix="/toolbar">
@@ -99,6 +96,9 @@
         <file alias="EmoticonInterpreter.js">qml/JavaScript/EmoticonInterpreter.js</file>
     </qresource>
     <qresource prefix="/Preflets">
-        <file alias="Popups.qml">qml/Preflets/Popups.qml</file>
+        <file alias="Popups">qml/Preflets/Popups.qml</file>
+        <file alias="Colors">qml/Preflets/Colors.qml</file>
+        <file alias="Widget">qml/Preflets/Widget.qml</file>
+        <file alias="Advanced">qml/Preflets/Advanced.qml</file>
     </qresource>
 </RCC>

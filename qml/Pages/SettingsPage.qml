@@ -319,17 +319,6 @@ Page {
                     spacing: 5
                     anchors { top: parent.top; topMargin: 10; left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10 }
                     CheckBox {
-                       id: invertPlatform
-                       text: qsTr("Inverted colors")
-                       checked: settings.gBool("ui", "invertPlatform")
-                       platformInverted: main.platformInverted
-                       onCheckedChanged: {
-                          settings.sBool(checked,"ui", "invertPlatform")
-                          main.platformInverted = checked
-                          vars.textColor = checked ? platformStyle.colorNormalDark : platformStyle.colorNormalLight
-                       }
-                    }
-                    CheckBox {
                        id: markUnread
                        text: qsTr("Mark contacts with unread msg.")
                        checked: settings.gBool("ui", "markUnread")
@@ -475,20 +464,6 @@ Page {
                         platformInverted: main.platformInverted
                         onCheckedChanged: {
                             settings.sBool(checked,"behavior","goOnlineOnStart")
-                        }
-                    }
-                    CheckBox {
-                        id: enableWidget
-                        text: qsTr("Enable homescreen widget")
-                        checked: settings.gBool("behavior","enableHsWidget")
-                        platformInverted: main.platformInverted
-                        onCheckedChanged: {
-                            settings.sBool(checked,"behavior","enableHsWidget")
-                            if (checked) {
-                                notify.registerWidget()
-                            } else {
-                                notify.removeWidget()
-                            }
                         }
                     }
                 }

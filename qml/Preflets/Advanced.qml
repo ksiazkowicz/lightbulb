@@ -1,9 +1,9 @@
 /********************************************************************
 
-qml/Pages/DiagnosticsPage.qml
--- Page with diagnostic options
+qml/Preflets/Advanced.qml
+-- Preflet with advanced options
 
-Copyright (c) 2013 Maciej Janiszewski
+Copyright (c) 2013-2014 Maciej Janiszewski
 
 This file is part of Lightbulb.
 
@@ -25,22 +25,48 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import QtQuick 1.1
 import com.nokia.symbian 1.1
 
-Page {
-    orientationLock: 1
-    tools: ToolBarLayout {
-               ToolButton {
-                   iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
-                   onClicked: { statusBarText.text = "Contacts"
-                       if (!closeTheApp) pageStack.pop(); else avkon.restartApp() }
-                }
+Item {
+    height: column.contentHeight
+    width: 360
+    Component.onDestruction: {
+        if (closeTheApp) avkon.restartApp();
     }
 
     property bool closeTheApp: false
-    Component.onCompleted: statusBarText.text = qsTr("Maintenance")
 
     Column {
-        anchors { fill: parent; margins: platformStyle.paddingSmall; }
+        id: column
         spacing: platformStyle.paddingSmall
+
+        CheckBox {
+            id: enableWidget
+            text: qsTr("Enable homescreen widget")
+            checked: settings.gBool("behavior","enableHsWidget")
+            platformInverted: main.platformInverted
+            onCheckedChanged: {
+                settings.sBool(checked,"behavior","enableHsWidget")
+                if (checked) {
+                    notify.registerWidget()
+                } else {
+                    notify.removeWidget()
+                }
+            }
+        }
+
+        CheckBox {
+            id: disableChatIcon
+            text: qsTr("Disable chat icon")
+            checked: settings.gBool("behavior","disableChatIcon")
+            platformInverted: main.platformInverted
+            onCheckedChanged: {
+                settings.sBool(checked,"behavior","disableChatIcon")
+                if (checked) {
+                    avkon.hideChatIcon();
+                } else if (vars.globalUnreadCount > 0){
+                    avkon.showChatIcon();
+                }
+            }
+        }
 
         Button {
             text: "Remove database"

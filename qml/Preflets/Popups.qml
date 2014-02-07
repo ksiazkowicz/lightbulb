@@ -2,7 +2,7 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 Item {
-    height: content.contentHeight
+    height: 79*2+messageText.height + unreadCount.height + switchDescription.height + switchDescriptionSubtitle.height + 5*content.spacing
 
     function savePreferences() {
         settings.sBool(switch1.checked,"behavior","linkInDiscrPopup")

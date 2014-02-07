@@ -44,7 +44,7 @@ Item {
     }
 
     function updateNotifiers() {
-        if (vars.globalUnreadCount > 0 && settings.gBool("behavior","enableChatIcon"))
+        if (vars.globalUnreadCount > 0 && !settings.gBool("behavior","disableChatIcon"))
             avkon.showChatIcon();
         else avkon.hideChatIcon();
 
