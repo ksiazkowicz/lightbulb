@@ -12,6 +12,54 @@ Page {
         }
     }
 
+    SelectionDialog {
+        id: selectionDialog
+        titleText: "Pages"
+        selectedIndex: -1
+        platformInverted: main.platformInverted
+        model: ListModel {
+            ListElement { name: "Events" }
+            ListElement { name: "Popups" }
+            ListElement { name: "Widget" }
+            ListElement { name: "Connection" }
+            ListElement { name: "Notification LED" }
+            ListElement { name: "Colors" }
+            ListElement { name: "Contact list" }
+            //ListElement { name: "Behavior" }
+        }
+        onSelectedIndexChanged: {
+            switch (selectedIndex) {
+                case 0:
+                    titleText.text = "Events";
+                    break;
+                case 1:
+                    titleText.text = "Discreet popups";
+                    preflet.source = "qrc:/Preflets/Popups.qml";
+                    break;
+                case 2:
+                    titleText.text = "Homescreen widget";
+                    break;
+                case 3:
+                    titleText.text = "Connection";
+                    break;
+                case 4:
+                    titleText.text = "Notification LED";
+                    break;
+                case 5:
+                    titleText.text = "Colors";
+                    break;
+                case 6:
+                    titleText.text = "Contact list";
+                    break;
+                /*case 7:
+                    titleText.text = "Behavior";
+                    break;*/
+                default: break;
+            }
+        }
+    }
+
+
     Rectangle {
         id: prefletSwitcher
 
@@ -39,12 +87,15 @@ Page {
         ToolButton {
             iconSource: "toolbar-list"
             anchors { verticalCenter: parent.verticalCenter; right: parent.right; rightMargin: platformStyle.paddingSmall }
+            onClicked: {
+                selectionDialog.open()
+            }
         }
     }
     Flickable {
         id: prefletView
         anchors { left: parent.left; right: parent.right; bottom: parent.bottom; top: prefletSwitcher.bottom }
-        contentHeight: preflet.height
+        contentHeight: preflet.item.height
         contentWidth: preferencesPage.width
         height: preferencesPage.height
         flickableDirection: Flickable.VerticalFlick
