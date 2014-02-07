@@ -15,6 +15,15 @@ Page {
         onStatusChanged: if (xmppConnectivity.client.status == XmppClient.Offline) errorText.text = ""
     }
 
+    Connections {
+        target: xmppConnectivity
+        onChatJidChanged: {
+            if (xmppConnectivity.chatJid == "") {
+                selectedJid = "";
+            }
+        }
+    }
+
     Component.onCompleted: statusBarText.text = "Contacts"
 
     property bool hideOffline: settings.gBool("ui","hideOffline")
@@ -108,8 +117,8 @@ Page {
                 Image {
                     id: imgUnreadMsg
                     source: main.platformInverted ? "qrc:/unread-mark_inverse" : "qrc:/unread-mark"
-                    sourceSize.height: wrapper.height
-                    sourceSize.width: wrapper.height
+                    sourceSize.height: imgPresence.height
+                    sourceSize.width: imgPresence.height
                     smooth: true
                     visible: markUnread ? unreadMsg != 0 : false
                     anchors.centerIn: parent
@@ -117,8 +126,8 @@ Page {
                     Image {
                         id: imgUnreadCount
                         source: "qrc:/unread-count"
-                        sourceSize.height: wrapper.height
-                        sourceSize.width: wrapper.height
+                        sourceSize.height: imgPresence.height
+                        sourceSize.width: imgPresence.height
                         smooth: true
                         visible: showUnreadCount ? unreadMsg != 0 : false
                         anchors.centerIn: parent
@@ -165,7 +174,6 @@ Page {
                     vars.globalUnreadCount = vars.globalUnreadCount - unreadMsg
                     notify.updateNotifiers()
                     main.pageStack.push( "qrc:/pages/Messages" )
-                    selectedJid = ""
                 }
 
                 onPressAndHold: {
@@ -263,6 +271,13 @@ Page {
     Menu {
         id: contactMenu
         platformInverted: main.platformInverted
+
+        onStatusChanged: {
+            if (status == DialogStatus.Closed) {
+                selectedJid = "";
+            }
+        }
+
         // define the items in the menu and corresponding actions
         content: MenuLayout {
             MenuItem {
