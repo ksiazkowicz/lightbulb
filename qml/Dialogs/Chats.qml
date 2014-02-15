@@ -90,6 +90,16 @@ CommonDialog {
                         close()
                     }
                 }
+                ToolButton {
+                    iconSource: main.platformInverted ? "qrc:/toolbar/close_inverse" : "qrc:/toolbar/close"
+                    anchors { top: parent.top; bottom: parent.bottom; right: parent.right }
+                    onClicked: {
+                        xmppConnectivity.client.closeChat(xmppConnectivity.chatJid )
+                        xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.chatJid )
+                    }
+                    scale: 0.7
+                    smooth: true
+                }
             }
          }
         model: xmppConnectivity.chats
