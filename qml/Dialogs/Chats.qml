@@ -97,6 +97,12 @@ CommonDialog {
                     onClicked: {
                         xmppConnectivity.client.closeChat(jid)
                         xmppConnectivity.client.resetUnreadMessages(jid)
+                        if (jid == xmppConnectivity.chatJid) {
+                            vars.isChatInProgress = false
+                            xmppConnectivity.chatJid = ""
+                            statusBarText.text = "Contacts"
+                            pageStack.pop();
+                        }
                     }
                     scale: 0.7
                     smooth: true
