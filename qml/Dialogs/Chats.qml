@@ -77,7 +77,7 @@ CommonDialog {
                 }
                 MouseArea {
                     id: maAccItem
-                    anchors.fill: parent
+                    anchors { left: parent.left; top: parent.top; bottom: parent.bottom; right: closeBtn.left }
                     onClicked: {
                         wrapper.ListView.view.currentIndex = index
                         if (xmppConnectivity.currentAccount != account) xmppConnectivity.currentAccount = account
@@ -91,11 +91,12 @@ CommonDialog {
                     }
                 }
                 ToolButton {
+                    id: closeBtn;
                     iconSource: main.platformInverted ? "qrc:/toolbar/close_inverse" : "qrc:/toolbar/close"
                     anchors { top: parent.top; bottom: parent.bottom; right: parent.right }
                     onClicked: {
-                        xmppConnectivity.client.closeChat(xmppConnectivity.chatJid )
-                        xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.chatJid )
+                        xmppConnectivity.client.closeChat(jid)
+                        xmppConnectivity.client.resetUnreadMessages(jid)
                     }
                     scale: 0.7
                     smooth: true
