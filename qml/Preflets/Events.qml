@@ -7,7 +7,7 @@ Item {
     Column {
         id: content
         spacing: 5
-        width: 340
+        width: 360
 
         Text {
             text: "Message received"
@@ -54,8 +54,8 @@ Item {
                 anchors.right: parent.right
                 iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                 onClicked: {
-                    vars.nowEditing = "soundMsgRecv"
-                    dialog.create("qrc:/dialogs/Settings/Sound")
+                    var filename = avkon.openFileSelectionDlg();
+                    if (filename != "") settings.sStr(filename,"notifications","soundMsgRecvFile")
                 }
             }
         }
@@ -151,8 +151,8 @@ Item {
                 anchors.right: parent.right
                 iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                 onClicked: {
-                    vars.nowEditing = "soundMsgSent"
-                    dialog.create("qrc:/dialogs/Settings/Sound")
+                    var filename = avkon.openFileSelectionDlg();
+                    if (filename != "") settings.sStr(filename,"notifications","soundMsgSentFile")
                 }
             }
         }
@@ -189,8 +189,8 @@ Item {
                 anchors.right: parent.right
                 iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                 onClicked: {
-                    vars.nowEditing = "soundNotifyConn"
-                    dialog.create("qrc:/dialogs/Settings/Sound")
+                    var filename = avkon.openFileSelectionDlg();
+                    if (filename != "") settings.sStr(filename,"notifications","soundNotifyConnFile")
                 }
             }
         }
@@ -217,8 +217,8 @@ Item {
                 anchors.right: parent.right
                 iconSource: main.platformInverted ? "toolbar-settings_inverse" : "toolbar-settings"
                 onClicked: {
-                    vars.nowEditing = "soundMsgSub"
-                    dialog.create("qrc:/dialogs/Settings/Sound")
+                    var filename = avkon.openFileSelectionDlg();
+                    if (filename != "") settings.sStr(filename,"notifications","soundMsgSubFile")
                 }
             }
         }

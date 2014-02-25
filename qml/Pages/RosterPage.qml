@@ -237,12 +237,6 @@ Page {
                 onClicked: main.pageStack.push( "qrc:/pages/Preferences" )
             }
             MenuItem {
-                text: "Settings (old)"
-                platformInverted: main.platformInverted
-                onClicked: main.pageStack.push( "qrc:/pages/Settings" )
-            }
-
-            MenuItem {
                 text: qsTr("About...")
                 platformInverted: main.platformInverted
                 onClicked: main.pageStack.push( "qrc:/pages/About" )

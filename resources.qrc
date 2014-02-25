@@ -49,7 +49,6 @@
         <file alias="Status/Change">qml/Dialogs/ChangeStatus.qml</file>
         <file alias="Status/Reconnect">qml/Dialogs/ReconnectDialog.qml</file>
         <file alias="Contact/Rename">qml/Dialogs/RenameContact.qml</file>
-        <file alias="Settings/Sound">qml/Dialogs/SoundSettings.qml</file>
         <file alias="Settings/Vibration">qml/Dialogs/VibrationSettings.qml</file>
         <file alias="Chats">qml/Dialogs/Chats.qml</file>
         <file alias="AccountSwitcher">qml/Dialogs/AccountSwitcher.qml</file>
@@ -62,7 +61,6 @@
         <file alias="Archive">qml/Pages/ArchivePage.qml</file>
         <file alias="Messages">qml/Pages/MessagesPage.qml</file>
         <file alias="Roster">qml/Pages/RosterPage.qml</file>
-        <file alias="Settings">qml/Pages/SettingsPage.qml</file>
         <file alias="VCard">qml/Pages/VCardPage.qml</file>
         <file alias="Preferences">qml/Pages/PreferencesPage.qml</file>
     </qresource>
@@ -101,5 +99,6 @@
         <file alias="Advanced">qml/Preflets/Advanced.qml</file>
         <file alias="Roster">qml/Preflets/Roster.qml</file>
         <file alias="Events">qml/Preflets/Events.qml</file>
+        <file alias="Connection">qml/Preflets/Connection.qml</file>
     </qresource>
 </RCC>

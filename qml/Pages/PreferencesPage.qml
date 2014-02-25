@@ -46,6 +46,7 @@ Page {
                 }
                 case 3: {
                     titleText.text = "Connection";
+                    preflet.source = "qrc:/Preflets/Connection";
                     break;
                 }
                 case 4: {
