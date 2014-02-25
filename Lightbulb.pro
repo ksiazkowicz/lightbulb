@@ -113,7 +113,9 @@ OTHER_FILES += README.md \
     qml/FirstRun/*.* \
     qml/JavaScript/*.* \
     qml/Preflets/*.* \
-    qml/Preflets/Advanced.qml
+    qml/Preflets/Advanced.qml \
+    qml/Preflets/Roster.qml \
+    qml/Preflets/Events.qml
 
 
 # Please do not modify the following two lines. Required for deployment.

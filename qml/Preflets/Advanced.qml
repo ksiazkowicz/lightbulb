@@ -26,7 +26,7 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 Item {
-    height: column.contentHeight
+    height: enableWidget.height + disableChatIcon.height + 20 + tiVisibleMsgLimit.height + rmvDbButton.height + rmvDbText.height + cleanAvCacheBtn.height + cleanAvCacheText.height + reSettingsBtn.height + reSettingsText.height + restartNotice.height + 11*platformStyle.paddingSmall
     Component.onDestruction: {
         if (closeTheApp) avkon.restartApp();
     }
@@ -36,6 +36,8 @@ Item {
     Column {
         id: column
         spacing: platformStyle.paddingSmall
+        anchors.horizontalCenter: parent.horizontalCenter;
+        width: 340
 
         CheckBox {
             id: enableWidget
@@ -75,10 +77,10 @@ Item {
         }
         TextField {
             id: tiVisibleMsgLimit
-            anchors { left: parent.left; right: parent.right }
+            anchors.horizontalCenter: parent.horizontalCenter;
             inputMethodHints: Qt.ImhFormattedNumbersOnly
-            width: tabBehavior.width-20
             height: 50
+            width: column.width
             Component.onCompleted: {
                 text = settings.gInt("behavior", "visibleMessagesLimit")
             }
@@ -94,6 +96,7 @@ Item {
         }
 
         Button {
+            id: rmvDbButton
             text: "Remove database"
             anchors { left: parent.left; right: parent.right }
             platformInverted: main.platformInverted
@@ -106,6 +109,7 @@ Item {
         }
 
         Text {
+            id: rmvDbText
             width: parent.width
             anchors { left: parent.left; right: parent.right }
             color: vars.textColor
@@ -116,6 +120,7 @@ Item {
         }
 
         Button {
+            id: cleanAvCacheBtn
             text: "Clean avatar cache"
             platformInverted: main.platformInverted
             anchors { left: parent.left; right: parent.right }
@@ -128,6 +133,7 @@ Item {
         }
 
         Text {
+            id: cleanAvCacheText
             width: parent.width
             color: vars.textColor
             anchors { left: parent.left; right: parent.right }
@@ -138,6 +144,7 @@ Item {
         }
 
         Button {
+            id: reSettingsBtn
             text: "Reset settings"
             anchors { left: parent.left; right: parent.right }
             platformInverted: main.platformInverted
@@ -149,6 +156,7 @@ Item {
             }
         }
         Text {
+            id: reSettingsText
             width: parent.width
             color: vars.textColor
             font.pixelSize: platformStyle.fontSizeSmall
@@ -158,6 +166,7 @@ Item {
             horizontalAlignment: Text.AlignJustify
         }
         Text {
+            id: restartNotice
             width: parent.width
             color: "#ff0000"
             font.pixelSize: platformStyle.fontSizeSmall

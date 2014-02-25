@@ -64,7 +64,6 @@
         <file alias="Roster">qml/Pages/RosterPage.qml</file>
         <file alias="Settings">qml/Pages/SettingsPage.qml</file>
         <file alias="VCard">qml/Pages/VCardPage.qml</file>
-        <file alias="MessagesWebView">qml/Pages/MessagesWebView.qml</file>
         <file alias="Preferences">qml/Pages/PreferencesPage.qml</file>
     </qresource>
     <qresource prefix="/toolbar">
@@ -100,5 +99,6 @@
         <file alias="Colors">qml/Preflets/Colors.qml</file>
         <file alias="Widget">qml/Preflets/Widget.qml</file>
         <file alias="Advanced">qml/Preflets/Advanced.qml</file>
+        <file alias="Roster">qml/Preflets/Roster.qml</file>
     </qresource>
 </RCC>

@@ -58,6 +58,7 @@ Page {
                 }
                 case 6: {
                     titleText.text = "Contact list";
+                    preflet.source = "qrc:/Preflets/Roster";
                     break;
                 }
                 case 7: {
