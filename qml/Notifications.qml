@@ -158,9 +158,7 @@ Item {
             hapticsEffect.intensity = settings.gInt("notifications","vibra"+how+"Intensity" )/100
             hapticsEffect.running = true
         }
-        if( settings.gBool("notifications","sound"+how )) {
-            sndEffect.volume = settings.gInt("notifications","sound"+how+"Volume" )/100
+        if( settings.gBool("notifications","sound"+how ))
             avkon.playNotification(settings.gStr("notifications","sound"+how+"File" ));
-        }
     }
 }
