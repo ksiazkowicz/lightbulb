@@ -52,6 +52,7 @@ class XmppConnectivity : public QObject
     Q_PROPERTY(QString chatJid READ getChatJid WRITE setChatJid NOTIFY chatJidChanged)
     Q_PROPERTY(int currentAccount READ getCurrentAccount WRITE changeAccount NOTIFY accountChanged)
     Q_PROPERTY(QString currentAccountName READ getCurrentAccountName NOTIFY accountChanged)
+    Q_PROPERTY(int messagesLimit READ getMsgLimit WRITE setMsgLimit NOTIFY msgLimitChanged )
 public:
     explicit XmppConnectivity(QObject *parent = 0);
     bool initializeAccount(int index, AccountsItemModel* account);
@@ -88,6 +89,7 @@ signals:
     void notifyMsgReceived(QString name,QString jid,QString body);
 
     void qmlChatChanged();
+    void msgLimitChanged();
     
 public slots:
     void changeRoster() {
@@ -108,6 +110,12 @@ public slots:
     Q_INVOKABLE QString getPropertyByJid(int account,QString property,QString jid);
     Q_INVOKABLE QString getPreservedMsg(QString jid);
     Q_INVOKABLE void preserveMsg(QString jid,QString message);
+
+    Q_INVOKABLE void setMsgLimit(int limit) {
+      msgLimit = limit;
+    }
+
+    int getMsgLimit() { return msgLimit; }
 
     Q_INVOKABLE void emitQmlChat() {
       emit qmlChatChanged();
@@ -148,7 +156,13 @@ private:
     SqlQueryModel* getSqlMessagesByPage() { return dbWorker->getSqlMessages(); }
     int getMessagesCount() { return dbWorker->getPageCount(currentClient,currentJid); }
     MsgListModel* getMessages() {
-      return cachedMessages->value(currentJid);
+      MsgListModel* messages = cachedMessages->value(currentJid);
+      if (msgLimit > 0) {
+         while (messages->count() > msgLimit) {
+             messages->remove(0);
+           }
+        }
+      return messages;
     }
 
     ChatsListModel* chats;
@@ -167,6 +181,7 @@ private:
     // http://john.nachtimwald.com/2010/06/08/qt-remove-directory-and-its-contents/
 
     int globalUnreadCount;
+    int msgLimit;
 };
 
 #endif // XMPPCONNECTIVITY_H

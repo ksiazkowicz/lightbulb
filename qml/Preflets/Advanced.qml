@@ -27,7 +27,6 @@ import com.nokia.symbian 1.1
 
 Item {
     height: column.contentHeight
-    width: 360
     Component.onDestruction: {
         if (closeTheApp) avkon.restartApp();
     }
@@ -68,8 +67,35 @@ Item {
             }
         }
 
+        Text {
+            text: qsTr("Visible messages limit")
+            font.pixelSize: 20
+            font.bold: true
+            color: vars.textColor
+        }
+        TextField {
+            id: tiVisibleMsgLimit
+            anchors { left: parent.left; right: parent.right }
+            inputMethodHints: Qt.ImhFormattedNumbersOnly
+            width: tabBehavior.width-20
+            height: 50
+            Component.onCompleted: {
+                text = settings.gInt("behavior", "visibleMessagesLimit")
+            }
+            onActiveFocusChanged: {
+                main.splitscreenY = 0
+            }
+
+            onTextChanged: {
+                var limit = parseInt(text)
+                xmppConnectivity.messagesLimit = limit
+                settings.sInt(limit,"behavior", "visibleMessagesLimit")
+            }
+        }
+
         Button {
             text: "Remove database"
+            anchors { left: parent.left; right: parent.right }
             platformInverted: main.platformInverted
             onClicked: {
                 if (xmppConnectivity.dbRemoveDb()) {
@@ -81,6 +107,7 @@ Item {
 
         Text {
             width: parent.width
+            anchors { left: parent.left; right: parent.right }
             color: vars.textColor
             text: "This option will remove all the archived messages."
             font.pixelSize: platformStyle.fontSizeSmall
@@ -91,6 +118,7 @@ Item {
         Button {
             text: "Clean avatar cache"
             platformInverted: main.platformInverted
+            anchors { left: parent.left; right: parent.right }
             onClicked: {
                 if (xmppConnectivity.cleanCache()) {
                     notify.postInfo("Avatar cache cleaned.")
@@ -102,6 +130,7 @@ Item {
         Text {
             width: parent.width
             color: vars.textColor
+            anchors { left: parent.left; right: parent.right }
             font.pixelSize: platformStyle.fontSizeSmall
             text: "Useful option if avatars are not displayed properly, or cache is filled with useless files."
             wrapMode: Text.WordWrap
@@ -110,6 +139,7 @@ Item {
 
         Button {
             text: "Reset settings"
+            anchors { left: parent.left; right: parent.right }
             platformInverted: main.platformInverted
             onClicked: {
                 if (xmppConnectivity.resetSettings()) {
@@ -122,6 +152,7 @@ Item {
             width: parent.width
             color: vars.textColor
             font.pixelSize: platformStyle.fontSizeSmall
+            anchors { left: parent.left; right: parent.right }
             text: "Have you updated your app and something went wrong? Want to remove your accounts details? Do you miss first run wizard? This is an option for you."
             wrapMode: Text.WordWrap
             horizontalAlignment: Text.AlignJustify
