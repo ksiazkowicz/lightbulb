@@ -31,6 +31,7 @@ Page {
             switch (selectedIndex) {
                 case 0: {
                     titleText.text = "Events";
+                    preflet.source = "qrc:/Preflets/Events";
                     break;
                 }
                 case 1: {
