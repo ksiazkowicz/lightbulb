@@ -26,7 +26,6 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 Page {
-    orientationLock: 1
     tools: toolBarLayout
 
     Component.onCompleted: { statusBarText.text = qsTr("About...") } //set statusbar text to "About..."
@@ -34,6 +33,8 @@ Page {
     Flickable {
         flickableDirection: Flickable.VerticalFlick
         anchors.fill: parent
+
+        contentHeight: logo.height + 32 + programName.height + 5 + names.height + niceInfo.height + 24 + buttons.height + 64 + licenseStuff.height
         Image {
             id: logo
             source: "qrc:/Lightbulb.svg"
@@ -67,7 +68,7 @@ Page {
             id: licenseStuff
             width: parent.width
             text: qsTr("This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under certain conditions. See GPL v3 license for details.")
-            anchors { top: niceInfo.bottom; topMargin: 80; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
+            anchors { top: buttons.bottom; topMargin: 14; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
             font.bold: true
             wrapMode: Text.WordWrap
             font.pixelSize: platformStyle.fontSizeSmall
@@ -86,7 +87,8 @@ Page {
             horizontalAlignment: Text.AlignHCenter
         }
         Row {
-            anchors { horizontalCenter: parent.horizontalCenter; top: niceInfo.top; topMargin: 64 }
+            id: buttons
+            anchors { horizontalCenter: parent.horizontalCenter; top: niceInfo.bottom; topMargin: 14 }
             spacing: platformStyle.paddingMedium
             Button {
                 text: "Contributors"
