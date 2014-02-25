@@ -26,7 +26,7 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 Item {
-    height: enableWidget.height + disableChatIcon.height + 20 + tiVisibleMsgLimit.height + rmvDbButton.height + rmvDbText.height + cleanAvCacheBtn.height + cleanAvCacheText.height + reSettingsBtn.height + reSettingsText.height + restartNotice.height + 11*platformStyle.paddingSmall
+    height: enableWidget.height + disableChatIcon.height + disableEmoticons.height + 20 + tiVisibleMsgLimit.height + rmvDbButton.height + rmvDbText.height + cleanAvCacheBtn.height + cleanAvCacheText.height + reSettingsBtn.height + reSettingsText.height + restartNotice.height + 12*platformStyle.paddingSmall
     Component.onDestruction: {
         if (closeTheApp) avkon.restartApp();
     }
@@ -66,6 +66,16 @@ Item {
                 } else if (vars.globalUnreadCount > 0){
                     avkon.showChatIcon();
                 }
+            }
+        }
+
+        CheckBox {
+            id: disableEmoticons
+            text: qsTr("Disable emoticons")
+            checked: settings.gBool("behavior","disableEmoticons")
+            platformInverted: main.platformInverted
+            onCheckedChanged: {
+                settings.sBool(checked,"behavior","disableEmoticons")
             }
         }
 

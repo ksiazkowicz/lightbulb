@@ -43,6 +43,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "SymbiosisAPIClient.h"
 #include "SkinSelectorHandler.h"
 #include "XmppConnectivity.h"
+#include "EmoticonParser.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
@@ -71,6 +72,9 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     QmlApplicationViewer viewer;
     QAvkonHelper avkon(&viewer);
     viewer.rootContext()->setContextProperty("avkon", &avkon);
+
+    EmoticonParser parser;
+    viewer.rootContext()->setContextProperty("emoticon",&parser);
 
     viewer.setAttribute(Qt::WA_OpaquePaintEvent);
     viewer.setAttribute(Qt::WA_NoSystemBackground);

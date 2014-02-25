@@ -1,7 +1,6 @@
 import QtQuick 1.1
 import lightbulb 1.0
 import com.nokia.symbian 1.1
-import "qrc:/JavaScript/EmoticonInterpreter.js" as Emotion
 
 Page {
     id: messagesPage
@@ -9,6 +8,7 @@ Page {
     /************************************************************/
     property string resourceJid: ""
     property bool isTyping: false
+    property bool emoticonsDisabled: settings.gBool("behavior","disableEmoticons")
 
     Component.onCompleted: {
         xmppConnectivity.page = 1
@@ -90,7 +90,7 @@ Page {
                 Text {
                       id: message
                       anchors { top: parent.top; left: parent.left; leftMargin: 5; right: parent.right; rightMargin: 5 }
-                      text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (vars.contactName === "" ? xmppConnectivity.chatJid : vars.contactName) ) + ":</font> " + Emotion.parseEmoticons(msgText)
+                      text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (vars.contactName === "" ? xmppConnectivity.chatJid : vars.contactName) ) + ":</font> " + (emoticonsDisabled ? msgText : emoticon.parseEmoticons(msgText))
                       color: isMine == true ? "white" : "black"
                       font.pixelSize: 16
                       wrapMode: Text.Wrap
