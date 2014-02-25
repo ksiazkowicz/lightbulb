@@ -1,68 +1,105 @@
+/********************************************************************
+
+qml/Pages/AboutPage.qml
+-- about page for Lightbulb
+
+Copyright (c) 2013-2014 Maciej Janiszewski
+
+This file is part of Lightbulb and was derived from MeegIM.
+
+Lightbulb is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*********************************************************************/
+
 import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 Page {
-    id: aboutPage
     orientationLock: 1
     tools: toolBarLayout
 
-    Component.onCompleted: {
-        statusBarText.text = qsTr("About...")
-    }
+    Component.onCompleted: { statusBarText.text = qsTr("About...") } //set statusbar text to "About..."
 
-    Image {
-        id: logo
-        source: "qrc:/Lightbulb.svg"
-        y: 32
-        sourceSize { width: 128; height: 128 }
-        width: 128
-        height: 128
-        smooth: true
-        scale: 1
-        anchors.horizontalCenterOffset: 0
-        anchors.horizontalCenter: parent.horizontalCenter
-    }
+    Flickable {
+        flickableDirection: Flickable.VerticalFlick
+        anchors.fill: parent
+        Image {
+            id: logo
+            source: "qrc:/Lightbulb.svg"
+            sourceSize { width: 128; height: 128 }
+            width: 128
+            height: 128
+            smooth: true
+            scale: 1
+            anchors { horizontalCenter: parent.horizontalCenter; top: parent.top; topMargin: 32 }
+        }
+        Text {
+            id: programName
+            color: vars.textColor
+            text: "Lightbulb " + xmppConnectivity.client.version + " α"
+            anchors { top: logo.bottom; topMargin: 5; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
+            horizontalAlignment: Text.AlignHCenter
+            font.pixelSize: platformStyle.fontSizeMedium*1.5
+        }
 
-    Text {
-        id: programName
-        color: vars.textColor
-        text: "Lightbulb " + xmppConnectivity.client.version + " α"
-        anchors { top: logo.bottom; topMargin: 5; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
-        horizontalAlignment: Text.AlignHCenter
-        font.pixelSize: platformStyle.fontSizeMedium*1.5
-    }
+        Text {
+            id: names
+            anchors { top: programName.bottom; leftMargin: 10; rightMargin: 10; left: parent.left; right: parent.right }
+            color: vars.textColor
+            wrapMode: Text.Wrap
+            text: "Maciej Janiszewski (pisarzk@gmail.com)"
+            font.pixelSize: platformStyle.fontSizeSmall
+            horizontalAlignment: Text.AlignHCenter
+        }
 
-    Text {
-        id: names
-        anchors { top: programName.bottom; horizontalCenterOffset: 2; horizontalCenter: parent.horizontalCenter; leftMargin: 10; rightMargin: 10; left: parent.left; right: parent.right }
-        color: vars.textColor
-        wrapMode: Text.Wrap
-        text: "No updates available"
-        font.pixelSize: platformStyle.fontSizeSmall
-        horizontalAlignment: Text.AlignHCenter
-    }
+        Text {
+            id: licenseStuff
+            width: parent.width
+            text: qsTr("This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under certain conditions. See GPL v3 license for details.")
+            anchors { top: niceInfo.bottom; topMargin: 80; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
+            font.bold: true
+            wrapMode: Text.WordWrap
+            font.pixelSize: platformStyle.fontSizeSmall
+            horizontalAlignment: Text.AlignHCenter
+            color: "red"
+        }
 
-    Text {
-        id: licenseStuff
-        width: parent.width
-        text: qsTr("This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under certain conditions. See GPL v3 license for details.")
-        anchors { top: niceInfo.bottom; topMargin: 80; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
-        font.bold: true
-        wrapMode: Text.WordWrap
-        font.pixelSize: platformStyle.fontSizeSmall
-        horizontalAlignment: Text.AlignHCenter
-        color: "red"
-    }
-
-    Text {
-        id: niceInfo
-        color: vars.textColor
-        text: qsTr("During development of this software, no mobile device was harmed.")
-        width: parent.width
-        anchors { top: names.bottom; topMargin: 24; horizontalCenter: parent.horizontalCenter }
-        wrapMode: Text.WordWrap
-        font.pixelSize: platformStyle.fontSizeSmall
-        horizontalAlignment: Text.AlignHCenter
+        Text {
+            id: niceInfo
+            color: vars.textColor
+            text: qsTr("During development of this software, no mobile device was harmed.")
+            width: parent.width
+            anchors { top: names.bottom; topMargin: 24; horizontalCenter: parent.horizontalCenter }
+            wrapMode: Text.WordWrap
+            font.pixelSize: platformStyle.fontSizeSmall
+            horizontalAlignment: Text.AlignHCenter
+        }
+        Row {
+            anchors { horizontalCenter: parent.horizontalCenter; top: niceInfo.top; topMargin: 64 }
+            spacing: platformStyle.paddingMedium
+            Button {
+                text: "Contributors"
+                onClicked: dialog.create("qrc:/dialogs/Contributors")
+            }
+            Button {
+                text: "Donate"
+                onClicked: {
+                    vars.url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SA8DZYA7PUCCU";
+                    linkContextMenu.open()
+                }
+            }
+        }
     }
 
 
@@ -73,22 +110,6 @@ Page {
             onClicked: { statusBarText.text = "Contacts"
                 pageStack.pop() }
         }
-    }
-
-    Row {
-        anchors { horizontalCenter: parent.horizontalCenter; top: niceInfo.top; topMargin: 64 }
-        spacing: platformStyle.paddingMedium
-    Button {
-        text: "Contributors"
-        onClicked: dialog.create("qrc:/dialogs/Contributors")
-    }
-    Button {
-        text: "Donate"
-        onClicked: {
-            vars.url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SA8DZYA7PUCCU";
-            linkContextMenu.open()
-        }
-    }
     }
 }
 
