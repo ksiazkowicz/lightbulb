@@ -26,7 +26,7 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 Item {
-    height: enableWidget.height + disableChatIcon.height + disableEmoticons.height + 20 + tiVisibleMsgLimit.height + rmvDbButton.height + rmvDbText.height + cleanAvCacheBtn.height + cleanAvCacheText.height + reSettingsBtn.height + reSettingsText.height + restartNotice.height + 12*platformStyle.paddingSmall
+    height: column.height
     Component.onDestruction: {
         if (closeTheApp) avkon.restartApp();
     }
@@ -37,7 +37,7 @@ Item {
         id: column
         spacing: platformStyle.paddingSmall
         anchors.horizontalCenter: parent.horizontalCenter;
-        width: 340
+        width: parent.width
 
         CheckBox {
             id: enableWidget

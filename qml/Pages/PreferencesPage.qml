@@ -70,7 +70,6 @@ Page {
                 }
                 default: break;
             }
-            preflet.width = preferencesPage.width;
         }
     }
 
@@ -111,12 +110,12 @@ Page {
         id: prefletView
         anchors { left: parent.left; right: parent.right; bottom: parent.bottom; top: prefletSwitcher.bottom }
         contentHeight: preflet.item.height
-        contentWidth: preferencesPage.width
+        contentWidth: width
         flickableDirection: Flickable.VerticalFlick
         Loader {
             id: preflet
             source: "qrc:/Preflets/Popups"
-            width: preferencesPage.width
+            anchors.fill: parent
         }
     }
 

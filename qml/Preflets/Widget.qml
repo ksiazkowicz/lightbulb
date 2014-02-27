@@ -5,7 +5,7 @@ import lightbulb 1.0
 
 Item {
     SelectorHandler { id: selector }
-    height: list.contentHeight;
+    height: list.contentHeight
 
     ListView {
         id: list;

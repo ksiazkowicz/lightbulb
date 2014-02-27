@@ -2,7 +2,7 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 Item {
-    height: 79*2+messageText.height + unreadCount.height + switchDescription.height + switchDescriptionSubtitle.height + 5*content.spacing
+    height: content.height
 
     function savePreferences() {
         settings.sBool(switch1.checked,"behavior","linkInDiscrPopup")
@@ -28,7 +28,7 @@ Item {
             text: "Incoming message text"
             onCheckedChanged: {
                 if (checked)
-                    unreadCount.checked = false
+                    unreadCount.checked = false; else unreadCount.checked = true;
                 savePreferences()
             }
         }
@@ -49,7 +49,7 @@ Item {
             platformInverted: main.platformInverted
             onCheckedChanged: {
                 if (checked)
-                    messageText.checked = false
+                    messageText.checked = false; else messageText.checked = true;
                 savePreferences()
             }
         }
@@ -79,6 +79,7 @@ Item {
                 font.pixelSize: 14
             }
             Switch {
+                id: switch1
                 checked: settings.gBool("behavior","linkInDiscrPopup")
                 anchors { right: parent.right; rightMargin: 10; }
                 onCheckedChanged: {

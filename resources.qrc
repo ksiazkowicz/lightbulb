@@ -98,4 +98,8 @@
         <file alias="Events">qml/Preflets/Events.qml</file>
         <file alias="Connection">qml/Preflets/Connection.qml</file>
     </qresource>
+    <qresource prefix="/Events">
+        <file alias="alarm">images/events/alarm.svg</file>
+        <file alias="alarm_disabled">images/events/alarm_disabled.svg</file>
+    </qresource>
 </RCC>

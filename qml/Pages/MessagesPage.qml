@@ -44,20 +44,22 @@ Page {
             anchors.horizontalCenter: parent.horizontalCenter
             Image {
                 id: triangleTop
-                anchors.top: parent.top
-                anchors.right: parent.right
-                anchors.rightMargin: 16
+                anchors { top: parent.top;
+                    right: parent.right;
+                    rightMargin: 16
+                }
                 source: isMine == true ? "" : "qrc:/images/bubble_incTriangle.png"
                 width: 13
                 height: isMine == true ? 0 : 13
             }
             Rectangle {
                 id: bubbleTop
-                anchors.top: triangleTop.bottom
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.rightMargin: isMine == true ? 64 : 6
-                anchors.leftMargin: isMine == true ? 6 : 64
+                anchors { top: triangleTop.bottom;
+                          left: parent.left;
+                          right: parent.right;
+                          rightMargin: isMine == true ? 64 : 6;
+                          leftMargin: isMine == true ? 6 : 64
+                }
                 height: 20
                 gradient: Gradient {
                     GradientStop { position: 0.0; color: isMine == true ? "#6f6f74" : "#f2f1f4" }
@@ -69,11 +71,12 @@ Page {
             }
             Rectangle {
                 id: bubbleBottom
-                anchors.bottom: triangleBottom.top
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.rightMargin: isMine == true ? 64 : 6
-                anchors.leftMargin: isMine == true ? 6 : 64
+                anchors { bottom: triangleBottom.top;
+                    left: parent.left;
+                    right: parent.right;
+                    rightMargin: isMine == true ? 64 : 6;
+                    leftMargin: isMine == true ? 6 : 64
+                }
                 height: 20
                 gradient: Gradient {
                     GradientStop { position: 0.0; color: isMine == true ? "#56565b" : "#e6e6eb" }
@@ -107,9 +110,10 @@ Page {
 
             Image {
                 id: triangleBottom
-                anchors.bottom: parent.bottom
-                anchors.left: parent.left
-                anchors.leftMargin: 16
+                anchors { bottom: parent.bottom;
+                    left: parent.left;
+                    leftMargin: 16
+                }
                 source: isMine == true ? "qrc:/images/bubble_outTriangle.png" : ""
                 width: 13
                 height: isMine == true ? 13 : 0

@@ -72,14 +72,13 @@ CommonDialog {
                 }
                 states: State {
                     name: "Current"
-                    when: wrapper.ListView.isCurrentItem
+                    when: jid == xmppConnectivity.chatJid
                     PropertyChanges { target: wrapper; gradient: gr_press }
                 }
                 MouseArea {
                     id: maAccItem
                     anchors { left: parent.left; top: parent.top; bottom: parent.bottom; right: closeBtn.left }
                     onClicked: {
-                        wrapper.ListView.view.currentIndex = index
                         if (xmppConnectivity.currentAccount != account) xmppConnectivity.currentAccount = account
                         if (index > -1 && xmppConnectivity.chatJid != jid) {
                             xmppConnectivity.chatJid = jid

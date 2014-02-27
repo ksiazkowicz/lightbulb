@@ -2,8 +2,7 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 Item {
-    height: markUnread.height + unreadCount.height + hideOffline.height + showContactStatusText.height + rosterLayout.height + rosterItemHeightText.height + rosterItemHeight.height +  7*content.spacing
-
+    height: content.height
     Column {
         id: content
         spacing: 5

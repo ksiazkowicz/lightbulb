@@ -2,12 +2,12 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 Item {
-    height: cbNeedReconnect.height + 20 + tiKeepAlive.height + 3*content.spacing
+    height: content.height
 
     Column {
         id: content
         spacing: 5
-        width: 360
+        width: parent.width
         anchors { top: parent.top; topMargin: 10; left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10 }
         CheckBox {
             id: cbNeedReconnect
