@@ -157,7 +157,6 @@ PageStackWindow {
         xmppConnectivity.changeAccount(acc);
         avkon.hideChatIcon()
         notify.updateNotifiers()
-        vars.globalUnreadCount = xmppConnectivity.client.getUnreadCount()
     }
 
     /****************************( Dialog windows, menus and stuff)****************************/

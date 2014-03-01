@@ -29,6 +29,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "QXmppVCardIq.h"
 #include "QXmppVCardManager.h"
 #include "QXmppClient.h"
+#include "QXmppRosterManager.h"
+#include "QXmppVersionManager.h"
+#include "QXmppConfiguration.h"
+#include "QXmppClient.h"
+#include "QXmppMessage.h"
 
 #include <QObject>
 #include <QtDeclarative>
@@ -37,18 +42,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QList>
 #include <QVariant>
 #include <QThread>
+#include <QCryptographicHash>
+#include <QFile>
+#include <QDir>
+#include <QStringList>
+#include <QDebug>
 
 #include "MessageWrapper.h"
 #include "Settings.h"
-#include <QSqlRecord>
-#include "QXmppRosterManager.h"
 
 #include "RosterListModel.h"
+#include "RosterItemModel.h"
 
 #include "QMLVCard.h"
 #include "MyCache.h"
-
-typedef QMap<QString, QVariant> Map;
 
 class MyXmppClient : public QObject
 {
@@ -63,7 +70,6 @@ class MyXmppClient : public QObject
     Q_PROPERTY( QString statusText READ getStatusText WRITE setStatusText  NOTIFY statusTextChanged )
     Q_PROPERTY( bool isTyping READ getTyping NOTIFY typingChanged )
     Q_PROPERTY( RosterListModel* cachedRoster READ getCachedRoster NOTIFY rosterChanged)
-    Q_PROPERTY( QStringList chats READ getChats NOTIFY openChatsChanged )
     Q_PROPERTY( QString myBareJid READ getMyJid WRITE setMyJid NOTIFY myJidChanged )
     Q_PROPERTY( QString myPassword READ getPassword() WRITE setPassword  NOTIFY myPasswordChanged )
     Q_PROPERTY( QString host READ getHost WRITE setHost NOTIFY hostChanged )
@@ -72,7 +78,6 @@ class MyXmppClient : public QObject
     Q_PROPERTY( int accountId READ getAccountId WRITE setAccountId NOTIFY accountIdChanged )
     Q_PROPERTY( QMLVCard* vcard READ getVCard NOTIFY vCardChanged )
     Q_PROPERTY( int keepAlive READ getKeepAlive WRITE setKeepAlive NOTIFY keepAliveChanged )
-    Q_PROPERTY( bool reconnectOnError READ getReconnectOnError WRITE setReconnectOnError NOTIFY reconnectOnErrorChanged )
 
     MessageWrapper *msgWrapper;
 
@@ -83,8 +88,6 @@ class MyXmppClient : public QObject
     QMLVCard * qmlVCard;
     QString flVCardRequest;
     MyCache* cacheIM;
-
-    int unreadCount;
 
 public :
     static QString getBareJidByJid( const QString &jid );
@@ -150,42 +153,6 @@ public :
     }
     Q_INVOKABLE QStringList getResourcesByJid( QString bareJid ) { return rosterManager->getResources(bareJid); }
 
-    Q_INVOKABLE QString getPropertyByChatID( int index, QString property ) {
-        RosterItemModel *item = (RosterItemModel*)cachedRoster->find( chats.at(index) );
-        if (property == "name") return item->name();
-        else if (property == "presence") return item->presence();
-        else if (property == "resource") return item->resource();
-        else if (property == "statusText") return item->statusText();
-        else if (property == "unreadMsg") return QString::number(item->unreadMsg());
-        else if (property == "jid") return item->jid();
-    }
-
-    /*--- widget data ---*/
-    Q_INVOKABLE QString getNameByIndex( int index ) {
-        if (index>0 && latestChats.count() > 0) {
-            int unreadMsg = getPropertyByJid(latestChats.at(index-1),"unreadMsg").toInt();
-            if (unreadMsg > 0)
-                return "[" + QString::number(unreadMsg) + "] " + getPropertyByJid(latestChats.at(index-1),"name");
-            else return getPropertyByJid(latestChats.at(index-1),"name");
-        } else return " ";
-    }
-
-    Q_INVOKABLE QString getPresenceByIndex( int index ) {
-        if (index>0 && latestChats.count() > 0) {
-            return getPropertyByJid(latestChats.at(index-1),"presence");
-        } else return "";
-    }
-
-    Q_INVOKABLE int getLatestChatsCount() { return latestChats.count(); }
-
-    Q_INVOKABLE int getUnreadCount() {
-        int unreadCount = 0;
-        for (int i=0; i<chats.count(); i++) {
-            unreadCount = unreadCount + getPropertyByChatID(i,"unreadMsg").toInt();
-        }
-        return unreadCount;
-    }
-
     Q_INVOKABLE QString getNameByOrderID( int id ) {
         if (cachedRoster->count() >= id+1) {
             RosterItemModel *item = (RosterItemModel*)cachedRoster->getElementByID(id);
@@ -240,19 +207,6 @@ public :
     void setTyping( QString &jid, const bool isTyping ) { m_flTyping = isTyping; emit typingChanged(jid, isTyping); }
 
     RosterListModel* getCachedRoster() const { return cachedRoster; }
-    QStringList getChats() {
-        QStringList chatsNames;
-        for (int i=0; i<chats.count(); i++) {
-            QString msg;
-            if (getPropertyByChatID(i,"unreadMsg") != "0") msg = "<b>[" + getPropertyByChatID(i,"unreadMsg") + "]</b> ";
-            if (getPropertyByChatID(i,"name") != "") {
-                chatsNames.append("<img width=24 height=24 src=\"" + getPropertyByChatID(i,"presence") + "\" /> " + msg + getPropertyByChatID(i,"name"));
-            } else {
-                chatsNames.append("<img width=24 height=24 src=\"" + getPropertyByChatID(i,"presence") + "\" /> " + msg + getPropertyByChatID(i,"jid"));
-            }
-        }
-        return chatsNames;
-    }
 
     QString getMyJid() const { return m_myjid; }
     void setMyJid( const QString& myjid ) { if(myjid!=m_myjid) {m_myjid=myjid; emit myJidChanged(); } }
@@ -280,9 +234,6 @@ public :
 
     int getKeepAlive() const { return m_keepAlive; }
     void setKeepAlive(int arg) { if (m_keepAlive != arg) { m_keepAlive = arg; emit keepAliveChanged(); } }
-
-    bool getReconnectOnError() const { return m_reconnectOnError; }
-    void setReconnectOnError(bool arg) { if (m_reconnectOnError != arg) { m_reconnectOnError = arg; emit reconnectOnErrorChanged(); } }
 	
 signals:
     void versionChanged();
@@ -304,7 +255,6 @@ signals:
     void errorHappened( const QString &errorString );
     void subscriptionReceived( const QString bareJid );
     void keepAliveChanged();
-    void reconnectOnErrorChanged();
 
     // related to XmppConnectivity class
     void updateContact(int m_accountId,QString bareJid,QString property,int count);
@@ -314,19 +264,11 @@ signals:
 public slots:
     void clientStateChanged( QXmppClient::State state );
 
-    Q_INVOKABLE void openChat( QString jid ) {
-        if (!chats.contains(jid)) {
-            chats.append(jid);
-        }
-
-        if (latestChats.contains(jid)) {
-            latestChats.removeAt(latestChats.indexOf(jid));
-            latestChats.append(jid);
-        } else { latestChats.append(jid); }
-
-        emit chatOpened( m_accountId, jid );
+    Q_INVOKABLE void openChat( QString jid ) { emit chatOpened( m_accountId, jid ); }
+    Q_INVOKABLE void closeChat( QString jid ) {
+      this->resetUnreadMessages( jid );
+      emit chatClosed( jid );
     }
-    Q_INVOKABLE void closeChat( QString jid ) { this->resetUnreadMessages( jid ); if (chats.contains(jid)) chats.removeAt(chats.indexOf(jid)); emit chatClosed( jid ); if (latestChats.contains(jid)) latestChats.removeAt(latestChats.indexOf(jid)); }
 
 private slots:
     void initRoster();
@@ -359,11 +301,7 @@ private:
     QString getPicPresence( const QXmppPresence &presence ) const;
     QString getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const;
 
-    QStringList chats;
-    QStringList latestChats;
-
     int m_keepAlive;
-    bool m_reconnectOnError;
 
     bool flSetPresenceWithoutAck;
 };

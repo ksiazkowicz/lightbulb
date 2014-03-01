@@ -25,25 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "MyXmppClient.h"
 
-#include "QXmppRosterManager.h"
-#include "QXmppVersionManager.h"
-#include "QXmppConfiguration.h"
-#include "QXmppClient.h"
-#include "DatabaseManager.h"
-#include "QXmppMessage.h"
-
-#include <QDebug>
-
-#include <QCryptographicHash>
-#include <QFile>
-#include <QDir>
-#include <QSqlRecord>
-#include <QThread>
-#include <QStringList>
-
-#include "RosterListModel.h"
-#include "RosterItemModel.h"
-
 QString MyXmppClient::myVersion = "0.3";
 QString MyXmppClient::getBareJidByJid( const QString &jid ) { if (jid.indexOf('/') >= 0) return jid.split('/')[0]; else return jid; }
 

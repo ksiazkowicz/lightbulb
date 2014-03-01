@@ -246,7 +246,10 @@ Page {
                 platformInverted: main.platformInverted
                 onClicked: {
                     rosterMenu.close()
-                    if (avkon.displayAvkonQueryDialog("Close", qsTr("Are you sure you want to close the app?"))) Qt.quit()
+                    if (avkon.displayAvkonQueryDialog("Close", qsTr("Are you sure you want to close the app?"))) {
+                        avkon.hideChatIcon()
+                        Qt.quit()
+                    }
                 }
             }
         }
@@ -351,6 +354,7 @@ Page {
             onClicked: avkon.minimize();
             onPlatformPressAndHold: {
                 notify.cleanWidget()
+                avkon.hideChatIcon()
                 Qt.quit();
             }
         }
