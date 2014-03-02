@@ -35,10 +35,7 @@ MyXmppClient::MyXmppClient() : QObject(0) {
     QObject::connect( xmppClient, SIGNAL(presenceReceived(QXmppPresence)), this, SLOT(presenceReceived(QXmppPresence)) );
     QObject::connect( xmppClient, SIGNAL(error(QXmppClient::Error)), this, SLOT(error(QXmppClient::Error)) );
 
-    m_stateConnect = Disconnect;
     m_status = Offline;
-    m_flTyping = false;
-    m_port = 5222;
     m_keepAlive = 60;
 
     qmlVCard = new QMLVCard();
@@ -58,7 +55,6 @@ MyXmppClient::MyXmppClient() : QObject(0) {
 
 MyXmppClient::~MyXmppClient() {
     if (cacheIM != NULL) delete cacheIM;
-    if (rosterManager != NULL) delete rosterManager;
     if (cachedRoster != NULL) delete cachedRoster;
     if (vCardManager != NULL) delete vCardManager;
     if (xmppClient != NULL) delete xmppClient;
@@ -297,8 +293,7 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
 
 void MyXmppClient::setStatusText( const QString &__statusText )
 {
-    if( __statusText != m_statusText )
-    {
+    if( __statusText != m_statusText ) {
         m_statusText=__statusText;
 
         QXmppPresence myPresence = xmppClient->clientPresence();
@@ -310,81 +305,56 @@ void MyXmppClient::setStatusText( const QString &__statusText )
 }
 
 
-void MyXmppClient::setStatus( StatusXmpp __status)
-{
-    if( __status != m_status )
-    {
+void MyXmppClient::setStatus( StatusXmpp __status) {
+    if (__status != m_status || xmppClient->state() == QXmppClient::ConnectingState) {
         QXmppPresence myPresence = xmppClient->clientPresence();
 
-        if( __status == Online ) {
-            myPresence.setType( QXmppPresence::Available );
-            myPresence.setAvailableStatusType( QXmppPresence::Online );
-        } else if( __status ==  Chat ) {
-            myPresence.setType( QXmppPresence::Available );
-            myPresence.setAvailableStatusType( QXmppPresence::Chat );
-        } else if ( __status == Away ) {
-            myPresence.setType( QXmppPresence::Available );
-            myPresence.setAvailableStatusType( QXmppPresence::Away );
-        } else if ( __status == XA ) {
-            myPresence.setType( QXmppPresence::Available );
-            myPresence.setAvailableStatusType( QXmppPresence::XA );
-        } else if( __status == DND ) {
-            myPresence.setType( QXmppPresence::Available );
-            myPresence.setAvailableStatusType( QXmppPresence::DND );
-        } else if( __status == Offline ) {
-            myPresence.setType( QXmppPresence::Unavailable );
-            m_status = __status;
-        }
+        if (__status != Offline) {
+            if( xmppClient->state() == QXmppClient::DisconnectedState )
+              this->connectToXmppServer();
 
+            myPresence.setType( QXmppPresence::Available );
+          } else {
+            if( (xmppClient->state() != QXmppClient::DisconnectedState) )
+              xmppClient->disconnectFromServer();
+            myPresence.setType( QXmppPresence::Unavailable );
+          }
+
+        switch (__status) {
+          case Online:
+            myPresence.setAvailableStatusType( QXmppPresence::Online );
+            break;
+          case Chat:
+            myPresence.setAvailableStatusType( QXmppPresence::Chat );
+            break;
+          case Away:
+            myPresence.setAvailableStatusType( QXmppPresence::Away );
+            break;
+          case XA:
+            myPresence.setAvailableStatusType( QXmppPresence::XA );
+            break;
+          case DND:
+            myPresence.setAvailableStatusType( QXmppPresence::DND );
+            break;
+          case Offline:
+            m_status = __status;
+            break;
+          default: break;
+        }
         xmppClient->setClientPresence( myPresence );
         this->presenceReceived( myPresence );
     }
 }
 
-
-
-void MyXmppClient::setMyPresence( StatusXmpp status, QString textStatus ) //Q_INVOKABLE
-{
-    qDebug() << Q_FUNC_INFO;
+void MyXmppClient::setMyPresence( StatusXmpp status, QString textStatus ) { //Q_INVOKABLE
+    qDebug() << "MyXmppClient:: setMyPresence() called";
     if( textStatus != m_statusText ) {
         m_statusText =textStatus;
         emit statusTextChanged();
     }
 
-    QXmppPresence myPresence;
-
-    if( status == Online ) {
-        if( xmppClient->state()  == QXmppClient::DisconnectedState ) this->connectToXmppServer();
-        myPresence.setType( QXmppPresence::Available );
-        myPresence.setStatusText( textStatus );
-        myPresence.setAvailableStatusType( QXmppPresence::Online );
-    } else if( status == Chat ) {
-        if( xmppClient->state()  == QXmppClient::DisconnectedState ) this->connectToXmppServer();
-        myPresence.setType( QXmppPresence::Available );
-        myPresence.setAvailableStatusType( QXmppPresence::Chat );
-        myPresence.setStatusText( textStatus );
-    } else if( status == Away ) {
-        if( xmppClient->state()  == QXmppClient::DisconnectedState ) this->connectToXmppServer();
-        myPresence.setType( QXmppPresence::Available );
-        myPresence.setAvailableStatusType( QXmppPresence::Away );
-        myPresence.setStatusText( textStatus );
-    } else if( status == XA ) {
-        if( xmppClient->state()  == QXmppClient::DisconnectedState ) this->connectToXmppServer();
-        myPresence.setType( QXmppPresence::Available );
-        myPresence.setAvailableStatusType( QXmppPresence::XA );
-        myPresence.setStatusText( textStatus );
-    } else if( status == DND ) {
-        if( xmppClient->state()  == QXmppClient::DisconnectedState ) this->connectToXmppServer();
-        myPresence.setType( QXmppPresence::Available );
-        myPresence.setAvailableStatusType( QXmppPresence::DND );
-        myPresence.setStatusText( textStatus );
-    } else if( status == Offline ) {
-        if( (xmppClient->state()  == QXmppClient::ConnectedState)  || (xmppClient->state()  == QXmppClient::ConnectingState) ) xmppClient->disconnectFromServer();
-        myPresence.setType( QXmppPresence::Unavailable );
-    }
-
-    xmppClient->setClientPresence( myPresence  );
-    this->presenceReceived( myPresence );
+    setStatus( status );
+    setStatusText( textStatus );
 }
 
 /* it sends information about typing : typing is started */
@@ -441,9 +411,7 @@ void MyXmppClient::itemAdded(const QString &bareJid ) {
     if (itemExists == 0) {
       RosterItemModel *itemModel = new RosterItemModel( );
       itemModel->setPresence( this->getPicPresence(QXmppPresence::Unavailable) );
-      itemModel->setContactName("");
       itemModel->setJid( bareJid );
-      itemModel->setUnreadMsg( 0 );
       itemModel->setAvatar(cacheIM->getAvatarCache(bareJid));
       cachedRoster->append( itemModel );
       itemModel = 0; delete itemModel;
@@ -455,8 +423,6 @@ void MyXmppClient::itemAdded(const QString &bareJid ) {
         this->initPresence( bareJid, resource );
     }
 }
-
-
 
 void MyXmppClient::itemChanged(const QString &bareJid ) {
     qDebug() << "MyXmppClient::itemChanged(): " << bareJid;
@@ -636,9 +602,9 @@ bool MyXmppClient::subscribe(const QString bareJid) //Q_INVOKABLE
 {
     qDebug() << "MyXmppClient::subscribe(" << bareJid << ")" ;
     bool res = false;
-    if( rosterManager && (!bareJid.isEmpty()) && (!bareJid.isNull()) ) {
+    if( rosterManager && (!bareJid.isEmpty()) && (!bareJid.isNull()) )
         res = rosterManager->subscribe( bareJid );
-    }
+
     return res;
 }
 
@@ -646,9 +612,9 @@ bool MyXmppClient::unsubscribe(const QString bareJid) //Q_INVOKABLE
 {
     qDebug() << "MyXmppClient::unsubscribe(" << bareJid << ")" ;
     bool res = false;
-    if( rosterManager && (!bareJid.isEmpty()) && (!bareJid.isNull()) ) {
+    if( rosterManager && (!bareJid.isEmpty()) && (!bareJid.isNull()) )
         res = rosterManager->unsubscribe( bareJid );
-    }
+
     return res;
 }
 
