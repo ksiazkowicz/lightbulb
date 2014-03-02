@@ -83,18 +83,26 @@ PageStackWindow {
 
     Connections {
         target: xmppConnectivity.client
-        onRosterChanged: vars.connecting = false
+        onConnectingChanged: {
+            if (settings.gBool("notifications", "notifyConnection")) {
+                if (xmppConnectivity.client.stateConnect === 0) {
+                    avkon.showPopup(xmppConnectivity.currentAccountName,"Disconnected. :c",settings.gBool("behavior","linkInDiscrPopup"));
+                }
+                if (xmppConnectivity.client.stateConnect === 1) {
+                    notify.notifySndVibr("NotifyConn")
+                    avkon.showPopup(xmppConnectivity.currentAccountName,"Status changed to " + notify.getStatusName(),settings.gBool("behavior","linkInDiscrPopup"));
+                }
+                if (xmppConnectivity.client.stateConnect === 2) {
+                    avkon.showPopup(xmppConnectivity.currentAccountName,"Connecting...",settings.gBool("behavior","linkInDiscrPopup"));
+                }
+            }
+        }
         onErrorHappened: {
-            vars.connecting = false
-            if (settings.gBool("behavior", "reconnectOnError")) dialog.create("qrc:/dialogs/Status/Reconnect")
+            if (settings.gBool("behavior", "reconnectOnError"))
+                dialog.create("qrc:/dialogs/Status/Reconnect")
         }
         onStatusChanged: {
             console.log( "XmppClient::onStatusChanged:" + xmppConnectivity.client.status )
-            notify.notifySndVibr("NotifyConn")
-            if (settings.gBool("notifications", "notifyConnection") && !vars.connecting) {
-                if (xmppConnectivity.client.statusText == "") avkon.showPopup("Status changed to " + notify.getStatusName(),xmppConnectivity.client.statusText,settings.gBool("behavior","linkInDiscrPopup"))
-                else avkon.showPopup("Status changed to",notify.getStatusName(),settings.gBool("behavior","linkInDiscrPopup"))
-            }
             notify.updateNotifiers()
         }
         onVCardChanged: xmppVCard.vcard = xmppConnectivity.client.vcard
@@ -237,7 +245,7 @@ PageStackWindow {
     Rectangle {
         color: main.platformInverted ? "white" : "black"
         anchors.fill: parent
-        visible: vars.connecting
+        visible: xmppConnectivity.client.stateConnect === 2
         Column {
             anchors.centerIn: parent;
             BusyIndicator { anchors.horizontalCenter: parent.horizontalCenter; running: true }

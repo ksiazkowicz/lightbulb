@@ -68,7 +68,7 @@ Item {
         hsWidget.r4presence = -2
         hsWidget.unreadCount = 0
         hsWidget.status = 0
-        hsWidget.postWidget(" ",-2," ",-2," ",-2," ",-2,0,0);
+        hsWidget.pushWidget()
     }
 
     HSWidget {

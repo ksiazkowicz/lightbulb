@@ -19,7 +19,6 @@ CommonDialog {
 
         onButtonClicked: {
             xmppConnectivity.client.keepAlive = settings.gBool("behavior","keepAliveInterval")
-            xmppConnectivity.client.reconnectOnError = settings.gBool("behavior","reconnectOnError")
 
             var ret = ""
 
@@ -32,8 +31,6 @@ CommonDialog {
                 case 5: ret = XmppClient.Offline; break;
                 default: ret = XmppClient.Unknown; break;
             }
-
-            if (notify.getStatusName() === "Offline" && ret !== XmppClient.Offline) vars.connecting = true;
 
             xmppConnectivity.client.setMyPresence( ret, wrapperTextEdit.text )
             vars.lastStatus = wrapperTextEdit.text

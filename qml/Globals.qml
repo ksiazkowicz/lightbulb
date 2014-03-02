@@ -13,7 +13,6 @@ Item {
     property string                  accPort: ""
     property bool                    accManualHostPort: false
     property bool                    accDefault: false
-    property bool                    connecting: false
     property string                  lastStatus: settings.gBool("behavior", "lastStatusText") ? settings.gStr("behavior","lastStatusText") : ""
     property string                  nowEditing: ""
     property string                  url: ""
