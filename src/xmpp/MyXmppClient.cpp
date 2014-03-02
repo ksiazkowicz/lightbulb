@@ -594,45 +594,45 @@ void MyXmppClient::addContact( QString bareJid, QString nick, QString group, boo
     }
 }
 
-void MyXmppClient::removeContact( QString bareJid ) { if( rosterManager ) rosterManager->removeItem( bareJid ); }
+void MyXmppClient::removeContact( QString bareJid ) {
+  if( rosterManager )
+    rosterManager->removeItem( bareJid );
+}
 
-void MyXmppClient::renameContact(QString bareJid, QString name) { if( rosterManager ) rosterManager->renameItem( bareJid, name ); }
+void MyXmppClient::renameContact(QString bareJid, QString name) {
+  if( rosterManager )
+    rosterManager->renameItem( bareJid, name );
+}
 
 bool MyXmppClient::subscribe(const QString bareJid) //Q_INVOKABLE
 {
     qDebug() << "MyXmppClient::subscribe(" << bareJid << ")" ;
-    bool res = false;
     if( rosterManager && (!bareJid.isEmpty()) && (!bareJid.isNull()) )
-        res = rosterManager->subscribe( bareJid );
-
-    return res;
+        return rosterManager->subscribe( bareJid );
+    return false;
 }
 
 bool MyXmppClient::unsubscribe(const QString bareJid) //Q_INVOKABLE
 {
     qDebug() << "MyXmppClient::unsubscribe(" << bareJid << ")" ;
-    bool res = false;
     if( rosterManager && (!bareJid.isEmpty()) && (!bareJid.isNull()) )
-        res = rosterManager->unsubscribe( bareJid );
-
-    return res;
+        return rosterManager->unsubscribe( bareJid );
+    return false;
 }
 
 bool MyXmppClient::acceptSubscribtion(const QString bareJid) //Q_INVOKABLE
 {
-    //qDebug() << "MyXmppClient::acceptSubscribtion(" << bareJid << ")" ;
-    bool res = false;
+    qDebug() << "MyXmppClient::acceptSubscribtion(" << bareJid << ")" ;
     if( rosterManager && (!bareJid.isEmpty()) && (!bareJid.isNull()) ) {
-        res = rosterManager->acceptSubscription( bareJid );
+        return rosterManager->acceptSubscription( bareJid );
     }
-    return res;
+    return false;
 }
 
 bool MyXmppClient::rejectSubscribtion(const QString bareJid) //Q_INVOKABLE
 {
-    bool res = false;
-    if( rosterManager && (!bareJid.isEmpty()) && (!bareJid.isNull()) ) res = rosterManager->refuseSubscription( bareJid );
-    return res;
+    if( rosterManager && (!bareJid.isEmpty()) && (!bareJid.isNull()) ) return rosterManager->refuseSubscription( bareJid );
+    return false;
 }
 
 void MyXmppClient::attentionSend( QString bareJid, QString resource )
