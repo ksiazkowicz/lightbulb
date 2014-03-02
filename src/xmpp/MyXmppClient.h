@@ -78,13 +78,11 @@ class MyXmppClient : public QObject
     QXmppRosterManager *rosterManager;
     QXmppVCardManager *vCardManager;
 
-    QMLVCard * qmlVCard;
+    QMLVCard* qmlVCard;
     QString flVCardRequest;
     MyCache* cacheIM;
 
 public :
-    static QString getBareJidByJid( const QString &jid );
-
     enum StateConnect {
         Disconnect = 0,
         Connected = 1,
@@ -105,8 +103,6 @@ public :
     explicit MyXmppClient();
     ~MyXmppClient();
 
-    void initXmppClient();
-
     /* --- presence --- */
     Q_INVOKABLE void setMyPresence( StatusXmpp status, QString textStatus );
 
@@ -117,9 +113,8 @@ public :
     /*--- unread msg ---*/
     Q_INVOKABLE void resetUnreadMessages( QString bareJid ) {
         RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid );
-        if( item != 0 ) {
+        if( item != 0 )
             item->setUnreadMsg( 0 );
-        }
     }
     Q_INVOKABLE void setUnreadMessages( QString bareJid, int count ) { emit updateContact(m_accountId,bareJid,"unreadMsg",count); }
 
@@ -128,50 +123,31 @@ public :
 
     /*--- connect/disconnect ---*/
     Q_INVOKABLE void connectToXmppServer();
-    Q_INVOKABLE void disconnectFromXmppServer();
 
     /*--- send msg ---*/
     Q_INVOKABLE bool sendMyMessage( QString bareJid, QString resource, QString msgBody );
 
     /*--- info by jid ---*/
-    Q_INVOKABLE QString getPropertyByJid( QString bareJid, QString property ) {
-        RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid );
-        if (item != 0) {
-          if (property == "name") return item->name();
-          else if (property == "presence") return item->presence();
-          else if (property == "resource") return item->resource();
-          else if (property == "statusText") return item->statusText();
-          else if (property == "unreadMsg") return QString::number(item->unreadMsg());
-          } else return "(unknown)";
-    }
-    Q_INVOKABLE QStringList getResourcesByJid( QString bareJid ) { return rosterManager->getResources(bareJid); }
+    Q_INVOKABLE QString getPropertyByJid( QString bareJid, QString property );
+    Q_INVOKABLE QStringList getResourcesByJid (QString bareJid) { return rosterManager->getResources(bareJid); }
 
-    Q_INVOKABLE QString getNameByOrderID( int id ) {
-        if (cachedRoster->count() >= id+1) {
-            RosterItemModel *item = (RosterItemModel*)cachedRoster->getElementByID(id);
-            if (item != 0) return item->name(); else return " ";
-        }
-        return " ";
-    }
+    Q_INVOKABLE QString getNameByOrderID( int id );
 
-    Q_INVOKABLE QString getPresenceByOrderID( int id ) {
-        if (cachedRoster->count() >= id+1) {
-            RosterItemModel *item = (RosterItemModel*)cachedRoster->getElementByID(id);
-            if (item != 0) return item->presence(); else return "";
-        }
-        return "";
-    }
+    Q_INVOKABLE QString getPresenceByOrderID( int id );
+
+    static QString getBareJidByJid( const QString &jid );
+    static QString getResourceByJid( const QString &jid );
 
     /*--- add/remove contact ---*/
     Q_INVOKABLE void addContact(QString bareJid, QString nick, QString group, bool sendSubscribe );
-    Q_INVOKABLE void removeContact( QString bareJid );
-    Q_INVOKABLE void renameContact( QString bareJid, QString name );
+    Q_INVOKABLE void removeContact( QString bareJid ) { rosterManager->removeItem( bareJid ); }
+    Q_INVOKABLE void renameContact(QString bareJid, QString name) { rosterManager->renameItem( bareJid, name ); }
 
     /*--- subscribe ---*/
-    Q_INVOKABLE bool subscribe( const QString bareJid );
-    Q_INVOKABLE bool unsubscribe( const QString bareJid );
-    Q_INVOKABLE bool acceptSubscribtion( const QString bareJid );
-    Q_INVOKABLE bool rejectSubscribtion( const QString bareJid );
+    Q_INVOKABLE bool subscribe (const QString bareJid) { return rosterManager->subscribe(bareJid); }
+    Q_INVOKABLE bool unsubscribe (const QString bareJid) { return rosterManager->unsubscribe(bareJid); }
+    Q_INVOKABLE bool acceptSubscribtion (const QString bareJid) { return rosterManager->acceptSubscription(bareJid); }
+    Q_INVOKABLE bool rejectSubscribtion (const QString bareJid) { return rosterManager->refuseSubscription(bareJid); }
 
     RosterListModel* cachedRoster;
 
@@ -275,6 +251,10 @@ private slots:
     void error(QXmppClient::Error);
 
 private:
+    // functions
+    void initRosterManager();
+
+    // private variables
     QString m_bareJidLastMessage;
     QString m_resourceLastMessage;
 

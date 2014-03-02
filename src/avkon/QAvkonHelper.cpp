@@ -69,7 +69,6 @@ QAvkonHelper::QAvkonHelper(QDeclarativeView *view, QObject *parent) :
     notifyLight = CHWRMLight::NewL();
     chatIconStatus = true;
     hideChatIcon();
-    lastPopup = "";
     iAudioPlayer = AvkonMedia::NewL();
 }
 
@@ -78,7 +77,7 @@ void QAvkonHelper::showChatIcon() {
         RProperty iProperty;
         //to enable it:
         iProperty.Set(KPSUidCoreApplicationUIs, KCoreAppUIsUipInd, ECoreAppUIsShow);
-        qDebug() << "showing chat icon";
+        qDebug() << "QAvkonHelper::showChatIcon()";
         chatIconStatus = true;
     }
 }
@@ -88,6 +87,7 @@ void QAvkonHelper::hideChatIcon() {
         RProperty iProperty;
         //to disable it:
         iProperty.Set( KPSUidCoreApplicationUIs, KCoreAppUIsUipInd, ECoreAppUIsDoNotShow);
+        qDebug() << "QAvkonHelper::hideChatIcon()";
         chatIconStatus = false;
     }
 }

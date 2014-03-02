@@ -128,6 +128,8 @@ Page {
               txtMessage.text = ""
               xmppConnectivity.client.typingStop( xmppConnectivity.chatJid, messagesPage.resourceJid )
               notify.notifySndVibr("MsgSent")
+        } else {
+            avkon.displayGlobalNote("Something went wrong while sending a message.",true);
         }
     }
     /* --------------------( resources )-------------------- */
@@ -313,7 +315,7 @@ Page {
             id: toolBarButtonSend
             iconSource: main.platformInverted ? "qrc:/toolbar/send_inverse" : "qrc:/toolbar/send"
             opacity: enabled ? 1 : 0.5
-            enabled: txtMessage.text != ""
+            enabled: txtMessage.text != "" && xmppConnectivity.client.stateConnect == 1
             onClicked: sendMessage()
         }
         ToolButton {
