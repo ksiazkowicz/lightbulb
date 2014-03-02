@@ -35,6 +35,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "MyCache.h"
 #include "Settings.h"
 
+#include "MessageWrapper.h"
+
 #include "ChatsListModel.h"
 #include "MsgListModel.h"
 #include "MsgItemModel.h"
@@ -186,6 +188,8 @@ private:
 
     int globalUnreadCount;
     int msgLimit;
+
+    MessageWrapper *msgWrapper;
 };
 
 #endif // XMPPCONNECTIVITY_H

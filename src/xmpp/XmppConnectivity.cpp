@@ -28,6 +28,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 XmppConnectivity::XmppConnectivity(QObject *parent) :
     QObject(parent)
 {
+    msgWrapper = new MessageWrapper(this);
+
     selectedClient = new MyXmppClient();
     currentClient = -1;
     clients = new QMap<int,MyXmppClient*>;
@@ -55,6 +57,7 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
 }
 
 XmppConnectivity::~XmppConnectivity() {
+    if (msgWrapper != NULL) delete msgWrapper;
     if (selectedClient != NULL) delete selectedClient;
     if (clients != NULL) delete clients;
     if (cachedMessages != NULL) delete cachedMessages;
@@ -143,11 +146,16 @@ bool XmppConnectivity::resetSettings() { return QFile::remove(lSettings->confFil
 
 // handling stuff from MyXmppClient
 void XmppConnectivity::insertMessage(int m_accountId,QString bareJid,QString body,QString date,int mine) {
+    if (mine == 0) emit notifyMsgReceived(clients->value(m_accountId)->getPropertyByJid(bareJid,"name"),bareJid,body.left(30));
+
+    body = body.replace(">", "&gt;");  //fix for > stuff
+    body = body.replace("<", "&lt;");  //and < stuff too ^^
+    body = msgWrapper->parseMsgOnLink(body);
+
     if (!cachedMessages->contains(bareJid)) cachedMessages->insert(bareJid,new MsgListModel());
     MsgItemModel* message = new MsgItemModel(body,date,mine);
     cachedMessages->value(bareJid)->append(message);
     dbWorker->executeQuery(QStringList() << "insertMessage" << QString::number(m_accountId) << bareJid << body << date << QString::number(mine));
-    if (mine == 0) emit notifyMsgReceived(clients->value(m_accountId)->getPropertyByJid(bareJid,"name"),bareJid,body.left(30));
 }
 
 // handling chats list

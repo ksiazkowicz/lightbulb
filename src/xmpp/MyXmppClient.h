@@ -44,7 +44,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QStringList>
 #include <QDebug>
 
-#include "MessageWrapper.h"
 #include "Settings.h"
 
 #include "RosterListModel.h"
@@ -74,8 +73,6 @@ class MyXmppClient : public QObject
     Q_PROPERTY( int accountId READ getAccountId WRITE setAccountId NOTIFY accountIdChanged )
     Q_PROPERTY( QMLVCard* vcard READ getVCard NOTIFY vCardChanged )
     Q_PROPERTY( int keepAlive READ getKeepAlive WRITE setKeepAlive NOTIFY keepAliveChanged )
-
-    MessageWrapper *msgWrapper;
 
     QXmppClient *xmppClient;
     QXmppRosterManager *rosterManager;
@@ -298,8 +295,6 @@ private:
     QString getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const;
 
     int m_keepAlive;
-
-    bool flSetPresenceWithoutAck;
 };
 
 #endif

@@ -29,8 +29,6 @@ QString MyXmppClient::myVersion = "0.3";
 QString MyXmppClient::getBareJidByJid( const QString &jid ) { if (jid.indexOf('/') >= 0) return jid.split('/')[0]; else return jid; }
 
 MyXmppClient::MyXmppClient() : QObject(0) {
-    msgWrapper = new MessageWrapper(this);
-
     xmppClient = new QXmppClient( this );
     QObject::connect( xmppClient, SIGNAL(stateChanged(QXmppClient::State)), this, SLOT(clientStateChanged(QXmppClient::State)) );
     QObject::connect( xmppClient, SIGNAL(messageReceived(QXmppMessage)), this, SLOT(messageReceivedSlot(QXmppMessage)) );
@@ -52,8 +50,6 @@ MyXmppClient::MyXmppClient() : QObject(0) {
 
     cachedRoster = new RosterListModel( this );
 
-    flSetPresenceWithoutAck = true;
-
     vCardManager = &xmppClient->vCardManager();
     QObject::connect( vCardManager, SIGNAL(vCardReceived(const QXmppVCardIq &)),
                       this, SLOT(initVCard(const QXmppVCardIq &)),
@@ -61,7 +57,6 @@ MyXmppClient::MyXmppClient() : QObject(0) {
 }
 
 MyXmppClient::~MyXmppClient() {
-    if (msgWrapper != NULL) delete msgWrapper;
     if (cacheIM != NULL) delete cacheIM;
     if (rosterManager != NULL) delete rosterManager;
     if (cachedRoster != NULL) delete cachedRoster;
@@ -547,12 +542,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         }
         item = 0; delete item;
 
-        QString body = xmppMsg.body();
-        body = body.replace(">", "&gt;");  //fix for > stuff
-        body = body.replace("<", "&lt;");  //and < stuff too ^^
-        body = msgWrapper->parseMsgOnLink(body);
-
-        emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.from()),body,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0);
+        emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.from()),xmppMsg.body(),QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0);
     }
 }
 
@@ -577,11 +567,7 @@ bool MyXmppClient::sendMyMessage(QString bareJid, QString resource, QString msgB
 
     this->messageReceivedSlot( xmppMsg );
 
-    QString body = msgBody.replace(">", "&gt;"); //fix for > stuff
-    body = body.replace("<", "&lt;");  //and < stuff too ^^
-    body = msgWrapper->parseMsgOnLink(body);
-
-    emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.to()),body,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),1);
+    emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.to()),msgBody,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),1);
 
     return true;
 }
