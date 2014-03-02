@@ -54,6 +54,18 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
     connect(lSettings,SIGNAL(accountRemoved(int)),this,SLOT(accountRemoved(int)),Qt::UniqueConnection);
 }
 
+XmppConnectivity::~XmppConnectivity() {
+    if (selectedClient != NULL) delete selectedClient;
+    if (clients != NULL) delete clients;
+    if (cachedMessages != NULL) delete cachedMessages;
+    if (roster != NULL) delete roster;
+    if (chats != NULL) delete chats;
+    if (lCache != NULL) delete lCache;
+
+    if (dbThread != NULL) delete dbThread;
+    if (dbWorker != NULL) delete dbWorker;
+}
+
 bool XmppConnectivity::initializeAccount(int index, AccountsItemModel* account) {
     // check if client with specified index exists. If not, add one
     if (!clients->contains(index))

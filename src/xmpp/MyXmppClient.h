@@ -36,12 +36,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "QXmppMessage.h"
 
 #include <QObject>
-#include <QtDeclarative>
-#include <QDeclarativeView>
-#include <QMap>
 #include <QList>
 #include <QVariant>
-#include <QThread>
 #include <QCryptographicHash>
 #include <QFile>
 #include <QDir>

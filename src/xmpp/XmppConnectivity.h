@@ -27,6 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define XMPPCONNECTIVITY_H
 
 #include <QObject>
+#include <QThread>
+#include <QMap>
 #include "AccountsItemModel.h"
 #include "MyXmppClient.h"
 #include "DatabaseWorker.h"
@@ -55,6 +57,8 @@ class XmppConnectivity : public QObject
     Q_PROPERTY(int messagesLimit READ getMsgLimit WRITE setMsgLimit NOTIFY msgLimitChanged )
 public:
     explicit XmppConnectivity(QObject *parent = 0);
+    ~XmppConnectivity();
+
     bool initializeAccount(int index, AccountsItemModel* account);
     Q_INVOKABLE void changeAccount(int index);
     int getCurrentAccount() { return currentClient; }

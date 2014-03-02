@@ -37,20 +37,12 @@ MyXmppClient::MyXmppClient() : QObject(0) {
     QObject::connect( xmppClient, SIGNAL(presenceReceived(QXmppPresence)), this, SLOT(presenceReceived(QXmppPresence)) );
     QObject::connect( xmppClient, SIGNAL(error(QXmppClient::Error)), this, SLOT(error(QXmppClient::Error)) );
 
-    m_bareJidLastMessage = "";
-    m_resourceLastMessage = "";
     m_stateConnect = Disconnect;
     m_status = Offline;
-    m_statusText = "";
     m_flTyping = false;
-    m_myjid = "";
-    m_password = "";
-    m_host = "";
     m_port = 5222;
-    m_resource = "";
     m_keepAlive = 60;
 
-    flVCardRequest = "";
     qmlVCard = new QMLVCard();
 
     this->initXmppClient();
@@ -69,7 +61,14 @@ MyXmppClient::MyXmppClient() : QObject(0) {
 }
 
 MyXmppClient::~MyXmppClient() {
-    if( msgWrapper != NULL) delete msgWrapper; }
+    if (msgWrapper != NULL) delete msgWrapper;
+    if (cacheIM != NULL) delete cacheIM;
+    if (rosterManager != NULL) delete rosterManager;
+    if (cachedRoster != NULL) delete cachedRoster;
+    if (vCardManager != NULL) delete vCardManager;
+    if (xmppClient != NULL) delete xmppClient;
+    if (qmlVCard != NULL) delete qmlVCard;
+}
 
 void MyXmppClient::initXmppClient() {
     xmppClient->versionManager().setClientName("Lightbulb");
@@ -78,6 +77,7 @@ void MyXmppClient::initXmppClient() {
 
 
 void MyXmppClient::clientStateChanged(QXmppClient::State state) {
+    StateConnect before = m_stateConnect;
     if( state == QXmppClient::ConnectingState ) m_stateConnect = Connecting;
     else if( state == QXmppClient::ConnectedState ) {
         m_stateConnect = Connected;
@@ -85,7 +85,7 @@ void MyXmppClient::clientStateChanged(QXmppClient::State state) {
         if( !rosterManager ) {
             rosterManager = &xmppClient->rosterManager();
 
-            qDebug() << Q_FUNC_INFO << " QObject::connect( rosterManager, SIGNAL(........).....)";
+            qDebug() << "MyXmppClient::clientStateChanged(): initializing roster manager";
 
             QObject::connect( rosterManager, SIGNAL(presenceChanged(QString,QString)), this, SLOT(initPresence(const QString, const QString)), Qt::UniqueConnection );
             QObject::connect( rosterManager, SIGNAL(rosterReceived()), this, SLOT(initRoster()), Qt::UniqueConnection );
@@ -102,7 +102,8 @@ void MyXmppClient::clientStateChanged(QXmppClient::State state) {
         m_stateConnect = Disconnect;
         this->setMyPresence( Offline, m_statusText );
     }
-    emit connectingChanged();
+    if (m_stateConnect != before)
+      emit connectingChanged(); //check if stateConnect changed
 }
 
 void MyXmppClient::connectToXmppServer() {
