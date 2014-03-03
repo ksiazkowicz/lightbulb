@@ -253,6 +253,7 @@ private slots:
 private:
     // functions
     void initRosterManager();
+    void clearPresence();
 
     // private variables
     QString m_bareJidLastMessage;

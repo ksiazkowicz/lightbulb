@@ -315,7 +315,7 @@ Page {
             id: toolBarButtonSend
             iconSource: main.platformInverted ? "qrc:/toolbar/send_inverse" : "qrc:/toolbar/send"
             opacity: enabled ? 1 : 0.5
-            enabled: txtMessage.text != "" && xmppConnectivity.client.stateConnect == 1
+            enabled: txtMessage.text != "" && xmppConnectivity.client.stateConnect === 1
             onClicked: sendMessage()
         }
         ToolButton {

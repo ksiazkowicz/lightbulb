@@ -101,5 +101,9 @@
     <qresource prefix="/Events">
         <file alias="alarm">images/events/alarm.svg</file>
         <file alias="alarm_disabled">images/events/alarm_disabled.svg</file>
+        <file alias="vibra">images/events/vibra.svg</file>
+        <file alias="vibra_disabled">images/events/vibra_disabled.svg</file>
+        <file alias="popup">images/events/popup.svg</file>
+        <file alias="popup_disabled">images/events/popup_disabled.svg</file>
     </qresource>
 </RCC>

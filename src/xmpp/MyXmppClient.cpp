@@ -235,7 +235,7 @@ void MyXmppClient::typingStop(QString bareJid, QString resource) {
 
 bool MyXmppClient::sendMyMessage(QString bareJid, QString resource, QString msgBody) //Q_INVOKABLE
 {
-    if (msgBody == "" || m_stateConnect != QXmppClient::ConnectedState) return false; // if message is empty or user not connected - BREAK
+    if (msgBody == "" || m_stateConnect != Connected) return false; // if message is empty or user not connected - BREAK
 
     QXmppMessage xmppMsg;
 
