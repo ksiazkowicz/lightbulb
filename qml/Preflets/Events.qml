@@ -4,6 +4,8 @@ import com.nokia.symbian 1.1
 Item {
     height: content.height
 
+    property string invertStuff: main.platformInverted ? "_inverse" : ""
+
     Column {
         id: content
         width: parent.width
@@ -12,30 +14,20 @@ Item {
         Item {
             width: parent.width
             height: msgRecvSettings.height * 2
-            Column {
-                anchors { left: parent.left; leftMargin: platformStyle.paddingSmall; top: parent.top; topMargin: platformStyle.paddingSmall }
-                width: parent.width - msgRecvSettings.width - 20
-                height: content.height
-                Text {
-                    width: parent.width
-                    color: vars.textColor
-                    text: qsTr("Incoming message")
-                    font.pixelSize: 20
-                }
-                Text {
-                    width: parent.width
-                    color: main.platformInverted ? "#333333" : "#888888"
-                    text: qsTr("Haptics feedback, sound notification or popup will happen when receiving an incoming message if enabled.")
-                    wrapMode: Text.WordWrap
-                    font.pixelSize: 14
-                }
+            Text {
+                anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: msgRecvSettings.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
+                color: vars.textColor
+                property string color2: main.platformInverted ? "#333333" : "#888888"
+                text: qsTr("Incoming message") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("Haptics feedback, sound notification or popup will happen when receiving an incoming message if enabled.") + "</font>"
+                font.pixelSize: 20
+                wrapMode: Text.WordWrap
             }
             ButtonRow {
                 id: msgRecvSettings
                 anchors { right: parent.right; rightMargin: 10; top: parent.top }
                 ToolButton {
                     id: vibrMsgRecv
-                    iconSource: selected ? ":/Events/vibra" : ":/Events/vibra_disabled"
+                    iconSource: selected ? ":/Events/vibra" + invertStuff : ":/Events/vibra_disabled" + invertStuff
                     property bool selected: settings.gBool("notifications","vibraMsgRecv")
                     platformInverted: main.platformInverted
                     onClicked: {
@@ -45,7 +37,7 @@ Item {
                 }
                 ToolButton {
                     id: soundMsgRecv
-                    iconSource: selected ? ":/Events/alarm" : ":/Events/alarm_disabled"
+                    iconSource: selected ? ":/Events/alarm" + invertStuff : ":/Events/alarm_disabled" + invertStuff
                     property bool selected: settings.gBool("notifications","soundMsgRecv")
                     platformInverted: main.platformInverted
                     onClicked: {
@@ -55,7 +47,7 @@ Item {
                 }
                 ToolButton {
                     id: usePopupRecv
-                    iconSource: selected ? ":/Events/popup" : ":/Events/popup_disabled"
+                    iconSource: selected ? ":/Events/popup" + invertStuff : ":/Events/popup_disabled" + invertStuff
                     property bool selected: settings.gBool("notifications","usePopupRecv")
                     platformInverted: main.platformInverted
                     onClicked: {
@@ -88,6 +80,7 @@ Item {
                 }
                 ToolButton {
                     enabled: false
+                    platformInverted: main.platformInverted
                     height: button.height
                     width: parent.width/3
                 }
@@ -105,23 +98,13 @@ Item {
             width: parent.width
             height: msgSentSettings.height * 2
 
-            Column {
-                anchors { left: parent.left; leftMargin: platformStyle.paddingSmall; top: parent.top; topMargin: platformStyle.paddingSmall }
-                width: parent.width - msgSentSettings.width - 20
-                height: content.height
-                Text {
-                    width: parent.width
-                    color: vars.textColor
-                    text: qsTr("Outgoing message")
-                    font.pixelSize: 20
-                }
-                Text {
-                    width: parent.width
-                    color: main.platformInverted ? "#333333" : "#888888"
-                    text: qsTr("Haptics feedback or sound notification will happen when your message is sent.")
-                    wrapMode: Text.WordWrap
-                    font.pixelSize: 14
-                }
+            Text {
+                anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: msgSentSettings.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
+                color: vars.textColor
+                property string color2: main.platformInverted ? "#333333" : "#888888"
+                text: qsTr("Outgoing message") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("Haptics feedback or sound notification will happen when your message is sent.") + "</font>"
+                font.pixelSize: 20
+                wrapMode: Text.WordWrap
             }
 
             ButtonRow {
@@ -129,7 +112,7 @@ Item {
                 anchors { right: parent.right; rightMargin: 10; top: parent.top }
                 ToolButton {
                     id: vibrMsgSent
-                    iconSource: selected ? ":/Events/vibra" : ":/Events/vibra_disabled"
+                    iconSource: selected ? ":/Events/vibra" + invertStuff : ":/Events/vibra_disabled" + invertStuff
                     property bool selected: settings.gBool("notifications","vibraMsgSent")
                     platformInverted: main.platformInverted
                     onClicked: {
@@ -139,7 +122,7 @@ Item {
                 }
                 ToolButton {
                     id: soundMsgSent
-                    iconSource: selected ? ":/Events/alarm" : ":/Events/alarm_disabled"
+                    iconSource: selected ? ":/Events/alarm" + invertStuff : ":/Events/alarm_disabled" + invertStuff
                     property bool selected: settings.gBool("notifications","soundMsgSent")
                     platformInverted: main.platformInverted
                     onClicked: {
@@ -183,23 +166,13 @@ Item {
             width: parent.width
             height: msgRecvSettings.height * 2
 
-            Column {
-                anchors { left: parent.left; leftMargin: platformStyle.paddingSmall; top: parent.top; topMargin: platformStyle.paddingSmall }
-                width: parent.width - notifyConnectionSettings.width - 20
-                height: content.height
-                Text {
-                    width: parent.width
-                    color: vars.textColor
-                    text: qsTr("Connection")
-                    font.pixelSize: 20
-                }
-                Text {
-                    width: parent.width
-                    color: main.platformInverted ? "#333333" : "#888888"
-                    text: qsTr("Sound notification will be played or popup will appear when connection state changes, if enabled.")
-                    wrapMode: Text.WordWrap
-                    font.pixelSize: 14
-                }
+            Text {
+                anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: notifyConnectionSettings.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
+                color: vars.textColor
+                property string color2: main.platformInverted ? "#333333" : "#888888"
+                text: qsTr("Connection") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("Sound notification will be played or popup will appear when connection state changes, if enabled.") + "</font>"
+                font.pixelSize: 20
+                wrapMode: Text.WordWrap
             }
 
             ButtonRow {
@@ -207,7 +180,7 @@ Item {
                 anchors { right: parent.right; rightMargin: 10; top: parent.top }
                 ToolButton {
                     id: soundNotifyConn
-                    iconSource: selected ? ":/Events/alarm" : ":/Events/alarm_disabled"
+                    iconSource: selected ? ":/Events/alarm" + invertStuff : ":/Events/alarm_disabled" + invertStuff
                     property bool selected: settings.gBool("notifications","soundNotifyConn")
                     platformInverted: main.platformInverted
                     onClicked: {
@@ -217,7 +190,7 @@ Item {
                 }
                 ToolButton {
                     id: notifyOnline
-                    iconSource: selected ? ":/Events/popup" : ":/Events/popup_disabled"
+                    iconSource: selected ? ":/Events/popup" + invertStuff : ":/Events/popup_disabled" + invertStuff
                     property bool selected: settings.gBool("notifications","notifyConnection")
                     platformInverted: main.platformInverted
                     onClicked: {
@@ -240,6 +213,7 @@ Item {
                 }
                 ToolButton {
                     enabled: false
+                    platformInverted: main.platformInverted
                     height: parent.height
                     width: parent.width/2
                 }
@@ -257,32 +231,21 @@ Item {
             width: parent.width
             height: msgRecvSettings.height * 2
 
-            Column {
-                anchors { left: parent.left; leftMargin: platformStyle.paddingSmall; top: parent.top; topMargin: platformStyle.paddingSmall }
-                width: parent.width - msgSubSettings.width - 20
-                height: content.height
-                Text {
-                    width: parent.width
-                    color: vars.textColor
-                    text: qsTr("Subscription")
-                    font.pixelSize: 20
-                }
-                Text {
-                    width: parent.width
-                    color: main.platformInverted ? "#333333" : "#888888"
-                    text: qsTr("Haptics feedback, sound notification or popup will happen when receiving a subscription request, if enabled.")
-                    wrapMode: Text.WordWrap
-                    font.pixelSize: 14
-                }
+            Text {
+                anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: msgSubSettings.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
+                color: vars.textColor
+                property string color2: main.platformInverted ? "#333333" : "#888888"
+                text: qsTr("Subscription") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("Haptics feedback, sound notification or popup will happen when receiving a subscription request, if enabled.") + "</font>"
+                font.pixelSize: 20
+                wrapMode: Text.WordWrap
             }
-
 
             ButtonRow {
                 id: msgSubSettings
                 anchors { right: parent.right; rightMargin: 10; top: parent.top }
                 ToolButton {
                     id: vibrMsgSub
-                    iconSource: selected ? ":/Events/vibra" : ":/Events/vibra_disabled"
+                    iconSource: selected ? ":/Events/vibra" + invertStuff : ":/Events/vibra_disabled" + invertStuff
                     property bool selected: settings.gBool("notifications","vibraMsgSub")
                     platformInverted: main.platformInverted
                     onClicked: {
@@ -292,7 +255,7 @@ Item {
                 }
                 ToolButton {
                     id: soundMsgSub
-                    iconSource: selected ? ":/Events/alarm" : ":/Events/alarm_disabled"
+                    iconSource: selected ? ":/Events/alarm" + invertStuff : ":/Events/alarm_disabled" + invertStuff
                     property bool selected: settings.gBool("notifications","soundMsgSub")
                     platformInverted: main.platformInverted
                     onClicked: {
@@ -302,7 +265,7 @@ Item {
                 }
                 ToolButton {
                     id: subInfo
-                    iconSource: selected ? ":/Events/popup" : ":/Events/popup_disabled"
+                    iconSource: selected ? ":/Events/popup" + invertStuff : ":/Events/popup_disabled" + invertStuff
                     property bool selected: settings.gBool("notifications","notifySubscription")
                     platformInverted: main.platformInverted
                     onClicked: {
@@ -336,6 +299,7 @@ Item {
                 ToolButton {
                     enabled: false
                     height: button2.height
+                    platformInverted: main.platformInverted
                     width: parent.width/3
                 }
             }
@@ -350,26 +314,16 @@ Item {
 
         Item {
             width: parent.width
-            height: column.height
+            height: text.height+2*platformStyle.paddingSmall
 
-            Column {
-                id: column
-                anchors { left: parent.left; leftMargin: platformStyle.paddingSmall; top: parent.top; topMargin: platformStyle.paddingSmall }
-                width: parent.width - notifyTyping.width - 20
-                height: notifyTyping.height+20+2*platformStyle.paddingSmall
-                Text {
-                    width: parent.width
-                    color: vars.textColor
-                    text: qsTr("Typing notifications")
-                    font.pixelSize: 20
-                }
-                Text {
-                    width: parent.width
-                    color: main.platformInverted ? "#333333" : "#888888"
-                    text: qsTr("If enabled, popup will appear when contact started/stopped typing.")
-                    wrapMode: Text.WordWrap
-                    font.pixelSize: 14
-                }
+            Text {
+                id: text
+                anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: notifyTyping.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
+                color: vars.textColor
+                property string color2: main.platformInverted ? "#333333" : "#888888"
+                text: qsTr("Typing notifications") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("If enabled, popup will appear when contact started/stopped typing.") + "</font>"
+                font.pixelSize: 20
+                wrapMode: Text.WordWrap
             }
             Switch {
                 id: notifyTyping

@@ -105,5 +105,11 @@
         <file alias="vibra_disabled">images/events/vibra_disabled.svg</file>
         <file alias="popup">images/events/popup.svg</file>
         <file alias="popup_disabled">images/events/popup_disabled.svg</file>
+        <file alias="alarm_disabled_inverse">images/events/alarm_disabled_inverse.svg</file>
+        <file alias="alarm_inverse">images/events/alarm_inverse.svg</file>
+        <file alias="popup_disabled_inverse">images/events/popup_disabled_inverse.svg</file>
+        <file alias="popup_inverse">images/events/popup_inverse.svg</file>
+        <file alias="vibra_disabled_inverse">images/events/vibra_disabled_inverse.svg</file>
+        <file alias="vibra_inverse">images/events/vibra_inverse.svg</file>
     </qresource>
 </RCC>
