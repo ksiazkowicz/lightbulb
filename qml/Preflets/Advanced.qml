@@ -27,11 +27,6 @@ import com.nokia.symbian 1.1
 
 Item {
     height: column.height
-    Component.onDestruction: {
-        if (closeTheApp) avkon.restartApp();
-    }
-
-    property bool closeTheApp: false
 
     Column {
         id: column
@@ -98,7 +93,7 @@ Item {
             onClicked: {
                 if (xmppConnectivity.dbRemoveDb()) {
                     notify.postInfo("Database cleaned.")
-                    if (!closeTheApp) closeTheApp = true;
+                    if (!vars.isRestartRequired) vars.isRestartRequired = true;
                 } else notify.postError("Unable to clean database.")
             }
         }
@@ -122,7 +117,7 @@ Item {
             onClicked: {
                 if (xmppConnectivity.cleanCache()) {
                     notify.postInfo("Avatar cache cleaned.")
-                    if (!closeTheApp) closeTheApp = true;
+                    if (!vars.isRestartRequired) vars.isRestartRequired = true;
                 } else notify.postError("Unable to clean avatar cache.")
             }
         }
@@ -146,7 +141,7 @@ Item {
             onClicked: {
                 if (xmppConnectivity.resetSettings()) {
                     notify.postInfo("Settings resetted to default.")
-                    if (!closeTheApp) closeTheApp = true;
+                    if (!vars.isRestartRequired) vars.isRestartRequired = true;
                 } else notify.postError("Unable to reset settings.")
             }
         }

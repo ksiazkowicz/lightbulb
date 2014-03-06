@@ -8,7 +8,11 @@ Page {
         id: toolBarLayout
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
-            onClicked: pageStack.pop()
+            onClicked: {
+                if (vars.isRestartRequired) {
+                    avkon.restartApp();
+                } else pageStack.pop();
+            }
         }
     }
 
