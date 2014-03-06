@@ -114,6 +114,7 @@ void MyXmppClient::error(QXmppClient::Error e) {
         QXmppPresence pr = xmppClient->clientPresence();
         this->presenceReceived( pr );
         QXmppPresence presence( QXmppPresence::Unavailable );
+        this->clearPresence();
         xmppClient->setClientPresence( presence );
 
         emit errorHappened( errString );
@@ -448,6 +449,7 @@ void MyXmppClient::setStatus( StatusXmpp __status) {
             break;
           case Offline:
             m_status = __status;
+            this->clearPresence();
             break;
           default: break;
         }
@@ -520,6 +522,19 @@ void MyXmppClient::initRoster() {
         } else if (itemExists->name() != name) {
           itemExists->setContactName(name);
           emit contactRenamed(bareJid,name);
+        }
+        itemExists = 0; delete itemExists;
+    }
+    emit rosterChanged();
+}
+
+void MyXmppClient::clearPresence() {
+    qDebug() << "MyXmppClient::clearPresence() called";
+
+    for( int j=0; j < cachedRoster->rowCount(); j++ ) {
+        RosterItemModel *itemExists = (RosterItemModel*)cachedRoster->getElementByID(j);
+        if (itemExists != 0) {
+          itemExists->setPresence( this->getPicPresence( QXmppPresence::Unavailable ) );
         }
         itemExists = 0; delete itemExists;
     }
