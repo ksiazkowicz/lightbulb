@@ -29,4 +29,12 @@ Item {
     property string                  selectedContactStatusText: ""
     property string                  contactName: ""
     property string                  selectedContactPresence: ""
+
+    // roster
+    property bool hideOffline: settings.gBool("ui","hideOffline")
+    property bool markUnread: settings.gBool("ui","markUnread")
+    property bool showUnreadCount: settings.gBool("ui","showUnreadCount")
+    property int  rosterItemHeight: settings.gInt("ui","rosterItemHeight")
+    property bool showContactStatusText: settings.gBool("ui","showContactStatusText")
+    property bool rosterLayoutAvatar: settings.gBool("ui","rosterLayoutAvatar")
 }

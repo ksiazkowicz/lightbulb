@@ -26,12 +26,6 @@ Page {
 
     Component.onCompleted: statusBarText.text = "Contacts"
 
-    property bool hideOffline: settings.gBool("ui","hideOffline")
-    property bool markUnread: settings.gBool("ui","markUnread")
-    property bool showUnreadCount: settings.gBool("ui","showUnreadCount")
-    property int  rosterItemHeight: settings.gInt("ui","rosterItemHeight")
-    property bool showContactStatusText: settings.gBool("ui","showContactStatusText")
-    property bool rosterLayoutAvatar: settings.gBool("ui","rosterLayoutAvatar")
     property string selectedJid: ""
 
     /*******************************************************************************/
@@ -81,8 +75,8 @@ Page {
             id: wrapper
             width: rosterView.width
             color: "transparent"
-            visible: rosterSearch.text !== "" ? (txtJid.contact.substr(0, rosterSearch.text.length) == rosterSearch.text ? true : false ) : presence === "qrc:/presence/offline" ? !hideOffline : true
-            height: rosterItemHeight - txtJid.font.pixelSize > txtJid.height ? rosterItemHeight : txtJid.height + txtJid.font.pixelSize
+            visible: rosterSearch.text !== "" ? (txtJid.contact.substr(0, rosterSearch.text.length) == rosterSearch.text ? true : false ) : presence === "qrc:/presence/offline" ? !vars.hideOffline : true
+            height: vars.rosterItemHeight - txtJid.font.pixelSize > txtJid.height ? vars.rosterItemHeight : txtJid.height + txtJid.font.pixelSize
 
             gradient: gr_free
             Gradient {
@@ -108,19 +102,19 @@ Page {
 
             Image {
                 id: imgPresence
-                source: rosterLayoutAvatar ? avatar : presence
-                sourceSize.height: rosterItemHeight-4
-                sourceSize.width: rosterItemHeight-4
-                anchors { top: parent.top; topMargin: (rosterItemHeight-sourceSize.height)/2; left: parent.left; leftMargin: 10 }
-                height: rosterItemHeight-4
-                width: rosterItemHeight-4
+                source: vars.rosterLayoutAvatar ? avatar : presence
+                sourceSize.height: vars.rosterItemHeight-4
+                sourceSize.width: vars.rosterItemHeight-4
+                anchors { top: parent.top; topMargin: (vars.rosterItemHeight-sourceSize.height)/2; left: parent.left; leftMargin: 10 }
+                height: vars.rosterItemHeight-4
+                width: vars.rosterItemHeight-4
                 Image {
                     id: imgUnreadMsg
                     source: main.platformInverted ? "qrc:/unread-mark_inverse" : "qrc:/unread-mark"
                     sourceSize.height: imgPresence.height
                     sourceSize.width: imgPresence.height
                     smooth: true
-                    visible: markUnread ? unreadMsg != 0 : false
+                    visible: vars.markUnread ? unreadMsg != 0 : false
                     anchors.centerIn: parent
                     opacity: unreadMsg != 0 ? 1 : 0
                     Image {
@@ -129,7 +123,7 @@ Page {
                         sourceSize.height: imgPresence.height
                         sourceSize.width: imgPresence.height
                         smooth: true
-                        visible: showUnreadCount ? unreadMsg != 0 : false
+                        visible: vars.showUnreadCount ? unreadMsg != 0 : false
                         anchors.centerIn: parent
                         opacity: unreadMsg != 0 ? 1 : 0
                     }
@@ -139,7 +133,7 @@ Page {
                         height: width
                         anchors.right: parent.right
                         anchors.bottom: parent.bottom
-                        visible: showUnreadCount ? unreadMsg != 0 : false
+                        visible: vars.showUnreadCount ? unreadMsg != 0 : false
                         Text {
                             id: txtUnreadMsg
                             text: unreadMsg
@@ -156,11 +150,11 @@ Page {
                     property string contact: (name === "" ? jid : name)
                     anchors { left: imgPresence.right; right: imgPresenceR.left; leftMargin: 10; rightMargin: 10; verticalCenter: parent.verticalCenter }
                     width: parent.width
-                    maximumLineCount: (rosterItemHeight/22) > 1 ? (rosterItemHeight/22) : 1
-                    text: (name === "" ? jid : name) + ((showContactStatusText && statusText != "") ? (" · <font color='#aaaaaa'><i>" + statusText + "</i></font>") : "")
+                    maximumLineCount: (vars.rosterItemHeight/22) > 1 ? (vars.rosterItemHeight/22) : 1
+                    text: (name === "" ? jid : name) + ((vars.showContactStatusText && statusText != "") ? (" · <font color='#aaaaaa'><i>" + statusText + "</i></font>") : "")
                     onLinkActivated: { vars.url=link; linkContextMenu.open()}
                     wrapMode: Text.WordWrap
-                    font.pixelSize: (showContactStatusText ? 16 : 0)
+                    font.pixelSize: (vars.showContactStatusText ? 16 : 0)
                     color: vars.textColor
             }
             MouseArea {
@@ -187,12 +181,12 @@ Page {
             }
             Image {
                 id: imgPresenceR
-                source: rosterLayoutAvatar ? presence : ""
+                source: vars.rosterLayoutAvatar ? presence : ""
                 sourceSize.height: (wrapper.height/3) - 4
                 sourceSize.width: (wrapper.height/3) - 4
-                anchors { verticalCenter: parent.verticalCenter; right: parent.right; rightMargin: rosterLayoutAvatar ? 10 : 0 }
-                height: rosterLayoutAvatar ? (rosterItemHeight/3) - 4 : 0
-                width: rosterLayoutAvatar ? (rosterItemHeight/3) - 4 : 0
+                anchors { verticalCenter: parent.verticalCenter; right: parent.right; rightMargin: vars.rosterLayoutAvatar ? 10 : 0 }
+                height: vars.rosterLayoutAvatar ? (vars.rosterItemHeight/3) - 4 : 0
+                width: vars.rosterLayoutAvatar ? (vars.rosterItemHeight/3) - 4 : 0
             }
             Rectangle {
                 height: 1

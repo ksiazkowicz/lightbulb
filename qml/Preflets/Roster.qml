@@ -18,6 +18,7 @@ Item {
                    unreadCount.enabled = false;
                    unreadCount.checked = false;
                } else unreadCount.enabled = true;
+               vars.markUnread = checked;
            }
         }
         CheckBox {
@@ -28,6 +29,7 @@ Item {
            platformInverted: main.platformInverted
            onCheckedChanged: {
               settings.sBool(checked,"ui", "showUnreadCount")
+              vars.showUnreadCount = checked;
            }
         }
         CheckBox {
@@ -37,6 +39,7 @@ Item {
            checked: settings.gBool("ui", "hideOffline")
            onCheckedChanged: {
               settings.sBool(checked,"ui", "hideOffline")
+               vars.hideOffline = checked;
            }
         }
         CheckBox {
@@ -46,6 +49,7 @@ Item {
            checked: settings.gBool("ui", "showContactStatusText")
            onCheckedChanged: {
               settings.sBool(checked,"ui", "showContactStatusText")
+               vars.showContactStatusText = checked;
            }
         }
         CheckBox {
@@ -55,6 +59,7 @@ Item {
            checked: settings.gBool("ui", "rosterLayoutAvatar")
            onCheckedChanged: {
               settings.sBool(checked,"ui", "rosterLayoutAvatar")
+              vars.rosterLayoutAvatar = checked;
            }
         }
         Text {
@@ -75,6 +80,7 @@ Item {
 
                 onValueChanged: {
                     settings.sInt(value,"ui", "rosterItemHeight")
+                    vars.rosterItemHeight = value;
                 }
             }
     }
