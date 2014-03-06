@@ -140,10 +140,11 @@ Page {
         target: xmppConnectivity
         onNotifyMsgReceived: if( jid == xmppConnectivity.chatJid ) messagesPage.resourceJid = xmppConnectivity.client.resourceLastMsg
         onQmlChatChanged: {
-            console.log( "qml chat jid switched to " +xmppConnectivity.chatJid )
             xmppConnectivity.client.openChat( xmppConnectivity.chatJid )
 
             statusBarText.text = vars.contactName
+
+            txtMessage.text = xmppConnectivity.getPreservedMsg(xmppConnectivity.chatJid);
 
             if( xmppConnectivity.client.bareJidLastMsg == xmppConnectivity.chatJid ) messagesPage.resourceJid = xmppConnectivity.client.resourceLastMsg
 

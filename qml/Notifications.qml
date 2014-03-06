@@ -28,7 +28,7 @@ import QtMobility.feedback 1.1
 import lightbulb 1.0
 
 Item {
-    Component.onCompleted: if (settings.gBool("behavior","enableHsWidget")) hsWidget.registerWidget()
+    Component.onCompleted: if (settings.gBool("widget","enableHsWidget")) hsWidget.registerWidget()
 
     function getStatusName() {
        return getStatusNameByIndex(xmppConnectivity.client.status)
@@ -48,7 +48,7 @@ Item {
             avkon.showChatIcon();
         else avkon.hideChatIcon();
 
-        if (settings.gBool("behavior","enableHsWidget")) {
+        if (settings.gBool("widget","enableHsWidget")) {
             hsWidget.status = xmppConnectivity.client.status
             hsWidget.unreadCount = vars.globalUnreadCount
             hsWidget.getLatest4Chats()
@@ -85,7 +85,7 @@ Item {
         property int status: 0
 
         Component.onCompleted: {
-            var skinName = settings.gStr("ui","widgetSkin")
+            var skinName = settings.gStr("widget","skin")
             if (skinName === "false") skinName = "C:\\data\\.config\\Lightbulb\\widgets\\Belle Albus";
             loadSkin(skinName);
         }
@@ -125,7 +125,7 @@ Item {
     }
 
     function updateSkin() {
-        var skinName = settings.gStr("ui","widgetSkin")
+        var skinName = settings.gStr("widget","skin")
         if (skinName === "false") skinName = "C:\\data\\.config\\Lightbulb\\widgets\\Belle Albus";
         hsWidget.loadSkin(skinName);
         hsWidget.renderWidget();
@@ -140,14 +140,14 @@ Item {
     }
 
     function registerWidget() {
-        if (settings.gBool("behavior","enableHsWidget")) {
+        if (settings.gBool("widget","enableHsWidget")) {
             hsWidget.registerWidget()
             hsWidget.publishWidget()
         }
     }
 
     function removeWidget() {
-        if (settings.gBool("behavior","enableHsWidget")) hsWidget.removeWidget()
+        if (settings.gBool("widget","enableHsWidget")) hsWidget.removeWidget()
     }
 
     HapticsEffect { id: hapticsEffect }

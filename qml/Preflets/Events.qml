@@ -328,7 +328,7 @@ Item {
             Switch {
                 id: notifyTyping
                 checked: settings.gBool("notifications","notifyTyping")
-                anchors { right: parent.right; rightMargin: 10; verticalCenter: parent.verticalCenter }
+                anchors { right: parent.right; rightMargin: platformStyle.paddingSmall; verticalCenter: parent.verticalCenter }
                 onCheckedChanged: {
                     settings.sBool(checked,"notifications","notifyTyping")
                 }

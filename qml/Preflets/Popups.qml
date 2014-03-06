@@ -55,33 +55,20 @@ Item {
         }
         Item {
             width: parent.width
-            height: switchDescription.height + switchDescriptionSubtitle.height
+            height: switchDescription.height
             Text {
                 id: switchDescription
-                x: 10
-                width: 177
+                property string color2: main.platformInverted ? "#333333" : "#888888"
+                anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: switch1.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
                 color: vars.textColor
-                text: qsTr("Switch to app on interaction")
-                verticalAlignment: Text.AlignTop
-                horizontalAlignment: Text.AlignLeft
+                text: qsTr("Switch to app on interaction") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("Tapping on popup would instantly switch you to this app.")  + "</font>"
                 font.pixelSize: 20
-            }
-
-            Text {
-                id: switchDescriptionSubtitle
-                x: switchDescription.x
-                anchors { top: switchDescription.bottom }
-                width: 252
-                height: 32
-                color: main.platformInverted ? "#333333" : "#888888"
-                text: qsTr("Tapping on popup would instantly switch you to this app.")
                 wrapMode: Text.WordWrap
-                font.pixelSize: 14
             }
             Switch {
                 id: switch1
                 checked: settings.gBool("behavior","linkInDiscrPopup")
-                anchors { right: parent.right; rightMargin: 10; }
+                anchors { right: parent.right; rightMargin: platformStyle.paddingSmall; verticalCenter: parent.verticalCenter }
                 onCheckedChanged: {
                     savePreferences()
                 }

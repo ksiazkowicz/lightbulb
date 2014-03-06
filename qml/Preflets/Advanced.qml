@@ -40,21 +40,6 @@ Item {
         width: parent.width
 
         CheckBox {
-            id: enableWidget
-            text: qsTr("Enable homescreen widget")
-            checked: settings.gBool("behavior","enableHsWidget")
-            platformInverted: main.platformInverted
-            onCheckedChanged: {
-                settings.sBool(checked,"behavior","enableHsWidget")
-                if (checked) {
-                    notify.registerWidget()
-                } else {
-                    notify.removeWidget()
-                }
-            }
-        }
-
-        CheckBox {
             id: disableChatIcon
             text: qsTr("Disable chat icon")
             checked: settings.gBool("behavior","disableChatIcon")
