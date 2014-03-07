@@ -219,7 +219,8 @@ void XmppConnectivity::accountModified(int id) {
 
 int XmppConnectivity::getStatusByIndex(int index) {
   if (index <= clients->count() && index > -1)
-    return clients->value(index)->getStatus();
+    if (clients->value(index) != 0)
+      return clients->value(index)->getStatus();
   else return 0;
 }
 
