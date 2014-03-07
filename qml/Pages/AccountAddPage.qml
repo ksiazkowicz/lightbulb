@@ -86,17 +86,22 @@ Page {
                     onSelectedIndexChanged: {
                         tiPass.text = ""
                         tiPort.text = "5222"
-                        if (selectionDialog.selectedIndex == 0) {
-                            tiJid.text = "@chat.facebook.com";
-                            tiHost.text = "chat.facebook.com";
-                        }
-                        if (selectionDialog.selectedIndex == 1) {
+                        switch (selectionDialog.selectedIndex) {
+                            case 0: {
+                                tiJid.text = "@chat.facebook.com";
+                                tiHost.text = "chat.facebook.com";
+                                break;
+                            }
+                            case 1: {
                                 tiJid.text = "@gmail.com";
                                 tiHost.text = "talk.google.com";
-                        }
-                        if (selectionDialog.selectedIndex == 2) {
+                                break;
+                            }
+                            case 2: {
                                 tiJid.text = "";
                                 tiHost.text = "";
+                                break;
+                            }
                         }
                     }
                 }
@@ -109,6 +114,7 @@ Page {
             TextField {
                 id: tiJid
                 height: 50
+                enabled: selectionDialog.selectedIndex != -1
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: accAddPage.width - 10
                 placeholderText: qsTr("login@server.com")
@@ -128,6 +134,7 @@ Page {
             TextField {
                 id: tiPass
                 anchors.horizontalCenter: parent.horizontalCenter
+                enabled: selectionDialog.selectedIndex != -1
                 width: accAddPage.width-10
                 height: 50
                 echoMode: TextInput.Password
@@ -151,6 +158,7 @@ Page {
                 id: tiResource
                 height: 50
                 anchors.horizontalCenter: parent.horizontalCenter
+                enabled: selectionDialog.selectedIndex != -1
                 width: accAddPage.width-10
                 placeholderText: qsTr("(default: Lightbulb)")
 

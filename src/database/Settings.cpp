@@ -97,6 +97,12 @@ void Settings::addAccount( const QString &acc )
 }
 void Settings::removeAccount( const QString &acc )
 {
+    // remove account from config file
+    beginGroup(acc);
+    remove("");
+    endGroup();
+
+    // remove account from list
     beginGroup( "accounts" );
     QVariant retList = value( "accounts", QStringList() );
     QStringList sl = retList.toStringList();
@@ -106,52 +112,47 @@ void Settings::removeAccount( const QString &acc )
         setValue( "accounts", QVariant(sl) );
     }
     endGroup();
+    initListOfAccounts();
     emit accountsListChanged();
 }
 
 void Settings::initListOfAccounts() {
     QStringList listAcc = this->getListAccounts();
 
-    qDebug() << "initializing list";
-
     alm->takeRows( 0, alm->count() );
-
-    qDebug() << "rows removed";
-    qDebug() << listAcc;
-    qDebug() << alm->count();
 
     QStringList::const_iterator itr = listAcc.begin();
     int i = 0;
     while ( itr != listAcc.end() ) {
-        QString jid = *itr;
+        QString grid = *itr;
         itr++;
 
-        qDebug() << "initializing" << jid;
+        QString name = gStr(grid,"name");
+        QString icon = gStr(grid,"icon");
+        QString jid = gStr(grid,"jid");
+        QString passwd = gStr(grid,"passwd");
 
-        QString passwd = gStr(jid,"passwd");
+        QString host = gStr(grid,"host");
+        int port = gInt(grid,"port");
+        QString resource = gStr(grid,"resource");
+        bool isManuallyHostPort = gBool(grid,"use_host_port");
 
-        QString host = gStr(jid,"host");
-        int port = gInt(jid,"port");
-        QString resource = gStr(jid,"resource");
-        bool isManuallyHostPort = gBool(jid,"use_host_port");
-
-        AccountsItemModel *aim = new AccountsItemModel( jid, passwd, resource, host, port, isManuallyHostPort, this );
-        qDebug() << "account item model done";
+        AccountsItemModel *aim = new AccountsItemModel( grid, name, icon, jid, passwd, resource, host, port, isManuallyHostPort, this );
         alm->append(aim);
-        qDebug() << "account item model appended";
         i++;
     }
-
-    qDebug() << "...and it's done";
 
     emit accountsListChanged();
 }
 
 
 void Settings::setAccount(
+        QString _grid,
+        QString _name,
+        QString _icon,
         QString _jid,
         QString _pass,
-        bool _isDflt,
+        bool _connectOnStart,
         QString _resource,
         QString _host,
         QString _port,
@@ -162,24 +163,29 @@ void Settings::setAccount(
 
     QVariant retList = value( "accounts", QStringList() );
     QStringList sl = retList.toStringList();
-    if( sl.indexOf(_jid) < 0 ) {
-        sl.append(_jid);
+    if( sl.indexOf(_grid) < 0 ) {
+        sl.append(_grid);
         setValue( "accounts", QVariant(sl) );
         isNew = true;
     }
     endGroup();
 
-    sStr(_pass,_jid,"passwd");
+    sStr(_name,_grid,"name");
+    sStr(_icon,_grid,"icon");
+    sStr(_jid,_grid,"jid");
+    sStr(_pass,_grid,"passwd");
 
-    sStr(_resource,_jid,"resource");
-    sStr(_host,_jid,"host");
-    sBool(manuallyHostPort,_jid,"use_host_port");
+    sStr(_resource,_grid,"resource");
+    sStr(_host,_grid,"host");
+    sBool(manuallyHostPort,_grid,"use_host_port");
+    sBool(_connectOnStart,_grid,"connectOnStart");
 
     bool ok = false;
     int p = _port.toInt(&ok);
     if( ok ) { sInt( p, _jid, "port" ); }
 
     initListOfAccounts();
+    emit accountsListChanged();
 
     if (isNew) emit accountAdded(sl.indexOf(_jid));
       else emit accountEdited(sl.indexOf(_jid));

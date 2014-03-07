@@ -59,7 +59,7 @@ public:
 
     Q_INVOKABLE void initListOfAccounts();
     Q_INVOKABLE QString getJidByIndex( int index );
-    Q_INVOKABLE void setAccount( QString _jid, QString _pass, bool isDflt, QString _resource = "", QString _host = "", QString _port = "", bool manuallyHostPort = false );
+    Q_INVOKABLE void setAccount( QString _grid, QString _name, QString _icon, QString _jid, QString _pass, bool _connectOnStart, QString _resource = "", QString _host = "", QString _port = "", bool manuallyHostPort = false );
 
     AccountsListModel* getAccounts() const { return alm; }
 

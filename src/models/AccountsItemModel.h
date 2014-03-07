@@ -33,7 +33,10 @@ class AccountsItemModel : public ListItem
 
 public:
     enum Roles {
-        accJid = Qt::UserRole+1,
+        accGRID = Qt::UserRole+1, //Globally Recognizable ID (sounds awesome :D)
+        accName,
+        accIcon,
+        accJid,
         accPasswd,
         accResource,
         accHost,
@@ -43,7 +46,10 @@ public:
 
 public:
       AccountsItemModel(QObject *parent = 0): ListItem(parent) {}
-      explicit AccountsItemModel( const QString &_accountJid,
+      explicit AccountsItemModel( const QString &_accountGRID,
+                                  const QString &_accountName,
+                                  const QString &_accountIcon,
+                                  const QString &_accountJid,
                                   const QString &_accountPasswd,
                                   const QString &_accountResource,
                                   const QString &_accountHost,
@@ -51,6 +57,9 @@ public:
                                   const bool _manuallyHostPort,
                                   QObject *parent ) :
                    ListItem(parent),
+                   m_GRID(_accountGRID),
+                   m_name(_accountName),
+                   m_icon(_accountIcon),
                    m_jid(_accountJid),
                    m_passwd(_accountPasswd),
                    m_resource(_accountResource),
@@ -60,7 +69,31 @@ public:
                {
                }
 
-      virtual QString id() const { return m_jid; }
+      virtual QString id() const { return m_GRID; }
+
+      void setGRID(QString &_accountGRID)
+      {
+        if(m_GRID != _accountGRID) {
+          m_GRID = _accountGRID;
+          emit dataChanged();
+        }
+      }
+
+      void setName(QString &_accountName)
+      {
+        if(m_name != _accountName) {
+          m_name = _accountName;
+          emit dataChanged();
+        }
+      }
+
+      void setIcon(QString &_accountIcon)
+      {
+        if(m_icon != _accountIcon) {
+          m_icon = _accountIcon;
+          emit dataChanged();
+        }
+      }
 
       void setJid(QString &_accountJid)
       {
@@ -105,6 +138,9 @@ public:
       virtual QHash<int, QByteArray> roleNames() const
       {
         QHash<int, QByteArray> names;
+        names[accGRID] = "accGRID";
+        names[accName] = "accName";
+        names[accIcon] = "accIcon";
         names[accJid] = "accJid";
         names[accPasswd] = "accPasswd";
         names[accResource] = "accResource";
@@ -117,6 +153,12 @@ public:
       virtual QVariant data(int role) const
       {
         switch(role) {
+        case accGRID:
+          return grid();
+        case accName:
+          return name();
+        case accIcon:
+          return icon();
         case accJid:
           return jid();
         case accPasswd:
@@ -134,6 +176,9 @@ public:
         }
       }
 
+      inline QString grid() const { return m_GRID; }
+      inline QString name() const { return m_name; }
+      inline QString icon() const { return m_icon; }
       inline QString jid() const { return m_jid; }
       inline QString passwd() const { return m_passwd; }
       inline QString resource() const { return m_resource; }
@@ -142,6 +187,9 @@ public:
       inline bool isManuallyHostPort() const { return m_manual_host_port; }
 
     private:
+      QString m_GRID;
+      QString m_name;
+      QString m_icon;
       QString m_jid;
       QString m_passwd;
       QString m_resource;

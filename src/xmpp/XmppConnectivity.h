@@ -133,10 +133,10 @@ public slots:
     Q_INVOKABLE void accountRemoved(int id);
     void accountModified(int id);
 
-    Q_INVOKABLE void setAccountData( QString _jid, QString _pass, bool isDflt, QString _resource = "",
+    Q_INVOKABLE void setAccountData( QString _grid, QString _name, QString _icon, QString _jid, QString _pass, bool connectOnStart = false, QString _resource = "",
                                      QString _host = "", QString _port = "", bool manuallyHostPort = false ) {
       qDebug() << "XmppConnectivity::setAccountData(): setting account data for" << qPrintable(_jid);
-      lSettings->setAccount(_jid,_pass,isDflt,_resource,_host,_port,manuallyHostPort);
+      lSettings->setAccount(_grid, _name, _icon, _jid,_pass,connectOnStart,_resource,_host,_port,manuallyHostPort);
     }
 
     Q_INVOKABLE int getStatusByIndex(int index);
