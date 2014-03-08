@@ -29,6 +29,7 @@ Item {
     property int                     globalUnreadCount: 0
     property int                     tempUnreadCount: 0
     property bool                    inputInProgress: false
+    property string                  accGRID: ""
     property string                  accJid: ""
     property string                  accPass: ""
     property string                  accResource: ""

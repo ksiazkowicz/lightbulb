@@ -29,6 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <QSqlQuery>
 #include <QSqlRecord>
+#include <QtCore/qmath.h>
 
 DatabaseWorker::DatabaseWorker(QObject *parent) :
     QObject(parent)
@@ -84,23 +85,23 @@ void DatabaseWorker::executeQuery(QStringList& query) {
     }
 }
 
-void DatabaseWorker::updateMessages(int m_accountId, QString bareJid, int page) {
+void DatabaseWorker::updateMessages(QString m_accountId, QString bareJid, int page) {
     if (accountId != m_accountId) accountId = m_accountId;
     #ifdef QT_DEBUG
     qDebug().nospace() << "DatabaseWorker::updateMessages(): updating messages query model for " << m_accountId << ":"<< qPrintable(bareJid) << " from page "<<page;
     #endif
     int border = page*20;
     sqlMessages = new SqlQueryModel( 0 );
-    if (bareJid != "") sqlMessages->setQuery("SELECT * FROM (SELECT * FROM messages WHERE bareJid='" + bareJid + "' and id_account="+QString::number(m_accountId) + " ORDER BY id DESC limit " + QString::number(border) + ") ORDER BY id ASC limit 20",database->db);
+    if (bareJid != "") sqlMessages->setQuery("SELECT * FROM (SELECT * FROM messages WHERE bareJid='" + bareJid + "' and id_account='"+m_accountId + "' ORDER BY id DESC limit " + QString::number(border) + ") ORDER BY id ASC limit 20",database->db);
     emit sqlMessagesUpdated();
 }
 
-int DatabaseWorker::getPageCount(int m_accountId, QString bareJid) {
+int DatabaseWorker::getPageCount(QString m_accountId, QString bareJid) {
   #ifdef QT_DEBUG
-  qDebug() << qPrintable("DatabaseWorker::getPageCount(): called for account "+QString::number(m_accountId)+" and JID "+bareJid);
+  qDebug() << qPrintable("DatabaseWorker::getPageCount(): called for account "+m_accountId+" and JID "+bareJid);
   #endif
   SqlQueryModel getMeSomeNumbersCauseNumbersAreAwesome;
-  if (bareJid != "") getMeSomeNumbersCauseNumbersAreAwesome.setQuery("SELECT id FROM messages WHERE bareJid='" + bareJid + "' and id_account="+QString::number(m_accountId),database->db);
+  if (bareJid != "") getMeSomeNumbersCauseNumbersAreAwesome.setQuery("SELECT id FROM messages WHERE bareJid='" + bareJid + "' and id_account='"+m_accountId+"'",database->db);
   double pagesCount = getMeSomeNumbersCauseNumbersAreAwesome.rowCount()/20;
-  return ceil(pagesCount);
+  return qCeil(pagesCount);
 }

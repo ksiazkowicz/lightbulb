@@ -44,13 +44,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QStringList>
 #include <QDebug>
 
-#include "Settings.h"
+#include "src/database/Settings.h"
 
-#include "RosterListModel.h"
-#include "RosterItemModel.h"
+#include "src/models/RosterListModel.h"
+#include "src/models/RosterItemModel.h"
 
-#include "QMLVCard.h"
-#include "MyCache.h"
+#include "src/cache/QMLVCard.h"
+#include "src/cache/MyCache.h"
 
 class MyXmppClient : public QObject
 {
@@ -70,7 +70,7 @@ class MyXmppClient : public QObject
     Q_PROPERTY( QString host READ getHost WRITE setHost NOTIFY hostChanged )
     Q_PROPERTY( int port READ getPort WRITE setPort NOTIFY portChanged )
     Q_PROPERTY( QString resource READ getResource WRITE setResource NOTIFY resourceChanged )
-    Q_PROPERTY( int accountId READ getAccountId WRITE setAccountId NOTIFY accountIdChanged )
+    Q_PROPERTY( QString accountId READ getAccountId WRITE setAccountId NOTIFY accountIdChanged )
     Q_PROPERTY( QMLVCard* vcard READ getVCard NOTIFY vCardChanged )
     Q_PROPERTY( int keepAlive READ getKeepAlive WRITE setKeepAlive NOTIFY keepAliveChanged )
 
@@ -192,8 +192,8 @@ public :
     QString getResource() const { return m_resource; }
     void setResource( const QString & value ) { if(value!=m_resource) {m_resource=value; emit resourceChanged(); } }
 
-    int getAccountId() const { return m_accountId; }
-    void setAccountId( const int & value ) {
+    QString getAccountId() const { return m_accountId; }
+    void setAccountId( const QString & value ) {
         if (value!=m_accountId) {
             m_accountId = value;
             emit accountIdChanged();
@@ -217,7 +217,7 @@ signals:
     void portChanged();
     void resourceChanged();
     void openChatsChanged();
-    void chatOpened( int accountId, QString bareJid );
+    void chatOpened( QString accountId, QString bareJid );
     void chatClosed( QString bareJid );
     void accountIdChanged();
     void vCardChanged();
@@ -226,8 +226,8 @@ signals:
     void keepAliveChanged();
 
     // related to XmppConnectivity class
-    void updateContact(int m_accountId,QString bareJid,QString property,int count);
-    void insertMessage(int m_accountId,QString bareJid,QString body,QString date,int mine);
+    void updateContact(QString m_accountId,QString bareJid,QString property,int count);
+    void insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine);
     void contactRenamed(QString jid,QString name);
 
 public slots:
@@ -270,7 +270,7 @@ private:
     QString m_resource;
     QString m_lastChatJid;
 
-    int m_accountId;
+    QString m_accountId;
 
     QString getPicPresence( const QXmppPresence &presence ) const;
     QString getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const;

@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Settings.h"
 
 #include <QDir>
-#include "AccountsListModel.h"
+#include "src/models/AccountsListModel.h"
 #include <QDebug>
 
 QString Settings::appName = "Lightbulb";
@@ -91,7 +91,7 @@ void Settings::addAccount( const QString &acc )
     if( sl.indexOf(acc) < 0 ) {
         sl.append(acc);
         setValue( "accounts", QVariant(sl) );
-        //emit accountAdded(sl.indexOf(acc));
+        //emit accountAdded(acc);
     }
     endGroup();
 }
@@ -187,12 +187,16 @@ void Settings::setAccount(
     initListOfAccounts();
     emit accountsListChanged();
 
-    if (isNew) emit accountAdded(sl.indexOf(_jid));
-      else emit accountEdited(sl.indexOf(_jid));
+    if (isNew) emit accountAdded(_grid);
+      else emit accountEdited(_grid);
 }
 
 AccountsItemModel* Settings::getAccount(int index) {
     return (AccountsItemModel*)alm->getElementByID(index);
+}
+
+int Settings::getAccountId(QString grid) {
+    return getListAccounts().indexOf(grid);
 }
 
 QString Settings::getJidByIndex(int index) {

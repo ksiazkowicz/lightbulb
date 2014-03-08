@@ -75,17 +75,19 @@ Page {
                 id: maAccItem
                 anchors { left: parent.left; right: parent.right; top: parent.top; bottom: parent.bottom; }
                 onDoubleClicked: {
+                    vars.accGRID = accGRID
                     vars.accJid = accJid
                     vars.accPass = accPasswd
                     vars.accResource = accResource
                     vars.accHost = accHost
                     vars.accPort = accPort
                     vars.accManualHostPort = accManualHostPort
-                    pageStack.push( "qrc:/pages/AccountsAdd" )
+                    pageStack.replace( "qrc:/pages/AccountsAdd" )
                 }
                 onClicked: {
                     wrapper.ListView.view.currentIndex = index
                     accountsPage.currentIndex = index
+                    vars.accGRID = accGRID
                     vars.accJid = accJid
                     vars.accPass = accPasswd
                     vars.accResource = accResource
@@ -107,7 +109,7 @@ Page {
     }
 
     Component.onCompleted: {
-        vars.accJid = ""
+        vars.accGRID = ""
         statusBarText.text = qsTr("Accounts")
     }
 
@@ -127,24 +129,26 @@ Page {
 
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-delete_inverse" : "toolbar-delete"
-            onClicked: if( vars.accJid != "" ) {
+            onClicked: if( vars.accGRID != "" ) {
                            if (avkon.displayAvkonQueryDialog("Remove","Are you sure you want to remove account " + vars.accJid + "?")) {
                                xmppConnectivity.accountRemoved(accountsPage.currentIndex)
-                               settings.removeAccount( vars.accJid )
+                               settings.removeAccount( vars.accGRID )
                            }
                        }
         }
 
         ToolButton {
+            enabled: vars.accGRID != ""
+            opacity: enabled ? 1 : 0.5
             iconSource: main.platformInverted ? "qrc:/toolbar/edit_inverse" : "qrc:/toolbar/edit"
-            onClicked: if( vars.accJid != "" ) pageStack.push( "qrc:/pages/AccountsAdd" )
+            onClicked: if( vars.accGRID != "" ) pageStack.replace( "qrc:/pages/AccountsAdd" )
         }
 
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-add_inverse" : "toolbar-add"
             onClicked: {
-                vars.accJid = "";
-                pageStack.push( "qrc:/pages/AccountsAdd" )
+                vars.accGRID = "";
+                pageStack.replace( "qrc:/pages/AccountsAdd" )
             }
         }
     }

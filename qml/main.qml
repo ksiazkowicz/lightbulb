@@ -154,7 +154,7 @@ PageStackWindow {
     XmppVCard { id: xmppVCard }
 
     Component.onCompleted: {
-        selectDefaultAccount()
+        if (settings.gStr("behavior","lastAccount") !== "false") changeAccount(settings.gStr("behavior","lastAccount"));
         checkIfFirstRun()
         xmppConnectivity.client.keepAlive = settings.gInt("behavior", "keepAliveInterval")
         if (settings.gBool("behavior","goOnlineOnStart")) xmppConnectivity.client.setMyPresence( XmppClient.Online, lastStatus )
@@ -167,28 +167,11 @@ PageStackWindow {
         else pageStack.push("qrc:/pages/Roster")
     }
 
-    property bool _existDefaultAccount: false
-
-    function selectDefaultAccount() {
-        var accc=0
-        _existDefaultAccount = false
-        for( var j=0; j<settings.accounts.count(); j++ )
-        {
-            if( settings.gBool( settings.getJidByIndex( j ),"is_default" ) )
-            {
-                _existDefaultAccount = true
-                changeAccount(accc)
-            } else {
-                    _existDefaultAccount = true
-                    accc++
-            }
-        }
-    }
-
     function changeAccount(acc) {
         xmppConnectivity.changeAccount(acc);
         avkon.hideChatIcon()
         notify.updateNotifiers()
+        settings.sStr(xmppConnectivity.currentAccount,"behavior","lastAccount")
     }
 
     /****************************( Dialog windows, menus and stuff)****************************/

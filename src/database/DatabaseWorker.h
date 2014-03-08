@@ -29,8 +29,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QStringList>
 #include "DatabaseManager.h"
 
-#include "RosterListModel.h"
-#include "RosterItemModel.h"
+#include "src/models/RosterListModel.h"
+#include "src/models/RosterItemModel.h"
 
 class DatabaseWorker : public QObject
 {
@@ -40,7 +40,7 @@ public:
 
     SqlQueryModel* sqlMessages;
     SqlQueryModel* getSqlMessages() const { return sqlMessages; }
-    Q_INVOKABLE int getPageCount(int m_accoutId, QString bareJid);
+    Q_INVOKABLE int getPageCount(QString m_accoutId, QString bareJid);
     
 signals:
     void finished();
@@ -50,12 +50,12 @@ signals:
     
 public slots:
     void executeQuery(QStringList &query);
-    void updateMessages (int m_accountId, QString bareJid, int page);
+    void updateMessages (QString m_accountId, QString bareJid, int page);
 
 private:
     DatabaseManager* database;
     QStringList queryType;
-    int accountId;
+    QString accountId;
 };
 
 #endif // DATABASEWORKER_H

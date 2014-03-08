@@ -31,7 +31,7 @@ Page {
     tools: toolBarLayout
 
     Component.onCompleted: {
-        if (vars.accJid != "") {
+        if (vars.accGRID != "") {
             statusBarText.text = qsTr("Editing ") + vars.accJid
             if (vars.accHost == "chat.facebook.com") {
                 selectionDialog.selectedIndex = 0;
@@ -219,7 +219,7 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
-                pageStack.pop()
+                pageStack.replace( "qrc:/pages/Accounts" )
                 main.splitscreenY = 0
                 statusBarText.text = "Accounts"
             }
@@ -228,6 +228,10 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "qrc:/toolbar/ok_inverse" : "qrc:/toolbar/ok"
             onClicked: {
+                var grid;
+                if (vars.accGRID != "") grid = vars.accGRID;
+                    else grid = settings.generateGRID()
+                var name = 'Account'
                 var jid = tiJid.text
                 var pass = tiPass.text
                 if( jid=="" || pass=="" ) return
@@ -235,9 +239,8 @@ Page {
                 var port = tiPort.text
                 var resource = tiResource.text
 
-                xmppConnectivity.setAccountData( jid, pass, false, resource, host, port,  true )
+                xmppConnectivity.setAccountData( grid, name, 'Facebook', jid, pass, false, resource, host, port,  true )
 
-                pageStack.pop()
                 pageStack.replace( "qrc:/pages/Accounts" )
             }
         }

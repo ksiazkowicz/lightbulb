@@ -29,17 +29,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QObject>
 #include <QThread>
 #include <QMap>
-#include "AccountsItemModel.h"
+#include "src/models/AccountsItemModel.h"
 #include "MyXmppClient.h"
-#include "DatabaseWorker.h"
-#include "MyCache.h"
-#include "Settings.h"
+#include "src/database/DatabaseWorker.h"
+#include "src/cache/MyCache.h"
+#include "src/database/Settings.h"
 
 #include "MessageWrapper.h"
 
-#include "ChatsListModel.h"
-#include "MsgListModel.h"
-#include "MsgItemModel.h"
+#include "src/models/ChatsListModel.h"
+#include "src/models/MsgListModel.h"
+#include "src/models/MsgItemModel.h"
 
 class XmppConnectivity : public QObject
 {
@@ -54,16 +54,16 @@ class XmppConnectivity : public QObject
     Q_PROPERTY(SqlQueryModel* messages READ getSqlMessagesByPage NOTIFY sqlMessagesChanged)
     Q_PROPERTY(MsgListModel* cachedMessages READ getMessages NOTIFY sqlMessagesChanged)
     Q_PROPERTY(QString chatJid READ getChatJid WRITE setChatJid NOTIFY chatJidChanged)
-    Q_PROPERTY(int currentAccount READ getCurrentAccount WRITE changeAccount NOTIFY accountChanged)
+    Q_PROPERTY(QString currentAccount READ getCurrentAccount WRITE changeAccount NOTIFY accountChanged)
     Q_PROPERTY(QString currentAccountName READ getCurrentAccountName NOTIFY accountChanged)
     Q_PROPERTY(int messagesLimit READ getMsgLimit WRITE setMsgLimit NOTIFY msgLimitChanged )
 public:
     explicit XmppConnectivity(QObject *parent = 0);
     ~XmppConnectivity();
 
-    bool initializeAccount(int index, AccountsItemModel* account);
-    Q_INVOKABLE void changeAccount(int index);
-    int getCurrentAccount() { return currentClient; }
+    bool initializeAccount(QString index, AccountsItemModel* account);
+    Q_INVOKABLE void changeAccount(QString GRID);
+    QString getCurrentAccount() { return currentClient; }
 
     // well, this stuff is needed
     int getPage() const { return page; }
@@ -102,18 +102,18 @@ public slots:
         roster = selectedClient->getCachedRoster();
         emit rosterChanged();
     }
-    void updateContact(int m_accountId,QString bareJid,QString property,int count) {
-        dbWorker->executeQuery(QStringList() << "updateContact" << QString::number(m_accountId) << bareJid << property << QString::number(count));
+    void updateContact(QString m_accountId,QString bareJid,QString property,int count) {
+        dbWorker->executeQuery(QStringList() << "updateContact" << m_accountId << bareJid << property << QString::number(count));
     }
     void updateMessages() { dbWorker->updateMessages(currentClient,currentJid,page); }
-    void insertMessage(int m_accountId,QString bareJid,QString body,QString date,int mine);
+    void insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine);
 
     Q_INVOKABLE QString getAvatarByJid(QString bareJid) { return lCache->getAvatarCache(bareJid); }
 
     // handling chats list
-    void chatOpened(int accountId,QString bareJid);
+    void chatOpened(QString accountId,QString bareJid);
     void chatClosed(QString bareJid);
-    Q_INVOKABLE QString getPropertyByJid(int account,QString property,QString jid);
+    Q_INVOKABLE QString getPropertyByJid(QString account,QString property,QString jid);
     Q_INVOKABLE QString getPreservedMsg(QString jid);
     Q_INVOKABLE void preserveMsg(QString jid,QString message);
 
@@ -129,9 +129,9 @@ public slots:
     }
 
     // handling clients
-    void accountAdded(int id);
-    Q_INVOKABLE void accountRemoved(int id);
-    void accountModified(int id);
+    void accountAdded(QString id);
+    Q_INVOKABLE void accountRemoved(QString id);
+    void accountModified(QString id);
 
     Q_INVOKABLE void setAccountData( QString _grid, QString _name, QString _icon, QString _jid, QString _pass, bool connectOnStart = false, QString _resource = "",
                                      QString _host = "", QString _port = "", bool manuallyHostPort = false ) {
@@ -139,7 +139,7 @@ public slots:
       lSettings->setAccount(_grid, _name, _icon, _jid,_pass,connectOnStart,_resource,_host,_port,manuallyHostPort);
     }
 
-    Q_INVOKABLE int getStatusByIndex(int index);
+    Q_INVOKABLE int getStatusByIndex(QString accountId);
     void renameChatContact(QString bareJid,QString name) {
       ChatsItemModel* item = (ChatsItemModel*)chats->find(bareJid);
       if (item != 0) item->setContactName(name);
@@ -147,8 +147,8 @@ public slots:
     }
 
 private:
-    int currentClient;
-    QMap<int,MyXmppClient*> *clients;
+    QString currentClient;
+    QMap<QString,MyXmppClient*> *clients;
     MyXmppClient* selectedClient;
     MyXmppClient* getClient() { return selectedClient; }
 

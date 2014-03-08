@@ -26,7 +26,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MYSETTINGS_H
 
 #include <QSettings>
-#include "AccountsListModel.h"
+#include <QDir>
+#include <QDebug>
+#include <QUuid>
+#include "src/models/AccountsListModel.h"
 
 class Settings : public QSettings
 {
@@ -57,6 +60,8 @@ public:
 
     Q_INVOKABLE void removeAccount( const QString& acc );
 
+    Q_INVOKABLE QString generateGRID() { return QUuid::createUuid().toString(); }
+
     Q_INVOKABLE void initListOfAccounts();
     Q_INVOKABLE QString getJidByIndex( int index );
     Q_INVOKABLE void setAccount( QString _grid, QString _name, QString _icon, QString _jid, QString _pass, bool _connectOnStart, QString _resource = "", QString _host = "", QString _port = "", bool manuallyHostPort = false );
@@ -64,14 +69,15 @@ public:
     AccountsListModel* getAccounts() const { return alm; }
 
     AccountsItemModel* getAccount(int index);
+    int getAccountId(QString grid);
     int accountsCount() { return alm->count(); }
 
 
 signals:
     void accountsListChanged();
-    void accountAdded(int accId);
-    void accountRemoved(int accId);
-    void accountEdited(int accId);
+    void accountAdded(QString accId);
+    void accountRemoved(QString accId);
+    void accountEdited(QString accId);
 public slots:
     
 };

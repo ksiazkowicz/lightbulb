@@ -42,12 +42,12 @@ public:
       ChatsItemModel(QObject *parent = 0): ListItem(parent) {
           contactName = "";
           contactJid = "";
-          contactAccountID = 0;
+          contactAccountID = "";
           chatMsg = "";
       }
       explicit ChatsItemModel( const QString &_contactName,
                                        const QString &_contactJid,
-                                       const int _accountID,
+                                       const QString _accountID,
                                        QObject *parent = 0 ) : ListItem(parent),
           contactAccountID(_accountID),
           contactName(_contactName),
@@ -80,7 +80,7 @@ public:
 
       virtual QString id() const { return contactJid; }
 
-      void setAccountID(const int &_accountID) {
+      void setAccountID(const QString &_accountID) {
         if (contactAccountID != _accountID) {
             contactAccountID = _accountID;
             emit dataChanged();
@@ -103,13 +103,13 @@ public:
 
       void setChatMsg(const QString &_chatMsg) { chatMsg = _chatMsg; }
 
-      inline int accountID() const { return contactAccountID; }
+      inline QString accountID() const { return contactAccountID; }
       inline QString name() const { return contactName; }
       inline QString jid() const { return contactJid; }
       inline QString msg() const { return chatMsg; }
 
     private:
-      int contactAccountID;
+      QString contactAccountID;
       QString contactName;
       QString contactJid;
       QString chatMsg;

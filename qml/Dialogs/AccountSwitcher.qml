@@ -39,7 +39,7 @@ CommonDialog {
                 }
                 Image {
                     id: imgPresence
-                    source: "qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(index))
+                    source: "qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accGRID))
                     sourceSize.height: 24
                     sourceSize.width: 24
                     anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
@@ -55,14 +55,14 @@ CommonDialog {
                 }
                 states: State {
                     name: "Current"
-                    when: wrapper.ListView.isCurrentItem
+                    when: xmppConnectivity.currentAccount == accGRID
                     PropertyChanges { target: wrapper; gradient: gr_press }
                 }
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
                         wrapper.ListView.view.currentIndex = index
-                        xmppConnectivity.currentAccount = index
+                        main.changeAccount(accGRID)
                         close()
                     }
                 }
@@ -74,6 +74,5 @@ CommonDialog {
     Component.onCompleted: {
         settings.initListOfAccounts()
         open()
-        listViewAccounts.currentIndex = xmppConnectivity.currentAccount
     }
 }

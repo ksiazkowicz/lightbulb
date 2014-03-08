@@ -27,6 +27,7 @@ import lightbulb 1.0
 import com.nokia.symbian 1.1
 
 Page {
+    property bool emoticonsDisabled: settings.gBool("behavior","disableEmoticons")
     tools: ToolBarLayout {
             ToolButton {
                 iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"

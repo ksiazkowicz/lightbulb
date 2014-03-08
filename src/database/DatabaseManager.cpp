@@ -91,7 +91,7 @@ bool DatabaseManager::mkMessagesTable() {
         QSqlQuery query(db);
         ret = query.exec("create table messages "
                          "(id integer primary key, "
-                         "id_account integer, "
+                         "id_account varchar(256), "
                          "bareJid varchar(80), "
                          "msgText varchar(8096), "
                          "dateTime varchar(30), "
@@ -107,7 +107,7 @@ bool DatabaseManager::insertMessage()
     bool ret = false;
     QSqlQuery query(db);
     query.exec("INSERT INTO messages (id_account, bareJid, msgText, dateTime, isMine) "
-               "VALUES (" + params.at(0) + ", '" + params.at(1) + "', '" + params.at(2) + "', '" + params.at(3) + "', " + params.at(4) + ")");
+               "VALUES ('" + params.at(0) + "', '" + params.at(1) + "', '" + params.at(2) + "', '" + params.at(3) + "', " + params.at(4) + ")");
     if (query.lastError().text() != " ") qDebug() << query.lastError();
     emit finished();
     emit messagesChanged();
