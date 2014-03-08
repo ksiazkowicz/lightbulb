@@ -53,6 +53,7 @@
         <file alias="Chats">qml/Dialogs/Chats.qml</file>
         <file alias="AccountSwitcher">qml/Dialogs/AccountSwitcher.qml</file>
         <file alias="Contributors">qml/Dialogs/Contributors.qml</file>
+        <file alias="Resources">qml/Dialogs/ResourcesDialog.qml</file>
     </qresource>
     <qresource prefix="/pages">
         <file alias="About">qml/Pages/AboutPage.qml</file>
@@ -117,5 +118,8 @@
     </qresource>
     <qresource prefix="/menus">
         <file alias="UrlContext">qml/Menus/UrlContextMenu.qml</file>
+        <file alias="Roster/Options">qml/Menus/RosterMenu.qml</file>
+        <file alias="Roster/Contact">qml/Menus/ContactMenu.qml</file>
+        <file alias="Messages">qml/Menus/MessagesOptions.qml</file>
     </qresource>
 </RCC>

@@ -31,27 +31,28 @@ Page {
     id: messagesPage
     tools: toolBar
     /************************************************************/
-    property string resourceJid: ""
     property bool isTyping: false
     property bool emoticonsDisabled: settings.gBool("behavior","disableEmoticons")
 
     Component.onCompleted: {
+        vars.resourceJid = ""
+        listModelResources.clear()
         xmppConnectivity.page = 1
         console.log( xmppConnectivity.chatJid )
         xmppConnectivity.client.openChat( xmppConnectivity.chatJid )
 
         statusBarText.text = vars.contactName
 
-        if( xmppConnectivity.client.bareJidLastMsg == xmppConnectivity.chatJid ) messagesPage.resourceJid = xmppConnectivity.client.resourceLastMsg
+        if( xmppConnectivity.client.bareJidLastMsg == xmppConnectivity.chatJid ) vars.resourceJid = xmppConnectivity.client.resourceLastMsg
 
-        if( messagesPage.resourceJid == "" ) listModelResources.append( {resource:qsTr("(by default)"), checked:true} )
+        if( vars.resourceJid == "" ) listModelResources.append( {resource:qsTr("(by default)"), checked:true} )
         else listModelResources.append( {resource:qsTr("(by default)"), checked:false} )
 
         if (notify.getStatusName() != "Offline") {
             var listResources = xmppConnectivity.client.getResourcesByJid(xmppConnectivity.chatJid)
             for( var z=0; z<listResources.length; z++ ) {
                 if ( listResources[z] == "" ) { continue; }
-                if ( messagesPage.resourceJid ==listResources[z] ) listModelResources.append( {resource:listResources[z], checked:true} )
+                if ( vars.resourceJid ==listResources[z] ) listModelResources.append( {resource:listResources[z], checked:true} )
                 else listModelResources.append( {resource:listResources[z], checked:false} )
            }
         }
@@ -148,39 +149,38 @@ Page {
     } //Component
     /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
     function sendMessage() {
-        var ret = xmppConnectivity.client.sendMyMessage( xmppConnectivity.chatJid, messagesPage.resourceJid, txtMessage.text )
+        var ret = xmppConnectivity.client.sendMyMessage( xmppConnectivity.chatJid, vars.resourceJid, txtMessage.text )
         if( ret ) {
               txtMessage.text = ""
-              xmppConnectivity.client.typingStop( xmppConnectivity.chatJid, messagesPage.resourceJid )
+              xmppConnectivity.client.typingStop( xmppConnectivity.chatJid, vars.resourceJid )
               notify.notifySndVibr("MsgSent")
         } else {
             avkon.displayGlobalNote("Something went wrong while sending a message.",true);
         }
     }
-    /* --------------------( resources )-------------------- */
-    ListModel { id: listModelResources }
 
     /* ------------( XMPP client and stuff )------------ */
     Connections {
         target: xmppConnectivity
-        onNotifyMsgReceived: if( jid == xmppConnectivity.chatJid ) messagesPage.resourceJid = xmppConnectivity.client.resourceLastMsg
+        onNotifyMsgReceived: if( jid == xmppConnectivity.chatJid ) vars.resourceJid = xmppConnectivity.client.resourceLastMsg
         onQmlChatChanged: {
+            listModelResources.clear()
             xmppConnectivity.client.openChat( xmppConnectivity.chatJid )
 
             statusBarText.text = vars.contactName
 
             txtMessage.text = xmppConnectivity.getPreservedMsg(xmppConnectivity.chatJid);
 
-            if( xmppConnectivity.client.bareJidLastMsg == xmppConnectivity.chatJid ) messagesPage.resourceJid = xmppConnectivity.client.resourceLastMsg
+            if( xmppConnectivity.client.bareJidLastMsg == xmppConnectivity.chatJid ) vars.resourceJid = xmppConnectivity.client.resourceLastMsg
 
-            if( messagesPage.resourceJid == "" ) listModelResources.append( {resource:qsTr("(by default)"), checked:true} )
+            if( vars.resourceJid == "" ) listModelResources.append( {resource:qsTr("(by default)"), checked:true} )
             else listModelResources.append( {resource:qsTr("(by default)"), checked:false} )
 
             if (notify.getStatusName() != "Offline") {
                 var listResources = xmppConnectivity.client.getResourcesByJid(xmppConnectivity.chatJid)
                 for( var z=0; z<listResources.length; z++ ) {
                     if ( listResources[z] == "" ) { continue; }
-                    if ( messagesPage.resourceJid ==listResources[z] ) listModelResources.append( {resource:listResources[z], checked:true} )
+                    if ( vars.resourceJid ==listResources[z] ) listModelResources.append( {resource:listResources[z], checked:true} )
                     else listModelResources.append( {resource:listResources[z], checked:false} )
                }
             }
@@ -220,11 +220,11 @@ Page {
               onTextChanged: {
                   if (text.lenght > 0 && !isTyping) {
                     isTyping = true
-                    xmppConnectivity.client.typingStart( xmppConnectivity.chatJid, messagesPage.resourceJid )
+                    xmppConnectivity.client.typingStart( xmppConnectivity.chatJid, vars.resourceJid )
                   }
                   if (text.length == 0 && isTyping) {
                       isTyping = false
-                      xmppConnectivity.client.typingStop( xmppConnectivity.chatJid, messagesPage.resourceJid )
+                      xmppConnectivity.client.typingStop( xmppConnectivity.chatJid, vars.resourceJid )
                   }
                   if (text.charCodeAt(text.length-1) === 10) {
                       text = text.substring(0,text.length-1)
@@ -254,68 +254,6 @@ Page {
             }
         ]
     }
-    CommonDialog {
-        id: dlgResources
-        titleText: qsTr("Resources")
-        privateCloseIcon: true
-        platformInverted: main.platformInverted
-
-        content: ListView {
-                    anchors.fill: parent
-                    height: (listModelResources.count*48)+1
-                    highlightFollowsCurrentItem: false
-                    model: listModelResources
-                    delegate: Component {
-                        Rectangle {
-                            id: itemResource
-                            height: 48
-                            width: parent.width
-                            gradient: gr_normal
-                            Gradient {
-                                id: gr_normal
-                                GradientStop { position: 0; color: "transparent" }
-                                GradientStop { position: 1; color: "transparent" }
-                            }
-                            Gradient {
-                                id: gr_press
-                                GradientStop { position: 0; color: "#1C87DD" }
-                                GradientStop { position: 1; color: "#51A8FB" }
-                            }
-                            Text {
-                                id: textResource
-                                text: resource
-                                font.pixelSize: itemResource.height/2
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                anchors.verticalCenter: parent.verticalCenter
-                                color: vars.textColor
-                                font.bold: false
-                            }
-                            states: State {
-                                name: "Current"
-                                when: itemResource.ListView.isCurrentItem
-                                PropertyChanges { target: itemResource; gradient: gr_press }
-                                PropertyChanges { target: textResource; color: platformStyle.colorNormalLight }
-                                PropertyChanges { target: textResource; font.bold: true }
-                            }
-                            MouseArea {
-                                anchors.fill: parent
-                                onClicked: {
-                                    itemResource.ListView.view.currentIndex = index
-
-                                    if( index == 0 ) messagesPage.resourceJid = ""
-                                    else messagesPage.resourceJid = resource
-
-                                    for (var i=0; i<listModelResources.count; i++) {
-                                        if(index == i) listModelResources.get(index).checked = true
-                                        else listModelResources.get(index).checked = false
-                                    }
-                                    dlgResources.close()
-                                } //onClicked
-                            } //MouseArea
-                        }
-                    } //Component
-                }
-    }
 
     /********************************( Toolbar )************************************/
     ToolBarLayout {
@@ -326,7 +264,7 @@ Page {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
                 xmppConnectivity.preserveMsg(xmppConnectivity.chatJid,txtMessage.text)
-                if (isTyping) xmppConnectivity.client.typingStop( xmppConnectivity.chatJid, messagesPage.resourceJid )
+                if (isTyping) xmppConnectivity.client.typingStop( xmppConnectivity.chatJid, vars.resourceJid )
                 pageStack.pop()
                 vars.isChatInProgress = false
                 statusBarText.text = "Contacts"
@@ -374,47 +312,7 @@ Page {
         }
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-menu_inverse" : "toolbar-menu"
-            onClicked: msgOptions.open()
-        }
-    }
-    /*********************************************************************/
-    Menu {
-        id: msgOptions
-        platformInverted: main.platformInverted
-        // define the items in the menu and corresponding actions
-        content: MenuLayout {
-            MenuItem {
-                text: qsTr("Set resource")
-                platformInverted: main.platformInverted
-                onClicked: dlgResources.open()
-            }
-
-            MenuItem {
-                text: "Archive"
-                platformInverted: main.platformInverted
-                onClicked: {
-                    xmppConnectivity.preserveMsg(xmppConnectivity.chatJid,txtMessage.text)
-                    xmppConnectivity.page = 1
-                    pageStack.replace("qrc:/pages/Archive")
-                }
-            }
-            MenuItem {
-                text: "Close chat"
-                platformInverted: main.platformInverted
-                onClicked: {
-                    pageStack.pop()
-                    vars.isChatInProgress = false
-                    xmppConnectivity.closeChat(xmppConnectivity.chatJid )
-                    statusBarText.text = "Contacts"
-                    xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.chatJid )
-                    xmppConnectivity.chatJid = ""
-                }
-            }
-
-            /*MenuItem {
-                text: "Send attention"
-                onClicked: xmppConnectivity.client.attentionSend( xmppConnectivity.chatJid, messagesPage.resourceJid )
-            }*/
+            onClicked: dialog.create("qrc:/menus/Messages")
         }
     }
 }

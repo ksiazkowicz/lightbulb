@@ -47,6 +47,7 @@ Item {
     property int                     blinkerSet: 0
     property string                  selectedContactStatusText: ""
     property string                  contactName: ""
+    property string                  resourceJid: ""
     property string                  selectedContactPresence: ""
 
     property bool                    isRestartRequired: false
@@ -58,4 +59,5 @@ Item {
     property int                     rosterItemHeight: settings.gInt("ui","rosterItemHeight")
     property bool                    showContactStatusText: settings.gBool("ui","showContactStatusText")
     property bool                    rosterLayoutAvatar: settings.gBool("ui","rosterLayoutAvatar")
+    property string                  selectedJid: ""
 }

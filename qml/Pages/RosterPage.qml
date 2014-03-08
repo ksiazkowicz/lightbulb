@@ -41,16 +41,10 @@ Page {
 
     Connections {
         target: xmppConnectivity
-        onChatJidChanged: {
-            if (xmppConnectivity.chatJid == "") {
-                selectedJid = "";
-            }
-        }
+        onChatJidChanged: if (xmppConnectivity.chatJid == "") vars.selectedJid = "";
     }
 
     Component.onCompleted: statusBarText.text = "Contacts"
-
-    property string selectedJid: ""
 
     /*******************************************************************************/
 
@@ -58,7 +52,6 @@ Page {
         id: accountSwitcher
 
         height: 46
-
         gradient: Gradient {
             GradientStop { position: 0; color: "#3c3c3c" }
             GradientStop { position: 0.04; color: "#6c6c6c" }
@@ -66,9 +59,7 @@ Page {
             GradientStop { position: 0.06; color: "#4c4c4c" }
             GradientStop { position: 1; color: "#191919" }
         }
-
         z: 1
-
         anchors { top: parent.top; left: parent.left; right: parent.right }
 
         ToolButton {
@@ -99,7 +90,7 @@ Page {
             id: wrapper
             width: rosterView.width
             color: "transparent"
-            visible: rosterSearch.text !== "" ? (txtJid.contact.substr(0, rosterSearch.text.length) == rosterSearch.text ? true : false ) : presence === "qrc:/presence/offline" ? !vars.hideOffline : true
+            visible: rosterSearch.text !== "" ? (txtJid.contact.toLowerCase().indexOf(rosterSearch.text.toLowerCase()) != -1 ? true : false ) : presence === "qrc:/presence/offline" ? !vars.hideOffline : true
             height: vars.rosterItemHeight - txtJid.font.pixelSize > txtJid.height ? vars.rosterItemHeight : txtJid.height + txtJid.font.pixelSize
 
             gradient: gr_free
@@ -116,11 +107,11 @@ Page {
 
             states: [State {
                 name: "Current"
-                when: selectedJid == jid
+                when: vars.selectedJid == jid
                 PropertyChanges { target: wrapper; gradient: gr_press }
             },State {
                 name: "Not current"
-                when: !selectedJid == jid
+                when: !vars.selectedJid == jid
                 PropertyChanges { target: wrapper; gradient: gr_free }
             }]
 
@@ -187,7 +178,7 @@ Page {
 
                 onClicked: {
                     xmppConnectivity.chatJid = jid
-                    selectedJid = jid
+                    vars.selectedJid = jid
                     vars.contactName = txtJid.contact
                     vars.globalUnreadCount = vars.globalUnreadCount - unreadMsg
                     notify.updateNotifiers()
@@ -195,12 +186,12 @@ Page {
                 }
 
                 onPressAndHold: {
-                    selectedJid = jid
+                    vars.selectedJid = jid
                     vars.selectedContactStatusText = statusText
                     vars.selectedContactPresence = presence
                     vars.contactName = txtJid.contact
                     vars.dialogName = txtJid.contact
-                    contactMenu.open()
+                    dialog.create("qrc:/menus/Roster/Contact")
                 }
             }
             Image {
@@ -241,96 +232,6 @@ Page {
         }
     }
 
-    /********************************( Dialog windows, menus and stuff )************************************/
-
-    Menu {
-        id: rosterMenu
-        platformInverted: main.platformInverted
-
-        // define the items in the menu and corresponding actions
-        content: MenuLayout {
-            MenuItem {
-                text: qsTr("Preferences")
-                platformInverted: main.platformInverted
-                onClicked: main.pageStack.push( "qrc:/pages/Preferences" )
-            }
-            MenuItem {
-                text: qsTr("About...")
-                platformInverted: main.platformInverted
-                onClicked: main.pageStack.push( "qrc:/pages/About" )
-            }
-            MenuItem {
-                text: qsTr("Exit")
-                platformInverted: main.platformInverted
-                onClicked: {
-                    rosterMenu.close()
-                    if (avkon.displayAvkonQueryDialog("Close", qsTr("Are you sure you want to close the app?"))) {
-                        avkon.hideChatIcon()
-                        Qt.quit()
-                    }
-                }
-            }
-        }
-    }
-
-    Menu {
-        id: contactMenu
-        platformInverted: main.platformInverted
-
-        onStatusChanged: {
-            if (status == DialogStatus.Closed) {
-                selectedJid = "";
-            }
-        }
-
-        // define the items in the menu and corresponding actions
-        content: MenuLayout {
-            MenuItem {
-                text: qsTr("Remove")
-                platformInverted: main.platformInverted
-                onClicked: {
-                    xmppConnectivity.chatJid = selectedJid
-                    contactMenu.close()
-                    if (avkon.displayAvkonQueryDialog("Remove", qsTr("Are you sure you want to remove ") + vars.dialogName + qsTr(" from your contact list?")))
-                        xmppConnectivity.client.removeContact( selectedJid );
-                }
-            }
-            MenuItem {
-                text: qsTr("Rename")
-                platformInverted: main.platformInverted
-                onClicked: { xmppConnectivity.chatJid = selectedJid
-                    dialog.create("qrc:/dialogs/Contact/Rename") }
-            }
-            MenuItem {
-                text: qsTr("vCard")
-                platformInverted: main.platformInverted
-                onClicked: {
-                    xmppConnectivity.chatJid = selectedJid
-                    main.pageStack.push( "qrc:/pages/VCard" )
-                    xmppConnectivity.chatJid = selectedJid
-                }
-            }
-            MenuItem {
-                text: qsTr("Subscribe")
-                platformInverted: main.platformInverted
-                onClicked: {dialogTitle = qsTr("Subscribed")
-                    dialogText = qsTr("Sent request to ")+vars.dialogName
-                    xmppConnectivity.client.subscribe( selectedJid )
-                    notify.postGlobalNote(qsTr("Sent request to ")+vars.dialogName)
-                }
-            }
-            MenuItem {
-                text: qsTr("Unsubscribe")
-                platformInverted: main.platformInverted
-                onClicked: {dialogTitle = qsTr("Unsuscribed")
-                    contactMenu.close()
-                    dialogText = qsTr("Unsuscribed ")+vars.dialogName
-                    xmppConnectivity.client.unsubscribe( selectedJid )
-                    notify.postGlobalNote(qsTr("Unsuscribed ")+vars.dialogName)
-                }
-            }
-        }
-    }
     /*********************************************************************/
 
     TextField {
@@ -419,7 +320,7 @@ Page {
             id: toolBarButtonOptions
             iconSource: main.platformInverted ? "toolbar-menu_inverse" : "toolbar-menu"
             smooth: true
-            onClicked: rosterMenu.open()
+            onClicked: dialog.create("qrc:/menus/Roster/Options")
         }
     }
 

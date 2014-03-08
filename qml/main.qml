@@ -188,6 +188,8 @@ PageStackWindow {
 
     Notifications { id: notify }
 
+    ListModel { id: listModelResources }
+
     StatusBar { id: sbar; y: -main.y
         Item {
                   anchors { left: parent.left; leftMargin: 6; verticalCenter: parent.verticalCenter }
