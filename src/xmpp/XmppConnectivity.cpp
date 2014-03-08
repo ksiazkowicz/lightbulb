@@ -93,7 +93,7 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
     connect(clients->value(index),SIGNAL(updateContact(QString,QString,QString,int)),this,SLOT(updateContact(QString,QString,QString,int)));
     connect(clients->value(index),SIGNAL(insertMessage(QString,QString,QString,QString,int)),this,SLOT(insertMessage(QString,QString,QString,QString,int)));
     connect(clients->value(index),SIGNAL(chatOpened(QString,QString)),this,SLOT(chatOpened(QString,QString)));
-    connect(clients->value(index),SIGNAL(chatClosed(QString)),this,SLOT(chatClosed(QString)));
+    connect(clients->value(index),SIGNAL(chatClosed(QString,QString)),this,SLOT(chatClosed(QString,QString)));
     connect(clients->value(index),SIGNAL(contactRenamed(QString,QString)),this,SLOT(renameChatContact(QString,QString)));
     qDebug().nospace() << "XmppConnectivity::initializeAccount(): initialized account " << qPrintable(clients->value(index)->getMyJid()) << "/" << qPrintable(clients->value(index)->getResource());
     delete account;
@@ -173,10 +173,12 @@ void XmppConnectivity::chatOpened(QString accountId, QString bareJid) {
   if (!cachedMessages->contains(bareJid)) cachedMessages->insert(bareJid,new MsgListModel());
 }
 
-void XmppConnectivity::chatClosed(QString bareJid) { //this poorly written piece of shit should take care of account id one day
-  int indxItem = -1;
-  ChatsItemModel *itemExists = (ChatsItemModel*)chats->find( bareJid, indxItem );
-  if( itemExists ) if( indxItem >= 0 ) chats->takeRow( indxItem );
+void XmppConnectivity::chatClosed(QString accId, QString bareJid) { //this poorly written piece of shit should take care of account id one day
+  for (int i=0; i<chats->count(); i++) {
+      ChatsItemModel *itemExists = (ChatsItemModel*)chats->getElementByID(i);
+      if (itemExists->jid() == bareJid && itemExists->accountID() == accId)
+          chats->takeRow(i);
+  }
   qDebug() << "XmppConnectivity::chatClosed(): chat closed";
 }
 
@@ -218,6 +220,12 @@ void XmppConnectivity::accountRemoved(QString id) {
   sqlQuery->setQuery("DELETE FROM MESSAGES WHERE id_account='" +id + "'", database->db);
   database->deleteLater();
   sqlQuery->deleteLater();
+
+  for (int i=0; i<chats->count(); i++) {
+      ChatsItemModel *itemExists = (ChatsItemModel*)chats->getElementByID(i);
+      if (itemExists->accountID() == id)
+          chats->takeRow(i);
+  }
 }
 
 void XmppConnectivity::accountModified(QString id) {

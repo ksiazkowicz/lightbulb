@@ -91,9 +91,10 @@ void Settings::addAccount( const QString &acc )
     if( sl.indexOf(acc) < 0 ) {
         sl.append(acc);
         setValue( "accounts", QVariant(sl) );
-        //emit accountAdded(acc);
     }
     endGroup();
+    initListOfAccounts();
+    emit accountAdded(acc);
 }
 void Settings::removeAccount( const QString &acc )
 {
@@ -145,7 +146,6 @@ void Settings::initListOfAccounts() {
     emit accountsListChanged();
 }
 
-
 void Settings::setAccount(
         QString _grid,
         QString _name,
@@ -163,11 +163,8 @@ void Settings::setAccount(
 
     QVariant retList = value( "accounts", QStringList() );
     QStringList sl = retList.toStringList();
-    if( sl.indexOf(_grid) < 0 ) {
-        sl.append(_grid);
-        setValue( "accounts", QVariant(sl) );
+    if( sl.indexOf(_grid) < 0 )
         isNew = true;
-    }
     endGroup();
 
     sStr(_name,_grid,"name");
@@ -184,11 +181,8 @@ void Settings::setAccount(
     int p = _port.toInt(&ok);
     if( ok ) { sInt( p, _jid, "port" ); }
 
-    initListOfAccounts();
-    emit accountsListChanged();
-
-    if (isNew) emit accountAdded(_grid);
-      else emit accountEdited(_grid);
+    if (isNew) addAccount(_grid);
+    else emit accountEdited(_grid);
 }
 
 AccountsItemModel* Settings::getAccount(int index) {

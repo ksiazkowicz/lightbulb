@@ -241,7 +241,8 @@ Page {
 
                 xmppConnectivity.setAccountData( grid, name, 'Facebook', jid, pass, false, resource, host, port,  true )
 
-                pageStack.replace( "qrc:/pages/Accounts" )
+                statusBarText.text = "Contacts"
+                pageStack.pop()
             }
         }
     }

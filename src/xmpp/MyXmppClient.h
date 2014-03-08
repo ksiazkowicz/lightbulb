@@ -218,7 +218,7 @@ signals:
     void resourceChanged();
     void openChatsChanged();
     void chatOpened( QString accountId, QString bareJid );
-    void chatClosed( QString bareJid );
+    void chatClosed( QString accountId, QString bareJid );
     void accountIdChanged();
     void vCardChanged();
     void errorHappened( const QString &errorString );
@@ -236,7 +236,7 @@ public slots:
     Q_INVOKABLE void openChat( QString jid ) { emit chatOpened( m_accountId, jid ); }
     Q_INVOKABLE void closeChat( QString jid ) {
       this->resetUnreadMessages( jid );
-      emit chatClosed( jid );
+      emit chatClosed( m_accountId, jid );
     }
 
 private slots:

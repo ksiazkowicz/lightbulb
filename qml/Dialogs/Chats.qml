@@ -94,8 +94,8 @@ CommonDialog {
                     iconSource: main.platformInverted ? "qrc:/toolbar/close_inverse" : "qrc:/toolbar/close"
                     anchors { top: parent.top; bottom: parent.bottom; right: parent.right }
                     onClicked: {
-                        xmppConnectivity.client.closeChat(jid)
-                        xmppConnectivity.client.resetUnreadMessages(jid)
+                        xmppConnectivity.closeChat(account,jid)
+                        xmppConnectivity.resetUnreadMessages(account,jid)
                         if (jid == xmppConnectivity.chatJid) {
                             vars.isChatInProgress = false
                             xmppConnectivity.chatJid = ""

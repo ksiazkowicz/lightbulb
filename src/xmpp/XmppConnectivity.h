@@ -112,7 +112,7 @@ public slots:
 
     // handling chats list
     void chatOpened(QString accountId,QString bareJid);
-    void chatClosed(QString bareJid);
+    void chatClosed(QString accountId,QString bareJid);
     Q_INVOKABLE QString getPropertyByJid(QString account,QString property,QString jid);
     Q_INVOKABLE QString getPreservedMsg(QString jid);
     Q_INVOKABLE void preserveMsg(QString jid,QString message);
@@ -146,6 +146,10 @@ public slots:
       item = 0; delete item;
     }
 
+    Q_INVOKABLE void closeChat(QString accountId, QString bareJid) { clients->value(accountId)->closeChat(bareJid); }
+    Q_INVOKABLE void closeChat(QString bareJid) { clients->value(currentClient)->closeChat(bareJid); }
+    Q_INVOKABLE void resetUnreadMessages(QString accountId, QString bareJid) { clients->value(accountId)->resetUnreadMessages(bareJid); }
+    Q_INVOKABLE void resetUnreadMessages(QString bareJid) { clients->value(currentClient)->resetUnreadMessages(bareJid); }
 private:
     QString currentClient;
     QMap<QString,MyXmppClient*> *clients;

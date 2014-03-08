@@ -330,11 +330,11 @@ Page {
                 pageStack.pop()
                 vars.isChatInProgress = false
                 statusBarText.text = "Contacts"
-                xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.chatJid )
+                xmppConnectivity.resetUnreadMessages( xmppConnectivity.chatJid )
                 xmppConnectivity.chatJid = ""
             }
             onPlatformPressAndHold: {
-                xmppConnectivity.client.closeChat(xmppConnectivity.chatJid )
+                xmppConnectivity.closeChat(xmppConnectivity.chatJid )
             }
         }
         ToolButton {
@@ -404,7 +404,7 @@ Page {
                 onClicked: {
                     pageStack.pop()
                     vars.isChatInProgress = false
-                    xmppConnectivity.client.closeChat(xmppConnectivity.chatJid )
+                    xmppConnectivity.closeChat(xmppConnectivity.chatJid )
                     statusBarText.text = "Contacts"
                     xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.chatJid )
                     xmppConnectivity.chatJid = ""
