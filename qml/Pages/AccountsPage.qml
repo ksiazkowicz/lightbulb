@@ -131,7 +131,7 @@ Page {
             iconSource: main.platformInverted ? "toolbar-delete_inverse" : "toolbar-delete"
             onClicked: if( vars.accGRID != "" ) {
                            if (avkon.displayAvkonQueryDialog("Remove","Are you sure you want to remove account " + vars.accJid + "?")) {
-                               xmppConnectivity.accountRemoved(accountsPage.currentIndex)
+                               xmppConnectivity.accountRemoved(vars.accGRID)
                                settings.removeAccount( vars.accGRID )
                            }
                        }

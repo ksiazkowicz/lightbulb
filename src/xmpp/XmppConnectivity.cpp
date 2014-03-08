@@ -208,7 +208,7 @@ void XmppConnectivity::accountAdded(QString id) {
 
 void XmppConnectivity::accountRemoved(QString id) {
   qDebug().nospace() << "XmppConnectivity::accountRemoved(): removing account "
-           << qPrintable(id)<<"::"<<qPrintable(lSettings->getAccount(lSettings->getAccountId(id))->jid());
+           << qPrintable(id)<<"::"<<qPrintable(clients->value(id)->getMyJid());
   if (currentClient == id)
       changeAccount(lSettings->getAccount(1)->grid());
   clients->remove(id);
@@ -216,7 +216,6 @@ void XmppConnectivity::accountRemoved(QString id) {
   DatabaseManager* database = new DatabaseManager();
   SqlQueryModel* sqlQuery = new SqlQueryModel( 0 );
   sqlQuery->setQuery("DELETE FROM MESSAGES WHERE id_account='" +id + "'", database->db);
-  qDebug() << sqlQuery->lastError();
   database->deleteLater();
   sqlQuery->deleteLater();
 }
