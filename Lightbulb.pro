@@ -114,7 +114,8 @@ OTHER_FILES += README.md \
     qml/Pages/*.* \
     qml/FirstRun/*.* \
     qml/JavaScript/*.* \
-    qml/Preflets/*.*
+    qml/Preflets/*.* \
+    qml/Menus/UrlContextMenu.qml
 
 
 # Please do not modify the following two lines. Required for deployment.

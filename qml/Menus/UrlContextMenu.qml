@@ -1,9 +1,9 @@
 /********************************************************************
 
-src/database/SkinSelectorHandler.h
--- loads skins and exposes them to QML
+qml/Menus/UrlContextMenu.qml
+-- contains a context menu which appears after tapping on URL
 
-Copyright (c) 2013 Maciej Janiszewski
+Copyright (c) 2013-2014 Maciej Janiszewski
 
 This file is part of Lightbulb.
 
@@ -22,33 +22,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 *********************************************************************/
 
-#ifndef SKINSELECTORHANDLER_H
-#define SKINSELECTORHANDLER_H
+import QtQuick 1.1
+import com.nokia.symbian 1.1
 
-#include <QObject>
-#include <QStringList>
-#include <QSettings>
-
-class SkinSelectorHandler : public QObject
-{
-    Q_OBJECT
-
-    Q_PROPERTY( QStringList skins READ getAvailableSkins NOTIFY availableSkinsChanged )
-public:
-    explicit SkinSelectorHandler(QObject *parent = 0);
-    
-signals:
-    void availableSkinsChanged();
-
-public slots:
-    QStringList getAvailableSkins() { return availableSkins; }
-    void loadAvailableSkins();
-    Q_INVOKABLE QString getSkinName(QString path);
-
-private:
-    QStringList availableSkins;
-    QSettings* skinVerifier;
-    
-};
-
-#endif // SKINSELECTORHANDLER_H
+ContextMenu {
+    platformInverted: main.platformInverted
+    MenuLayout {
+        MenuItem {
+            platformInverted: main.platformInverted
+            text: qsTr("Copy");
+            onClicked: {
+                clipboard.setText(vars.url)
+                avkon.showPopup("URL copied to","clipboard.",false)
+            }
+        }
+        MenuItem {
+            text: qsTr("Open in default browser");
+            platformInverted: main.platformInverted
+            onClicked: avkon.openDefaultBrowser(vars.url)
+        }
+    }
+    Component.onCompleted: open()
+}

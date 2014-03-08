@@ -3,7 +3,7 @@
 qml/Dialogs/Chats.qml
 -- Dialog for switching between chats
 
-Copyright (c) 2013 Maciej Janiszewski
+Copyright (c) 2013-2014 Maciej Janiszewski
 
 This file is part of Lightbulb.
 

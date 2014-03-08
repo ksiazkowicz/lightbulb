@@ -82,6 +82,13 @@ Page {
         bareJid = ""
     }
 
+    function getPresence() {
+        var presence = xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,"presence",xmppVCard.jid);
+        if (presence != "(unknown)") {
+            return presence.slice(14);
+        } return presence;
+    }
+
     Flickable {
         id: flickArea
         anchors.top: parent.top; anchors.topMargin: 12
@@ -101,7 +108,7 @@ Page {
 
             Row {
                 id: rowAvatarAndJid
-                height: avatar.height
+                height: avatar.height < container.height ? avatar.height + (container.height-avatar.height) : avatar.height
                 width: columnContent.width
                 spacing: 15
                 Image {
@@ -118,6 +125,7 @@ Page {
                     id: container
                     width: parent.width - 143
                     anchors { right: parent.right; rightMargin: 10; }
+                    height: txtJid.height + 5 + statusText.height
                     Text {
                         id: txtJid
                         width: container.width
@@ -128,6 +136,7 @@ Page {
                     Row {
                         spacing: 5
                         anchors { top: txtJid.bottom }
+                        height: statusText.height
                         Image {
                             id: statusImg
                             width: 24
@@ -136,9 +145,10 @@ Page {
                             sourceSize.width: 24
                         }
                         Text {
+                            id: statusText
                             width: columnContent.width - 162
                             font.pixelSize: 18
-                            text: vars.selectedContactStatusText
+                            text: vars.selectedContactStatusText == "" ? getPresence() : vars.selectedContactStatusText
                             color: "gray"
                             wrapMode: Text.Wrap
                         }
@@ -284,7 +294,7 @@ Page {
                 wrapMode: Text.WrapAnywhere
                 width: parent.width
                 visible: text != ""
-                onLinkActivated: { vars.url=link; linkContextMenu.open()}
+                onLinkActivated: { vars.url=link; dialog.create("qrc:/menus/UrlContext")}
             }
 
 

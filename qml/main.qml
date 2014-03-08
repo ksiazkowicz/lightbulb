@@ -184,18 +184,6 @@ PageStackWindow {
         }
     }
 
-    ContextMenu {
-        id: linkContextMenu
-        MenuLayout {
-            MenuItem {text: qsTr("Copy"); onClicked: {
-                    clipboard.setText(vars.url)
-                    avkon.showPopup("URL copied to","clipboard.",false)
-                }
-            }
-            MenuItem {text: qsTr("Open in default browser"); onClicked: avkon.openDefaultBrowser(vars.url) }
-      }
-    }
-
     Clipboard { id: clipboard }
 
     Notifications { id: notify }
@@ -252,6 +240,8 @@ PageStackWindow {
         color: main.platformInverted ? "white" : "black"
         anchors.fill: parent
         visible: xmppConnectivity.client.stateConnect === 2
+        opacity: 0.7
+
         Column {
             anchors.centerIn: parent;
             BusyIndicator { anchors.horizontalCenter: parent.horizontalCenter; running: true }

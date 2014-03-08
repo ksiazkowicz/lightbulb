@@ -97,7 +97,7 @@ Page {
                   color: vars.textColor
                   font.pixelSize: 16
                   wrapMode: Text.Wrap
-                  onLinkActivated: { vars.url=link; linkContextMenu.open()}
+                  onLinkActivated: { vars.url=link; dialog.create("qrc:/menus/UrlContext")}
             }
             Text {
                   id: time

@@ -115,4 +115,7 @@
     <qresource prefix="/accounts">
         <file alias="Facebook">images/accounts/Facebook.svg</file>
     </qresource>
+    <qresource prefix="/menus">
+        <file alias="UrlContext">qml/Menus/UrlContextMenu.qml</file>
+    </qresource>
 </RCC>

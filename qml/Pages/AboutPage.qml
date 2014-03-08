@@ -5,7 +5,7 @@ qml/Pages/AboutPage.qml
 
 Copyright (c) 2013-2014 Maciej Janiszewski
 
-This file is part of Lightbulb and was derived from MeegIM.
+This file is part of Lightbulb.
 
 Lightbulb is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -98,7 +98,7 @@ Page {
                 text: "Donate"
                 onClicked: {
                     vars.url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SA8DZYA7PUCCU";
-                    linkContextMenu.open()
+                    dialog.create("qrc:/menus/UrlContext")
                 }
             }
         }
