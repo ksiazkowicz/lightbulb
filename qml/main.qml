@@ -157,7 +157,6 @@ PageStackWindow {
         if (settings.gStr("behavior","lastAccount") !== "false") changeAccount(settings.gStr("behavior","lastAccount"));
         checkIfFirstRun()
         xmppConnectivity.client.keepAlive = settings.gInt("behavior", "keepAliveInterval")
-        if (settings.gBool("behavior","goOnlineOnStart")) xmppConnectivity.client.setMyPresence( XmppClient.Online, lastStatus )
     }
 
     /************************( stuff to do when running this app )*****************************/

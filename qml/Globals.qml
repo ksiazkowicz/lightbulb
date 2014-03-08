@@ -31,12 +31,7 @@ Item {
     property bool                    inputInProgress: false
     property string                  accGRID: ""
     property string                  accJid: ""
-    property string                  accPass: ""
-    property string                  accResource: ""
-    property string                  accHost: ""
-    property string                  accPort: ""
-    property bool                    accManualHostPort: false
-    property bool                    accDefault: false
+    property bool                    accGoOnline: false
     property string                  lastStatus: settings.gBool("behavior", "lastStatusText") ? settings.gStr("behavior","lastStatusText") : ""
     property string                  nowEditing: ""
     property string                  url: ""

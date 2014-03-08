@@ -182,7 +182,10 @@ void Settings::setAccount(
     if( ok ) { sInt( p, _jid, "port" ); }
 
     if (isNew) addAccount(_grid);
-    else emit accountEdited(_grid);
+    else {
+        initListOfAccounts();
+        emit accountEdited(_grid);
+    }
 }
 
 AccountsItemModel* Settings::getAccount(int index) {

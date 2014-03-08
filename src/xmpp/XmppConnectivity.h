@@ -82,6 +82,10 @@ public:
     Q_INVOKABLE bool cleanCache();
     Q_INVOKABLE bool resetSettings();
 
+    //
+    Q_INVOKABLE QString generateAccountName(QString host,QString jid);
+    Q_INVOKABLE QString getAccountName(QString grid);
+
 signals:
     void accountChanged();
     void rosterChanged();
@@ -133,7 +137,7 @@ public slots:
     Q_INVOKABLE void accountRemoved(QString id);
     void accountModified(QString id);
 
-    Q_INVOKABLE void setAccountData( QString _grid, QString _name, QString _icon, QString _jid, QString _pass, bool connectOnStart = false, QString _resource = "",
+    Q_INVOKABLE void setAccountData( QString _grid, QString _name, QString _icon, QString _jid, QString _pass, bool connectOnStart, QString _resource = "",
                                      QString _host = "", QString _port = "", bool manuallyHostPort = false ) {
       qDebug() << "XmppConnectivity::setAccountData(): setting account data for" << qPrintable(_jid);
       lSettings->setAccount(_grid, _name, _icon, _jid,_pass,connectOnStart,_resource,_host,_port,manuallyHostPort);
@@ -150,6 +154,7 @@ public slots:
     Q_INVOKABLE void closeChat(QString bareJid) { clients->value(currentClient)->closeChat(bareJid); }
     Q_INVOKABLE void resetUnreadMessages(QString accountId, QString bareJid) { clients->value(accountId)->resetUnreadMessages(bareJid); }
     Q_INVOKABLE void resetUnreadMessages(QString bareJid) { clients->value(currentClient)->resetUnreadMessages(bareJid); }
+
 private:
     QString currentClient;
     QMap<QString,MyXmppClient*> *clients;

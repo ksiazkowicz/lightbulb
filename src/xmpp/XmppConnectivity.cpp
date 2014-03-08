@@ -46,9 +46,8 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
     chats = new ChatsListModel();
 
     for (int i=0; i<lSettings->accountsCount(); i++) {
-        if (currentClient == "")
-          changeAccount(lSettings->getAccount(i)->grid());
         initializeAccount(lSettings->getAccount(i)->grid(),lSettings->getAccount(i));
+        if (currentClient == "") this->changeAccount(lSettings->getAccount(i)->grid());
     }
 
     connect(dbWorker, SIGNAL(messagesChanged()), this, SLOT(updateMessages()), Qt::UniqueConnection);
@@ -96,6 +95,11 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
     connect(clients->value(index),SIGNAL(chatClosed(QString,QString)),this,SLOT(chatClosed(QString,QString)));
     connect(clients->value(index),SIGNAL(contactRenamed(QString,QString)),this,SLOT(renameChatContact(QString,QString)));
     qDebug().nospace() << "XmppConnectivity::initializeAccount(): initialized account " << qPrintable(clients->value(index)->getMyJid()) << "/" << qPrintable(clients->value(index)->getResource());
+
+    if (lSettings->gBool(index,"connectOnStart")) {
+        clients->value(index)->goOnline(lSettings->gStr("behavior","lastStatus"));
+    }
+
     delete account;
     return true;
 }
@@ -232,6 +236,7 @@ void XmppConnectivity::accountModified(QString id) {
  qDebug().nospace() << "XmppConnectivity::accountModified(): reinitializing account "
            << qPrintable(id)<<"::"<<qPrintable(lSettings->getAccount(lSettings->getAccountId(id))->jid());
   initializeAccount(id,lSettings->getAccount(lSettings->getAccountId(id)));
+  if (id == currentClient) emit accountChanged();
 }
 
 int XmppConnectivity::getStatusByIndex(QString accountId) {
@@ -244,9 +249,21 @@ int XmppConnectivity::getStatusByIndex(QString accountId) {
 // stub stub stub stub stub hardcoded doesnt matter lol
 QString XmppConnectivity::getCurrentAccountName() {
   if (selectedClient != 0) {
-    if (selectedClient->getHost() == "talk.google.com") return "Hangouts";
-    if (selectedClient->getHost() == "chat.facebook.com") return "Facebook Chat";
-    if (selectedClient->getHost() != "") return selectedClient->getHost();
-    return selectedClient->getMyJid();
-  } return "No account available";
+      return getAccountName(currentClient);
+   } else return "No accounts available";
+}
+
+QString XmppConnectivity::getAccountName(QString grid) {
+  if (grid != "") {
+      QString name = lSettings->gStr(grid,"name");
+      if (name !="false" && name !="") return name;
+      else return generateAccountName(lSettings->gStr(grid,"host"),lSettings->gStr(grid,"jid"));
+  }
+}
+
+QString XmppConnectivity::generateAccountName(QString host, QString jid) {
+  if (host == "talk.google.com") return "Hangouts";
+  if (host == "chat.facebook.com") return "Facebook Chat";
+  if (host != "") return host;
+  return jid;
 }

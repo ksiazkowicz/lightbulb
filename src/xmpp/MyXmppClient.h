@@ -203,6 +203,8 @@ public :
 
     int getKeepAlive() const { return m_keepAlive; }
     void setKeepAlive(int arg) { if (m_keepAlive != arg) { m_keepAlive = arg; emit keepAliveChanged(); } }
+
+    void goOnline(QString lastStatus) { this->setMyPresence(Online,lastStatus); }
 	
 signals:
     void versionChanged();

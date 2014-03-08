@@ -147,7 +147,7 @@ Item {
     }
 
     function removeWidget() {
-        if (settings.gBool("widget","enableHsWidget")) hsWidget.removeWidget()
+        hsWidget.removeWidget()
     }
 
     HapticsEffect { id: hapticsEffect }

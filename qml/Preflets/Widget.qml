@@ -54,11 +54,8 @@ Item {
                 anchors { right: parent.right; rightMargin: platformStyle.paddingSmall; verticalCenter: parent.verticalCenter }
                 onCheckedChanged: {
                     settings.sBool(checked,"widget","enableHsWidget")
-                    if (checked) {
-                        notify.registerWidget()
-                    } else {
-                        notify.removeWidget()
-                    }
+                    if (checked) notify.registerWidget();
+                    else notify.removeWidget()
                 }
             }
         }

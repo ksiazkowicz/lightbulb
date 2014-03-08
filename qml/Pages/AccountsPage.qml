@@ -77,11 +77,6 @@ Page {
                 onDoubleClicked: {
                     vars.accGRID = accGRID
                     vars.accJid = accJid
-                    vars.accPass = accPasswd
-                    vars.accResource = accResource
-                    vars.accHost = accHost
-                    vars.accPort = accPort
-                    vars.accManualHostPort = accManualHostPort
                     pageStack.replace( "qrc:/pages/AccountsAdd" )
                 }
                 onClicked: {
@@ -89,11 +84,6 @@ Page {
                     accountsPage.currentIndex = index
                     vars.accGRID = accGRID
                     vars.accJid = accJid
-                    vars.accPass = accPasswd
-                    vars.accResource = accResource
-                    vars.accHost = accHost
-                    vars.accPort = accPort
-                    vars.accManualHostPort = accManualHostPort
                 }
             }
 

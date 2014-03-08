@@ -33,16 +33,17 @@ Page {
     Component.onCompleted: {
         if (vars.accGRID != "") {
             statusBarText.text = qsTr("Editing ") + vars.accJid
-            if (vars.accHost == "chat.facebook.com") {
+            if (settings.gStr(vars.accGRID,'host') == "chat.facebook.com") {
                 selectionDialog.selectedIndex = 0;
             } else {
-                if (vars.accHost == "talk.google.com") selectionDialog.selectedIndex = 1; else selectionDialog.selectedIndex = 2;
+                if (settings.gStr(vars.accGRID,'host') == "talk.google.com") selectionDialog.selectedIndex = 1; else selectionDialog.selectedIndex = 2;
             }
-            tiJid.text = vars.accJid
-            tiPass.text = vars.accPass
-            tiHost.text = vars.accHost
-            tiPort.text = vars.accPort
-            tiResource.text = vars.accResource
+            tiName.text = settings.gStr(vars.accGRID,'name')
+            tiJid.text = settings.gStr(vars.accGRID,'jid')
+            tiPass.text = settings.gStr(vars.accGRID,'passwd')
+            tiHost.text = settings.gStr(vars.accGRID,'host')
+            tiPort.text = settings.gStr(vars.accGRID,'port')
+            tiResource.text = settings.gStr(vars.accGRID,'resource')
         } else { statusBarText.text = qsTr("New account") }
     }
 
@@ -108,6 +109,19 @@ Page {
             }
 
             Text {
+                text: "Name (optional)"
+                color: vars.textColor
+            }
+            TextField {
+                id: tiName
+                height: 50
+                enabled: selectionDialog.selectedIndex != -1
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: accAddPage.width - 10
+                onActiveFocusChanged: main.splitscreenY = 0
+            }
+
+            Text {
                 text: "Login"
                 color: vars.textColor
             }
@@ -139,7 +153,7 @@ Page {
                 height: 50
                 echoMode: TextInput.Password
                 placeholderText: qsTr("Password")
-                onActiveFocusChanged: main.splitscreenY = 0
+                onActiveFocusChanged: main.splitscreenY = inputContext.height - (main.height - y) + 1.5*height
             }
 
             Item { height: 5; width: accAddPage.width}
@@ -163,6 +177,19 @@ Page {
                 placeholderText: qsTr("(default: Lightbulb)")
 
                 onActiveFocusChanged: main.splitscreenY = inputContext.height - (main.height - y) + 1.5*height
+            }
+
+            Item {
+                height: 5
+                width: accAddPage.width
+            }
+
+            CheckBox {
+               id: goOnline
+               text: qsTr("Go online on startup")
+               enabled: selectionDialog.selectedIndex != -1
+               checked: settings.gBool(vars.accGRID,'connectOnStart')
+               platformInverted: main.platformInverted
             }
 
             Item {
@@ -228,18 +255,33 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "qrc:/toolbar/ok_inverse" : "qrc:/toolbar/ok"
             onClicked: {
-                var grid;
+                var grid,name,icon,jid,pass,goonline,resource,host,port;
                 if (vars.accGRID != "") grid = vars.accGRID;
                     else grid = settings.generateGRID()
-                var name = 'Account'
-                var jid = tiJid.text
-                var pass = tiPass.text
+                name = tiName.text
+                if (tiName.text == "") {
+                    name = xmppConnectivity.generateAccountName(host,jid);
+                }
+                switch (selectionDialog.selectedIndex) {
+                    case 0:
+                        icon = "Facebook";
+                        break;
+                    case 1:
+                        icon = "Hangouts";
+                        break;
+                    case 2:
+                        icon = "XMPP";
+                        break;
+                }
+                jid = tiJid.text
+                pass = tiPass.text
+                goonline = goOnline.checked
+                resource = tiResource.text
+                host = tiHost.text
+                port = tiPort.text
                 if( jid=="" || pass=="" ) return
-                var host = tiHost.text
-                var port = tiPort.text
-                var resource = tiResource.text
 
-                xmppConnectivity.setAccountData( grid, name, 'Facebook', jid, pass, false, resource, host, port,  true )
+                xmppConnectivity.setAccountData( grid, name, icon, jid, pass, goonline, resource, host, port,  true )
 
                 statusBarText.text = "Contacts"
                 pageStack.pop()

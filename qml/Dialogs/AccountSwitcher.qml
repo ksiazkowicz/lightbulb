@@ -48,7 +48,7 @@ CommonDialog {
                 }
                 Text {
                     anchors { verticalCenter: parent.verticalCenter; left: imgPresence.right; right: parent.right; rightMargin: 10; leftMargin: 10 }
-                    text: accJid
+                    text: xmppConnectivity.getAccountName(accGRID)
                     font.pixelSize: 18
                     clip: true
                     color: vars.textColor
