@@ -261,6 +261,10 @@ QString XmppConnectivity::getAccountName(QString grid) {
   }
 }
 
+QString XmppConnectivity::getAccountIcon(QString grid) {
+  return lSettings->gStr(grid,"icon");
+}
+
 QString XmppConnectivity::generateAccountName(QString host, QString jid) {
   if (host == "talk.google.com") return "Hangouts";
   if (host == "chat.facebook.com") return "Facebook Chat";

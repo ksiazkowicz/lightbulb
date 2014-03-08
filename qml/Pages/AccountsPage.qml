@@ -49,14 +49,19 @@ Page {
                 GradientStop { position: 0; color: "#1C87DD" }
                 GradientStop { position: 1; color: "#51A8FB" }
             }
+            Image {
+                id: imgAccount
+                source: "qrc:/accounts/" + xmppConnectivity.getAccountIcon(accGRID)
+                sourceSize.height: 32
+                sourceSize.width: 32
+                anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
+                height: 32
+                width: 32
+            }
             Text {
                 id: txtAcc
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.left: parent.left
-                anchors.leftMargin: 5
-                anchors.right: parent.right
-                anchors.rightMargin: 10
-                text: accJid
+                anchors { verticalCenter: parent.verticalCenter; left: imgAccount.right; leftMargin: 10; right: parent.right; rightMargin: 10 }
+                text: xmppConnectivity.getAccountName(accGRID)
                 font.pixelSize: 18
                 clip: true
                 color: vars.textColor

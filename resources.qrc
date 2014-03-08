@@ -112,4 +112,7 @@
         <file alias="vibra_disabled_inverse">images/events/vibra_disabled_inverse.svg</file>
         <file alias="vibra_inverse">images/events/vibra_inverse.svg</file>
     </qresource>
+    <qresource prefix="/accounts">
+        <file alias="Facebook">images/accounts/Facebook.svg</file>
+    </qresource>
 </RCC>

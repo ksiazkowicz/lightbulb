@@ -53,6 +53,15 @@ CommonDialog {
                     clip: true
                     color: vars.textColor
                 }
+                Image {
+                    id: imgAccount
+                    source: "qrc:/accounts/" + accIcon
+                    sourceSize.height: 24
+                    sourceSize.width: 24
+                    anchors { verticalCenter: parent.verticalCenter; right: parent.right; rightMargin: 10 }
+                    height: 24
+                    width: 24
+                }
                 states: State {
                     name: "Current"
                     when: xmppConnectivity.currentAccount == accGRID

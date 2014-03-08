@@ -62,6 +62,15 @@ CommonDialog {
                     height: 24
                     width: 24
                 }
+                Image {
+                    id: imgAccount
+                    source: "qrc:/accounts/" + xmppConnectivity.getAccountIcon(account)
+                    sourceSize.height: 24
+                    sourceSize.width: 24
+                    anchors { verticalCenter: parent.verticalCenter; right: closeBtn.left; rightMargin: 10 }
+                    height: 24
+                    width: 24
+                }
                 Text {
                     anchors { verticalCenter: parent.verticalCenter; left: imgPresence.right; right: parent.right; rightMargin: 5; leftMargin: 10 }
                     property int unreadMsg: parseInt(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))

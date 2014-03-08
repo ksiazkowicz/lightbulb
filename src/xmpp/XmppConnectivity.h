@@ -85,6 +85,7 @@ public:
     //
     Q_INVOKABLE QString generateAccountName(QString host,QString jid);
     Q_INVOKABLE QString getAccountName(QString grid);
+    Q_INVOKABLE QString getAccountIcon(QString grid);
 
 signals:
     void accountChanged();
