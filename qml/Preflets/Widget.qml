@@ -178,6 +178,12 @@ Item {
                         color: vars.textColor
                         verticalAlignment: Text.AlignVCenter
                     }
+                    Rectangle {
+                        height: 1
+                        anchors { top: parent.bottom; left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
+                        color: vars.textColor
+                        opacity: 0.2
+                    }
                     onClicked: {
                         settings.sStr("C:\\data\\.config\\Lightbulb\\widgets\\" + modelData,"widget","skin")
                         notify.updateSkin()

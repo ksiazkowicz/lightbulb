@@ -115,6 +115,8 @@
     </qresource>
     <qresource prefix="/accounts">
         <file alias="Facebook">images/accounts/Facebook.svg</file>
+        <file alias="Hangouts">images/accounts/Hangouts.svg</file>
+        <file alias="XMPP">images/accounts/XMPP.svg</file>
     </qresource>
     <qresource prefix="/menus">
         <file alias="UrlContext">qml/Menus/UrlContextMenu.qml</file>
