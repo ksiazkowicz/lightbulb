@@ -33,6 +33,7 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
     selectedClient = new MyXmppClient();
     currentClient = "";
     clients = new QMap<QString,MyXmppClient*>;
+    latestChats = new QMap<int,QStringList>;
     cachedMessages = new QMap<QString,MsgListModel*>;
     lSettings = new Settings();
     lCache = new MyCache();
@@ -60,7 +61,6 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
 
 XmppConnectivity::~XmppConnectivity() {
     if (msgWrapper != NULL) delete msgWrapper;
-    if (selectedClient != NULL) delete selectedClient;
     if (clients != NULL) delete clients;
     if (cachedMessages != NULL) delete cachedMessages;
     if (roster != NULL) delete roster;
@@ -164,6 +164,8 @@ void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString
     MsgItemModel* message = new MsgItemModel(body,date,mine);
     cachedMessages->value(bareJid)->append(message);
     dbWorker->executeQuery(QStringList() << "insertMessage" << m_accountId << bareJid << body << date << QString::number(mine));
+
+    addChat(m_accountId,bareJid);
 }
 
 // handling chats list
@@ -175,6 +177,7 @@ void XmppConnectivity::chatOpened(QString accountId, QString bareJid) {
     emit chatsChanged();
   }
   if (!cachedMessages->contains(bareJid)) cachedMessages->insert(bareJid,new MsgListModel());
+  addChat(accountId,bareJid);
 }
 
 void XmppConnectivity::chatClosed(QString accId, QString bareJid) { //this poorly written piece of shit should take care of account id one day

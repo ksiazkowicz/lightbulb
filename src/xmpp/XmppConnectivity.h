@@ -87,6 +87,28 @@ public:
     Q_INVOKABLE QString getAccountName(QString grid);
     Q_INVOKABLE QString getAccountIcon(QString grid);
 
+    // widget
+    void addChat(QString account, QString bareJid) {
+      QStringList chat;
+      chat << account << bareJid;
+      latestChats->insert(latestChatIndex,chat);
+      latestChatIndex++;
+      if (latestChats->count() > 10) latestChats->remove(0);
+      emit widgetDataChanged();
+    }
+
+    Q_INVOKABLE QString getChatPresence(int index) {
+      if (!latestChats->contains(latestChatIndex)) return "-2";
+      QStringList data = latestChats->value(latestChatIndex-index);
+      return clients->value(data.at(0))->getPropertyByJid(data.at(1),"presence");
+    }
+
+    Q_INVOKABLE QString getChatName(int index) {
+      if (!latestChats->contains(latestChatIndex)) return "";
+      QStringList data = latestChats->value(latestChatIndex-index);
+      return clients->value(data.at(0))->getPropertyByJid(data.at(1),"name");
+    }
+
 signals:
     void accountChanged();
     void rosterChanged();
@@ -101,6 +123,8 @@ signals:
 
     void qmlChatChanged();
     void msgLimitChanged();
+
+    void widgetDataChanged();
     
 public slots:
     void changeRoster() {
@@ -200,6 +224,9 @@ private:
     int msgLimit;
 
     MessageWrapper *msgWrapper;
+
+    QMap<int,QStringList> *latestChats;
+    int latestChatIndex;
 };
 
 #endif // XMPPCONNECTIVITY_H

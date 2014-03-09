@@ -72,17 +72,6 @@ Page {
                 PropertyChanges { target: wrapper; gradient: gr_press }
             }
 
-            transitions: Transition {
-                //NumberAnimation { properties: "position"; duration: 300 }
-            }
-
-            Rectangle {
-                height: 1
-                anchors { top: parent.bottom; left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
-                color: vars.textColor
-                opacity: 0.2
-            }
-
             MouseArea {
                 id: maAccItem
                 anchors { left: parent.left; right: parent.right; top: parent.top; bottom: parent.bottom; }
@@ -130,6 +119,8 @@ Page {
         }
 
         ToolButton {
+            enabled: vars.accGRID != ""
+            opacity: enabled ? 1 : 0.5
             iconSource: main.platformInverted ? "toolbar-delete_inverse" : "toolbar-delete"
             onClicked: if( vars.accGRID != "" ) {
                            if (avkon.displayAvkonQueryDialog("Remove","Are you sure you want to remove account " + vars.accJid + "?")) {

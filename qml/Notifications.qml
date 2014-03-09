@@ -30,6 +30,16 @@ import lightbulb 1.0
 Item {
     Component.onCompleted: if (settings.gBool("widget","enableHsWidget")) hsWidget.registerWidget()
 
+    Connections {
+        target: xmppConnectivity
+        onWidgetDataChanged: {
+            if (settings.gBool("widget","enableHsWidget")) {
+                hsWidget.getLatest4Chats();
+                hsWidget.pushWidget()
+            }
+        }
+    }
+
     function getStatusName() {
        return getStatusNameByIndex(xmppConnectivity.client.status)
     }
@@ -51,9 +61,7 @@ Item {
         if (settings.gBool("widget","enableHsWidget")) {
             hsWidget.status = xmppConnectivity.client.status
             hsWidget.unreadCount = vars.globalUnreadCount
-            hsWidget.getLatest4Chats()
             //hsWidget.getFirst4Contacts()
-            hsWidget.pushWidget()
         }
     }
 
@@ -93,15 +101,18 @@ Item {
         function pushWidget() { postWidget(row1,r1presence,row2,r2presence,row3,r3presence,row4,r4presence,unreadCount,status); }
 
         function getLatest4Chats() {
-            /*var chatsCount = xmppConnectivity.client.getLatestChatsCount()
-            row1 = xmppConnectivity.client.getNameByIndex(chatsCount);
-            r1presence = getPresenceId(xmppConnectivity.client.getPresenceByIndex(chatsCount));
-            row2 = xmppConnectivity.client.getNameByIndex(chatsCount-1);
-            r2presence = getPresenceId(xmppConnectivity.client.getPresenceByIndex(chatsCount-1));
-            row3 = xmppConnectivity.client.getNameByIndex(chatsCount-2);
-            r3presence = getPresenceId(xmppConnectivity.client.getPresenceByIndex(chatsCount-2));
-            row4 = xmppConnectivity.client.getNameByIndex(chatsCount-3);
-            r4presence = getPresenceId(xmppConnectivity.client.getPresenceByIndex(chatsCount-3));*/
+            row1 = xmppConnectivity.getChatName(0);
+            r1presence = xmppConnectivity.getChatPresence(0);
+            row2 = xmppConnectivity.getChatName(1);
+            r2presence = xmppConnectivity.getChatPresence(1);
+            row3 = xmppConnectivity.getChatName(2);
+            r3presence = xmppConnectivity.getChatPresence(2);
+            row4 = xmppConnectivity.getChatName(3);
+            r4presence = xmppConnectivity.getChatPresence(3);
+            console.log(row1); console.log(r1presence);
+            console.log(row2); console.log(r2presence);
+            console.log(row3); console.log(r3presence);
+            console.log(row4); console.log(r4presence);
         }
         function getFirst4Contacts() {
             /*row1 = xmppConnectivity.client.getNameByOrderID(0);

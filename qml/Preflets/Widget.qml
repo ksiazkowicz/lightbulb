@@ -169,25 +169,39 @@ Item {
             height: 196
             model: selector.skins
             clip: true
-            delegate: MouseArea {
+            delegate: Rectangle {
+                    id: wrapper
                     height: 48
                     width: parent.width
+                    gradient: gr_free
+                    Gradient {
+                        id: gr_free
+                        GradientStop { id: gr1; position: 0; color: "transparent" }
+                        GradientStop { id: gr3; position: 1; color: "transparent" }
+                    }
+                    Gradient {
+                        id: gr_press
+                        GradientStop { position: 0; color: "#1C87DD" }
+                        GradientStop { position: 1; color: "#51A8FB" }
+                    }
                     Text {
                         anchors { fill: parent; margins: 10 }
                         text: selector.getSkinName(modelData)
                         color: vars.textColor
                         verticalAlignment: Text.AlignVCenter
                     }
-                    Rectangle {
-                        height: 1
-                        anchors { top: parent.bottom; left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
-                        color: vars.textColor
-                        opacity: 0.2
+                    states: State {
+                        name: "Current"
+                        when: settings.gStr("widget","skin") == "C:\\data\\.config\\Lightbulb\\widgets\\" + modelData
+                        PropertyChanges { target: wrapper; gradient: gr_press }
                     }
-                    onClicked: {
-                        settings.sStr("C:\\data\\.config\\Lightbulb\\widgets\\" + modelData,"widget","skin")
-                        notify.updateSkin()
-                        notify.postInfo("Skin changed to " + modelData + ".");
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            settings.sStr("C:\\data\\.config\\Lightbulb\\widgets\\" + modelData,"widget","skin")
+                            notify.updateSkin()
+                            notify.postInfo("Skin changed to " + modelData + ".");
+                        }
                     }
             }
         }
