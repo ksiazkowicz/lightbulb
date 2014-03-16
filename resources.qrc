@@ -43,6 +43,7 @@
         <file alias="offline">images/presence/presence-offline.svg</file>
         <file alias="online">images/presence/presence-online.svg</file>
         <file alias="xa">images/presence/presence-xa.svg</file>
+        <file alias="unknown">images/presence/presence-unknown.svg</file>
     </qresource>
     <qresource prefix="/dialogs">
         <file alias="Contact/Add">qml/Dialogs/AddContact.qml</file>
