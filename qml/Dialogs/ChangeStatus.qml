@@ -36,10 +36,14 @@ CommonDialog {
 
         platformInverted: main.platformInverted
 
+        // Code for dynamic load
         Component.onCompleted: {
-            open()
             colStatus.selectedIndex = vars.lastUsedStatus
-        }
+            open();
+            isCreated = true }
+        property bool isCreated: false
+
+        onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
 
         onButtonClicked: {
             xmppConnectivity.client.keepAlive = settings.gBool("behavior","keepAliveInterval")

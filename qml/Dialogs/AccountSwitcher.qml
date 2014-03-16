@@ -103,8 +103,12 @@ CommonDialog {
         model: settings.accounts
     }
 
+
+    // Code for dynamic load
     Component.onCompleted: {
-        settings.initListOfAccounts()
-        open()
-    }
+        open();
+        isCreated = true }
+    property bool isCreated: false
+
+    onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
 }

@@ -31,10 +31,14 @@ CommonDialog {
 
     buttonTexts: [qsTr("OK"), qsTr("Cancel")]
 
+    // Code for dynamic load
     Component.onCompleted: {
-        open()
-        main.splitscreenY = 0
-    }
+        open();
+        main.splitscreenY = 0;
+        isCreated = true }
+    property bool isCreated: false
+
+    onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
 
     onButtonClicked: {
         if ((index === 0) && ( newNameText.text != "" )) {

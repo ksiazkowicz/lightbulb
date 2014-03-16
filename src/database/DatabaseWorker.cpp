@@ -97,9 +97,6 @@ void DatabaseWorker::updateMessages(QString m_accountId, QString bareJid, int pa
 }
 
 int DatabaseWorker::getPageCount(QString m_accountId, QString bareJid) {
-  #ifdef QT_DEBUG
-  qDebug() << qPrintable("DatabaseWorker::getPageCount(): called for account "+m_accountId+" and JID "+bareJid);
-  #endif
   SqlQueryModel getMeSomeNumbersCauseNumbersAreAwesome;
   if (bareJid != "") getMeSomeNumbersCauseNumbersAreAwesome.setQuery("SELECT id FROM messages WHERE bareJid='" + bareJid + "' and id_account='"+m_accountId+"'",database->db);
   double pagesCount = getMeSomeNumbersCauseNumbersAreAwesome.rowCount()/20;

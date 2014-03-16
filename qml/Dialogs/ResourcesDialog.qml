@@ -31,9 +31,13 @@ CommonDialog {
     privateCloseIcon: true
     platformInverted: main.platformInverted
 
+    // Code for dynamic load
     Component.onCompleted: {
-        open()
-    }
+        open();
+        isCreated = true }
+    property bool isCreated: false
+
+    onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
 
     content: ListView {
                 anchors.fill: parent

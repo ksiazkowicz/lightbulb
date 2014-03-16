@@ -217,6 +217,7 @@ Page {
         anchors { top: accountSwitcher.bottom; left: parent.left; right: parent.right; bottom: rosterSearch.top; }
         contentHeight: columnContent.height
         contentWidth: columnContent.width
+        clip: true
 
         flickableDirection: Flickable.VerticalFlick
         Column {

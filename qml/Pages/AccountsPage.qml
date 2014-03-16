@@ -29,8 +29,6 @@ Page {
     id: accountsPage
     tools: toolBarAccounts
 
-    property int currentIndex: -1;
-
     Component {
         id: componentAccountItem
         Rectangle {
@@ -68,7 +66,7 @@ Page {
             }
             states: State {
                 name: "Current"
-                when: (wrapper.ListView.isCurrentItem && (vars.accJid != "") )
+                when: vars.accJid == accJid
                 PropertyChanges { target: wrapper; gradient: gr_press }
             }
 
@@ -81,8 +79,6 @@ Page {
                     pageStack.replace( "qrc:/pages/AccountsAdd" )
                 }
                 onClicked: {
-                    wrapper.ListView.view.currentIndex = index
-                    accountsPage.currentIndex = index
                     vars.accGRID = accGRID
                     vars.accJid = accJid
                 }
@@ -121,6 +117,13 @@ Page {
         ToolButton {
             enabled: vars.accGRID != ""
             opacity: enabled ? 1 : 0.5
+            iconSource: main.platformInverted ? "qrc:/toolbar/edit_inverse" : "qrc:/toolbar/edit"
+            onClicked: if( vars.accGRID != "" ) pageStack.replace( "qrc:/pages/AccountsAdd" )
+        }
+
+        ToolButton {
+            enabled: vars.accGRID != ""
+            opacity: enabled ? 1 : 0.5
             iconSource: main.platformInverted ? "toolbar-delete_inverse" : "toolbar-delete"
             onClicked: if( vars.accGRID != "" ) {
                            if (avkon.displayAvkonQueryDialog("Remove","Are you sure you want to remove account " + vars.accJid + "?")) {
@@ -128,13 +131,6 @@ Page {
                                settings.removeAccount( vars.accGRID )
                            }
                        }
-        }
-
-        ToolButton {
-            enabled: vars.accGRID != ""
-            opacity: enabled ? 1 : 0.5
-            iconSource: main.platformInverted ? "qrc:/toolbar/edit_inverse" : "qrc:/toolbar/edit"
-            onClicked: if( vars.accGRID != "" ) pageStack.replace( "qrc:/pages/AccountsAdd" )
         }
 
         ToolButton {

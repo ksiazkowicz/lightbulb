@@ -26,45 +26,146 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 CommonDialog {
+    id: contributors
     titleText: qsTr("Developers")
 
     platformInverted: main.platformInverted
     buttonTexts: [qsTr("OK")]
-    Component.onCompleted: open()
 
-    height: 400
+    content: Item {
+        height: Math.min(flickable.contentHeight, platformContentMaximumHeight)
+        width: parent.width
 
-    content: Flickable {
-        contentHeight: columnContent.height
-        contentWidth: columnContent.width
-        anchors { fill: parent; margins: platformStyle.paddingSmall }
+        Flickable {
+            id: flickable
+            contentHeight: columnContent.height
+            height: parent.height - (platformStyle.paddingLarge * 2)
+            width: parent.width - (platformStyle.paddingLarge * 2)
+            anchors { left: parent.left; top: parent.top; margins: platformStyle.paddingLarge}
+            flickableDirection: Flickable.VerticalFlick
+            clip: true
+            interactive: contentHeight > height
 
-        flickableDirection: Flickable.VerticalFlick
+            Column {
+                id: columnContent
+                width: parent.width
+                spacing: platformStyle.paddingLarge
 
-        Column {
-            id: columnContent
-            width: parent.width - 2*platformStyle.paddingSmall
-            spacing: platformStyle.paddingSmall
-            Label { anchors.horizontalCenter: parent.horizontalCenter; font.pixelSize: platformStyle.fontSizeLarge*1.2; text: qsTr("Core developers"); color: vars.textColor }
-            Text {
-                color: vars.textColor
-                text: "Maciej Janiszewski\nAnatoliy Kozlov (MeegIM)"
-            }
-            Label { anchors.horizontalCenter: parent.horizontalCenter; font.pixelSize: platformStyle.fontSizeLarge*1.2; text: "Contributors"; color: vars.textColor}
-            Text {
-                color: vars.textColor
-                text: "Fabian Hüllmantel\nPaul Wallace\nDickson Leong\nMotaz Alnuweiri"
-            }
-            Label { anchors.horizontalCenter: parent.horizontalCenter; font.pixelSize: platformStyle.fontSizeLarge*1.2; text: "Testing"; color: vars.textColor}
-            Text {
-                color: vars.textColor
-                text: "Mohamed Zinhom\nKonrad Bąk\nGodwin Tgn\nRudmata\nRicardo Partida"
-            }
-            Label { anchors.horizontalCenter: parent.horizontalCenter; font.pixelSize: platformStyle.fontSizeLarge*1.2; text: "Donators"; color: vars.textColor}
-            Text {
-                color: vars.textColor
-                text: "Elena Archinova"
+                Column {
+                    width: parent.width
+                    spacing: platformStyle.paddingSmall
+
+                    Label {
+                        id: titleLabel
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        font.bold: true
+                        font.pixelSize: platformStyle.fontSizeLarge + 1
+                        text: qsTr("Core Developers")
+                        color: vars.textColor
+                    }
+
+                    Text {
+                        width: parent.width
+                        horizontalAlignment: Text.AlignHCenter
+                        font.pixelSize: platformStyle.fontSizeMedium
+                        color: vars.textColor
+                        text: "Maciej Janiszewski\nAnatoliy Kozlov (MeegIM)"
+                    }
+                }
+
+                Column {
+                    width: parent.width
+                    spacing: platformStyle.paddingSmall
+
+                    Label {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        font.bold: true
+                        font.pixelSize: platformStyle.fontSizeLarge + 1
+                        text: qsTr("Contributors")
+                        color: vars.textColor
+                    }
+
+                    Text {
+                        width: parent.width
+                        horizontalAlignment: Text.AlignHCenter
+                        font.pixelSize: platformStyle.fontSizeMedium
+                        color: vars.textColor
+                        text: "Fabian Hüllmantel\nPaul Wallace\nDickson Leong\nMotaz Alnuweiri"
+                    }
+                }
+
+                Column {
+                    width: parent.width
+                    spacing: platformStyle.paddingSmall
+
+                    Label {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        font.bold: true
+                        font.pixelSize: platformStyle.fontSizeLarge + 1
+                        text: qsTr("Testing")
+                        color: vars.textColor
+                    }
+
+                    Text {
+                        width: parent.width
+                        horizontalAlignment: Text.AlignHCenter
+                        font.pixelSize: platformStyle.fontSizeMedium
+                        color: vars.textColor
+                        text: "Mohamed Zinhom\nKonrad Bąk\nGodwin Tgn\nRudmata\nRicardo Partida\nmassi93"
+                    }
+
+                }
+
+                Column {
+                    width: parent.width
+                    spacing: platformStyle.paddingSmall
+
+                    Label {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        font.bold: true
+                        font.pixelSize: platformStyle.fontSizeLarge + 1
+                        text: qsTr("Donators")
+                        color: vars.textColor
+                    }
+
+                    Text {
+                        width: parent.width
+                        horizontalAlignment: Text.AlignHCenter
+                        font.pixelSize: platformStyle.fontSizeMedium
+                        color: vars.textColor
+                        text: "Elena Archinova"
+                    }
+                }
             }
         }
-     }
+
+        ScrollBar {
+            id: scrollBar
+
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+                right: parent.right
+                margins: platformStyle.paddingSmall
+            }
+
+            flickableItem: flickable
+            interactive: false
+            orientation: Qt.Vertical
+            platformInverted: main.platformInverted
+        }
+    }
+
+    // Code for dynamic load
+    Component.onCompleted: {
+        open()
+        isCreated = true
+    }
+
+    property bool isCreated: false
+    onStatusChanged: {
+        if (isCreated && status === DialogStatus.Closed) {
+            destroy()
+        }
+    }
 }

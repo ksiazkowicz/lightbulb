@@ -120,6 +120,12 @@ CommonDialog {
         model: xmppConnectivity.chats
     }
 
-    Component.onCompleted: open()
+    // Code for dynamic load
+    Component.onCompleted: {
+        open();
+        isCreated = true }
+    property bool isCreated: false
+
+    onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
 }
 

@@ -140,6 +140,7 @@ Page {
         contentHeight: preflet.item.height
         contentWidth: width
         flickableDirection: Flickable.VerticalFlick
+        clip: true
         Loader {
             id: preflet
             source: "qrc:/Preflets/Popups"

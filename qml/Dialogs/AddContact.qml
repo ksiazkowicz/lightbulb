@@ -30,7 +30,13 @@ CommonDialog {
 
     platformInverted: main.platformInverted
     buttonTexts: [qsTr("OK"), qsTr("Cancel")]
-    Component.onCompleted: open()
+    // Code for dynamic load
+    Component.onCompleted: {
+        open();
+        isCreated = true }
+    property bool isCreated: false
+
+    onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
     onButtonClicked: if (index === 0 && addName.text != "" && addJid.text != "") xmppConnectivity.client.addContact( addJid.text, addName.text, "", true )
 
     content: Column {

@@ -32,7 +32,13 @@ CommonDialog {
     height: 250
     platformInverted: main.platformInverted
 
-    Component.onCompleted: open()
+    // Code for dynamic load
+    Component.onCompleted: {
+        open();
+        isCreated = true }
+    property bool isCreated: false
+
+    onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
 
     content: Item {
         width: parent.width-20
