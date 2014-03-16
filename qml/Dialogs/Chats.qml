@@ -105,6 +105,7 @@ CommonDialog {
                     onClicked: {
                         xmppConnectivity.closeChat(account,jid)
                         xmppConnectivity.resetUnreadMessages(account,jid)
+                        vars.globalUnreadCount = vars.globalUnreadCount - parseInt(xmppConnectivity.client.getPropertyByJid(jid, "unreadMsg"))
                         if (jid == xmppConnectivity.chatJid) {
                             vars.isChatInProgress = false
                             xmppConnectivity.chatJid = ""
