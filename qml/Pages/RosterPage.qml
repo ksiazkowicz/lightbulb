@@ -73,7 +73,7 @@ Page {
         Text {
             id: titleText
             anchors { verticalCenter: parent.verticalCenter; left: button.right; leftMargin: platformStyle.paddingSmall  }
-            text: xmppConnectivity.currentAccountName == "" ? "N/A" : xmppConnectivity.currentAccountName
+            text: xmppConnectivity.currentAccount == "" ? "N/A" : xmppConnectivity.currentAccountName
             color: "white"
             font.pixelSize: 20
         }

@@ -189,6 +189,7 @@ void Settings::setAccount(
 }
 
 AccountsItemModel* Settings::getAccount(int index) {
+  if (alm->getElementByID(index) != 0)
     return (AccountsItemModel*)alm->getElementByID(index);
 }
 

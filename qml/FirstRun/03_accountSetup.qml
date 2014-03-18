@@ -1,26 +1,13 @@
 import QtQuick 1.1
 import com.nokia.symbian 1.1
 
-Page {
+Item {
     id: firstRunPage
-    tools: toolBarLayout
-    orientationLock: 1
-
-    Component.onCompleted: statusBarText.text = qsTr("First run")
-
-    Text {
-        id: chapter
-        color: vars.textColor
-        anchors { top: parent.top; topMargin: 32; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
-        horizontalAlignment: Text.AlignHCenter
-        font.pixelSize: platformStyle.fontSizeMedium*1.5
-        text: "Account setup"
-    }
 
     Text {
         id: text
         color: vars.textColor
-        anchors { top: chapter.bottom; topMargin: 24; left: parent.left; right: parent.right; leftMargin: 10; rightMargin: 10 }
+        anchors { top: parent.top; left: parent.left; right: parent.right; leftMargin: 10; rightMargin: 10 }
         wrapMode: Text.WordWrap
         font.pixelSize: 20
         text: qsTr("In this step you're going to configure your account. Enter your accounts details and tap Next to continue.");
@@ -197,4 +184,3 @@ Page {
 
 
 }
-

@@ -65,6 +65,7 @@
         <file alias="Roster">qml/Pages/RosterPage.qml</file>
         <file alias="VCard">qml/Pages/VCardPage.qml</file>
         <file alias="Preferences">qml/Pages/PreferencesPage.qml</file>
+        <file alias="FirstRun">qml/Pages/FirstRunPage.qml</file>
     </qresource>
     <qresource prefix="/toolbar">
         <file alias="close">images/toolbar/toolbar-close.svg</file>
@@ -80,11 +81,7 @@
     </qresource>
     <qresource prefix="/FirstRun">
         <file alias="01">qml/FirstRun/01_gettingStarted.qml</file>
-        <file alias="02">qml/FirstRun/02_notificationLed.qml</file>
         <file alias="03">qml/FirstRun/03_accountSetup.qml</file>
-        <file alias="04">qml/FirstRun/04_discreetPopupSettings.qml</file>
-        <file alias="05">qml/FirstRun/05_skinSettings.qml</file>
-        <file alias="06">qml/FirstRun/06_rosterLayoutSettings.qml</file>
         <file alias="07">qml/FirstRun/07_congratulations.qml</file>
         <file alias="img/popup01">images/popupLayout01.png</file>
         <file alias="img/popup02">images/popupLayout02.png</file>

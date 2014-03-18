@@ -225,10 +225,16 @@ void XmppConnectivity::accountAdded(QString id) {
 void XmppConnectivity::accountRemoved(QString id) {
   qDebug().nospace() << "XmppConnectivity::accountRemoved(): removing account "
            << qPrintable(id)<<"::"<<qPrintable(clients->value(id)->getMyJid());
-  if (currentClient == id)
-      if (lSettings->getAccount(1) != 0)
+  if (currentClient == id) {
+      qDebug() << "czemu to sie sypie";
+      if (lSettings->getAccount(1) != 0) {
+          qDebug() << lSettings->getAccount(1)->grid();
         changeAccount(lSettings->getAccount(1)->grid());
-      else changeAccount("null");
+      } else {
+          qDebug() << "nie ogarniam";
+          changeAccount("null");
+      }
+  }
   clients->remove(id);
 
   DatabaseManager* database = new DatabaseManager();

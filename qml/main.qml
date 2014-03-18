@@ -162,7 +162,7 @@ PageStackWindow {
     /************************( stuff to do when running this app )*****************************/
 
     function checkIfFirstRun() {
-        if (!settings.gBool("main","not_first_run")) pageStack.push("qrc:/FirstRun/01")
+        if (!settings.gBool("main","not_first_run")) pageStack.push("qrc:/Pages/FirstRun")
         else pageStack.push("qrc:/pages/Roster")
     }
 
