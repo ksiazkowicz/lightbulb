@@ -99,6 +99,7 @@
         <file alias="Roster">qml/Preflets/Roster.qml</file>
         <file alias="Events">qml/Preflets/Events.qml</file>
         <file alias="Connection">qml/Preflets/Connection.qml</file>
+        <file alias="LED">qml/Preflets/LED.qml</file>
     </qresource>
     <qresource prefix="/Events">
         <file alias="alarm">images/events/alarm.svg</file>

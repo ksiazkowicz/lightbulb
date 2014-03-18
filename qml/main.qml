@@ -52,7 +52,7 @@ PageStackWindow {
         repeat:true
         property int blinkStatus: 0
         onTriggered: {
-            if (vars.globalUnreadCount>0) {
+            if (vars.globalUnreadCount>0 || vars.isBlinkingOverrideEnabled) {
                 if (blinkStatus < 4) { avkon.notificationBlink(settings.gInt("notifications", "blinkScreenDevice")); blinkStatus++ } else { if (blinkStatus > 6) { blinkStatus = 0} else { blinkStatus++ } }
             } else { blinkStatus = 0; blink.running = false }
         }
@@ -73,7 +73,7 @@ PageStackWindow {
                 notify.updateNotifiers()
             } else {
                 vars.isActive = false
-                if (vars.globalUnreadCount>0 && settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff")) blink.running = true
+                if ((vars.globalUnreadCount>0 || vars.isBlinkingOverrideEnabled) && settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff")) blink.running = true
                 vars.isChatInProgress = false
             }
         }

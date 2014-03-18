@@ -119,7 +119,8 @@ OTHER_FILES += README.md \
     qml/Menus/RosterMenu.qml \
     qml/Menus/ContactMenu.qml \
     qml/Dialogs/ResourcesDialog.qml \
-    qml/Menus/MessagesOptions.qml
+    qml/Menus/MessagesOptions.qml \
+    qml/Preflets/LED.qml
 
 
 # Please do not modify the following two lines. Required for deployment.

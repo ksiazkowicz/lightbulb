@@ -36,6 +36,7 @@ Page {
                 if (vars.isRestartRequired) {
                     avkon.restartApp();
                 } else pageStack.pop();
+                vars.isBlinkingOverrideEnabled = false;
             }
         }
     }
@@ -79,6 +80,7 @@ Page {
                 }
                 case 4: {
                     titleText.text = "Notification LED";
+                    preflet.source = "qrc:/Preflets/LED";
                     break;
                 }
                 case 5: {
@@ -97,6 +99,12 @@ Page {
                     break;
                 }
                 default: break;
+            }
+            if (selectedIndex == 4) {
+                blink.running = true;
+                vars.isBlinkingOverrideEnabled = true;
+            } else {
+                vars.isBlinkingOverrideEnabled = false;
             }
         }
     }

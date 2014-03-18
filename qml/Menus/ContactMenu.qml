@@ -34,6 +34,7 @@ Menu {
     onStatusChanged: {
         if (status == DialogStatus.Closed && shouldICareAnyway) {
             vars.selectedJid = "";
+            destroy();
         }
     }
     Component.onCompleted: {

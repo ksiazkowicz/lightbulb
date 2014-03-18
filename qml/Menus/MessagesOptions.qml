@@ -29,7 +29,12 @@ Menu {
     id: msgOptions
     platformInverted: main.platformInverted
 
-    Component.onCompleted: open()
+    Component.onCompleted: {
+        open();
+        isCreated = true }
+    property bool isCreated: false
+
+    onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
     // define the items in the menu and corresponding actions
     content: MenuLayout {
         MenuItem {

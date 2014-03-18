@@ -51,6 +51,7 @@ Item {
     property string                  selectedContactPresence: ""
 
     property bool                    isRestartRequired: false
+    property bool                    isBlinkingOverrideEnabled: false
 
     // roster
     property bool                    hideOffline: settings.gBool("ui","hideOffline")
