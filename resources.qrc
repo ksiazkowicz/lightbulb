@@ -59,7 +59,6 @@
     <qresource prefix="/pages">
         <file alias="About">qml/Pages/AboutPage.qml</file>
         <file alias="AccountsAdd">qml/Pages/AccountAddPage.qml</file>
-        <file alias="Accounts">qml/Pages/AccountsPage.qml</file>
         <file alias="Archive">qml/Pages/ArchivePage.qml</file>
         <file alias="Messages">qml/Pages/MessagesPage.qml</file>
         <file alias="Roster">qml/Pages/RosterPage.qml</file>

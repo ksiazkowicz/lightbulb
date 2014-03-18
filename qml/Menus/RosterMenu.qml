@@ -42,11 +42,6 @@ Menu {
             onClicked: main.pageStack.push( "qrc:/pages/About" )
         }
         MenuItem {
-            text: qsTr("First run (remove before release)")
-            platformInverted: main.platformInverted
-            onClicked: main.pageStack.push( "qrc:/pages/FirstRun" )
-        }
-        MenuItem {
             text: qsTr("Exit")
             platformInverted: main.platformInverted
             onClicked: {

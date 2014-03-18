@@ -27,7 +27,7 @@ import com.nokia.symbian 1.1
 
 Item {
     height: column.height
-    property int tmpValue: 2
+    property int tmpValue: settings.gInt("notifications", "blinkScreenDevice") == 0 ? 2 : settings.gInt("notifications", "blinkScreenDevice")
 
     Column {
         id: column

@@ -84,13 +84,16 @@ Page {
                 break;
             }
             case 1: {
+                settings.gBool("behavior","wibblyWobblyTimeyWimeyStuff")
                 titleText.text = "Notification LED"
                 preflet.source = "qrc:/Preflets/LED";
                 break;
             }
             case 2: {
-                titleText.text = "Account"
-                preflet.source = "qrc:/FirstRun/03";
+                /*titleText.text = "Account"
+                preflet.source = "qrc:/FirstRun/03";*/
+                selectedIndex++;
+                switchPreflet();
                 break;
             }
             case 3: {
