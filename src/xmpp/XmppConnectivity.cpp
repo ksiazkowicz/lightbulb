@@ -113,6 +113,13 @@ void XmppConnectivity::changeAccount(QString accountId) {
         changeRoster();
         qDebug() << "XmppConnectivity::changeAccount(): selected account is" << qPrintable(clients->value(accountId)->getMyJid());
     }
+    if (accountId == "null") {
+        currentClient  = "";
+        selectedClient = new MyXmppClient();
+        emit accountChanged();
+        changeRoster();
+        qDebug() << "XmppConnectivity::changeAccount(): no selected account";
+    }
 }
 
 void XmppConnectivity::gotoPage(int nPage) {
@@ -219,7 +226,9 @@ void XmppConnectivity::accountRemoved(QString id) {
   qDebug().nospace() << "XmppConnectivity::accountRemoved(): removing account "
            << qPrintable(id)<<"::"<<qPrintable(clients->value(id)->getMyJid());
   if (currentClient == id)
-      changeAccount(lSettings->getAccount(1)->grid());
+      if (lSettings->getAccount(1) != 0)
+        changeAccount(lSettings->getAccount(1)->grid());
+      else changeAccount("null");
   clients->remove(id);
 
   DatabaseManager* database = new DatabaseManager();
@@ -249,7 +258,6 @@ int XmppConnectivity::getStatusByIndex(QString accountId) {
   else return 0;
 }
 
-// stub stub stub stub stub hardcoded doesnt matter lol
 QString XmppConnectivity::getCurrentAccountName() {
   if (selectedClient != 0) {
       return getAccountName(currentClient);
@@ -261,7 +269,7 @@ QString XmppConnectivity::getAccountName(QString grid) {
       QString name = lSettings->gStr(grid,"name");
       if (name !="false" && name !="") return name;
       else return generateAccountName(lSettings->gStr(grid,"host"),lSettings->gStr(grid,"jid"));
-  }
+  } else return "N/A";
 }
 
 QString XmppConnectivity::getAccountIcon(QString grid) {

@@ -66,7 +66,7 @@ Page {
             }
             states: State {
                 name: "Current"
-                when: vars.accJid == accJid
+                when: vars.accGRID == accGRID
                 PropertyChanges { target: wrapper; gradient: gr_press }
             }
 
