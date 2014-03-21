@@ -34,6 +34,7 @@ Page {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
                 if (vars.isRestartRequired) {
+                    if (settings.gBool("widget","enableHsWidget")) notify.cleanWidget()
                     avkon.restartApp();
                 } else pageStack.pop();
                 vars.isBlinkingOverrideEnabled = false;

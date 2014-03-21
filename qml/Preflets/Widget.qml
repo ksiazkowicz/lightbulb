@@ -85,6 +85,7 @@ Item {
                 anchors { right: parent.right; rightMargin: platformStyle.paddingSmall; verticalCenter: parent.verticalCenter }
                 onCheckedChanged: {
                     settings.sBool(checked,"widget","showUnreadCntChat")
+                    notify.updateWidget()
                 }
             }
         }
@@ -114,6 +115,7 @@ Item {
                 anchors { right: parent.right; rightMargin: platformStyle.paddingSmall; verticalCenter: parent.verticalCenter }
                 onCheckedChanged: {
                     settings.sBool(checked,"widget","showGlobalUnreadCnt")
+                    notify.updateWidget()
                 }
             }
         }
@@ -143,6 +145,7 @@ Item {
                 anchors { right: parent.right; rightMargin: platformStyle.paddingSmall; verticalCenter: parent.verticalCenter }
                 onCheckedChanged: {
                     settings.sBool(checked,"widget","showStatus")
+                    notify.updateWidget()
                 }
             }
         }

@@ -65,7 +65,7 @@ Page {
         ToolButton {
             id: button
             anchors { left: parent.left; leftMargin: platformStyle.paddingSmall; verticalCenter: parent.verticalCenter }
-            iconSource: xmppConnectivity.client.stateConnect === 2 ? "qrc:/presence/unknown" : "qrc:/presence/" + notify.getStatusName()
+            iconSource: xmppConnectivity.client.stateConnect === 2 ? "qrc:/presence/unknown" : "qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.client.status)
             onClicked: {
                 if (settings.accounts.count() > 0) dialog.create("qrc:/dialogs/Status/Change"); else avkon.displayGlobalNote("You have to set-up an account first.",true)
             }

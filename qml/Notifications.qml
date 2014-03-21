@@ -29,19 +29,9 @@ import lightbulb 1.0
 
 Item {
     Component.onCompleted: if (settings.gBool("widget","enableHsWidget")) hsWidget.registerWidget()
-
     Connections {
         target: xmppConnectivity
-        onWidgetDataChanged: {
-            if (settings.gBool("widget","enableHsWidget")) {
-                hsWidget.getLatest4Chats();
-                hsWidget.pushWidget()
-            }
-        }
-    }
-
-    function getStatusName() {
-       return getStatusNameByIndex(xmppConnectivity.client.status)
+        onWidgetDataChanged: updateWidget()
     }
 
     function getStatusNameByIndex(status) {
@@ -57,12 +47,7 @@ Item {
         if (vars.globalUnreadCount > 0 && !settings.gBool("behavior","disableChatIcon"))
             avkon.showChatIcon();
         else avkon.hideChatIcon();
-
-        if (settings.gBool("widget","enableHsWidget")) {
-            hsWidget.status = xmppConnectivity.client.status
-            hsWidget.unreadCount = vars.globalUnreadCount
-            //hsWidget.getFirst4Contacts()
-        }
+        updateWidget();
     }
 
     function cleanWidget() {
@@ -77,6 +62,15 @@ Item {
         hsWidget.unreadCount = 0
         hsWidget.status = 0
         hsWidget.pushWidget()
+    }
+
+    function updateWidget() {
+        if (settings.gBool("widget","enableHsWidget")) {
+            hsWidget.status = xmppConnectivity.client.status
+            hsWidget.unreadCount = vars.globalUnreadCount
+            hsWidget.getLatest4Chats();
+            hsWidget.pushWidget();
+        }
     }
 
     HSWidget {
@@ -96,23 +90,20 @@ Item {
             var skinName = settings.gStr("widget","skin")
             if (skinName === "false") skinName = "C:\\data\\.config\\Lightbulb\\widgets\\Belle Albus";
             loadSkin(skinName);
+            if (settings.gBool("widget","enableHsWidget")) cleanWidget()
         }
 
-        function pushWidget() { postWidget(row1,r1presence,row2,r2presence,row3,r3presence,row4,r4presence,unreadCount,status); }
+        function pushWidget() { postWidget(row1,r1presence,row2,r2presence,row3,r3presence,row4,r4presence,unreadCount,status,settings.gBool("widget","showGlobalUnreadCnt"),settings.gBool("widget","showStatus"),xmppConnectivity.getAccountIcon(xmppConnectivity.currentAccount)); }
 
         function getLatest4Chats() {
-            row1 = xmppConnectivity.getChatName(0);
-            r1presence = xmppConnectivity.getChatPresence(0);
-            row2 = xmppConnectivity.getChatName(1);
-            r2presence = xmppConnectivity.getChatPresence(1);
-            row3 = xmppConnectivity.getChatName(2);
-            r3presence = xmppConnectivity.getChatPresence(2);
-            row4 = xmppConnectivity.getChatName(3);
-            r4presence = xmppConnectivity.getChatPresence(3);
-            console.log(row1); console.log(r1presence);
-            console.log(row2); console.log(r2presence);
-            console.log(row3); console.log(r3presence);
-            console.log(row4); console.log(r4presence);
+            row1 = xmppConnectivity.getChatName(1,settings.gBool("widget","showUnreadCntChat"));
+            r1presence = getPresenceId(xmppConnectivity.getChatPresence(1));
+            row2 = xmppConnectivity.getChatName(2,settings.gBool("widget","showUnreadCntChat"));
+            r2presence = getPresenceId(xmppConnectivity.getChatPresence(2));
+            row3 = xmppConnectivity.getChatName(3,settings.gBool("widget","showUnreadCntChat"));
+            r3presence = getPresenceId(xmppConnectivity.getChatPresence(3));
+            row4 = xmppConnectivity.getChatName(4,settings.gBool("widget","showUnreadCntChat"));
+            r4presence = getPresenceId(xmppConnectivity.getChatPresence(4));
         }
         function getFirst4Contacts() {
             /*row1 = xmppConnectivity.client.getNameByOrderID(0);
@@ -142,13 +133,8 @@ Item {
         hsWidget.renderWidget();
     }
 
-    function postInfo(messageString) {
-        avkon.displayGlobalNote(messageString,false)
-    }
-
-    function postError(messageString) {
-        avkon.displayGlobalNote(messageString,true)
-    }
+    function postInfo(messageString) { avkon.displayGlobalNote(messageString,false) }
+    function postError(messageString) { avkon.displayGlobalNote(messageString,true) }
 
     function registerWidget() {
         if (settings.gBool("widget","enableHsWidget")) {
@@ -157,9 +143,7 @@ Item {
         }
     }
 
-    function removeWidget() {
-        hsWidget.removeWidget()
-    }
+    function removeWidget() { hsWidget.removeWidget() }
 
     HapticsEffect { id: hapticsEffect }
 

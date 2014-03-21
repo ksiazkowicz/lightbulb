@@ -89,24 +89,38 @@ public:
 
     // widget
     void addChat(QString account, QString bareJid) {
-      QStringList chat;
-      chat << account << bareJid;
-      latestChats->insert(latestChatIndex,chat);
-      latestChatIndex++;
-      if (latestChats->count() > 10) latestChats->remove(0);
+      removeChat(account,bareJid,true);
+      latestChats.append(account+";"+bareJid);
+      if (latestChats.count()>10) latestChats.removeFirst();
       emit widgetDataChanged();
     }
 
-    Q_INVOKABLE QString getChatPresence(int index) {
-      if (!latestChats->contains(latestChatIndex)) return "-2";
-      QStringList data = latestChats->value(latestChatIndex-index);
-      return clients->value(data.at(0))->getPropertyByJid(data.at(1),"presence");
+    void removeChat(QString account, QString bareJid,bool silent=false) {
+      if (latestChats.contains(account+";"+bareJid))
+        latestChats.removeAt(latestChats.indexOf(account+";"+bareJid));
+      if (!silent) emit widgetDataChanged();
     }
 
-    Q_INVOKABLE QString getChatName(int index) {
-      if (!latestChats->contains(latestChatIndex)) return "";
-      QStringList data = latestChats->value(latestChatIndex-index);
-      return clients->value(data.at(0))->getPropertyByJid(data.at(1),"name");
+    Q_INVOKABLE QString getChatPresence(int index) {
+      if (latestChats.count() >= latestChats.count()-index && latestChats.count()-index >= 0) {
+        QString presenceJid = latestChats.at(latestChats.count()-index);
+        return clients->value(presenceJid.split(';').at(0))->getPropertyByJid(presenceJid.split(';').at(1),"presence");
+        } else return "-2";
+    }
+
+    Q_INVOKABLE QString getChatName(int index,bool showUnreadCount) {
+      if (latestChats.count() >= latestChats.count()-index && latestChats.count()-index >= 0) {
+        QString bareJid = latestChats.at(latestChats.count()-index);
+        QString name;
+
+        if (showUnreadCount) {
+            name = "[" + clients->value(bareJid.split(';').at(0))->getPropertyByJid(bareJid.split(';').at(1),"unreadMsg") + "] ";
+            if (name == "[0] ") name = "";
+        }
+
+        name += clients->value(bareJid.split(';').at(0))->getPropertyByJid(bareJid.split(';').at(1),"name");
+        return name;
+      } else return "";
     }
 
 signals:
@@ -225,8 +239,7 @@ private:
 
     MessageWrapper *msgWrapper;
 
-    QMap<int,QStringList> *latestChats;
-    int latestChatIndex;
+    QStringList latestChats;
 };
 
 #endif // XMPPCONNECTIVITY_H

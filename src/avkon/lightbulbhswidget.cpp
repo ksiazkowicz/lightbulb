@@ -42,6 +42,9 @@ QString row3; int row3presence;
 QString row4; int row4presence;
 int mPresence;
 int unreadMsgCount;
+bool showMyPresence;
+bool showGlobalUnreadCount;
+QString accountsIcon;
 
 LightbulbHSWidget::LightbulbHSWidget(QObject *parent) :
     QObject(parent)
@@ -100,7 +103,8 @@ void LightbulbHSWidget::handleItemEvent( QHSWidget* /*aSender*/, QString aTempla
     }
 }
 
-void LightbulbHSWidget::postWidget( QString nRow1, int r1Presence, QString nRow2, int r2Presence, QString nRow3, int r3Presence, QString nRow4, int r4Presence, int unreadCount, int presence )
+void LightbulbHSWidget::postWidget( QString nRow1, int r1Presence, QString nRow2, int r2Presence, QString nRow3, int r3Presence, QString nRow4,
+                                    int r4Presence, int unreadCount, int presence, bool showGlobalUnreadCnt, bool showStatus, QString accountIcon )
 {
     bool needToRender;
     if (row1 != nRow1) {
@@ -152,6 +156,22 @@ void LightbulbHSWidget::postWidget( QString nRow1, int r1Presence, QString nRow2
         needToRender = true;
     }
 
+    if (showGlobalUnreadCount != showGlobalUnreadCnt) {
+        showGlobalUnreadCount = showGlobalUnreadCnt;
+        if (unreadCount > 0) needToRender = true;
+    }
+
+    if (showMyPresence != showStatus) {
+        showMyPresence = showStatus;
+        needToRender = true;
+    }
+
+    if (accountsIcon != accountIcon) {
+        accountsIcon = accountIcon;
+         if (!showMyPresence) icon_account = new QSvgRenderer(QString(":/accounts/" + accountIcon));
+        needToRender = true;
+    }
+
     if (needToRender) {
         qDebug() << "LightbulbHSWidget::postWidget(): widget data changed. Rendering.";
         renderWidget();
@@ -180,15 +200,18 @@ void LightbulbHSWidget::renderWidget() {
 
     painter->setRenderHint(QPainter::Antialiasing);
 
-    switch (mPresence) {
+    if (showMyPresence) {
+      switch (mPresence) {
         case 1: presence_online->render(painter,QRect(presencePosition,QSize(presenceSize,presenceSize))); break;
         case 2: presence_chatty->render(painter,QRect(presencePosition,QSize(presenceSize,presenceSize))); break;
         case 3: presence_away->render(painter,QRect(presencePosition,QSize(presenceSize,presenceSize))); break;
         case 4: presence_xa->render(painter,QRect(presencePosition,QSize(presenceSize,presenceSize))); break;
         case 5: presence_busy->render(painter,QRect(presencePosition,QSize(presenceSize,presenceSize))); break;
         default: presence_offline->render(painter,QRect(presencePosition,QSize(presenceSize,presenceSize))); break;
+      }
+    } else {
+        icon_account->render(painter,QRect(presencePosition,QSize(presenceSize,presenceSize)));
     }
-
     QFont font = QApplication::font();
 
     QPen pen = painter->pen();
@@ -196,7 +219,7 @@ void LightbulbHSWidget::renderWidget() {
     pen.setColor(QColor(unreadColor));
     painter->setPen(pen);
 
-    if (unreadMsgCount > 0) {
+    if (unreadMsgCount > 0 && showGlobalUnreadCount) {
         unreadMark->render(painter,QRect(unreadMarkPosition,QSize(unreadMarkSize,unreadMarkSize)));
         if (showUnreadMarkText) {
             font.setPixelSize( unreadFontSize );

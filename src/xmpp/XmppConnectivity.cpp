@@ -33,7 +33,6 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
     selectedClient = new MyXmppClient();
     currentClient = "";
     clients = new QMap<QString,MyXmppClient*>;
-    latestChats = new QMap<int,QStringList>;
     cachedMessages = new QMap<QString,MsgListModel*>;
     lSettings = new Settings();
     lCache = new MyCache();
@@ -194,6 +193,7 @@ void XmppConnectivity::chatClosed(QString accId, QString bareJid) { //this poorl
           chats->takeRow(i);
   }
   qDebug() << "XmppConnectivity::chatClosed(): chat closed";
+  removeChat(accId,bareJid);
 }
 
 QString XmppConnectivity::getPropertyByJid(QString account,QString property,QString jid) {

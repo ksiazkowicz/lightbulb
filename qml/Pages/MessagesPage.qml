@@ -48,7 +48,7 @@ Page {
         if( vars.resourceJid == "" ) listModelResources.append( {resource:qsTr("(by default)"), checked:true} )
         else listModelResources.append( {resource:qsTr("(by default)"), checked:false} )
 
-        if (notify.getStatusName() != "Offline") {
+        if (notify.getStatusNameByIndex(xmppConnectivity.client.status) != "Offline") {
             var listResources = xmppConnectivity.client.getResourcesByJid(xmppConnectivity.chatJid)
             for( var z=0; z<listResources.length; z++ ) {
                 if ( listResources[z] == "" ) { continue; }
@@ -176,7 +176,7 @@ Page {
             if( vars.resourceJid == "" ) listModelResources.append( {resource:qsTr("(by default)"), checked:true} )
             else listModelResources.append( {resource:qsTr("(by default)"), checked:false} )
 
-            if (notify.getStatusName() != "Offline") {
+            if (notify.getStatusNameByIndex(xmppConnectivity.client.status) != "Offline") {
                 var listResources = xmppConnectivity.client.getResourcesByJid(xmppConnectivity.chatJid)
                 for( var z=0; z<listResources.length; z++ ) {
                     if ( listResources[z] == "" ) { continue; }

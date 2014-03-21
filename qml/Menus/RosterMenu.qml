@@ -48,6 +48,7 @@ Menu {
                 rosterMenu.close()
                 if (avkon.displayAvkonQueryDialog("Close", qsTr("Are you sure you want to close the app?"))) {
                     avkon.hideChatIcon()
+                    if (settings.gBool("widget","enableHsWidget")) notify.cleanWidget()
                     Qt.quit()
                 }
             }

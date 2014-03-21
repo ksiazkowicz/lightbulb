@@ -114,7 +114,7 @@ PageStackWindow {
                 }
                 if (xmppConnectivity.client.stateConnect === 1) {
                     notify.notifySndVibr("NotifyConn")
-                    avkon.showPopup(xmppConnectivity.currentAccountName,"Status changed to " + notify.getStatusName(),settings.gBool("behavior","linkInDiscrPopup"));
+                    avkon.showPopup(xmppConnectivity.currentAccountName,"Status changed to " + notify.getStatusNameByIndex(xmppConnectivity.client.status),settings.gBool("behavior","linkInDiscrPopup"));
                 }
                 if (xmppConnectivity.client.stateConnect === 2) {
                     avkon.showPopup(xmppConnectivity.currentAccountName,"Connecting...",settings.gBool("behavior","linkInDiscrPopup"));

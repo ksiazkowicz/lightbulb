@@ -65,6 +65,7 @@
         <file alias="VCard">qml/Pages/VCardPage.qml</file>
         <file alias="Preferences">qml/Pages/PreferencesPage.qml</file>
         <file alias="FirstRun">qml/Pages/FirstRunPage.qml</file>
+        <file alias="Accounts">qml/Pages/AccountsPage.qml</file>
     </qresource>
     <qresource prefix="/toolbar">
         <file alias="close">images/toolbar/toolbar-close.svg</file>

@@ -41,7 +41,7 @@ public:
     Q_INVOKABLE void registerWidget();
     Q_INVOKABLE void publishWidget();
     Q_INVOKABLE void removeWidget();
-    Q_INVOKABLE void postWidget( QString nRow1, int r1Presence, QString nRow2, int r2Presence, QString nRow3, int r3Presence, QString nRow4, int r4Presence, int unreadCount, int presence );
+    Q_INVOKABLE void postWidget( QString nRow1, int r1Presence, QString nRow2, int r2Presence, QString nRow3, int r3Presence, QString nRow4, int r4Presence, int unreadCount, int presence, bool showGlobalUnreadCnt, bool showStatus, QString accountIcon );
     Q_INVOKABLE void loadSkin(QString path);
     Q_INVOKABLE void renderWidget();
     void bringToFront();
@@ -66,6 +66,7 @@ private:
     QSvgRenderer* presence_xa;
     QSvgRenderer* presence_busy;
     QSvgRenderer* presence_offline;
+    QSvgRenderer* icon_account;
     QSvgRenderer* unreadMark;
 
     QPainter*     painter;
