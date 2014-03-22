@@ -121,7 +121,11 @@ OTHER_FILES += README.md \
     qml/Dialogs/ResourcesDialog.qml \
     qml/Menus/MessagesOptions.qml \
     qml/Preflets/LED.qml \
-    qml/Pages/FirstRunPage.qml
+    qml/Pages/FirstRunPage.qml \
+    qml/Components/AccountItem.qml \
+    qml/Dialogs/AccountDetails.qml \
+    qml/Components/LineItem.qml \
+    qml/Components/DetailsItem.qml
 
 
 # Please do not modify the following two lines. Required for deployment.

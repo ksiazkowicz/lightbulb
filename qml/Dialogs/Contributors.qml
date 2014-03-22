@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import QtQuick 1.1
 import com.nokia.symbian 1.1
+import "../Components"
 
 CommonDialog {
     id: contributors
@@ -33,7 +34,7 @@ CommonDialog {
     buttonTexts: [qsTr("OK")]
 
     content: Item {
-        height: Math.min(flickable.contentHeight, platformContentMaximumHeight)
+        height: Math.min(flickable.contentHeight + (platformStyle.paddingLarge * 2), platformContentMaximumHeight)
         width: parent.width
 
         Flickable {
@@ -51,90 +52,36 @@ CommonDialog {
                 width: parent.width
                 spacing: platformStyle.paddingLarge
 
-                Column {
-                    width: parent.width
-                    spacing: platformStyle.paddingSmall
-
-                    Label {
-                        id: titleLabel
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        font.bold: true
-                        font.pixelSize: platformStyle.fontSizeLarge + 1
-                        text: qsTr("Core Developers")
-                        color: vars.textColor
-                    }
-
-                    Text {
-                        width: parent.width
-                        horizontalAlignment: Text.AlignHCenter
-                        font.pixelSize: platformStyle.fontSizeMedium
-                        color: vars.textColor
-                        text: "Maciej Janiszewski\nAnatoliy Kozlov (MeegIM)"
-                    }
+                DetailsItem {
+                    textAlignment: Text.AlignHCenter
+                    title: qsTr("Core Developers")
+                    titleFont.bold: true
+                    titleFont.pixelSize: platformStyle.fontSizeLarge + 1
+                    value: "Maciej Janiszewski\nAnatoliy Kozlov (MeegIM)"
                 }
 
-                Column {
-                    width: parent.width
-                    spacing: platformStyle.paddingSmall
-
-                    Label {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        font.bold: true
-                        font.pixelSize: platformStyle.fontSizeLarge + 1
-                        text: qsTr("Contributors")
-                        color: vars.textColor
-                    }
-
-                    Text {
-                        width: parent.width
-                        horizontalAlignment: Text.AlignHCenter
-                        font.pixelSize: platformStyle.fontSizeMedium
-                        color: vars.textColor
-                        text: "Fabian Hüllmantel\nPaul Wallace\nDickson Leong\nMotaz Alnuweiri"
-                    }
+                DetailsItem {
+                    textAlignment: Text.AlignHCenter
+                    title: qsTr("Contributors")
+                    titleFont.bold: true
+                    titleFont.pixelSize: platformStyle.fontSizeLarge + 1
+                    value: "Fabian Hüllmantel\nPaul Wallace\nDickson Leong\nMotaz Alnuweiri"
                 }
 
-                Column {
-                    width: parent.width
-                    spacing: platformStyle.paddingSmall
-
-                    Label {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        font.bold: true
-                        font.pixelSize: platformStyle.fontSizeLarge + 1
-                        text: qsTr("Testing")
-                        color: vars.textColor
-                    }
-
-                    Text {
-                        width: parent.width
-                        horizontalAlignment: Text.AlignHCenter
-                        font.pixelSize: platformStyle.fontSizeMedium
-                        color: vars.textColor
-                        text: "Mohamed Zinhom\nKonrad Bąk\nGodwin Tgn\nRudmata\nRicardo Partida\nmassi93"
-                    }
-
+                DetailsItem {
+                    textAlignment: Text.AlignHCenter
+                    title: qsTr("Testing")
+                    titleFont.bold: true
+                    titleFont.pixelSize: platformStyle.fontSizeLarge + 1
+                    value: "Mohamed Zinhom\nKonrad Bąk\nGodwin Tgn\nRudmata\nRicardo Partida\nmassi93"
                 }
 
-                Column {
-                    width: parent.width
-                    spacing: platformStyle.paddingSmall
-
-                    Label {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        font.bold: true
-                        font.pixelSize: platformStyle.fontSizeLarge + 1
-                        text: qsTr("Donators")
-                        color: vars.textColor
-                    }
-
-                    Text {
-                        width: parent.width
-                        horizontalAlignment: Text.AlignHCenter
-                        font.pixelSize: platformStyle.fontSizeMedium
-                        color: vars.textColor
-                        text: "Elena Archinova"
-                    }
+                DetailsItem {
+                    textAlignment: Text.AlignHCenter
+                    title: qsTr("Donators")
+                    titleFont.bold: true
+                    titleFont.pixelSize: platformStyle.fontSizeLarge + 1
+                    value: "Elena Archinova"
                 }
             }
         }

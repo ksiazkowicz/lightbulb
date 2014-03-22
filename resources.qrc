@@ -55,6 +55,7 @@
         <file alias="AccountSwitcher">qml/Dialogs/AccountSwitcher.qml</file>
         <file alias="Contributors">qml/Dialogs/Contributors.qml</file>
         <file alias="Resources">qml/Dialogs/ResourcesDialog.qml</file>
+        <file alias="AccountDetails">qml/Dialogs/AccountDetails.qml</file>
     </qresource>
     <qresource prefix="/pages">
         <file alias="About">qml/Pages/AboutPage.qml</file>
@@ -78,6 +79,8 @@
         <file alias="send_inverse">images/toolbar/toolbar-send_inverse.svg</file>
         <file alias="chats">images/toolbar/toolbar-chats.svg</file>
         <file alias="chats_inverse">images/toolbar/toolbar-chats_inverse.svg</file>
+        <file alias="eye">images/toolbar/eye.svg</file>
+        <file alias="eye_inverse">images/toolbar/eye_inverse.svg</file>
     </qresource>
     <qresource prefix="/FirstRun">
         <file alias="01">qml/FirstRun/01_gettingStarted.qml</file>
@@ -122,5 +125,10 @@
         <file alias="Roster/Options">qml/Menus/RosterMenu.qml</file>
         <file alias="Roster/Contact">qml/Menus/ContactMenu.qml</file>
         <file alias="Messages">qml/Menus/MessagesOptions.qml</file>
+    </qresource>
+    <qresource prefix="/Components">
+        <file alias="AccountItem.qml">qml/Components/AccountItem.qml</file>
+        <file alias="DetailsItem.qml">qml/Components/DetailsItem.qml</file>
+        <file alias="LineItem.qml">qml/Components/LineItem.qml</file>
     </qresource>
 </RCC>
