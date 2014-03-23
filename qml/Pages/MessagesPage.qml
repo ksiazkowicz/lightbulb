@@ -169,8 +169,8 @@ Page {
         onQmlChatChanged: {
             listModelResources.clear()
             xmppConnectivity.client.openChat( xmppConnectivity.chatJid )
-
-            statusBarText.text = xmppConnectivity.client.getPropertyByJid(xmppConnectivity.chatJid,"name")
+            contactName = xmppConnectivity.client.getPropertyByJid(xmppConnectivity.chatJid,"name")
+            statusBarText.text = contactName
 
             txtMessage.text = xmppConnectivity.getPreservedMsg(xmppConnectivity.chatJid);
 
