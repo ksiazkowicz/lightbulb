@@ -57,7 +57,7 @@ CommonDialog {
                     title: qsTr("Core Developers")
                     titleFont.bold: true
                     titleFont.pixelSize: platformStyle.fontSizeLarge + 1
-                    value: "Maciej Janiszewski\nAnatoliy Kozlov (MeegIM)"
+                    value: "Maciej Janiszewski\nMotaz Alnuweiri\nAnatoliy Kozlov (MeegIM)"
                 }
 
                 DetailsItem {
@@ -65,7 +65,7 @@ CommonDialog {
                     title: qsTr("Contributors")
                     titleFont.bold: true
                     titleFont.pixelSize: platformStyle.fontSizeLarge + 1
-                    value: "Fabian Hüllmantel\nPaul Wallace\nDickson Leong\nMotaz Alnuweiri"
+                    value: "Fabian Hüllmantel\nPaul Wallace\nDickson Leong"
                 }
 
                 DetailsItem {

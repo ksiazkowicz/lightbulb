@@ -34,7 +34,6 @@ Item {
     property bool                    accGoOnline: false
     property string                  lastStatus: settings.gBool("behavior", "lastStatusText") ? settings.gStr("behavior","lastStatusText") : ""
     property string                  nowEditing: ""
-    property string                  url: ""
     signal                           statusChanged
     property int                     lastUsedStatus: 0
     signal                           statusTextChanged

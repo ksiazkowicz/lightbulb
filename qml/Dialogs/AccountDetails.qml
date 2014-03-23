@@ -4,7 +4,7 @@ import "../Components"
 
 CommonDialog {
     id: accountDetails
-    titleText: qsTr("Account Detials")
+    titleText: qsTr("Account Details")
 
     platformInverted: main.platformInverted
     buttonTexts: [qsTr("OK")]

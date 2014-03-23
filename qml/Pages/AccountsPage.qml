@@ -39,6 +39,7 @@ Page {
                 icon: "qrc:/accounts/" + xmppConnectivity.getAccountIcon(accGRID)
 
                 onEditButtonClick: {
+                    vars.accGRID = accGRID
                     pageStack.replace( "qrc:/pages/AccountsAdd" )
                 }
 

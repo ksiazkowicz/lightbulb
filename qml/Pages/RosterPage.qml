@@ -167,7 +167,7 @@ Page {
                     width: parent.width
                     maximumLineCount: (vars.rosterItemHeight/22) > 1 ? (vars.rosterItemHeight/22) : 1
                     text: (name === "" ? jid : name) + ((vars.showContactStatusText && statusText != "") ? (" · <font color='#aaaaaa'><i>" + statusText + "</i></font>") : "")
-                    onLinkActivated: { vars.url=link; dialog.create("qrc:/menus/UrlContext")}
+                    onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
                     wrapMode: Text.WordWrap
                     font.pixelSize: (vars.showContactStatusText ? 16 : 0)
                     color: vars.textColor

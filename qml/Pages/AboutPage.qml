@@ -96,10 +96,7 @@ Page {
             }
             Button {
                 text: "Donate"
-                onClicked: {
-                    vars.url = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SA8DZYA7PUCCU";
-                    dialog.create("qrc:/menus/UrlContext")
-                }
+                onClicked: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SA8DZYA7PUCCU"})
             }
         }
     }

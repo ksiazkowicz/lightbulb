@@ -123,7 +123,7 @@ Page {
                       color: isMine == true ? "white" : "black"
                       font.pixelSize: 16
                       wrapMode: Text.Wrap
-                      onLinkActivated: { vars.url=link; dialog.create("qrc:/menus/UrlContext")}
+                      onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
                 }
                 Text {
                       id: time

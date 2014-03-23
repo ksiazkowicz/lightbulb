@@ -44,6 +44,9 @@ Page {
             tiHost.text = settings.gStr(vars.accGRID,'host')
             tiPort.text = settings.gStr(vars.accGRID,'port')
             tiResource.text = settings.gStr(vars.accGRID,'resource')
+            if (tiName.text == "false") {
+                tiName.text = "";
+            }
         } else { statusBarText.text = qsTr("New account") }
     }
 

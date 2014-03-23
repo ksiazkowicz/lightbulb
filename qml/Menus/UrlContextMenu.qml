@@ -27,19 +27,20 @@ import com.nokia.symbian 1.1
 
 ContextMenu {
     platformInverted: main.platformInverted
+    property string url: ""
     MenuLayout {
         MenuItem {
             platformInverted: main.platformInverted
             text: qsTr("Copy");
             onClicked: {
-                clipboard.setText(vars.url)
+                clipboard.setText(url)
                 avkon.showPopup("URL copied to","clipboard.",false)
             }
         }
         MenuItem {
             text: qsTr("Open in default browser");
             platformInverted: main.platformInverted
-            onClicked: avkon.openDefaultBrowser(vars.url)
+            onClicked: avkon.openDefaultBrowser(url)
         }
     }
     Component.onCompleted: {
