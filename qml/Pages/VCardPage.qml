@@ -31,24 +31,24 @@ Page {
     id: vCardPage
     tools: toolBar
 
-    property string bareJid: ""
-    property bool readOnly: true
+    property string contactJid:        ""
+    property string contactName:       ""
+    property string contactPresence:   xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,"presence",contactJid)
+    property string contactStatusText: xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,"statusText",contactJid)
 
-    property alias vCardPhoto: avatar.source
-    property string vCardNickName: ""
-    property string vCardName: ""
-    property string vCardMiddleName: ""
-    property string vCardLastName: ""
-    property string vCardFullName: ""
-    property string vCardEmail: ""
-    property string vCardBirthday: ""
-    property string vCardUrl: ""
+    property bool   readOnly:          true
 
-    Component.onCompleted: {
-        console.log("QML::VCargPage: Request vCard for: " + xmppConnectivity.chatJid )
-        xmppConnectivity.client.requestVCard( xmppConnectivity.chatJid )
-        clearForm()
-    }
+    property alias  vCardPhoto:        avatar.source
+    property string vCardNickName:     ""
+    property string vCardName:         ""
+    property string vCardMiddleName:   ""
+    property string vCardLastName:     ""
+    property string vCardFullName:     ""
+    property string vCardEmail:        ""
+    property string vCardBirthday:     ""
+    property string vCardUrl:          ""
+
+    Component.onCompleted: xmppConnectivity.client.requestVCard( contactJid )
 
     // Code for destroying the page after pop
     onStatusChanged: if (status === PageStatus.Inactive) destroy()
@@ -68,29 +68,7 @@ Page {
             vCardEmail = xmppVCard.email
             vCardBirthday = xmppVCard.birthday
             vCardUrl = xmppVCard.url
-            bareJid = xmppVCard.jid
-
         }
-    }
-    function clearForm()
-    {
-        vCardPhoto = "qrc:/avatar"
-        vCardNickName = ""
-        vCardName = ""
-        vCardMiddleName = ""
-        vCardLastName = ""
-        vCardFullName = ""
-        vCardEmail = ""
-        vCardBirthday = ""
-        vCardUrl = ""
-        bareJid = ""
-    }
-
-    function getPresence() {
-        var presence = xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,"presence",xmppVCard.jid);
-        if (presence != "(unknown)") {
-            return presence.slice(14);
-        } return presence;
     }
 
     Flickable {
@@ -119,10 +97,9 @@ Page {
                     id: avatar
                     smooth: true
                     width: 128
-                    height: 128
+                    height: width
                     source: "qrc:/avatar"
-                    sourceSize.height: height
-                    sourceSize.width: width
+                    sourceSize { height: height; width: width }
                     anchors.verticalCenter: parent.verticalCenter
                 }
                 Item {
@@ -133,7 +110,7 @@ Page {
                     Text {
                         id: txtJid
                         width: container.width
-                        text: vars.contactName
+                        text: contactName
                         wrapMode: Text.Wrap
                         color: vars.textColor
                     }
@@ -142,17 +119,15 @@ Page {
                         anchors { top: txtJid.bottom }
                         height: statusText.height
                         Image {
-                            id: statusImg
                             width: 24
-                            source: vars.selectedContactPresence
-                            sourceSize.height: 24
-                            sourceSize.width: 24
+                            source: contactPresence
+                            sourceSize { height: width; width: width }
                         }
                         Text {
                             id: statusText
                             width: columnContent.width - 162
                             font.pixelSize: 18
-                            text: vars.selectedContactStatusText == "" ? getPresence() : vars.selectedContactStatusText
+                            text: contactStatusText == "" ? contactPresence.slice(14) : contactStatusText
                             color: "gray"
                             wrapMode: Text.Wrap
                         }
@@ -202,7 +177,7 @@ Page {
 
             DetailsItem {
                 title: qsTr("Jabber ID")
-                value: bareJid
+                value: contactJid
                 valueFont.bold: true
             }
             LineItem {}

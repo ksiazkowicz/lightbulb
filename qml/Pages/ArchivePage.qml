@@ -77,7 +77,8 @@ Page {
             }
            }
 
-    Component.onCompleted: statusBarText.text = vars.contactName
+    property string contactName: ""
+    Component.onCompleted: statusBarText.text = contactName
 
     // Code for destroying the page after pop
     onStatusChanged: if (status === PageStatus.Inactive) destroy()
@@ -96,7 +97,7 @@ Page {
             Text {
                   id: message
                   anchors { top: parent.top; left: parent.left; right: parent.right }
-                  text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (vars.contactName === "" ? xmppConnectivity.chatJid : vars.contactName) ) + ":</font> " + (emoticonsDisabled ? msgText : emoticon.parseEmoticons(msgText))
+                  text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (contactName === "" ? xmppConnectivity.chatJid : contactName) ) + ":</font> " + (emoticonsDisabled ? msgText : emoticon.parseEmoticons(msgText))
                   color: vars.textColor
                   font.pixelSize: 16
                   wrapMode: Text.Wrap

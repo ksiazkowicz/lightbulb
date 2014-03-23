@@ -30,24 +30,14 @@ Item {
     property int                     tempUnreadCount: 0
     property bool                    inputInProgress: false
     property string                  accGRID: ""
-    property string                  accJid: ""
-    property bool                    accGoOnline: false
     property string                  lastStatus: settings.gBool("behavior", "lastStatusText") ? settings.gStr("behavior","lastStatusText") : ""
-    property string                  nowEditing: ""
     signal                           statusChanged
     property int                     lastUsedStatus: 0
     signal                           statusTextChanged
-    property string                  dialogJid:       ""
-    property string                  dialogTitle:     ""
-    property string                  dialogText:      ""
-    property string                  dialogName:      ""
     property bool                    isActive: true
     property bool                    isChatInProgress: false
     property int                     blinkerSet: 0
-    property string                  selectedContactStatusText: ""
-    property string                  contactName: ""
     property string                  resourceJid: ""
-    property string                  selectedContactPresence: ""
 
     property bool                    isRestartRequired: false
     property bool                    isBlinkingOverrideEnabled: false

@@ -29,6 +29,8 @@ Menu {
     id: contactMenu
     platformInverted: main.platformInverted
 
+    property string contactName: ""
+    property string contactJid:  ""
     property bool shouldICareAnyway: false
 
     onStatusChanged: {
@@ -48,35 +50,26 @@ Menu {
             text: qsTr("Remove")
             platformInverted: main.platformInverted
             onClicked: {
-                xmppConnectivity.chatJid = vars.selectedJid
-                contactMenu.close()
-                if (avkon.displayAvkonQueryDialog("Remove", qsTr("Are you sure you want to remove ") + vars.dialogName + qsTr(" from your contact list?")))
-                    xmppConnectivity.client.removeContact( vars.selectedJid );
+                if (avkon.displayAvkonQueryDialog("Remove", qsTr("Are you sure you want to remove ") + contactName + qsTr(" from your contact list?")))
+                    xmppConnectivity.client.removeContact(contactJid);
             }
         }
         MenuItem {
             text: qsTr("Rename")
             platformInverted: main.platformInverted
-            onClicked: {
-                xmppConnectivity.chatJid = vars.selectedJid
-                dialog.create("qrc:/dialogs/Contact/Rename")
-            }
+            onClicked: dialog.createWithProperties("qrc:/dialogs/Contact/Rename",{"contactName": contactName, "contactJid": contactJid})
         }
         MenuItem {
             text: qsTr("vCard")
             platformInverted: main.platformInverted
-            onClicked: {
-                xmppConnectivity.chatJid = vars.selectedJid
-                main.pageStack.push( "qrc:/pages/VCard" )
-                xmppConnectivity.chatJid = vars.selectedJid
-            }
+            onClicked: main.pageStack.push("qrc:/pages/VCard",{"contactJid":contactJid,"contactName":contactName})
         }
         MenuItem {
             text: qsTr("Subscribe")
             platformInverted: main.platformInverted
             onClicked: {
-                xmppConnectivity.client.subscribe( vars.selectedJid )
-                notify.postGlobalNote(qsTr("Sent request to ")+vars.dialogName)
+                xmppConnectivity.client.subscribe(contactJid)
+                notify.postGlobalNote(qsTr("Sent request to ")+contactName)
             }
         }
         MenuItem {
@@ -84,8 +77,8 @@ Menu {
             platformInverted: main.platformInverted
             onClicked: {
                 contactMenu.close()
-                xmppConnectivity.client.unsubscribe( vars.selectedJid )
-                notify.postGlobalNote(qsTr("Unsuscribed ")+vars.dialogName)
+                xmppConnectivity.client.unsubscribe(contactJid)
+                notify.postGlobalNote(qsTr("Unsuscribed ")+contactName)
             }
         }
     }

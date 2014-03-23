@@ -33,6 +33,7 @@ Menu {
         open();
         isCreated = true }
     property bool isCreated: false
+    property string contactName: ""
 
     onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
     // define the items in the menu and corresponding actions
@@ -49,7 +50,7 @@ Menu {
             onClicked: {
                 xmppConnectivity.preserveMsg(xmppConnectivity.chatJid,txtMessage.text)
                 xmppConnectivity.page = 1
-                pageStack.replace("qrc:/pages/Archive")
+                pageStack.replace("qrc:/pages/Archive",{"contactName":contactName})
             }
         }
         MenuItem {

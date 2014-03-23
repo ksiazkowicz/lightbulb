@@ -91,7 +91,6 @@ CommonDialog {
                         if (xmppConnectivity.currentAccount != account) xmppConnectivity.currentAccount = account
                         if (index > -1 && xmppConnectivity.chatJid != jid) {
                             xmppConnectivity.chatJid = jid
-                            vars.contactName = name
                             vars.globalUnreadCount = vars.globalUnreadCount - parseInt(xmppConnectivity.client.getPropertyByJid(jid, "unreadMsg"))
                             main.openChat()
                         }

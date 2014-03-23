@@ -32,14 +32,14 @@ Page {
 
     Component.onCompleted: {
         if (vars.accGRID != "") {
-            statusBarText.text = qsTr("Editing ") + vars.accJid
+            statusBarText.text = qsTr("Editing ") + settings.gStr(vars.accGRID,'jid')
             if (settings.gStr(vars.accGRID,'host') == "chat.facebook.com") {
                 selectionDialog.selectedIndex = 0;
             } else {
                 if (settings.gStr(vars.accGRID,'host') == "talk.google.com") selectionDialog.selectedIndex = 1; else selectionDialog.selectedIndex = 2;
             }
             tiName.text = settings.gStr(vars.accGRID,'name')
-            tiJid.text = settings.gStr(vars.accGRID,'jid')
+            tiJid.text  = settings.gStr(vars.accGRID,'jid')
             tiPass.text = settings.gStr(vars.accGRID,'passwd')
             tiHost.text = settings.gStr(vars.accGRID,'host')
             tiPort.text = settings.gStr(vars.accGRID,'port')

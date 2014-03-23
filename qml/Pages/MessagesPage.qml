@@ -33,6 +33,7 @@ Page {
     /************************************************************/
     property bool isTyping: false
     property bool emoticonsDisabled: settings.gBool("behavior","disableEmoticons")
+    property string contactName: ""
 
     Component.onCompleted: {
         vars.resourceJid = ""
@@ -41,7 +42,7 @@ Page {
         console.log( xmppConnectivity.chatJid )
         xmppConnectivity.client.openChat( xmppConnectivity.chatJid )
 
-        statusBarText.text = vars.contactName
+        statusBarText.text = contactName
 
         if( xmppConnectivity.client.bareJidLastMsg == xmppConnectivity.chatJid ) vars.resourceJid = xmppConnectivity.client.resourceLastMsg
 
@@ -121,7 +122,7 @@ Page {
                 Text {
                       id: message
                       anchors { top: parent.top; left: parent.left; leftMargin: 5; right: parent.right; rightMargin: 5 }
-                      text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (vars.contactName === "" ? xmppConnectivity.chatJid : vars.contactName) ) + ":</font> " + (emoticonsDisabled ? msgText : emoticon.parseEmoticons(msgText))
+                      text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (contactName === "" ? xmppConnectivity.chatJid : contactName) ) + ":</font> " + (emoticonsDisabled ? msgText : emoticon.parseEmoticons(msgText))
                       color: isMine == true ? "white" : "black"
                       font.pixelSize: 16
                       wrapMode: Text.Wrap
@@ -169,7 +170,7 @@ Page {
             listModelResources.clear()
             xmppConnectivity.client.openChat( xmppConnectivity.chatJid )
 
-            statusBarText.text = vars.contactName
+            statusBarText.text = contactName
 
             txtMessage.text = xmppConnectivity.getPreservedMsg(xmppConnectivity.chatJid);
 
@@ -314,7 +315,7 @@ Page {
         }
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-menu_inverse" : "toolbar-menu"
-            onClicked: dialog.create("qrc:/menus/Messages")
+            onClicked: dialog.createWithProperties("qrc:/menus/Messages",{"contactName":contactName})
         }
     }
 }

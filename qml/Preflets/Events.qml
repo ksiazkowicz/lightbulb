@@ -88,10 +88,7 @@ Item {
                     width: parent.width/3
                     iconSource: "toolbar-settings"
                     platformInverted: main.platformInverted
-                    onClicked: {
-                        vars.nowEditing = "vibraMsgRecv"
-                        dialog.create("qrc:/dialogs/Settings/Vibration")
-                    }
+                    onClicked: dialog.createWithParameters("qrc:/dialogs/Settings/Vibration", {"currentlyEditedParameter" : "vibraMsgRecv"})
                 }
                 ToolButton {
                     width: parent.width/3
@@ -162,10 +159,7 @@ Item {
                     width: parent.width/3
                     iconSource: "toolbar-settings"
                     platformInverted: main.platformInverted
-                    onClicked: {
-                        vars.nowEditing = "vibraMsgSent"
-                        dialog.create("qrc:/dialogs/Settings/Vibration")
-                    }
+                    onClicked: dialog.createWithParameters("qrc:/dialogs/Settings/Vibration", {"currentlyEditedParameter" : "vibraMsgSent"})
                 }
                 ToolButton {
                     width: parent.width/3
@@ -306,10 +300,7 @@ Item {
                     width: parent.width/3
                     iconSource: "toolbar-settings"
                     platformInverted: main.platformInverted
-                    onClicked: {
-                        vars.nowEditing = "vibraMsgSub"
-                        dialog.create("qrc:/dialogs/Settings/Vibration")
-                    }
+                    onClicked: dialog.createWithParameters("qrc:/dialogs/Settings/Vibration", {"currentlyEditedParameter" : "vibraMsgSub"})
                 }
                 ToolButton {
                     width: parent.width/3

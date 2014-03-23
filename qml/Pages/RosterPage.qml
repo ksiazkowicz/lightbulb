@@ -182,19 +182,14 @@ Page {
                 onClicked: {
                     xmppConnectivity.chatJid = jid
                     vars.selectedJid = jid
-                    vars.contactName = txtJid.contact
                     vars.globalUnreadCount = vars.globalUnreadCount - unreadMsg
                     notify.updateNotifiers()
-                    main.pageStack.push( "qrc:/pages/Messages" )
+                    main.pageStack.push("qrc:/pages/Messages",{"contactName":txtJid.contact})
                 }
 
                 onPressAndHold: {
                     vars.selectedJid = jid
-                    vars.selectedContactStatusText = statusText
-                    vars.selectedContactPresence = presence
-                    vars.contactName = txtJid.contact
-                    vars.dialogName = txtJid.contact
-                    dialog.create("qrc:/menus/Roster/Contact")
+                    dialog.createWithProperties("qrc:/menus/Roster/Contact",{"contactName":txtJid.contact,"contactJid":jid})
                 }
             }
             Image {

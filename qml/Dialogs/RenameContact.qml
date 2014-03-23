@@ -30,6 +30,8 @@ CommonDialog {
     platformInverted: main.platformInverted
 
     buttonTexts: [qsTr("OK"), qsTr("Cancel")]
+    property string contactName: ""
+    property string contactJid:  ""
 
     // Code for dynamic load
     Component.onCompleted: {
@@ -42,7 +44,7 @@ CommonDialog {
 
     onButtonClicked: {
         if ((index === 0) && ( newNameText.text != "" )) {
-           xmppConnectivity.client.renameContact( xmppConnectivity.chatJid, newNameText.text )
+           xmppConnectivity.client.renameContact( contactJid, newNameText.text )
         }
     }
 
@@ -60,7 +62,7 @@ CommonDialog {
         }
         TextField {
             id: newNameText
-            text: dialogName
+            text: contactName
             height: 50
             anchors { bottom: parent.bottom; bottomMargin: 5; left: parent.left; right: parent.right }
             placeholderText: qsTr("New name")

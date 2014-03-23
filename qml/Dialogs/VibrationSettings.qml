@@ -32,6 +32,8 @@ CommonDialog {
     height: 250
     platformInverted: main.platformInverted
 
+    property string currentlyEditedParameter: ""
+
     // Code for dynamic load
     Component.onCompleted: {
         open();
@@ -58,10 +60,10 @@ CommonDialog {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 maximumValue: 100
-                value: settings.gInt("notifications", vars.nowEditing + "Intensity")
+                value: settings.gInt("notifications", currentlyEditedParameter + "Intensity")
                 orientation: 1
                 platformInverted: main.platformInverted
-                onValueChanged: settings.sInt(value,"notifications", vars.nowEditing + "Intensity")
+                onValueChanged: settings.sInt(value,"notifications", currentlyEditedParameter + "Intensity")
             }
             Text {
                 text: qsTr("Duration") + " (" + durationSlider.value + " ms)"
@@ -73,10 +75,10 @@ CommonDialog {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
                 maximumValue: 2000
-                value: settings.gInt("notifications", vars.nowEditing + "Duration")
+                value: settings.gInt("notifications", currentlyEditedParameter + "Duration")
                 orientation: 1
                 platformInverted: main.platformInverted
-                onValueChanged: settings.sInt(value,"notifications", vars.nowEditing + "Duration")
+                onValueChanged: settings.sInt(value,"notifications", currentlyEditedParameter + "Duration")
             }
         }
     }
