@@ -178,9 +178,15 @@ PageStackWindow {
     QtObject{
         id:dialog;
         property Component c:null;
+		
         function create(qmlfile){
             c=Qt.createComponent(qmlfile);
             c.createObject(main)
+        }
+
+        function createWithProperties(qmlfile, properties){
+            c=Qt.createComponent(qmlfile);
+            c.createObject(main, properties)
         }
     }
 
