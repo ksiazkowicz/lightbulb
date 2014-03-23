@@ -106,7 +106,9 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/models/MsgListModel.h \
     src/models/MsgItemModel.h \
     src/avkon/AvkonMedia.h \
-    src/EmoticonParser.h
+    src/EmoticonParser.h \
+    src/models/WidgetDataModel.h \
+    src/models/WidgetItemModel.h
 
 OTHER_FILES += README.md \
     qml/Dialogs/*.* \

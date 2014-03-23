@@ -32,23 +32,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QPainter>
 #include "qhswidget.h"
 #include <QSvgRenderer>
+#include "WidgetDataModel.h"
+#include "WidgetItemModel.h"
 
 class LightbulbHSWidget : public QObject
 {
     Q_OBJECT
 public:
     explicit LightbulbHSWidget(QObject *parent = 0);
-    Q_INVOKABLE void registerWidget();
+    Q_INVOKABLE void registerWidget() { widget->RegisterWidget(); }
     Q_INVOKABLE void publishWidget();
-    Q_INVOKABLE void removeWidget();
-    Q_INVOKABLE void postWidget( QString nRow1, int r1Presence, QString nRow2, int r2Presence, QString nRow3, int r3Presence, QString nRow4, int r4Presence, int unreadCount, int presence, bool showGlobalUnreadCnt, bool showStatus, QString accountIcon );
+    Q_INVOKABLE void removeWidget() { widget->RemoveWidget(); }
+    Q_INVOKABLE bool changeRow(int rowNumber, QString name, int presence,QString accountIcon, int unreadCount, bool renderIfUpdated=true);
+    Q_INVOKABLE void postWidget(int unreadCount, int presence, bool showGlobalUnreadCnt, bool showStatus, QString accountIcon );
     Q_INVOKABLE void loadSkin(QString path);
     Q_INVOKABLE void renderWidget();
     void bringToFront();
 signals:
     void HomescreenUpdated();
 public slots:
-    void handleEvent(QHSWidget*, QHSEvent aEvent );
+    void handleEvent(QHSWidget*, QHSEvent aEvent ) { publishWidget(); }
     void handleItemEvent(QHSWidget*, QString aTemplateItemName,
                              QHSItemEvent aEvent);
 private:
@@ -109,6 +112,17 @@ private:
 
     int         contactFontSize;
     int         unreadFontSize;
+
+    // widget data
+    WidgetDataModel* widgetData;
+    int mPresence;
+    int unreadMsgCount;
+    QString accountsIcon;
+
+    // widget settings
+    bool showMyPresence;
+    bool showGlobalUnreadCount;
+    bool showContactUnreadCount;
 };
 
 #endif // QSAMPLEWIDGET_H

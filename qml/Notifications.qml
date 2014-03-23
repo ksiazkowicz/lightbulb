@@ -51,14 +51,10 @@ Item {
     }
 
     function cleanWidget() {
-        hsWidget.row1 = " "
-        hsWidget.row2 = " "
-        hsWidget.row3 = " "
-        hsWidget.row4 = " "
-        hsWidget.r1presence = -2
-        hsWidget.r2presence = -2
-        hsWidget.r3presence = -2
-        hsWidget.r4presence = -2
+        hsWidget.changeRow(0,"",-2,"",0,false)
+        hsWidget.changeRow(1,"",-2,"",0,false)
+        hsWidget.changeRow(2,"",-2,"",0,false)
+        hsWidget.changeRow(3,"",-2,"",0,false)
         hsWidget.unreadCount = 0
         hsWidget.status = 0
         hsWidget.pushWidget()
@@ -75,14 +71,6 @@ Item {
 
     HSWidget {
         id: hsWidget
-        property string row1: " "
-        property string row2: " "
-        property string row3: " "
-        property string row4: " "
-        property int r1presence: -2
-        property int r2presence: -2
-        property int r3presence: -2
-        property int r4presence: -2
         property int unreadCount: 0
         property int status: 0
 
@@ -93,17 +81,13 @@ Item {
             if (settings.gBool("widget","enableHsWidget")) cleanWidget()
         }
 
-        function pushWidget() { postWidget(row1,r1presence,row2,r2presence,row3,r3presence,row4,r4presence,unreadCount,status,settings.gBool("widget","showGlobalUnreadCnt"),settings.gBool("widget","showStatus"),xmppConnectivity.getAccountIcon(xmppConnectivity.currentAccount)); }
+        function pushWidget() { postWidget(unreadCount,status,settings.gBool("widget","showGlobalUnreadCnt"),settings.gBool("widget","showStatus"),xmppConnectivity.getAccountIcon(xmppConnectivity.currentAccount)); }
 
         function getLatest4Chats() {
-            row1 = xmppConnectivity.getChatName(1,settings.gBool("widget","showUnreadCntChat"));
-            r1presence = getPresenceId(xmppConnectivity.getChatPresence(1));
-            row2 = xmppConnectivity.getChatName(2,settings.gBool("widget","showUnreadCntChat"));
-            r2presence = getPresenceId(xmppConnectivity.getChatPresence(2));
-            row3 = xmppConnectivity.getChatName(3,settings.gBool("widget","showUnreadCntChat"));
-            r3presence = getPresenceId(xmppConnectivity.getChatPresence(3));
-            row4 = xmppConnectivity.getChatName(4,settings.gBool("widget","showUnreadCntChat"));
-            r4presence = getPresenceId(xmppConnectivity.getChatPresence(4));
+            for (var i=0; i<4;i++) {
+                hsWidget.changeRow(i,xmppConnectivity.getChatName(i+1,settings.gBool("widget","showUnreadCntChat")),getPresenceId(xmppConnectivity.getChatPresence(i+1)),"",0,false)
+            }
+            hsWidget.renderWidget()
         }
         function getFirst4Contacts() {
             /*row1 = xmppConnectivity.client.getNameByOrderID(0);

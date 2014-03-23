@@ -36,61 +36,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QSettings>
 #include <QDir>
 
-QString row1; int row1presence;
-QString row2; int row2presence;
-QString row3; int row3presence;
-QString row4; int row4presence;
-int mPresence;
-int unreadMsgCount;
-bool showMyPresence;
-bool showGlobalUnreadCount;
-QString accountsIcon;
-
 LightbulbHSWidget::LightbulbHSWidget(QObject *parent) :
     QObject(parent)
 {
-
     widget = QHSWidget::create("wideimage", "Lightbulb", "0xE22AC278", this);
     connect(widget, SIGNAL(handleEvent(QHSWidget*, QHSEvent)), this, SLOT(handleEvent(QHSWidget*, QHSEvent) ));
     connect(widget, SIGNAL(handleItemEvent(QHSWidget*, QString, QHSItemEvent)), this, SLOT(handleItemEvent(QHSWidget*, QString, QHSItemEvent)));
+    widgetData = new WidgetDataModel(this);
 }
 
-void LightbulbHSWidget::registerWidget()
-{
-    widget->RegisterWidget();
-
-}
-
-void LightbulbHSWidget::publishWidget()
-{
+void LightbulbHSWidget::publishWidget() {
     try {
         widget->PublishWidget();
-    }
-    catch (...) {
-    }
+    } catch (...) {}
 }
 
-void LightbulbHSWidget::removeWidget()
-{
-    widget->RemoveWidget();
-}
-
-void LightbulbHSWidget::handleEvent( QHSWidget* /*aSender*/, QHSEvent aEvent )
-{
-    switch(aEvent)
-                    {
-                    case EActivate:
-                    case EResume:
-                            {
-                            publishWidget();
-                            }
-                            break;
-                    default:
-                            publishWidget();
-                            break;
-                    }
-
-}
 
 void LightbulbHSWidget::handleItemEvent( QHSWidget* /*aSender*/, QString aTemplateItemName,
     QHSItemEvent aEvent)
@@ -103,48 +63,53 @@ void LightbulbHSWidget::handleItemEvent( QHSWidget* /*aSender*/, QString aTempla
     }
 }
 
-void LightbulbHSWidget::postWidget( QString nRow1, int r1Presence, QString nRow2, int r2Presence, QString nRow3, int r3Presence, QString nRow4,
-                                    int r4Presence, int unreadCount, int presence, bool showGlobalUnreadCnt, bool showStatus, QString accountIcon )
+bool LightbulbHSWidget::changeRow(int rowNumber, QString name, int presence, QString accountIcon, int unreadCount, bool renderIfUpdated) {
+  bool isRenderingNeeded;
+
+  if (rowNumber > maxRowsCount-1) return false;
+
+  if (widgetData->rowCount() < rowNumber+1) {
+      WidgetItemModel* item = new WidgetItemModel();
+      item->setContactName(name);
+      item->setPresence(presence);
+      item->setAccountIcon(accountIcon);
+      item->setUnreadMsg(unreadCount);
+      widgetData->append(item);
+  } else {
+      WidgetItemModel* item = (WidgetItemModel*)widgetData->getElementByID(rowNumber);
+      if (item == 0) return false;
+
+      if (item->name() != name) {
+          item->setContactName(name);
+          isRenderingNeeded = true;
+      }
+      if (item->presence() != presence) {
+          item->setPresence(presence);
+          isRenderingNeeded = true;
+      }
+      if (item->accountIcon() != accountIcon) {
+          item->setAccountIcon(accountIcon);
+          isRenderingNeeded = true;
+      }
+      if (item->unreadMsg() != unreadCount) {
+          item->setUnreadMsg(unreadCount);
+          isRenderingNeeded = true;
+      }
+  }
+
+  // actually update it
+
+  if (isRenderingNeeded && renderIfUpdated) {
+      renderWidget();
+      return false;
+  }
+
+  return isRenderingNeeded;
+}
+
+void LightbulbHSWidget::postWidget( int unreadCount, int presence, bool showGlobalUnreadCnt, bool showStatus, QString accountIcon )
 {
     bool needToRender;
-    if (row1 != nRow1) {
-        row1 = nRow1;
-        needToRender = true;
-    }
-
-    if (row1presence != r1Presence) {
-        row1presence = r1Presence;
-        needToRender = true;
-    }
-
-    if (row2 != nRow2) {
-        row2 = nRow2;
-        needToRender = true;
-    }
-
-    if (row2presence != r2Presence) {
-        row2presence = r2Presence;
-        needToRender = true;
-    }
-
-    if (row3 != nRow3) {
-        row3 = nRow3;
-        needToRender = true;
-    }
-    if (row3presence != r3Presence) {
-        row3presence = r3Presence;
-        needToRender = true;
-    }
-
-    if (row4 != nRow4) {
-        row4 = nRow4;
-        needToRender = true;
-    }
-
-    if (row4presence != r4Presence) {
-        row4presence = r4Presence;
-        needToRender = true;
-    }
 
     if (mPresence != presence) {
         mPresence = presence;
@@ -179,14 +144,6 @@ void LightbulbHSWidget::postWidget( QString nRow1, int r1Presence, QString nRow2
 }
 
 void LightbulbHSWidget::renderWidget() {
-    QStringList rows;
-    rows<<row1<<row2<<row3<<row4;
-    QMap<QString, int> statuses;
-    statuses[row1] = row1presence;
-    statuses[row2] = row2presence;
-    statuses[row3] = row3presence;
-    statuses[row4] = row4presence;
-
     QPixmap pixmap(312,82);
 
     QDir test;
@@ -248,27 +205,37 @@ void LightbulbHSWidget::renderWidget() {
     font.setPixelSize( contactFontSize );
     painter->setFont( font );
 
-    int rowCount = rows.count();
-    if (rows.count() > maxRowsCount) rowCount = maxRowsCount;
+    WidgetItemModel* isEmpty = (WidgetItemModel*)widgetData->getElementByID(0);
+    int emptyPresence;
+    if (isEmpty == 0)
+      emptyPresence = -2;
+    else emptyPresence = isEmpty->presence();
 
-    if (row1presence > -2) {
+    if (widgetData->rowCount() > 0 && emptyPresence != -2) {
         QRect textRow = QRect(contactsPosition.x(), contactsPosition.y(), rowWidth, rowHeight);
         for (int i=0; i<maxRowsCount; i++) {
-            painter->drawText( textRow, Qt::AlignLeft, rows.at(i));
-            textRow.translate( 0, rowHeight+spacing );
+            WidgetItemModel* item = (WidgetItemModel*)widgetData->getElementByID(i);
+            if (item != 0) {
+              QString name;
+              if (showContactUnreadCount && item->unreadMsg() > 0)
+                name = "[" + QString::number(item->unreadMsg()) + "] ";
+
+              name += item->name();
+
+              painter->drawText( textRow, Qt::AlignLeft, name);
+
+              switch (item->presence()) {
+                  case 0: indicator_online->render(painter,QRect(contactsPosition.x()+rowWidth,contactsPosition.y()+((rowHeight-indicatorSize)/2)+(i*(rowHeight+spacing)),indicatorSize,indicatorSize)); break;
+                  case 1: indicator_chatty->render(painter,QRect(contactsPosition.x()+rowWidth,contactsPosition.y()+((rowHeight-indicatorSize)/2)+(i*(rowHeight+spacing)),indicatorSize,indicatorSize)); break;
+                  case 2: indicator_away->render(painter,QRect(contactsPosition.x()+rowWidth,contactsPosition.y()+((rowHeight-indicatorSize)/2)+(i*(rowHeight+spacing)),indicatorSize,indicatorSize)); break;
+                  case 3: indicator_busy->render(painter,QRect(contactsPosition.x()+rowWidth,contactsPosition.y()+((rowHeight-indicatorSize)/2)+(i*(rowHeight+spacing)),indicatorSize,indicatorSize)); break;
+                  case 4: indicator_xa->render(painter,QRect(contactsPosition.x()+rowWidth,contactsPosition.y()+((rowHeight-indicatorSize)/2)+(i*(rowHeight+spacing)),indicatorSize,indicatorSize)); break;
+                  case 5: indicator_offline->render(painter,QRect(contactsPosition.x()+rowWidth,contactsPosition.y()+((rowHeight-indicatorSize)/2)+(i*(rowHeight+spacing)),indicatorSize,indicatorSize)); break;
+              }
+              textRow.translate( 0, rowHeight+spacing );
+            } else break;
         }
     } else painter->drawText( QRect(noDataAvailablePosition.x(),noDataAvailablePosition.y(),noDataAvailableWidth,noDataAvailableHeight), Qt::AlignVCenter, "Nothing to report, sir!");
-
-    for (int i=0; i<maxRowsCount; i++) {
-        switch (statuses[rows.at(i)]) {
-            case 0: indicator_online->render(painter,QRect(contactsPosition.x()+rowWidth,contactsPosition.y()+((rowHeight-indicatorSize)/2)+(i*(rowHeight+spacing)),indicatorSize,indicatorSize)); break;
-            case 1: indicator_chatty->render(painter,QRect(contactsPosition.x()+rowWidth,contactsPosition.y()+((rowHeight-indicatorSize)/2)+(i*(rowHeight+spacing)),indicatorSize,indicatorSize)); break;
-            case 2: indicator_away->render(painter,QRect(contactsPosition.x()+rowWidth,contactsPosition.y()+((rowHeight-indicatorSize)/2)+(i*(rowHeight+spacing)),indicatorSize,indicatorSize)); break;
-            case 3: indicator_busy->render(painter,QRect(contactsPosition.x()+rowWidth,contactsPosition.y()+((rowHeight-indicatorSize)/2)+(i*(rowHeight+spacing)),indicatorSize,indicatorSize)); break;
-            case 4: indicator_xa->render(painter,QRect(contactsPosition.x()+rowWidth,contactsPosition.y()+((rowHeight-indicatorSize)/2)+(i*(rowHeight+spacing)),indicatorSize,indicatorSize)); break;
-            case 5: indicator_offline->render(painter,QRect(contactsPosition.x()+rowWidth,contactsPosition.y()+((rowHeight-indicatorSize)/2)+(i*(rowHeight+spacing)),indicatorSize,indicatorSize)); break;
-        }
-    }
 
     if (test.exists(skinPath+"\\fader.png")) {
       QImage fader(skinPath+"\\fader.png");
