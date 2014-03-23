@@ -81,11 +81,16 @@ Item {
             if (settings.gBool("widget","enableHsWidget")) cleanWidget()
         }
 
-        function pushWidget() { postWidget(unreadCount,status,settings.gBool("widget","showGlobalUnreadCnt"),settings.gBool("widget","showStatus"),xmppConnectivity.getAccountIcon(xmppConnectivity.currentAccount)); }
+        function pushWidget() { postWidget(unreadCount,status,settings.gBool("widget","showGlobalUnreadCnt"),settings.gBool("widget","showUnreadCntChat"),settings.gBool("widget","showStatus"),xmppConnectivity.getAccountIcon(xmppConnectivity.currentAccount)); }
 
         function getLatest4Chats() {
+            var name,presence,unreadCount,accountId;
             for (var i=0; i<4;i++) {
-                hsWidget.changeRow(i,xmppConnectivity.getChatName(i+1,settings.gBool("widget","showUnreadCntChat")),getPresenceId(xmppConnectivity.getChatPresence(i+1)),"",0,false)
+                name = xmppConnectivity.getChatProperty(i+1,"name")
+                presence = xmppConnectivity.getChatProperty(i+1,"presence")
+                unreadCount = xmppConnectivity.getChatProperty(i+1,"unreadMsg")
+                accountId = xmppConnectivity.getChatProperty(i+1,"accountId")
+                hsWidget.changeRow(i,name,presence,accountId,unreadCount,false)
             }
             hsWidget.renderWidget()
         }

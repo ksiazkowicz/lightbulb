@@ -101,26 +101,14 @@ public:
       if (!silent) emit widgetDataChanged();
     }
 
-    Q_INVOKABLE QString getChatPresence(int index) {
-      if (latestChats.count() >= latestChats.count()-index && latestChats.count()-index >= 0) {
+    Q_INVOKABLE QString getChatProperty(int index, QString property) {
+      if (latestChats.count() >= latestChats.count()-index && latestChats.count()-index >= 0) {          
         QString presenceJid = latestChats.at(latestChats.count()-index);
-        return clients->value(presenceJid.split(';').at(0))->getPropertyByJid(presenceJid.split(';').at(1),"presence");
-        } else return "-2";
-    }
-
-    Q_INVOKABLE QString getChatName(int index,bool showUnreadCount) {
-      if (latestChats.count() >= latestChats.count()-index && latestChats.count()-index >= 0) {
-        QString bareJid = latestChats.at(latestChats.count()-index);
-        QString name;
-
-        if (showUnreadCount) {
-            name = "[" + clients->value(bareJid.split(';').at(0))->getPropertyByJid(bareJid.split(';').at(1),"unreadMsg") + "] ";
-            if (name == "[0] ") name = "";
-        }
-
-        name += clients->value(bareJid.split(';').at(0))->getPropertyByJid(bareJid.split(';').at(1),"name");
-        return name;
-      } else return "";
+        if (property == "accountId")
+          return presenceJid.split(';').at(0);
+        return clients->value(presenceJid.split(';').at(0))->getPropertyByJid(presenceJid.split(';').at(1),property);
+        } else if (property == "presence") return "-2";
+      return "";
     }
 
 signals:

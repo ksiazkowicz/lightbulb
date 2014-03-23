@@ -44,7 +44,7 @@ public:
     Q_INVOKABLE void publishWidget();
     Q_INVOKABLE void removeWidget() { widget->RemoveWidget(); }
     Q_INVOKABLE bool changeRow(int rowNumber, QString name, int presence,QString accountIcon, int unreadCount, bool renderIfUpdated=true);
-    Q_INVOKABLE void postWidget(int unreadCount, int presence, bool showGlobalUnreadCnt, bool showStatus, QString accountIcon );
+    Q_INVOKABLE void postWidget(int unreadCount, int presence, bool showGlobalUnreadCnt, bool showChatUnreadCnt, bool showStatus, QString accountIcon );
     Q_INVOKABLE void loadSkin(QString path);
     Q_INVOKABLE void renderWidget();
     void bringToFront();

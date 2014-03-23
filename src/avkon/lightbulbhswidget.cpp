@@ -107,7 +107,7 @@ bool LightbulbHSWidget::changeRow(int rowNumber, QString name, int presence, QSt
   return isRenderingNeeded;
 }
 
-void LightbulbHSWidget::postWidget( int unreadCount, int presence, bool showGlobalUnreadCnt, bool showStatus, QString accountIcon )
+void LightbulbHSWidget::postWidget( int unreadCount, int presence, bool showGlobalUnreadCnt, bool showChatUnreadCnt, bool showStatus, QString accountIcon )
 {
     bool needToRender;
 
@@ -124,6 +124,11 @@ void LightbulbHSWidget::postWidget( int unreadCount, int presence, bool showGlob
     if (showGlobalUnreadCount != showGlobalUnreadCnt) {
         showGlobalUnreadCount = showGlobalUnreadCnt;
         if (unreadCount > 0) needToRender = true;
+    }
+
+    if (showContactUnreadCount != showChatUnreadCnt) {
+        showContactUnreadCount = showChatUnreadCnt;
+        needToRender = true;
     }
 
     if (showMyPresence != showStatus) {
