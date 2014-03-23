@@ -12,7 +12,10 @@ unreadmark=#FFFFFF
 useNonBuiltInIndicators=false
 useNonBuiltInPresence=false
 useNonBuiltInUnreadMark=false
+useNonBuiltInAccountIcons=false
 showUnreadMarkText=true
+showSmallAccountIcon=true
+showContactAccountIcon=true
 maxRowsCount=4
 contactFontSize=16
 unreadFontSize=14
@@ -46,6 +49,11 @@ height=67
 x=6
 y=7
 size=64
+
+[accountIcon]
+x=6
+y=7
+size=24
 
 [unreadMarkText]
 x=48

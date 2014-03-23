@@ -66,7 +66,9 @@ private:
     QSvgRenderer* presence_xa;
     QSvgRenderer* presence_busy;
     QSvgRenderer* presence_offline;
-    QSvgRenderer* icon_account;
+    QSvgRenderer* account_facebook;
+    QSvgRenderer* account_hangouts;
+    QSvgRenderer* account_generic;
     QSvgRenderer* unreadMark;
 
     QPainter*     painter;
@@ -78,10 +80,14 @@ private:
     bool        useNonBuiltInPresence;
     bool        useNonBuiltInIndicators;
     bool        useNonBuiltInUnreadMark;
+    bool        useNonBuiltInAccountIcons;
     bool        showUnreadMarkText;
+    bool        showSmallAccountIcon;
+    bool        showContactAccountIcon;
     QPoint      presencePosition;
     QPoint      contactsPosition;
     QPoint      unreadMarkPosition;
+    QPoint      accountIconPosition;
     QPoint      noDataAvailablePosition;
     QPoint      faderPosition;
     QPoint      unreadMarkTextPosition;
@@ -94,6 +100,7 @@ private:
     int         indicatorSize;
     int         presenceSize;
     int         unreadMarkSize;
+    int         accountIconSize;
     int         faderWidth;
     int         faderHeight;
 

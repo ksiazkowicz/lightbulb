@@ -168,7 +168,6 @@ void LightbulbHSWidget::postWidget( QString nRow1, int r1Presence, QString nRow2
 
     if (accountsIcon != accountIcon) {
         accountsIcon = accountIcon;
-         if (!showMyPresence) icon_account = new QSvgRenderer(QString(":/accounts/" + accountIcon));
         needToRender = true;
     }
 
@@ -209,9 +208,24 @@ void LightbulbHSWidget::renderWidget() {
         case 5: presence_busy->render(painter,QRect(presencePosition,QSize(presenceSize,presenceSize))); break;
         default: presence_offline->render(painter,QRect(presencePosition,QSize(presenceSize,presenceSize))); break;
       }
+
+      if (showSmallAccountIcon) {
+        if (accountsIcon == "Facebook")
+          account_facebook->render(painter,QRect(accountIconPosition,QSize(accountIconSize,accountIconSize)));
+        else if (accountsIcon == "Hangouts")
+          account_hangouts->render(painter,QRect(accountIconPosition,QSize(accountIconSize,accountIconSize)));
+        else if (accountsIcon == "XMPP")
+          account_generic->render(painter,QRect(accountIconPosition,QSize(accountIconSize,accountIconSize)));
+      }
     } else {
-        icon_account->render(painter,QRect(presencePosition,QSize(presenceSize,presenceSize)));
+        if (accountsIcon == "Facebook")
+          account_facebook->render(painter,QRect(presencePosition,QSize(presenceSize,presenceSize)));
+        else if (accountsIcon == "Hangouts")
+          account_hangouts->render(painter,QRect(presencePosition,QSize(presenceSize,presenceSize)));
+        else if (accountsIcon == "XMPP")
+          account_generic->render(painter,QRect(presencePosition,QSize(presenceSize,presenceSize)));
     }
+
     QFont font = QApplication::font();
 
     QPen pen = painter->pen();
@@ -317,11 +331,24 @@ void LightbulbHSWidget::loadSkin(QString path) {
         indicator_offline = new QSvgRenderer(QString(":/presence/offline"));
     }
 
+    useNonBuiltInAccountIcons = skinsettings.value( "useNonBuiltInAccountIcons", false ).toBool();
+    if (useNonBuiltInAccountIcons) {
+        account_facebook = new QSvgRenderer(QString(skinPath+"\\accounts\\facebook.svg"));
+        account_hangouts = new QSvgRenderer(QString(skinPath+"\\accounts\\hangouts.svg"));
+        account_generic = new QSvgRenderer(QString(skinPath+"\\accounts\\xmpp.svg"));
+    } else {
+        account_facebook = new QSvgRenderer(QString(":/accounts/Facebook"));
+        account_hangouts = new QSvgRenderer(QString(":/accounts/Hangouts"));
+        account_generic = new QSvgRenderer(QString(":/accounts/XMPP"));
+    }
+
     useNonBuiltInUnreadMark = skinsettings.value( "useNonBuiltInUnreadMark", false ).toBool();
     if (useNonBuiltInUnreadMark) unreadMark = new QSvgRenderer(QString(skinPath+"\\unread.svg"));
         else unreadMark = new QSvgRenderer(QString(":/unread-count"));
 
     showUnreadMarkText = skinsettings.value( "showUnreadMarkText", true ).toBool();
+    showSmallAccountIcon = skinsettings.value( "showSmallAccountIcon", true ).toBool();
+    showContactAccountIcon = skinsettings.value( "showContactAccountIcon", true ).toBool();
     contactFontSize = skinsettings.value( "contactFontSize", 16 ).toInt();
     unreadFontSize = skinsettings.value( "unreadFontSize", 14 ).toInt();
     maxRowsCount = skinsettings.value( "maxRowsCount", 4 ).toInt();
@@ -361,6 +388,11 @@ void LightbulbHSWidget::loadSkin(QString path) {
     unreadMarkTextPosition = QPoint(skinsettings.value("x", 48).toInt(),skinsettings.value("y", 54).toInt());
     unreadMarkTextWidth = skinsettings.value("width", 22 ).toInt();
     unreadMarkTextHeight = skinsettings.value("height", 14).toInt();
+    skinsettings.endGroup();
+
+    skinsettings.beginGroup( "accountIcon" );
+    accountIconPosition = QPoint(skinsettings.value( "x", 6 ).toInt(),skinsettings.value( "y", 7 ).toInt());
+    accountIconSize = skinsettings.value( "size", 24 ).toInt();
     skinsettings.endGroup();
 
     skinsettings.beginGroup( "Details" );
