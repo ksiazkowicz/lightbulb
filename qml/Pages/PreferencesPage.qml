@@ -38,6 +38,7 @@ Page {
                     avkon.restartApp();
                 } else pageStack.pop();
                 vars.isBlinkingOverrideEnabled = false;
+                statusBarText.text = "Contacts"
             }
         }
     }
@@ -157,4 +158,8 @@ Page {
         }
     }
 
+    // Code for destroying the page after pop
+    onStatusChanged: if (status === PageStatus.Inactive) destroy()
+
+    Component.onCompleted: statusBarText.text = "Preferences"
 }

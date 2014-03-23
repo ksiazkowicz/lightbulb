@@ -30,6 +30,9 @@ Page {
 
     Component.onCompleted: { statusBarText.text = qsTr("About...") } //set statusbar text to "About..."
 
+    // Code for destroying the page after pop
+    onStatusChanged: if (status === PageStatus.Inactive) destroy()
+
     Flickable {
         flickableDirection: Flickable.VerticalFlick
         anchors.fill: parent

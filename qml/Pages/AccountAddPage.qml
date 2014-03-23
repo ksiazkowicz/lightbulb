@@ -50,6 +50,9 @@ Page {
         } else { statusBarText.text = qsTr("New account") }
     }
 
+    // Code for destroying the page after pop
+    onStatusChanged: if (status === PageStatus.Inactive) destroy()
+
     Flickable {
         id: flickArea
         anchors { left: parent.left; leftMargin: 5; right: parent.right; rightMargin: 5; top: parent.top; topMargin: 5; bottom: parent.bottom; }

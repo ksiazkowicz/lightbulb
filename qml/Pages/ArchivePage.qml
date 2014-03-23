@@ -78,6 +78,9 @@ Page {
            }
 
     Component.onCompleted: statusBarText.text = vars.contactName
+
+    // Code for destroying the page after pop
+    onStatusChanged: if (status === PageStatus.Inactive) destroy()
     /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
     Component {
         id: componentWrapperItem

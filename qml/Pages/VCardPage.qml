@@ -50,6 +50,9 @@ Page {
         clearForm()
     }
 
+    // Code for destroying the page after pop
+    onStatusChanged: if (status === PageStatus.Inactive) destroy()
+
     Connections {
         target: xmppVCard
         onVCardChanged: {

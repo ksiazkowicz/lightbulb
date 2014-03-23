@@ -84,6 +84,9 @@ Page {
         statusBarText.text = qsTr("Accounts")
     }
 
+    // Code for destroying the page after pop
+    onStatusChanged: if (status === PageStatus.Inactive) destroy()
+
 
     /********************************( Toolbar )************************************/
 
