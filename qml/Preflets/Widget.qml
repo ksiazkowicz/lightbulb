@@ -67,6 +67,49 @@ Item {
             opacity: 0.2
         }
 
+        Text {
+            property string color2: main.platformInverted ? "#333333" : "#888888"
+            anchors { left: parent.left; right: parent.right; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
+            color: vars.textColor
+            text: qsTr("Widget skin") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("Tap on one of the list items below to change widget skin.")  + "</font>"
+            font.pixelSize: 20
+            wrapMode: Text.WordWrap
+        }
+
+        ListView {
+            id: list;
+            anchors { left: parent.left; right: parent.right }
+            height: 196
+            model: selector.skins
+            contentHeight: wrapper.height*list.count
+            clip: true
+            delegate: ListItem {
+                    id: wrapper
+                    height: 48
+                    Text {
+                        anchors { fill: parent; margins: 10 }
+                        text: selector.getSkinName(modelData)
+                        color: vars.textColor
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            settings.sStr("C:\\data\\.config\\Lightbulb\\widgets\\" + modelData,"widget","skin")
+                            notify.updateSkin()
+                            notify.postInfo("Skin changed to " + modelData + ".");
+                        }
+                    }
+            }
+        }
+
+        Rectangle {
+            height: 1
+            anchors { left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
+            color: vars.textColor
+            opacity: 0.2
+        }
+
         Item {
             width: parent.width
             height: showUnreadCountChat.height + platformStyle.paddingSmall
@@ -156,65 +199,33 @@ Item {
             color: vars.textColor
             opacity: 0.2
         }
-
-        Text {
-            property string color2: main.platformInverted ? "#333333" : "#888888"
-            anchors { left: parent.left; right: parent.right; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
-            color: vars.textColor
-            text: qsTr("Widget skin") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("Tap on one of the list items below to change widget skin.")  + "</font>"
-            font.pixelSize: 20
-            wrapMode: Text.WordWrap
-        }
-
-        ListView {
-            id: list;
+        SelectionListItem {
+            platformInverted: main.platformInverted
+            subTitle: selectionDialog.selectedIndex >= 0
+                      ? selectionDialog.model.get(selectionDialog.selectedIndex).name
+                      : "Default"
             anchors { left: parent.left; right: parent.right }
-            height: 196
-            model: selector.skins
-            clip: true
-            delegate: Rectangle {
-                    id: wrapper
-                    height: 48
-                    width: parent.width
-                    gradient: gr_free
-                    Gradient {
-                        id: gr_free
-                        GradientStop { id: gr1; position: 0; color: "transparent" }
-                        GradientStop { id: gr3; position: 1; color: "transparent" }
-                    }
-                    Gradient {
-                        id: gr_press
-                        GradientStop { position: 0; color: "#1C87DD" }
-                        GradientStop { position: 1; color: "#51A8FB" }
-                    }
-                    Text {
-                        anchors { fill: parent; margins: 10 }
-                        text: selector.getSkinName(modelData)
-                        color: vars.textColor
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    states: State {
-                        name: "Current"
-                        when: settings.gStr("widget","skin") == "C:\\data\\.config\\Lightbulb\\widgets\\" + modelData
-                        PropertyChanges { target: wrapper; gradient: gr_press }
-                    }
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: {
-                            settings.sStr("C:\\data\\.config\\Lightbulb\\widgets\\" + modelData,"widget","skin")
-                            notify.updateSkin()
-                            notify.postInfo("Skin changed to " + modelData + ".");
-                        }
-                    }
+            title: "Data to display"
+
+            onClicked: selectionDialog.open()
+
+            SelectionDialog {
+                id: selectionDialog
+                titleText: "Available options"
+                selectedIndex: settings.gInt("widget","data")
+                platformInverted: main.platformInverted
+                model: ListModel {
+                    ListElement { name: "Latest chats" }
+                    ListElement { name: "Online contacts" }
+                    ListElement { name: "Status changes" }
+                }
+                onSelectedIndexChanged: {
+                    settings.sInt(selectedIndex,"widget","data")
+                    notify.updateWidget()
+                }
             }
         }
 
-        Rectangle {
-            height: 1
-            anchors { left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
-            color: vars.textColor
-            opacity: 0.2
-        }
     }
 }
 

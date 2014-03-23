@@ -93,6 +93,7 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
     connect(clients->value(index),SIGNAL(chatOpened(QString,QString)),this,SLOT(chatOpened(QString,QString)));
     connect(clients->value(index),SIGNAL(chatClosed(QString,QString)),this,SLOT(chatClosed(QString,QString)));
     connect(clients->value(index),SIGNAL(contactRenamed(QString,QString)),this,SLOT(renameChatContact(QString,QString)));
+    connect(clients->value(index),SIGNAL(contactStatusChanged(QString,QString)),this,SLOT(handleContactStatusChange(QString,QString)));
     qDebug().nospace() << "XmppConnectivity::initializeAccount(): initialized account " << qPrintable(clients->value(index)->getMyJid()) << "/" << qPrintable(clients->value(index)->getResource());
 
     if (lSettings->gBool(index,"connectOnStart")) {

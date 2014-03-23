@@ -357,6 +357,8 @@ void MyXmppClient::initPresence(const QString& bareJid, const QString& resource)
     }
     item = 0; itemExists = 0;
     delete item; delete itemExists;
+
+    emit contactStatusChanged(m_accountId,bareJid);
 }
 
 void MyXmppClient::presenceReceived( const QXmppPresence & presence ) {
@@ -621,20 +623,20 @@ QString MyXmppClient::getPropertyByJid( QString bareJid, QString property ) {
       } else return "(unknown)";
 }
 
-QString MyXmppClient::getNameByOrderID( int id ) {
-    if (cachedRoster->count() >= id+1) {
-        RosterItemModel *item = (RosterItemModel*)cachedRoster->getElementByID(id);
-        if (item != 0) return item->name(); else return " ";
-    }
-    return " ";
-}
-
-QString MyXmppClient::getPresenceByOrderID( int id ) {
-    if (cachedRoster->count() >= id+1) {
-        RosterItemModel *item = (RosterItemModel*)cachedRoster->getElementByID(id);
-        if (item != 0) return item->presence(); else return "";
-    }
-    return "";
+QString MyXmppClient::getPropertyByOrderID(int id, QString property) {
+  bool onlineContactFound;
+  int  iterations = id;
+  while (!onlineContactFound && cachedRoster->count() >= id+1) {
+    RosterItemModel *item = (RosterItemModel*)cachedRoster->getElementByID(id);
+    if (item != 0) {
+        if (item->presence() != "qrc:/presence/offline") {
+            if (iterations == 0) return getPropertyByJid(item->jid(),property);
+            else iterations--;
+        }
+        id++;
+    } else break;
+  }
+  return "";
 }
 
 // ------------------------//

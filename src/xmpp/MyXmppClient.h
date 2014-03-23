@@ -131,9 +131,7 @@ public :
     Q_INVOKABLE QString getPropertyByJid( QString bareJid, QString property );
     Q_INVOKABLE QStringList getResourcesByJid (QString bareJid) { return rosterManager->getResources(bareJid); }
 
-    Q_INVOKABLE QString getNameByOrderID( int id );
-
-    Q_INVOKABLE QString getPresenceByOrderID( int id );
+    Q_INVOKABLE QString getPropertyByOrderID(int id,QString property);
 
     static QString getBareJidByJid( const QString &jid );
     static QString getResourceByJid( const QString &jid );
@@ -226,6 +224,7 @@ signals:
     void errorHappened( const QString &errorString );
     void subscriptionReceived( const QString bareJid );
     void keepAliveChanged();
+    void contactStatusChanged(QString accountId, QString bareJid);
 
     // related to XmppConnectivity class
     void updateContact(QString m_accountId,QString bareJid,QString property,int count);

@@ -64,7 +64,11 @@ Item {
         if (settings.gBool("widget","enableHsWidget")) {
             hsWidget.status = xmppConnectivity.client.status
             hsWidget.unreadCount = vars.globalUnreadCount
-            hsWidget.getLatest4Chats();
+            switch (settings.gInt("widget","data")) {
+                case 0: hsWidget.getLatest4Chats(); break;
+                case 1: hsWidget.getFirst4Contacts(); break;
+                case 2: hsWidget.getLatestStatusChanges(); break;
+            }
             hsWidget.pushWidget();
         }
     }
@@ -94,15 +98,27 @@ Item {
             }
             hsWidget.renderWidget()
         }
+        function getLatestStatusChanges() {
+            var name,presence,unreadCount,accountId;
+            for (var i=0; i<4;i++) {
+                name = xmppConnectivity.getChangeProperty(i+1,"name")
+                presence = xmppConnectivity.getChangeProperty(i+1,"presence")
+                unreadCount = xmppConnectivity.getChangeProperty(i+1,"unreadMsg")
+                accountId = xmppConnectivity.getChangeProperty(i+1,"accountId")
+                hsWidget.changeRow(i,name,presence,accountId,unreadCount,false)
+            }
+            hsWidget.renderWidget()
+        }
         function getFirst4Contacts() {
-            /*row1 = xmppConnectivity.client.getNameByOrderID(0);
-            r1presence = getPresenceId(xmppConnectivity.client.getPresenceByOrderID(0));
-            row2 = xmppConnectivity.client.getNameByOrderID(1);
-            r2presence = getPresenceId(xmppConnectivity.client.getPresenceByOrderID(1));
-            row3 = xmppConnectivity.client.getNameByOrderID(2);
-            r3presence = getPresenceId(xmppConnectivity.client.getPresenceByOrderID(2));
-            row4 = xmppConnectivity.client.getNameByOrderID(3);
-            r4presence = getPresenceId(xmppConnectivity.client.getPresenceByOrderID(3));*/
+            var name,presence,unreadCount,accountId;
+            for (var i=0; i<4;i++) {
+                name = xmppConnectivity.client.getPropertyByOrderID(i,"name");
+                presence = getPresenceId(xmppConnectivity.client.getPropertyByOrderID(i,"presence"))
+                unreadCount = xmppConnectivity.client.getPropertyByOrderID(i,"unreadMsg");
+                accountId = xmppConnectivity.currentAccount
+                hsWidget.changeRow(i,name,presence,accountId,unreadCount,false)
+            }
+            hsWidget.renderWidget()
         }
         function getPresenceId(presence) {
             if (presence == "qrc:/presence/online") return 0;

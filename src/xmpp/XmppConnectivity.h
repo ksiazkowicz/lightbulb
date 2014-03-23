@@ -111,6 +111,16 @@ public:
       return "";
     }
 
+    Q_INVOKABLE QString getChangeProperty(int index, QString property) {
+      if (latestStatusChanges.count() >= latestStatusChanges.count()-index && latestStatusChanges.count()-index >= 0) {
+        QString presenceJid = latestStatusChanges.at(latestStatusChanges.count()-index);
+        if (property == "accountId")
+          return presenceJid.split(';').at(0);
+        return clients->value(presenceJid.split(';').at(0))->getPropertyByJid(presenceJid.split(';').at(1),property);
+        } else if (property == "presence") return "-2";
+      return "";
+    }
+
 signals:
     void accountChanged();
     void rosterChanged();
@@ -182,6 +192,16 @@ public slots:
     Q_INVOKABLE void resetUnreadMessages(QString accountId, QString bareJid) { clients->value(accountId)->resetUnreadMessages(bareJid); }
     Q_INVOKABLE void resetUnreadMessages(QString bareJid) { clients->value(currentClient)->resetUnreadMessages(bareJid); }
 
+    // widget
+    void handleContactStatusChange(QString accountId, QString bareJid) {
+      if (clients->value(accountId)->getPropertyByJid(bareJid,"presence") == "qrc:/presence/offline") return;
+      if (latestStatusChanges.contains(accountId+";"+bareJid))
+            latestStatusChanges.removeAt(latestStatusChanges.indexOf(accountId+";"+bareJid));
+      latestStatusChanges.append(accountId+";"+bareJid);
+      if (latestStatusChanges.count()>4) latestStatusChanges.removeFirst();
+      emit widgetDataChanged();
+    }
+
 private:
     QString currentClient;
     QMap<QString,MyXmppClient*> *clients;
@@ -228,6 +248,7 @@ private:
     MessageWrapper *msgWrapper;
 
     QStringList latestChats;
+    QStringList latestStatusChanges;
 };
 
 #endif // XMPPCONNECTIVITY_H
