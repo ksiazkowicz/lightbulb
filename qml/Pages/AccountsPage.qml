@@ -38,11 +38,7 @@ Page {
                 text: xmppConnectivity.getAccountName(accGRID)
                 icon: "qrc:/accounts/" + xmppConnectivity.getAccountIcon(accGRID)
 
-                onEditButtonClick: {
-                    vars.accGRID = accGRID
-                    pageStack.replace( "qrc:/pages/AccountsAdd" )
-                }
-
+                onEditButtonClick: pageStack.replace( "qrc:/pages/AccountsAdd", {"accGRID":accGRID})
                 onRemoveButtonClick: {
                     if (avkon.displayAvkonQueryDialog("Remove","Are you sure you want to remove account " + accJid + "?")) {
                         xmppConnectivity.accountRemoved(accGRID)
@@ -80,7 +76,6 @@ Page {
     }
 
     Component.onCompleted: {
-        vars.accGRID = ""
         statusBarText.text = qsTr("Accounts")
     }
 
@@ -104,7 +99,6 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-add_inverse" : "toolbar-add"
             onClicked: {
-                vars.accGRID = "";
                 pageStack.replace( "qrc:/pages/AccountsAdd" )
             }
         }

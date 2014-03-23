@@ -29,7 +29,6 @@ Item {
     property int                     globalUnreadCount: 0
     property int                     tempUnreadCount: 0
     property bool                    inputInProgress: false
-    property string                  accGRID: ""
     property string                  lastStatus: settings.gBool("behavior", "lastStatusText") ? settings.gStr("behavior","lastStatusText") : ""
     signal                           statusChanged
     property int                     lastUsedStatus: 0

@@ -29,24 +29,27 @@ Page {
     id: accAddPage
 
     tools: toolBarLayout
+    property string accGRID: ""
 
     Component.onCompleted: {
-        if (vars.accGRID != "") {
-            statusBarText.text = qsTr("Editing ") + settings.gStr(vars.accGRID,'jid')
-            if (settings.gStr(vars.accGRID,'host') == "chat.facebook.com") {
+        if (accGRID != "") {
+            if (settings.gStr(accGRID,'host') == "chat.facebook.com")
                 selectionDialog.selectedIndex = 0;
-            } else {
-                if (settings.gStr(vars.accGRID,'host') == "talk.google.com") selectionDialog.selectedIndex = 1; else selectionDialog.selectedIndex = 2;
-            }
-            tiName.text = settings.gStr(vars.accGRID,'name')
-            tiJid.text  = settings.gStr(vars.accGRID,'jid')
-            tiPass.text = settings.gStr(vars.accGRID,'passwd')
-            tiHost.text = settings.gStr(vars.accGRID,'host')
-            tiPort.text = settings.gStr(vars.accGRID,'port')
-            tiResource.text = settings.gStr(vars.accGRID,'resource')
-            if (tiName.text == "false") {
+            else if (settings.gStr(accGRID,'host') == "talk.google.com")
+                selectionDialog.selectedIndex = 1;
+            else
+                selectionDialog.selectedIndex = 2;
+
+            tiName.text = settings.gStr(accGRID,'name')
+            tiJid.text  = settings.gStr(accGRID,'jid')
+            tiPass.text = settings.gStr(accGRID,'passwd')
+            tiHost.text = settings.gStr(accGRID,'host')
+            tiPort.text = settings.gStr(accGRID,'port')
+            tiResource.text = settings.gStr(accGRID,'resource')
+            if (tiName.text == "false")
                 tiName.text = "";
-            }
+
+            statusBarText.text = qsTr("Editing ") + xmppConnectivity.getAccountName(accGRID)
         } else { statusBarText.text = qsTr("New account") }
     }
 
@@ -61,9 +64,6 @@ Page {
         contentWidth: contentPage.width
 
         flickableDirection: Flickable.VerticalFlick
-
-
-
 
         Column {
             id: contentPage
@@ -194,7 +194,7 @@ Page {
                id: goOnline
                text: qsTr("Go online on startup")
                enabled: selectionDialog.selectedIndex != -1
-               checked: settings.gBool(vars.accGRID,'connectOnStart')
+               checked: settings.gBool(accGRID,'connectOnStart')
                platformInverted: main.platformInverted
             }
 
@@ -262,7 +262,7 @@ Page {
             iconSource: main.platformInverted ? "qrc:/toolbar/ok_inverse" : "qrc:/toolbar/ok"
             onClicked: {
                 var grid,name,icon,jid,pass,goonline,resource,host,port;
-                if (vars.accGRID != "") grid = vars.accGRID;
+                if (accGRID != "") grid = accGRID;
                     else grid = settings.generateGRID()
                 name = tiName.text
                 if (tiName.text == "") {
