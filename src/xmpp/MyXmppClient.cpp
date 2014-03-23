@@ -486,12 +486,13 @@ void MyXmppClient::initRosterManager() {
 
 void MyXmppClient::initRoster() {
     qDebug() << "MyXmppClient::initRoster() called";
-    if( ! rosterManager->isRosterReceived() ) {
+    if (!rosterManager->isRosterReceived()) {
         qDebug() << "MyXmppClient::initRoster(): roster not available yet";
         return;
     }
 
-    cachedRoster->cleanList();
+    if (cachedRoster->rowCount() > 0)
+      cachedRoster->cleanList();
 
     QStringList listBareJids = rosterManager->getRosterBareJids();
 
