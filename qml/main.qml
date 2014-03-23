@@ -41,8 +41,8 @@ PageStackWindow {
         notify.updateNotifiers()
 
         if (pageStack.depth > 1) {
-            if (!vars.isChatInProgress) pageStack.replace("qrc:/pages/Messages"); else xmppConnectivity.emitQmlChat()
-        } else pageStack.push("qrc:/pages/Messages")
+            if (!vars.isChatInProgress) pageStack.replace("qrc:/pages/Messages",{"contactName":xmppConnectivity.client.getPropertyByJid(xmppConnectivity.chatJid,"name")}); else xmppConnectivity.emitQmlChat()
+        } else pageStack.push("qrc:/pages/Messages",{"contactName":xmppConnectivity.client.getPropertyByJid(xmppConnectivity.chatJid,"name")})
     }
 
     Timer {

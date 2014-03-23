@@ -170,7 +170,7 @@ Page {
             listModelResources.clear()
             xmppConnectivity.client.openChat( xmppConnectivity.chatJid )
 
-            statusBarText.text = contactName
+            statusBarText.text = xmppConnectivity.client.getPropertyByJid(xmppConnectivity.chatJid,"name")
 
             txtMessage.text = xmppConnectivity.getPreservedMsg(xmppConnectivity.chatJid);
 

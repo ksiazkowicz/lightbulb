@@ -81,10 +81,8 @@ Item {
             anchors { left: parent.left; right: parent.right }
             height: 196
             model: selector.skins
-            contentHeight: wrapper.height*list.count
             clip: true
             delegate: ListItem {
-                    id: wrapper
                     height: 48
                     Text {
                         anchors { fill: parent; margins: 10 }
@@ -204,8 +202,9 @@ Item {
             subTitle: selectionDialog.selectedIndex >= 0
                       ? selectionDialog.model.get(selectionDialog.selectedIndex).name
                       : "Default"
-            anchors { left: parent.left; right: parent.right }
+            anchors { right: parent.right }
             title: "Data to display"
+            width: parent.width +8
 
             onClicked: selectionDialog.open()
 
