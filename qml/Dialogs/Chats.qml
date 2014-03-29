@@ -26,6 +26,7 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 CommonDialog {
+    id: chats
     privateCloseIcon: true
     titleText: qsTr("Chats")
 
@@ -126,6 +127,6 @@ CommonDialog {
         isCreated = true }
     property bool isCreated: false
 
-    onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
+    onStatusChanged: if (isCreated && chats.status === DialogStatus.Closed) chats.destroy()
 }
 

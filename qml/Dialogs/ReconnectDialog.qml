@@ -41,7 +41,7 @@ CommonDialog {
         isCreated = true }
     property bool isCreated: false
 
-    onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
+    onStatusChanged: if (isCreated && reconDialog.status === DialogStatus.Closed) reconDialog.destroy()
 
     onButtonClicked: {
         timeLeftTimer.running = false

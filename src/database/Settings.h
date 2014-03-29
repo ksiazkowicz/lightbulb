@@ -72,6 +72,8 @@ public:
     int getAccountId(QString grid);
     int accountsCount() { return alm->count(); }
 
+    QString getAppDrive();
+
 
 signals:
     void accountsListChanged();

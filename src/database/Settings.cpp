@@ -37,6 +37,11 @@ Settings::Settings(QObject *parent) : QSettings(Settings::confFile, QSettings::N
 {
     alm = new AccountsListModel(this);
     this->initListOfAccounts();
+    qDebug() << getAppDrive();
+}
+
+QString Settings::getAppDrive() {
+  return QDir::currentPath().left(3);
 }
 
 /*************************** (generic settings) **************************/

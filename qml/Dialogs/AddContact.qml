@@ -26,6 +26,7 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 CommonDialog {
+    id: addContact
     titleText: qsTr("Add contact")
 
     platformInverted: main.platformInverted
@@ -36,7 +37,7 @@ CommonDialog {
         isCreated = true }
     property bool isCreated: false
 
-    onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
+    onStatusChanged: if (isCreated && addContact.status === DialogStatus.Closed) addContact.destroy()
     onButtonClicked: if (index === 0 && addName.text != "" && addJid.text != "") xmppConnectivity.client.addContact( addJid.text, addName.text, "", true )
 
     content: Column {

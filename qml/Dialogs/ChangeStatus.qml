@@ -28,22 +28,23 @@ import com.nokia.extras 1.1
 import lightbulb 1.0
 
 CommonDialog {
-        titleText: qsTr("Set status")
-        buttonTexts: ["OK"]
-        privateCloseIcon: true
+    id: statusDialog
+    titleText: qsTr("Set status")
+    buttonTexts: ["OK"]
+    privateCloseIcon: true
 
-        property bool storeStatus: settings.gBool("behavior","storeLastStatus")
+    property bool storeStatus: settings.gBool("behavior","storeLastStatus")
 
-        platformInverted: main.platformInverted
+    platformInverted: main.platformInverted
 
-        // Code for dynamic load
-        Component.onCompleted: {
-            colStatus.selectedIndex = vars.lastUsedStatus
-            open();
-            isCreated = true }
-        property bool isCreated: false
+    // Code for dynamic load
+    Component.onCompleted: {
+        colStatus.selectedIndex = vars.lastUsedStatus
+        open();
+        isCreated = true }
+    property bool isCreated: false
 
-        onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
+    onStatusChanged: if (isCreated && statusDialog.status === DialogStatus.Closed) statusDialog.destroy()
 
         onButtonClicked: {
             xmppConnectivity.client.keepAlive = settings.gBool("behavior","keepAliveInterval")

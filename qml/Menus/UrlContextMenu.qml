@@ -26,6 +26,7 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 ContextMenu {
+    id: contextDialog
     platformInverted: main.platformInverted
     property string url: ""
     MenuLayout {
@@ -48,5 +49,5 @@ ContextMenu {
         isCreated = true }
     property bool isCreated: false
 
-    onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
+    onStatusChanged: { if (isCreated && contextDialog.status === DialogStatus.Closed) { contextDialog.destroy() } }
 }

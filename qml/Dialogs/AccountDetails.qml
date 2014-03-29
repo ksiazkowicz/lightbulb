@@ -15,10 +15,7 @@ CommonDialog {
         var encrypt = ""
 
         for (var i = 0; i < password.length; i++)
-        {
-            encrypt += "•"
-        }
-
+            encrypt += "•";
         return encrypt
     }
 
@@ -159,9 +156,5 @@ CommonDialog {
     }
 
     property bool isCreated: false
-    onStatusChanged: {
-        if (isCreated && status === DialogStatus.Closed) {
-            destroy()
-        }
-    }
+    onStatusChanged: if (isCreated && accountDetails.status === DialogStatus.Closed) accountDetails.destroy()
 }

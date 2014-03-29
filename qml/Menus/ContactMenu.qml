@@ -34,9 +34,9 @@ Menu {
     property bool shouldICareAnyway: false
 
     onStatusChanged: {
-        if (status == DialogStatus.Closed && shouldICareAnyway) {
+        if (contactMenu.status == DialogStatus.Closed && shouldICareAnyway) {
             vars.selectedJid = "";
-            destroy();
+            contactMenu.destroy();
         }
     }
     Component.onCompleted: {

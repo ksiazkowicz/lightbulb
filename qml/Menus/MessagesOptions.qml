@@ -35,7 +35,7 @@ Menu {
     property bool isCreated: false
     property string contactName: ""
 
-    onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
+    onStatusChanged: { if (isCreated && msgOptions.status === DialogStatus.Closed) { msgOptions.destroy() } }
     // define the items in the menu and corresponding actions
     content: MenuLayout {
         MenuItem {

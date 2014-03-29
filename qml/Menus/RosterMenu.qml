@@ -60,5 +60,5 @@ Menu {
         isCreated = true }
     property bool isCreated: false
 
-    onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
+    onStatusChanged: { if (isCreated && rosterMenu.status === DialogStatus.Closed) { rosterMenu.destroy() } }
 }

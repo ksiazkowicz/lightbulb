@@ -110,9 +110,5 @@ CommonDialog {
     }
 
     property bool isCreated: false
-    onStatusChanged: {
-        if (isCreated && status === DialogStatus.Closed) {
-            destroy()
-        }
-    }
+    onStatusChanged: if (isCreated && contributors.status === DialogStatus.Closed) contributors.destroy()
 }

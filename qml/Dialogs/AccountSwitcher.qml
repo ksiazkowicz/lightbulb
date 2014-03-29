@@ -110,5 +110,5 @@ CommonDialog {
         isCreated = true }
     property bool isCreated: false
 
-    onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
+    onStatusChanged: if (isCreated && accountSwitcher.status === DialogStatus.Closed) accountSwitcher.destroy()
 }

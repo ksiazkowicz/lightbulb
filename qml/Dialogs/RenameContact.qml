@@ -26,6 +26,7 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 CommonDialog {
+    id: renameContact
     titleText: qsTr("Rename contact")
     platformInverted: main.platformInverted
 
@@ -40,7 +41,7 @@ CommonDialog {
         isCreated = true }
     property bool isCreated: false
 
-    onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
+    onStatusChanged: if (isCreated && renameContact.status === DialogStatus.Closed) renameContact.destroy()
 
     onButtonClicked: {
         if ((index === 0) && ( newNameText.text != "" )) {

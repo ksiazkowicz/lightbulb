@@ -27,6 +27,7 @@ import com.nokia.symbian 1.1
 import lightbulb 1.0
 
 CommonDialog {
+    id: vibrationSettings
     titleText: qsTr("Vibration settings")
     privateCloseIcon: true
     height: 250
@@ -40,7 +41,7 @@ CommonDialog {
         isCreated = true }
     property bool isCreated: false
 
-    onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
+    onStatusChanged: { if (isCreated && vibrationSettings.status === DialogStatus.Closed) { vibrationSettings.destroy() } }
 
     content: Item {
         width: parent.width-20

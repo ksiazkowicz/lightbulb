@@ -37,7 +37,7 @@ CommonDialog {
         isCreated = true }
     property bool isCreated: false
 
-    onStatusChanged: { if (isCreated && status === DialogStatus.Closed) { destroy() } }
+    onStatusChanged: { if (isCreated && dlgResources.status === DialogStatus.Closed) { dlgResources.destroy() } }
 
     content: ListView {
                 anchors.fill: parent
