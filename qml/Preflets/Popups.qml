@@ -29,7 +29,6 @@ Item {
     height: content.height
 
     function savePreferences() {
-        settings.sBool(switch1.checked,"behavior","linkInDiscrPopup")
         settings.sBool(messageText.checked,"behavior","msgInDiscrPopup")
     }
 
@@ -94,7 +93,7 @@ Item {
                 checked: settings.gBool("behavior","linkInDiscrPopup")
                 anchors { right: parent.right; rightMargin: platformStyle.paddingSmall; verticalCenter: parent.verticalCenter }
                 onCheckedChanged: {
-                    savePreferences()
+                    settings.sBool(checked,"behavior","linkInDiscrPopup")
                 }
             }
         }

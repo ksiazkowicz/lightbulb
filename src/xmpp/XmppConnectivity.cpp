@@ -227,14 +227,7 @@ void XmppConnectivity::accountRemoved(QString id) {
   qDebug().nospace() << "XmppConnectivity::accountRemoved(): removing account "
            << qPrintable(id)<<"::"<<qPrintable(clients->value(id)->getMyJid());
   if (currentClient == id) {
-      qDebug() << "czemu to sie sypie";
-      if (lSettings->getAccount(1) != 0) {
-          qDebug() << lSettings->getAccount(1)->grid();
-        changeAccount(lSettings->getAccount(1)->grid());
-      } else {
-          qDebug() << "nie ogarniam";
-          changeAccount("null");
-      }
+      changeAccount("null");
   }
   clients->remove(id);
 

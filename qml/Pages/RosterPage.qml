@@ -351,7 +351,7 @@ Page {
                 color: vars.textColor
                 anchors { top: sadface.bottom; horizontalCenter: parent.horizontalCenter; topMargin: 5 }
                 visible: parent.visible
-                text: settings.accounts.count() > 0 ? "You're offline" : "No accounts\navailable"
+                text: settings.accounts.count() > 0 ? (xmppConnectivity.currentAccount == "" ? "No account\nselected" : "You're offline") : "No accounts\navailable"
                 font.pixelSize: 32
             }
             Text {
