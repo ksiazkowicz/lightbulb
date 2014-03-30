@@ -117,18 +117,8 @@ OTHER_FILES += README.md \
     qml/FirstRun/*.* \
     qml/JavaScript/*.* \
     qml/Preflets/*.* \
-    qml/Menus/UrlContextMenu.qml \
-    qml/Menus/RosterMenu.qml \
-    qml/Menus/ContactMenu.qml \
-    qml/Dialogs/ResourcesDialog.qml \
-    qml/Menus/MessagesOptions.qml \
-    qml/Preflets/LED.qml \
-    qml/Pages/FirstRunPage.qml \
-    qml/Components/AccountItem.qml \
-    qml/Dialogs/AccountDetails.qml \
-    qml/Components/LineItem.qml \
-    qml/Components/DetailsItem.qml
-
+    qml/Menus/*.* \
+    qml/Components/*.*
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
