@@ -130,5 +130,6 @@
         <file alias="AccountItem.qml">qml/Components/AccountItem.qml</file>
         <file alias="DetailsItem.qml">qml/Components/DetailsItem.qml</file>
         <file alias="LineItem.qml">qml/Components/LineItem.qml</file>
+        <file alias="HeaderButton.qml">qml/Components/HeaderButton.qml</file>
     </qresource>
 </RCC>

@@ -139,7 +139,7 @@ CommonDialog {
                 top: parent.top
                 bottom: parent.bottom
                 right: parent.right
-                margins: platformStyle.paddingSmall
+                margins: platformStyle.paddingSmall - 2
             }
 
             flickableItem: flickable

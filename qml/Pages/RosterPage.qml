@@ -26,6 +26,7 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 import com.nokia.extras 1.1
 import lightbulb 1.0
+import "../Components"
 
 Page {
     id: rosterPage
@@ -51,44 +52,95 @@ Page {
 
     /*******************************************************************************/
 
+    function getAccountStatusIcon()
+    {
+        if (xmppConnectivity.client.stateConnect === 2)
+            return "qrc:/presence/unknown"
+        else
+            return "qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.client.status)
+    }
+
+    function getAccountName()
+    {
+        if (xmppConnectivity.currentAccount === "")
+            return "N/A"
+        else
+            return xmppConnectivity.currentAccountName
+    }
+
     Rectangle {
         id: accountSwitcher
-
         height: 46
+
         gradient: Gradient {
-            GradientStop { position: 0; color: "#3c3c3c" }
-            GradientStop { position: 0.04; color: "#6c6c6c" }
-            GradientStop { position: 0.05; color: "#3c3c3c" }
-            GradientStop { position: 0.06; color: "#4c4c4c" }
-            GradientStop { position: 1; color: "#191919" }
+            GradientStop { position: 0; color: "#FBBE5B" }
+            GradientStop { position: 0.04; color: "#FAA824" }
+            GradientStop { position: 0.96; color: "#C74A17" }
+            GradientStop { position: 0.98; color: "#FAA419" }
+            GradientStop { position: 1; color: "#80000000" }
         }
-        z: 1
+
         anchors { top: parent.top; left: parent.left; right: parent.right }
 
-        ToolButton {
-            id: button
-            anchors { left: parent.left; leftMargin: platformStyle.paddingSmall; verticalCenter: parent.verticalCenter }
-            iconSource: xmppConnectivity.client.stateConnect === 2 ? "qrc:/presence/unknown" : "qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.client.status)
+        HeaderButton {
+            id: stateButton
+            iconSource: getAccountStatusIcon()
+            width: height
+            platformInverted: true
+
+            anchors {
+                left: parent.left
+                top: parent.top
+                bottom: parent.bottom
+            }
+
             onClicked: {
-                if (settings.accounts.count() > 0) dialog.create("qrc:/dialogs/Status/Change"); else avkon.displayGlobalNote("You have to set-up an account first.",true)
+                if (settings.accounts.count() > 0)
+                    dialog.create("qrc:/dialogs/Status/Change");
+                else
+                    avkon.displayGlobalNote("You have to set-up an account first.", true)
             }
         }
+
         Text {
             id: titleText
-            anchors { verticalCenter: parent.verticalCenter; left: button.right; leftMargin: platformStyle.paddingSmall  }
-            text: xmppConnectivity.currentAccount == "" ? "N/A" : xmppConnectivity.currentAccountName
+
+            anchors {
+                verticalCenter: parent.verticalCenter
+                left: stateButton.right
+                leftMargin: platformStyle.paddingMedium
+                right: accountsButton.left
+                rightMargin: platformStyle.paddingMedium
+            }
+
+            text: getAccountName()
             color: "white"
-            font.pixelSize: 20
+            font.pixelSize: 24
+            font.bold: true
+            elide: Text.ElideRight
+            style: Text.Raised
+            horizontalAlignment: Text.AlignLeft
         }
-        ToolButton {
-            iconSource: "toolbar-list"
-            anchors { verticalCenter: parent.verticalCenter; right: parent.right; rightMargin: platformStyle.paddingSmall }
+
+        HeaderButton {
+            id: accountsButton
+            iconSource: privateStyle.toolBarIconPath("toolbar-list", false)
+            width: height
+            platformInverted: true
+
+            anchors {
+                right: parent.right
+                top: parent.top
+                bottom: parent.bottom
+            }
+
             onClicked: dialog.create("qrc:/dialogs/AccountSwitcher")
         }
     }
 
     Component {
         id: componentRosterItem
+
         Rectangle {
             id: wrapper
             width: rosterView.width
@@ -109,14 +161,14 @@ Page {
             }
 
             states: [State {
-                name: "Current"
-                when: vars.selectedJid == jid
-                PropertyChanges { target: wrapper; gradient: gr_press }
-            },State {
-                name: "Not current"
-                when: !vars.selectedJid == jid
-                PropertyChanges { target: wrapper; gradient: gr_free }
-            }]
+                    name: "Current"
+                    when: vars.selectedJid == jid
+                    PropertyChanges { target: wrapper; gradient: gr_press }
+                },State {
+                    name: "Not current"
+                    when: !vars.selectedJid == jid
+                    PropertyChanges { target: wrapper; gradient: gr_free }
+                }]
 
             Image {
                 id: imgPresence
@@ -164,16 +216,16 @@ Page {
                 }
             } //imgPresence
             Text {
-                    id: txtJid
-                    property string contact: (name === "" ? jid : name)
-                    anchors { left: imgPresence.right; right: imgPresenceR.left; leftMargin: 10; rightMargin: 10; verticalCenter: parent.verticalCenter }
-                    width: parent.width
-                    maximumLineCount: (vars.rosterItemHeight/22) > 1 ? (vars.rosterItemHeight/22) : 1
-                    text: (name === "" ? jid : name) + ((vars.showContactStatusText && statusText != "") ? (" · <font color='#aaaaaa'><i>" + statusText + "</i></font>") : "")
-                    onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
-                    wrapMode: Text.WordWrap
-                    font.pixelSize: (vars.showContactStatusText ? 16 : 0)
-                    color: vars.textColor
+                id: txtJid
+                property string contact: (name === "" ? jid : name)
+                anchors { left: imgPresence.right; right: imgPresenceR.left; leftMargin: 10; rightMargin: 10; verticalCenter: parent.verticalCenter }
+                width: parent.width
+                maximumLineCount: (vars.rosterItemHeight/22) > 1 ? (vars.rosterItemHeight/22) : 1
+                text: (name === "" ? jid : name) + ((vars.showContactStatusText && statusText != "") ? (" · <font color='#aaaaaa'><i>" + statusText + "</i></font>") : "")
+                onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
+                wrapMode: Text.WordWrap
+                font.pixelSize: (vars.showContactStatusText ? 16 : 0)
+                color: vars.textColor
             }
             MouseArea {
                 id: mouseAreaItem;
@@ -226,9 +278,20 @@ Page {
                 model: xmppConnectivity.roster
                 delegate: componentRosterItem
             }
-
-
         }
+    }
+
+    ScrollBar {
+        id: scrollBar
+
+        anchors {
+            top: accountSwitcher.bottom
+            bottom: rosterSearch.top
+            right: parent.right
+            margins: platformStyle.paddingSmall
+        }
+        flickableItem: rosterView
+        platformInverted: main.platformInverted
     }
 
     /*********************************************************************/
@@ -363,7 +426,5 @@ Page {
                 font.pixelSize: 16
             }
         }
-
     }
-
 }
