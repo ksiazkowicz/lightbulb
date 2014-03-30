@@ -493,8 +493,7 @@ void MyXmppClient::initRoster() {
         return;
     }
 
-    if (cachedRoster->rowCount() > 0)
-      cachedRoster->cleanList();
+    cachedRoster->cleanList();
 
     QStringList listBareJids = rosterManager->getRosterBareJids();
 
