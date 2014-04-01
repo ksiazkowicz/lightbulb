@@ -40,10 +40,8 @@ Page {
 
                 onEditButtonClick: pageStack.replace( "qrc:/pages/AccountsAdd", {"accGRID":accGRID})
                 onRemoveButtonClick: {
-                    if (avkon.displayAvkonQueryDialog("Remove","Are you sure you want to remove account " + accJid + "?")) {
-                        xmppConnectivity.accountRemoved(accGRID)
+                    if (avkon.displayAvkonQueryDialog("Remove","Are you sure you want to remove account " + accJid + "?"))
                         settings.removeAccount(accGRID)
-                    }
                 }
             }
 
@@ -98,9 +96,7 @@ Page {
 
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-add_inverse" : "toolbar-add"
-            onClicked: {
-                pageStack.replace( "qrc:/pages/AccountsAdd" )
-            }
+            onClicked: pageStack.replace( "qrc:/pages/AccountsAdd" )
         }
     }
 }

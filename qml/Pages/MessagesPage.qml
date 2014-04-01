@@ -315,7 +315,10 @@ Page {
         }
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-menu_inverse" : "toolbar-menu"
-            onClicked: dialog.createWithProperties("qrc:/menus/Messages",{"contactName":contactName})
+            onClicked: {
+                xmppConnectivity.preserveMsg(xmppConnectivity.chatJid,txtMessage.text)
+                dialog.createWithProperties("qrc:/menus/Messages",{"contactName":contactName})
+            }
         }
     }
 }

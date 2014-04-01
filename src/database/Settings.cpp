@@ -33,8 +33,7 @@ QString Settings::confFolder = QDir::homePath() + QDir::separator() + ".config" 
 QString Settings::cacheFolder = confFolder + QDir::separator() + QString("cache");
 QString Settings::confFile = confFolder + QDir::separator() + Settings::appName + ".conf";
 
-Settings::Settings(QObject *parent) : QSettings(Settings::confFile, QSettings::NativeFormat , parent)
-{
+Settings::Settings(QObject *parent) : QSettings(Settings::confFile, QSettings::NativeFormat , parent) {
     alm = new AccountsListModel(this);
     this->initListOfAccounts();
     qDebug() << getAppDrive();
@@ -88,6 +87,7 @@ QStringList Settings::getListAccounts()
     return acc;
 }
 /*-------------------*/
+
 void Settings::addAccount( const QString &acc )
 {
     beginGroup( "accounts" );
@@ -98,7 +98,6 @@ void Settings::addAccount( const QString &acc )
         setValue( "accounts", QVariant(sl) );
     }
     endGroup();
-    initListOfAccounts();
     emit accountAdded(acc);
 }
 void Settings::removeAccount( const QString &acc )
@@ -118,20 +117,32 @@ void Settings::removeAccount( const QString &acc )
         setValue( "accounts", QVariant(sl) );
     }
     endGroup();
-    initListOfAccounts();
+
+    int indxItem = -1;
+    AccountsItemModel *itemExists = (AccountsItemModel*)alm->find( acc, indxItem );
+    if( itemExists ) if( indxItem >= 0 ) alm->takeRow( indxItem );
     emit accountsListChanged();
+    emit accountRemoved(acc);
 }
 
 void Settings::initListOfAccounts() {
-    QStringList listAcc = this->getListAccounts();
+    qDebug() << "Settings::initListOfAccounts(): called";
+    beginGroup( "accounts" );
+    QStringList listAcc = value("accounts",QStringList()).toStringList();
+    endGroup();
 
-    alm->takeRows( 0, alm->count() );
+    qDebug() << "Settings::initListOfAccounts(): read list from settings." << listAcc;
+
+    qDebug() << "Settings::initListOfAccounts(): removing accounts from list model";
+    for (int i=0; i<alm->rowCount(); i++)
+        alm->removeRow(i);
 
     QStringList::const_iterator itr = listAcc.begin();
-    int i = 0;
     while ( itr != listAcc.end() ) {
         QString grid = *itr;
         itr++;
+
+        qDebug() << "Settings::initListOfAccounts(): found element" << grid;
 
         QString name = gStr(grid,"name");
         QString icon = gStr(grid,"icon");
@@ -145,16 +156,14 @@ void Settings::initListOfAccounts() {
 
         AccountsItemModel *aim = new AccountsItemModel( grid, name, icon, jid, passwd, resource, host, port, isManuallyHostPort, this );
         alm->append(aim);
-        i++;
+        qDebug() << "Settings::initListOfAccounts(): element appended";
     }
-
     emit accountsListChanged();
+    qDebug() << "Settings::initListOfAccounts(): accountsListChanged() emited";
 }
 
 void Settings::setAccount(
-        QString _grid,
-        QString _name,
-        QString _icon,
+        QString _grid, QString _name, QString _icon,
         QString _jid,
         QString _pass,
         bool _connectOnStart,
@@ -186,8 +195,20 @@ void Settings::setAccount(
     int p = _port.toInt(&ok);
     if( ok ) { sInt( p, _jid, "port" ); }
 
-    if (isNew) addAccount(_grid);
-    else {
+    if (isNew) {
+        AccountsItemModel* account = new AccountsItemModel();
+        account->setGRID(_grid);
+        account->setHost(_host);
+        account->setIcon(_icon);
+        account->setJid(_jid);
+        account->setPasswd(_pass);
+        account->setManuallyHostPort(manuallyHostPort);
+        account->setPort(p);
+        alm->append(account);
+        qDebug() << "element appended but this piece of shit is retarded";
+        emit accountsListChanged();
+        addAccount(_grid);
+    } else {
         initListOfAccounts();
         emit accountEdited(_grid);
     }

@@ -74,6 +74,10 @@ public:
 
     QString getAppDrive();
 
+    Q_INVOKABLE void refresh() {
+      this->initListOfAccounts();
+    }
+
 
 signals:
     void accountsListChanged();

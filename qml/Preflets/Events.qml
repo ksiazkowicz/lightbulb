@@ -88,7 +88,7 @@ Item {
                     width: parent.width/3
                     iconSource: "toolbar-settings"
                     platformInverted: main.platformInverted
-                    onClicked: dialog.createWithParameters("qrc:/dialogs/Settings/Vibration", {"currentlyEditedParameter" : "vibraMsgRecv"})
+                    onClicked: dialog.createWithProperties("qrc:/dialogs/Settings/Vibration", {"currentlyEditedParameter" : "vibraMsgRecv"})
                 }
                 ToolButton {
                     width: parent.width/3
@@ -148,7 +148,7 @@ Item {
                     platformInverted: main.platformInverted
                     onClicked: {
                         if (selected) selected = false; else selected = true;
-                        settings.sBool(selected,"notifications","soundMsgRecv")
+                        settings.sBool(selected,"notifications","soundMsgSent")
                     }
                 }
             }
@@ -159,7 +159,7 @@ Item {
                     width: parent.width/3
                     iconSource: "toolbar-settings"
                     platformInverted: main.platformInverted
-                    onClicked: dialog.createWithParameters("qrc:/dialogs/Settings/Vibration", {"currentlyEditedParameter" : "vibraMsgSent"})
+                    onClicked: dialog.createWithProperties("qrc:/dialogs/Settings/Vibration", {"currentlyEditedParameter" : "vibraMsgSent"})
                 }
                 ToolButton {
                     width: parent.width/3
@@ -300,7 +300,7 @@ Item {
                     width: parent.width/3
                     iconSource: "toolbar-settings"
                     platformInverted: main.platformInverted
-                    onClicked: dialog.createWithParameters("qrc:/dialogs/Settings/Vibration", {"currentlyEditedParameter" : "vibraMsgSub"})
+                    onClicked: dialog.createWithProperties("qrc:/dialogs/Settings/Vibration", {"currentlyEditedParameter" : "vibraMsgSub"})
                 }
                 ToolButton {
                     width: parent.width/3

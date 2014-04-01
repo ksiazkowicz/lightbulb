@@ -32,7 +32,8 @@ Page {
             ToolButton {
                 iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
                 onClicked: {
-                    pageStack.replace("qrc:/pages/Messages")
+                    pageStack.pop("qrc:/pages/Messages")
+                    xmppConnectivity.chatJid = ""
                     xmppConnectivity.page = 1
                 }
             }

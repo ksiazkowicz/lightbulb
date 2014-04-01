@@ -60,6 +60,16 @@ Menu {
             onClicked: dialog.createWithProperties("qrc:/dialogs/Contact/Rename",{"contactName": contactName, "contactJid": contactJid})
         }
         MenuItem {
+            text: "Archive"
+            platformInverted: main.platformInverted
+            onClicked: {
+                xmppConnectivity.page = 1
+                xmppConnectivity.chatJid = vars.selectedJid
+                pageStack.push("qrc:/pages/Archive",{"contactName":contactName})
+            }
+        }
+
+        MenuItem {
             text: qsTr("vCard")
             platformInverted: main.platformInverted
             onClicked: main.pageStack.push("qrc:/pages/VCard",{"contactJid":contactJid,"contactName":contactName})

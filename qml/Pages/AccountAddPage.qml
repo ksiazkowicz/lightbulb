@@ -287,9 +287,10 @@ Page {
                 port = tiPort.text
                 if( jid=="" || pass=="" ) return
 
-                xmppConnectivity.setAccountData( grid, name, icon, jid, pass, goonline, resource, host, port,  true )
+                settings.setAccount( grid, name, icon, jid, pass, goonline, resource, host, port,  true )
 
                 statusBarText.text = "Contacts"
+                //settings.refresh()
                 pageStack.pop()
             }
         }

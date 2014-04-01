@@ -43,16 +43,6 @@ Menu {
             platformInverted: main.platformInverted
             onClicked: dialog.create("qrc:/dialogs/Resources")
         }
-
-        MenuItem {
-            text: "Archive"
-            platformInverted: main.platformInverted
-            onClicked: {
-                xmppConnectivity.preserveMsg(xmppConnectivity.chatJid,txtMessage.text)
-                xmppConnectivity.page = 1
-                pageStack.replace("qrc:/pages/Archive",{"contactName":contactName})
-            }
-        }
         MenuItem {
             text: "Close chat"
             platformInverted: main.platformInverted
