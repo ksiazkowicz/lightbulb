@@ -174,12 +174,6 @@ public slots:
     Q_INVOKABLE void accountRemoved(QString id);
     void accountModified(QString id);
 
-    Q_INVOKABLE void setAccountData( QString _grid, QString _name, QString _icon, QString _jid, QString _pass, bool connectOnStart, QString _resource = "",
-                                     QString _host = "", QString _port = "", bool manuallyHostPort = false ) {
-      qDebug() << "XmppConnectivity::setAccountData(): setting account data for" << qPrintable(_jid);
-      lSettings->setAccount(_grid, _name, _icon, _jid,_pass,connectOnStart,_resource,_host,_port,manuallyHostPort);
-    }
-
     Q_INVOKABLE int getStatusByIndex(QString accountId);
     void renameChatContact(QString bareJid,QString name) {
       ChatsItemModel* item = (ChatsItemModel*)chats->find(bareJid);

@@ -26,12 +26,13 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 Page {
+    id: aboutPage
     tools: toolBarLayout
 
     Component.onCompleted: { statusBarText.text = qsTr("About...") } //set statusbar text to "About..."
 
     // Code for destroying the page after pop
-    onStatusChanged: if (status === PageStatus.Inactive) destroy()
+    onStatusChanged: if (aboutPage.status === PageStatus.Inactive) aboutPage.destroy()
 
     Flickable {
         flickableDirection: Flickable.VerticalFlick

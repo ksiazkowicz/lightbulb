@@ -54,7 +54,7 @@ Page {
     }
 
     // Code for destroying the page after pop
-    onStatusChanged: if (status === PageStatus.Inactive) destroy()
+    onStatusChanged: if (accAddPage.status === PageStatus.Inactive) accAddPage.destroy()
 
     Flickable {
         id: flickArea

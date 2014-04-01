@@ -47,9 +47,6 @@ Page {
 
     Component.onCompleted: statusBarText.text = "Contacts"
 
-    // Code for destroying the page after pop
-    onStatusChanged: if (status === PageStatus.Inactive) destroy()
-
     /*******************************************************************************/
 
     function getAccountStatusIcon()

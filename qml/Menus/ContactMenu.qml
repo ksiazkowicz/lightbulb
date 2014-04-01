@@ -63,8 +63,8 @@ Menu {
             text: "Archive"
             platformInverted: main.platformInverted
             onClicked: {
-                xmppConnectivity.page = 1
                 xmppConnectivity.chatJid = vars.selectedJid
+                xmppConnectivity.page = 1
                 pageStack.push("qrc:/pages/Archive",{"contactName":contactName})
             }
         }

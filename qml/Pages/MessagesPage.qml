@@ -61,7 +61,7 @@ Page {
         notify.updateNotifiers()
     }
     // Code for destroying the page after pop
-    onStatusChanged: if (status === PageStatus.Inactive) destroy()
+    onStatusChanged: if (messagesPage.status === PageStatus.Inactive) messagesPage.destroy()
     /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
     Component {
         id: componentWrapperItem

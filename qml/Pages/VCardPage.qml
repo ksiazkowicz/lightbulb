@@ -51,7 +51,7 @@ Page {
     Component.onCompleted: xmppConnectivity.client.requestVCard( contactJid )
 
     // Code for destroying the page after pop
-    onStatusChanged: if (status === PageStatus.Inactive) destroy()
+    onStatusChanged: if (vCardPage.status === PageStatus.Inactive) vCardPage.destroy()
 
     Connections {
         target: xmppVCard

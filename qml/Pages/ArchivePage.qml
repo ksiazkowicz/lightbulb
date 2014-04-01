@@ -27,6 +27,7 @@ import lightbulb 1.0
 import com.nokia.symbian 1.1
 
 Page {
+    id: archivePage
     property bool emoticonsDisabled: settings.gBool("behavior","disableEmoticons")
     tools: ToolBarLayout {
             ToolButton {
@@ -79,10 +80,13 @@ Page {
            }
 
     property string contactName: ""
-    Component.onCompleted: statusBarText.text = contactName
+    Component.onCompleted: {
+        xmppConnectivity.client.openChat( xmppConnectivity.chatJid )
+        statusBarText.text = contactName
+    }
 
     // Code for destroying the page after pop
-    onStatusChanged: if (status === PageStatus.Inactive) destroy()
+    onStatusChanged: if (archivePage.status === PageStatus.Inactive) archivePage.destroy()
     /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
     Component {
         id: componentWrapperItem

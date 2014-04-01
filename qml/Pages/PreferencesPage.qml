@@ -172,7 +172,7 @@ Page {
     }
 
     // Code for destroying the page after pop
-    onStatusChanged: if (status === PageStatus.Inactive) destroy()
+    onStatusChanged: if (preferencesPage.status === PageStatus.Inactive) preferencesPage.destroy()
 
     Component.onCompleted: statusBarText.text = "Preferences"
 }
