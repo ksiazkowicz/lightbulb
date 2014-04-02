@@ -1,12 +1,12 @@
 /*
- * Copyright (C) 2008-2012 The QXmpp developers
+ * Copyright (C) 2008-2014 The QXmpp developers
  *
  * Authors:
  *  Manjeet Dahiya
  *  Jeremy Lainé
  *
  * Source:
- *  http://code.google.com/p/qxmpp
+ *  https://github.com/qxmpp-project/qxmpp
  *
  * This file is a part of QXmpp library.
  *
@@ -25,6 +25,7 @@
 #include <QDomElement>
 #include <QTextStream>
 #include <QXmlStreamWriter>
+#include <QPair>
 
 #include "QXmppConstants.h"
 #include "QXmppMessage.h"
@@ -342,6 +343,26 @@ void QXmppMessage::setXhtml(const QString &xhtml)
     d->xhtml = xhtml;
 }
 
+namespace
+{
+    static QList<QPair<QString, QString> > knownMessageSubelems()
+    {
+        QList<QPair<QString, QString> > result;
+        result << qMakePair(QString("body"), QString())
+               << qMakePair(QString("subject"), QString())
+               << qMakePair(QString("thread"), QString())
+               << qMakePair(QString("html"), QString())
+               << qMakePair(QString("received"), QString(ns_message_receipts))
+               << qMakePair(QString("request"), QString())
+               << qMakePair(QString("delay"), QString())
+               << qMakePair(QString("attention"), QString())
+               << qMakePair(QString("addresses"), QString());
+        for (int i = QXmppMessage::Active; i <= QXmppMessage::Paused; i++)
+            result << qMakePair(QString(chat_states[i]), QString());
+        return result;
+    }
+}
+
 /// \cond
 void QXmppMessage::parse(const QDomElement &element)
 {
@@ -412,27 +433,36 @@ void QXmppMessage::parse(const QDomElement &element)
     // XEP-0224: Attention
     d->attentionRequested = element.firstChildElement("attention").namespaceURI() == ns_attention;
 
+    const QList<QPair<QString, QString> > &knownElems = knownMessageSubelems();
+
     QXmppElementList extensions;
-    QDomElement xElement = element.firstChildElement("x");
+    QDomElement xElement = element.firstChildElement();
     while (!xElement.isNull())
     {
-        if (xElement.namespaceURI() == ns_legacy_delayed_delivery)
+        if (xElement.tagName() == "x")
         {
-            // XEP-0091: Legacy Delayed Delivery
-            const QString str = xElement.attribute("stamp");
-            d->stamp = QDateTime::fromString(str, "yyyyMMddThh:mm:ss");
-            d->stamp.setTimeSpec(Qt::UTC);
-            d->stampType = LegacyDelayedDelivery;
-        } else if (xElement.namespaceURI() == ns_conference) {
-            // XEP-0249: Direct MUC Invitations
-            d->mucInvitationJid = xElement.attribute("jid");
-            d->mucInvitationPassword = xElement.attribute("password");
-            d->mucInvitationReason = xElement.attribute("reason");
-        } else {
+            if (xElement.namespaceURI() == ns_legacy_delayed_delivery)
+            {
+                // XEP-0091: Legacy Delayed Delivery
+                const QString str = xElement.attribute("stamp");
+                d->stamp = QDateTime::fromString(str, "yyyyMMddThh:mm:ss");
+                d->stamp.setTimeSpec(Qt::UTC);
+                d->stampType = LegacyDelayedDelivery;
+            } else if (xElement.namespaceURI() == ns_conference) {
+                // XEP-0249: Direct MUC Invitations
+                d->mucInvitationJid = xElement.attribute("jid");
+                d->mucInvitationPassword = xElement.attribute("password");
+                d->mucInvitationReason = xElement.attribute("reason");
+            }
+            else {
+                extensions << QXmppElement(xElement);
+            }
+        } else if (!knownElems.contains(qMakePair(xElement.tagName(), xElement.namespaceURI())) &&
+                   !knownElems.contains(qMakePair(xElement.tagName(), QString()))) {
             // other extensions
             extensions << QXmppElement(xElement);
         }
-        xElement = xElement.nextSiblingElement("x");
+        xElement = xElement.nextSiblingElement();
     }
     setExtensions(extensions);
 }

@@ -1,12 +1,12 @@
 /*
- * Copyright (C) 2008-2012 The QXmpp developers
+ * Copyright (C) 2008-2014 The QXmpp developers
  *
  * Authors:
  *  Manjeet Dahiya
  *  Jeremy Lainé
  *
  * Source:
- *  http://code.google.com/p/qxmpp
+ *  https://github.com/qxmpp-project/qxmpp
  *
  * This file is a part of QXmpp library.
  *
@@ -103,8 +103,11 @@ private:
 QXmppOutgoingClientPrivate::QXmppOutgoingClientPrivate(QXmppOutgoingClient *qq)
     : redirectPort(0)
     , sessionAvailable(false)
+    , sessionStarted(false)
     , isAuthenticated(false)
     , saslClient(0)
+    , pingTimer(0)
+    , timeoutTimer(0)
     , q(qq)
 {
 }

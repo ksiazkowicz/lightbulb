@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2008-2012 The QXmpp developers
+ * Copyright (C) 2008-2014 The QXmpp developers
  *
  * Author:
  *  Manjeet Dahiya
  *
  * Source:
- *  http://code.google.com/p/qxmpp
+ *  https://github.com/qxmpp-project/qxmpp
  *
  * This file is a part of QXmpp library.
  *
@@ -440,6 +440,123 @@ void QXmppVCardPhone::toXml(QXmlStreamWriter *writer) const
 }
 /// \endcond
 
+class QXmppVCardOrganizationPrivate : public QSharedData
+{
+public:
+    QString organization;
+    QString unit;
+    QString role;
+    QString title;
+};
+
+/// Constructs an empty organization information.
+
+QXmppVCardOrganization::QXmppVCardOrganization()
+    : d(new QXmppVCardOrganizationPrivate)
+{
+}
+
+/// Constructs a copy of \a other.
+
+QXmppVCardOrganization::QXmppVCardOrganization(const QXmppVCardOrganization &other)
+    : d(other.d)
+{
+}
+
+QXmppVCardOrganization::~QXmppVCardOrganization()
+{
+}
+
+/// Assigns \a other to this organization info.
+
+QXmppVCardOrganization& QXmppVCardOrganization::operator=(const QXmppVCardOrganization &other)
+{
+    d = other.d;
+    return *this;
+}
+
+/// Returns the name of the organization.
+
+QString QXmppVCardOrganization::organization() const
+{
+    return d->organization;
+}
+
+/// Sets the organization \a name.
+
+void QXmppVCardOrganization::setOrganization(const QString &name)
+{
+    d->organization = name;
+}
+
+/// Returns the organization unit (also known as department).
+
+QString QXmppVCardOrganization::unit() const
+{
+    return d->unit;
+}
+
+/// Sets the \a unit within the organization.
+
+void QXmppVCardOrganization::setUnit(const QString &unit)
+{
+    d->unit = unit;
+}
+
+/// Returns the job role within the organization.
+
+QString QXmppVCardOrganization::role() const
+{
+    return d->role;
+}
+
+/// Sets the job \a role within the organization.
+
+void QXmppVCardOrganization::setRole(const QString &role)
+{
+    d->role = role;
+}
+
+/// Returns the job title within the organization.
+
+QString QXmppVCardOrganization::title() const
+{
+    return d->title;
+}
+
+/// Sets the job \a title within the organization.
+
+void QXmppVCardOrganization::setTitle(const QString &title)
+{
+    d->title = title;
+}
+
+/// \cond
+void QXmppVCardOrganization::parse(const QDomElement &cardElem)
+{
+    d->title = cardElem.firstChildElement("TITLE").text();
+    d->role = cardElem.firstChildElement("ROLE").text();
+
+    const QDomElement &orgElem = cardElem.firstChildElement("ORG");
+    d->organization = orgElem.firstChildElement("ORGNAME").text();
+    d->unit = orgElem.firstChildElement("ORGUNIT").text();
+}
+
+void QXmppVCardOrganization::toXml(QXmlStreamWriter *stream) const
+{
+    if (!d->unit.isEmpty() || !d->organization.isEmpty())
+    {
+        stream->writeStartElement("ORG");
+        stream->writeTextElement("ORGNAME", d->organization);
+        stream->writeTextElement("ORGUNIT", d->unit);
+        stream->writeEndElement();
+    }
+
+    helperToXmlAddTextElement(stream, "TITLE", d->title);
+    helperToXmlAddTextElement(stream, "ROLE", d->role);
+}
+/// \endcond
+
 class QXmppVCardIqPrivate : public QSharedData
 {
 public:
@@ -459,6 +576,7 @@ public:
     QList<QXmppVCardAddress> addresses;
     QList<QXmppVCardEmail> emails;
     QList<QXmppVCardPhone> phones;
+    QXmppVCardOrganization organization;
 };
 
 /// Constructs a QXmppVCardIq for the specified recipient.
@@ -732,6 +850,21 @@ void QXmppVCardIq::setPhones(const QList<QXmppVCardPhone> &phones)
 {
     d->phones = phones;
 }
+
+/// Returns the organization info.
+
+QXmppVCardOrganization QXmppVCardIq::organization() const
+{
+    return d->organization;
+}
+
+/// Sets the organization info.
+
+void QXmppVCardIq::setOrganization(const QXmppVCardOrganization &org)
+{
+    d->organization = org;
+}
+
 /// \cond
 bool QXmppVCardIq::isVCard(const QDomElement &nodeRecv)
 {
@@ -774,6 +907,8 @@ void QXmppVCardIq::parseElementFromChild(const QDomElement& nodeRecv)
         }
         child = child.nextSiblingElement();
     }
+
+    d->organization.parse(cardElement);
 }
 
 void QXmppVCardIq::toXmlElementFromChild(QXmlStreamWriter *writer) const
@@ -820,6 +955,8 @@ void QXmppVCardIq::toXmlElementFromChild(QXmlStreamWriter *writer) const
     }
     if (!d->url.isEmpty())
         helperToXmlAddTextElement(writer, "URL", d->url);
+
+    d->organization.toXml(writer);
 
     writer->writeEndElement();
 }

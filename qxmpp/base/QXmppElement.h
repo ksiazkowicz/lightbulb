@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2008-2012 The QXmpp developers
+ * Copyright (C) 2008-2014 The QXmpp developers
  *
  * Author:
  *  Jeremy Lainé
  *
  * Source:
- *  http://code.google.com/p/qxmpp
+ *  https://github.com/qxmpp-project/qxmpp
  *
  * This file is a part of QXmpp library.
  *
@@ -42,6 +42,8 @@ public:
     QXmppElement(const QXmppElement &other);
     QXmppElement(const QDomElement &element);
     ~QXmppElement();
+
+    QDomElement sourceDomElement() const;
 
     QStringList attributeNames() const;
 

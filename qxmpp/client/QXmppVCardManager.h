@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2008-2012 The QXmpp developers
+ * Copyright (C) 2008-2014 The QXmpp developers
  *
  * Author:
  *  Manjeet Dahiya
  *
  * Source:
- *  http://code.google.com/p/qxmpp
+ *  https://github.com/qxmpp-project/qxmpp
  *
  * This file is a part of QXmpp library.
  *
@@ -61,7 +61,7 @@ public:
     QXmppVCardManager();
     ~QXmppVCardManager();
 
-    QString requestVCard(const QString& bareJid = "");
+    QString requestVCard(const QString& bareJid = QString());
 
     const QXmppVCardIq& clientVCard() const;
     void setClientVCard(const QXmppVCardIq&);

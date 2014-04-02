@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2008-2012 The QXmpp developers
+ * Copyright (C) 2008-2014 The QXmpp developers
  *
  * Author:
  *  Manjeet Dahiya
  *
  * Source:
- *  http://code.google.com/p/qxmpp
+ *  https://github.com/qxmpp-project/qxmpp
  *
  * This file is a part of QXmpp library.
  *
@@ -46,7 +46,7 @@ public:
 QXmppDiscoveryManager::QXmppDiscoveryManager()
     : d(new QXmppDiscoveryManagerPrivate)
 {
-    d->clientCapabilitiesNode = "http://code.google.com/p/qxmpp";
+    d->clientCapabilitiesNode = "https://github.com/qxmpp-project/qxmpp";
     d->clientCategory = "client";
     d->clientType = "pc";
     if (qApp->applicationName().isEmpty() && qApp->applicationVersion().isEmpty())
@@ -193,7 +193,7 @@ void QXmppDiscoveryManager::setClientName(const QString& name)
 
 /// Returns the capabilities node of the local XMPP client.
 ///
-/// By default this is "http://code.google.com/p/qxmpp".
+/// By default this is "https://github.com/qxmpp-project/qxmpp".
 
 QString QXmppDiscoveryManager::clientCapabilitiesNode() const
 {

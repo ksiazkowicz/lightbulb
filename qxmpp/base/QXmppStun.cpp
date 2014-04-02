@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2008-2012 The QXmpp developers
+ * Copyright (C) 2008-2014 The QXmpp developers
  *
  * Author:
  *  Jeremy Lainé
  *
  * Source:
- *  http://code.google.com/p/qxmpp
+ *  https://github.com/qxmpp-project/qxmpp
  *
  * This file is a part of QXmpp library.
  *
@@ -1402,8 +1402,8 @@ void QXmppTurnAllocation::transactionFinished()
         m_nonce = reply.nonce();
         m_realm = reply.realm();
         QCryptographicHash hash(QCryptographicHash::Md5);
-        QString temp = m_username + ":" + m_realm + ":" + m_password;
-        hash.addData(temp.toUtf8());
+        QString credentials = (m_username + ":" + m_realm + ":" + m_password);
+        hash.addData(credentials.toUtf8());
         m_key = hash.result();
 
         // retry request

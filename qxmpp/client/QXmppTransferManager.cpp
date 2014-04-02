@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2008-2012 The QXmpp developers
+ * Copyright (C) 2008-2014 The QXmpp developers
  *
  * Author:
  *  Jeremy Lainé
  *
  * Source:
- *  http://code.google.com/p/qxmpp
+ *  https://github.com/qxmpp-project/qxmpp
  *
  * This file is a part of QXmpp library.
  *
@@ -712,7 +712,7 @@ void QXmppTransferOutgoingJob::_q_sendData()
         terminate(QXmppTransferJob::FileAccessError);
         return;
     }
-    if (length > 0)
+    if (length >= 0)
     {
         d->socksSocket->write(buffer, length);
         delete [] buffer;

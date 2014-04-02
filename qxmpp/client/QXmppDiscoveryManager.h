@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2008-2012 The QXmpp developers
+ * Copyright (C) 2008-2014 The QXmpp developers
  *
  * Author:
  *  Manjeet Dahiya
  *
  * Source:
- *  http://code.google.com/p/qxmpp
+ *  https://github.com/qxmpp-project/qxmpp
  *
  * This file is a part of QXmpp library.
  *
@@ -45,8 +45,8 @@ public:
 
     QXmppDiscoveryIq capabilities();
 
-    QString requestInfo(const QString& jid, const QString& node = "");
-    QString requestItems(const QString& jid, const QString& node = "");
+    QString requestInfo(const QString& jid, const QString& node = QString());
+    QString requestItems(const QString& jid, const QString& node = QString());
 
     QString clientCapabilitiesNode() const;
     void setClientCapabilitiesNode(const QString&);

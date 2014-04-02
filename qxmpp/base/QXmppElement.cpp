@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2008-2012 The QXmpp developers
+ * Copyright (C) 2008-2014 The QXmpp developers
  *
  * Author:
  *  Jeremy Lainé
  *
  * Source:
- *  http://code.google.com/p/qxmpp
+ *  https://github.com/qxmpp-project/qxmpp
  *
  * This file is a part of QXmpp library.
  *
@@ -25,6 +25,7 @@
 #include "QXmppUtils.h"
 
 #include <QDomElement>
+#include <QTextStream>
 
 class QXmppElementPrivate
 {
@@ -40,6 +41,8 @@ public:
     QList<QXmppElementPrivate*> children;
     QString name;
     QString value;
+
+    QByteArray serializedSource;
 };
 
 QXmppElementPrivate::QXmppElementPrivate()
@@ -78,6 +81,9 @@ QXmppElementPrivate::QXmppElementPrivate(const QDomElement &element)
         }
         childNode = childNode.nextSibling();
     }
+
+    QTextStream stream(&serializedSource);
+    element.save(stream, 0);
 }
 
 QXmppElementPrivate::~QXmppElementPrivate()
@@ -122,6 +128,21 @@ QXmppElement &QXmppElement::operator=(const QXmppElement &other)
         delete d;
     d = other.d;
     return *this;
+}
+
+QDomElement QXmppElement::sourceDomElement() const
+{
+    if (d->serializedSource.isEmpty())
+        return QDomElement();
+
+    QDomDocument doc;
+    if (!doc.setContent(d->serializedSource, true))
+    {
+        qWarning("[QXmpp] QXmppElement::sourceDomElement(): cannot parse source element");
+        return QDomElement();
+    }
+
+    return doc.documentElement();
 }
 
 QStringList QXmppElement::attributeNames() const

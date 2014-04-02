@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2008-2012 The QXmpp developers
+ * Copyright (C) 2008-2014 The QXmpp developers
  *
  * Author:
  *  Manjeet Dahiya
  *
  * Source:
- *  http://code.google.com/p/qxmpp
+ *  https://github.com/qxmpp-project/qxmpp
  *
  * This file is a part of QXmpp library.
  *
@@ -52,7 +52,7 @@
 /// available.
 ///
 
-#define QXMPP_VERSION 0x000706
+#define QXMPP_VERSION 0x000800
 
 QXMPP_EXPORT QString QXmppVersion();
 

@@ -1,12 +1,12 @@
 /*
- * Copyright (C) 2008-2012 The QXmpp developers
+ * Copyright (C) 2008-2014 The QXmpp developers
  *
  * Authors:
  *  Manjeet Dahiya
  *  Jeremy Lainé
  *
  * Source:
- *  http://code.google.com/p/qxmpp
+ *  https://github.com/qxmpp-project/qxmpp
  *
  * This file is a part of QXmpp library.
  *
@@ -172,6 +172,7 @@ void QXmppStream::setSocket(QSslSocket *socket)
 
     check = connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
                     this, SLOT(_q_socketError(QAbstractSocket::SocketError)));
+    Q_ASSERT(check);
 
     check = connect(socket, SIGNAL(readyRead()),
                     this, SLOT(_q_socketReadyRead()));

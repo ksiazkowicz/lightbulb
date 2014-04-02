@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2012 The QXmpp developers
+ * Copyright (C) 2008-2014 The QXmpp developers
  *
  * Authors:
  *  Manjeet Dahiya
@@ -7,7 +7,7 @@
  *  Georg Rudoy
  *
  * Source:
- *  http://code.google.com/p/qxmpp
+ *  https://github.com/qxmpp-project/qxmpp
  *
  * This file is a part of QXmpp library.
  *
@@ -129,8 +129,8 @@ public:
         };
 
         Error();
-        Error(Type type, Condition cond, const QString& text="");
-        Error(const QString& type, const QString& cond, const QString& text="");
+        Error(Type type, Condition cond, const QString& text = QString());
+        Error(const QString& type, const QString& cond, const QString& text = QString());
 
         int code() const;
         void setCode(int code);

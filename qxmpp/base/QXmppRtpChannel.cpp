@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2008-2012 The QXmpp developers
+ * Copyright (C) 2008-2014 The QXmpp developers
  *
  * Author:
  *  Jeremy Lainé
  *
  * Source:
- *  http://code.google.com/p/qxmpp
+ *  https://github.com/qxmpp-project/qxmpp
  *
  * This file is a part of QXmpp library.
  *
@@ -280,6 +280,7 @@ QXmppRtpAudioChannelPrivate::QXmppRtpAudioChannelPrivate(QXmppRtpAudioChannel *q
     outgoingPayloadNumbered(false),
     outgoingSequence(1),
     outgoingStamp(0),
+    outgoingTimer(0),
     outgoingSsrc(0),
     q(qq)
 {

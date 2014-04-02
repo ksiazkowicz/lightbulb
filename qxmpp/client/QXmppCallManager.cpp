@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2008-2012 The QXmpp developers
+ * Copyright (C) 2008-2014 The QXmpp developers
  *
  * Author:
  *  Jeremy Lainé
  *
  * Source:
- *  http://code.google.com/p/qxmpp
+ *  https://github.com/qxmpp-project/qxmpp
  *
  * This file is a part of QXmpp library.
  *
@@ -104,7 +104,8 @@ private:
 };
 
 QXmppCallPrivate::QXmppCallPrivate(QXmppCall *qq)
-    : state(QXmppCall::ConnectingState),
+    : manager(0),
+    state(QXmppCall::ConnectingState),
     sendVideo(false),
     audioMode(QIODevice::NotOpen),
     videoMode(QIODevice::NotOpen),
@@ -523,7 +524,7 @@ QXmppRtpAudioChannel *QXmppCall::audioChannel() const
 {
     QXmppCallPrivate::Stream *stream = d->findStreamByMedia(AUDIO_MEDIA);
     if (stream)
-        return (QXmppRtpAudioChannel*)stream->channel;
+        return static_cast<QXmppRtpAudioChannel*>(stream->channel);
     else
         return 0;
 }
@@ -542,7 +543,7 @@ QXmppRtpVideoChannel *QXmppCall::videoChannel() const
 {
     QXmppCallPrivate::Stream *stream = d->findStreamByMedia(VIDEO_MEDIA);
     if (stream)
-        return (QXmppRtpVideoChannel*)stream->channel;
+        return static_cast<QXmppRtpVideoChannel*>(stream->channel);
     else
         return 0;
 }
