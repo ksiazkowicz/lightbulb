@@ -44,52 +44,27 @@ QString Settings::getAppDrive() {
 }
 
 /*************************** (generic settings) **************************/
-bool Settings::gBool(QString group, QString key) {
+QVariant Settings::get(QString group, QString key) {
     beginGroup( group );
     QVariant ret = value( key, false );
     endGroup();
-    return ret.toBool();
+    return ret;
 }
-void Settings::sBool(const bool isSet, QString group, QString key) {
-    beginGroup( group );
-    setValue( key, QVariant(isSet) );
-    endGroup();
-}
-int Settings::gInt(QString group, QString key) {
-    beginGroup( group );
-    QVariant ret = value( key, false );
-    endGroup();
-    return ret.toInt();
-}
-void Settings::sInt(const int isSet, QString group, QString key) {
-    beginGroup( group );
-    setValue( key, QVariant(isSet) );
-    endGroup();
-}
-QString Settings::gStr(QString group, QString key) {
-    beginGroup( group );
-    QVariant ret = value( key, false );
-    endGroup();
-    return ret.toString();
-}
-void Settings::sStr(const QString isSet, QString group, QString key) {
-    beginGroup( group );
-    setValue( key, QVariant(isSet) );
+void     Settings::set(QVariant data, QString group, QString key) {
+    beginGroup(group);
+    setValue(key,data);
     endGroup();
 }
 
 /******** ACCOUNT RELATED SHIT *******/
-QStringList Settings::getListAccounts()
-{
+QStringList Settings::getListAccounts() {
     beginGroup( "accounts" );
     QStringList acc = value( "accounts", QStringList() ).toStringList();
     endGroup();
     return acc;
 }
 /*-------------------*/
-
-void Settings::addAccount( const QString &acc )
-{
+void Settings::addAccount( const QString &acc ) {
     beginGroup( "accounts" );
     QVariant retList = value( "accounts", QStringList() );
     QStringList sl = retList.toStringList();
@@ -100,8 +75,7 @@ void Settings::addAccount( const QString &acc )
     endGroup();
     emit accountAdded(acc);
 }
-void Settings::removeAccount( const QString &acc )
-{
+void Settings::removeAccount( const QString &acc ) {
     // remove account from config file
     beginGroup(acc);
     remove("");
@@ -126,14 +100,10 @@ void Settings::removeAccount( const QString &acc )
 }
 
 void Settings::initListOfAccounts() {
-    qDebug() << "Settings::initListOfAccounts(): called";
     beginGroup( "accounts" );
     QStringList listAcc = value("accounts",QStringList()).toStringList();
     endGroup();
 
-    qDebug() << "Settings::initListOfAccounts(): read list from settings." << listAcc;
-
-    qDebug() << "Settings::initListOfAccounts(): removing accounts from list model";
     for (int i=0; i<alm->rowCount(); i++)
         alm->removeRow(i);
 
@@ -142,24 +112,20 @@ void Settings::initListOfAccounts() {
         QString grid = *itr;
         itr++;
 
-        qDebug() << "Settings::initListOfAccounts(): found element" << grid;
+        QString name = get(grid,"name").toString();
+        QString icon = get(grid,"icon").toString();
+        QString jid = get(grid,"jid").toString();
+        QString passwd = get(grid,"passwd").toString();
 
-        QString name = gStr(grid,"name");
-        QString icon = gStr(grid,"icon");
-        QString jid = gStr(grid,"jid");
-        QString passwd = gStr(grid,"passwd");
-
-        QString host = gStr(grid,"host");
-        int port = gInt(grid,"port");
-        QString resource = gStr(grid,"resource");
-        bool isManuallyHostPort = gBool(grid,"use_host_port");
+        QString host = get(grid,"host").toString();
+        int port = get(grid,"port").toInt();
+        QString resource = get(grid,"resource").toString();
+        bool isManuallyHostPort = get(grid,"use_host_port").toBool();
 
         AccountsItemModel *aim = new AccountsItemModel( grid, name, icon, jid, passwd, resource, host, port, isManuallyHostPort, this );
         alm->append(aim);
-        qDebug() << "Settings::initListOfAccounts(): element appended";
     }
     emit accountsListChanged();
-    qDebug() << "Settings::initListOfAccounts(): accountsListChanged() emited";
 }
 
 void Settings::setAccount(
@@ -181,19 +147,19 @@ void Settings::setAccount(
         isNew = true;
     endGroup();
 
-    sStr(_name,_grid,"name");
-    sStr(_icon,_grid,"icon");
-    sStr(_jid,_grid,"jid");
-    sStr(_pass,_grid,"passwd");
+    set(QVariant(_name),_grid,"name");
+    set(QVariant(_icon),_grid,"icon");
+    set(QVariant(_jid),_grid,"jid");
+    set(QVariant(_pass),_grid,"passwd");
 
-    sStr(_resource,_grid,"resource");
-    sStr(_host,_grid,"host");
-    sBool(manuallyHostPort,_grid,"use_host_port");
-    sBool(_connectOnStart,_grid,"connectOnStart");
+    set(QVariant(_resource),_grid,"resource");
+    set(QVariant(_host),_grid,"host");
+    set(QVariant(manuallyHostPort),_grid,"use_host_port");
+    set(QVariant(_connectOnStart),_grid,"connectOnStart");
 
     bool ok = false;
     int p = _port.toInt(&ok);
-    if( ok ) { sInt( p, _jid, "port" ); }
+    if( ok ) { set( QVariant(p), _jid, "port" ); }
 
     if (isNew) {
         AccountsItemModel* account = new AccountsItemModel();

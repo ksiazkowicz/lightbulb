@@ -97,7 +97,7 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
     qDebug().nospace() << "XmppConnectivity::initializeAccount(): initialized account " << qPrintable(clients->value(index)->getMyJid()) << "/" << qPrintable(clients->value(index)->getResource());
 
     if (lSettings->gBool(index,"connectOnStart")) {
-        clients->value(index)->goOnline(lSettings->gStr("behavior","lastStatus"));
+        clients->value(index)->goOnline(lSettings->get("behavior","lastStatus").toString());
     }
 
     delete account;
@@ -266,14 +266,14 @@ QString XmppConnectivity::getCurrentAccountName() {
 
 QString XmppConnectivity::getAccountName(QString grid) {
   if (grid != "") {
-      QString name = lSettings->gStr(grid,"name");
+      QString name = lSettings->get(grid,"name").toString();
       if (name !="false" && name !="") return name;
-      else return generateAccountName(lSettings->gStr(grid,"host"),lSettings->gStr(grid,"jid"));
+      else return generateAccountName(lSettings->get(grid,"host").toString(),lSettings->get(grid,"jid").toString());
   } else return "N/A";
 }
 
 QString XmppConnectivity::getAccountIcon(QString grid) {
-  return lSettings->gStr(grid,"icon");
+  return lSettings->get(grid,"icon").toString();
 }
 
 QString XmppConnectivity::generateAccountName(QString host, QString jid) {

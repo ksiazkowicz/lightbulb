@@ -51,12 +51,8 @@ public:
     static QString cacheFolder;
     static QString confFile;
 
-    Q_INVOKABLE bool gBool(QString group, QString key);
-    Q_INVOKABLE void sBool(const bool isSet, QString group, QString key);
-    Q_INVOKABLE int gInt(QString group, QString key);
-    Q_INVOKABLE void sInt(const int isSet, QString group, QString key);
-    Q_INVOKABLE QString gStr(QString group, QString key);
-    Q_INVOKABLE void sStr(const QString isSet, QString group, QString key);
+    Q_INVOKABLE QVariant get(QString group, QString key);
+    Q_INVOKABLE void     set(QVariant data, QString group, QString key);
 
     Q_INVOKABLE void removeAccount( const QString& acc );
 
@@ -74,10 +70,12 @@ public:
 
     QString getAppDrive();
 
-    Q_INVOKABLE void refresh() {
-      this->initListOfAccounts();
-    }
-
+    Q_INVOKABLE bool gBool(QString group, QString key) { return get(group,key).toBool(); }
+    Q_INVOKABLE void sBool(const bool isSet, QString group, QString key) { set(QVariant(isSet),group,key); }
+    Q_INVOKABLE int gInt(QString group, QString key) { return get(group,key).toInt(); }
+    Q_INVOKABLE void sInt(const int isSet, QString group, QString key) { set(QVariant(isSet),group,key); }
+    Q_INVOKABLE QString gStr(QString group, QString key) { return get(group,key).toString(); }
+    Q_INVOKABLE void sStr(const QString isSet, QString group, QString key) { set(QVariant(isSet),group,key); }
 
 signals:
     void accountsListChanged();
