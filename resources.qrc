@@ -35,6 +35,20 @@
         <file alias=";)">images/smileys/wink.png</file>
         <file alias=";D">images/smileys/wink2.png</file>
         <file alias=";>">images/smileys/wink3.png</file>
+        <file alias="O:)">images/smileys/fb/angel.png</file>
+        <file alias=":'(">images/smileys/fb/cry.png</file>
+        <file alias=":3">images/smileys/fb/curlylips.png</file>
+        <file alias="3:)">images/smileys/fb/devil.png</file>
+        <file alias=">:(">images/smileys/fb/grumpy.png</file>
+        <file alias=":v">images/smileys/fb/pacman.png</file>
+        <file alias="peng">images/smileys/fb/penguin.png</file>
+        <file alias=":poop:">images/smileys/fb/poop.png</file>
+        <file alias=":putnam:">images/smileys/fb/putnam.png</file>
+        <file alias=":|]">images/smileys/fb/robot.png</file>
+        <file alias="(^^^)">images/smileys/fb/shark.png</file>
+        <file alias="(y)">images/smileys/fb/thumb.png</file>
+        <file alias=":/">images/smileys/fb/unshure.png</file>
+        <file alias=">:O">images/smileys/fb/upset.png</file>
     </qresource>
     <qresource prefix="/presence">
         <file alias="away">images/presence/presence-away.svg</file>
