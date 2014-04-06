@@ -101,6 +101,20 @@ Item {
             }
         }
 
+        ScrollBar {
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+                right: parent.right
+                margins: platformStyle.paddingSmall - 2
+            }
+
+            flickableItem: flickable
+            interactive: false
+            orientation: Qt.Vertical
+            platformInverted: main.platformInverted
+        }
+
         Rectangle {
             height: 1
             anchors { left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }

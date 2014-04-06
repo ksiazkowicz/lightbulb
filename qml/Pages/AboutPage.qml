@@ -35,6 +35,7 @@ Page {
     onStatusChanged: if (aboutPage.status === PageStatus.Inactive) aboutPage.destroy()
 
     Flickable {
+        id: about
         flickableDirection: Flickable.VerticalFlick
         anchors.fill: parent
 
@@ -95,16 +96,31 @@ Page {
             anchors { horizontalCenter: parent.horizontalCenter; top: niceInfo.bottom; topMargin: 14 }
             spacing: platformStyle.paddingMedium
             Button {
+                platformInverted: main.platformInverted
                 text: "Contributors"
                 onClicked: dialog.create("qrc:/dialogs/Contributors")
             }
             Button {
                 text: "Donate"
+                platformInverted: main.platformInverted
                 onClicked: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SA8DZYA7PUCCU"})
             }
         }
     }
 
+    ScrollBar {
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            right: parent.right
+            margins: platformStyle.paddingSmall - 2
+        }
+
+        flickableItem: about
+        interactive: false
+        orientation: Qt.Vertical
+        platformInverted: main.platformInverted
+    }
 
     ToolBarLayout {
         id: toolBarLayout

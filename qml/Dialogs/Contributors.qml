@@ -57,7 +57,7 @@ CommonDialog {
                     title: qsTr("Core Developers")
                     titleFont.bold: true
                     titleFont.pixelSize: platformStyle.fontSizeLarge + 1
-                    value: "Maciej Janiszewski\nMotaz Alnuweiri\nAnatoliy Kozlov (MeegIM)"
+                    value: "Maciej Janiszewski\nAnatoliy Kozlov (MeegIM)"
                 }
 
                 DetailsItem {
@@ -65,7 +65,7 @@ CommonDialog {
                     title: qsTr("Contributors")
                     titleFont.bold: true
                     titleFont.pixelSize: platformStyle.fontSizeLarge + 1
-                    value: "Fabian Hüllmantel\nPaul Wallace\nDickson Leong"
+                    value: "Fabian Hüllmantel\nPaul Wallace\nDickson Leong\nBhavin\nMotaz Alnuweiri"
                 }
 
                 DetailsItem {
@@ -81,7 +81,7 @@ CommonDialog {
                     title: qsTr("Donators")
                     titleFont.bold: true
                     titleFont.pixelSize: platformStyle.fontSizeLarge + 1
-                    value: "Elena Archinova"
+                    value: "Elena Archinova\nJuan Pablo Ambriz Guzman"
                 }
             }
         }
