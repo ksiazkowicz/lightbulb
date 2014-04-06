@@ -51,6 +51,8 @@ QString EmoticonParser::parseEmoticons(QString string) {
 
   output.replace(" :P ", begin + ":P" + end);
   output.replace(" :-P ", begin + ":P" + end);
+  output.replace(" :p ", begin + ":P" + end);
+  output.replace(" :-p ", begin + ":P" + end);
 
   output.replace(" ;( ", begin + ";(" + end);
   output.replace(" ;-( ", begin + ";(" + end);
@@ -74,11 +76,31 @@ QString EmoticonParser::parseEmoticons(QString string) {
   output.replace(" :&gt; ", begin + ":>" + end);
   output.replace(" B) ", begin + "B)" + end);
   output.replace(" %) ", begin + "%)" + end);
+  output.replace(" o.O ", begin + "%)" + end);
   output.replace(" :@ ", begin + ":@" + end);
   output.replace(" ;&gt; ", begin + ";>" + end);
   output.replace(" >) ", begin + ">)" + end);
   output.replace(" 8) ", begin + "8)" + end);
   output.replace(" (=_=) ", begin + "=_=" + end);
+  output.replace(" -_- ", begin + "=_=" + end);
+
+  //Facebook Related Emoticons
+  output.replace(" :/ ", begin + ":/" + end); //not working
+  output.replace(" :&#8216;( ", begin + ":'(" + end); //not working
+  output.replace(" 3:) ", begin + "3:)" + end);
+  output.replace(" O:) ", begin + "O:)" + end);
+  output.replace(" &gt;:O ", begin + ">:O" + end);
+  output.replace(" :v ", begin + ":v" + end);
+  output.replace(" :3 ", begin + ":3" + end);
+  output.replace(" :|] ", begin + ":|]" + end);
+  output.replace(" :putnam: ", begin + ":putnam:" + end);
+  output.replace(" (^^^) ", begin + "(^^^)" + end);
+  output.replace(" &lt;(&quot;) ", begin + "peng" + end); //not working
+  output.replace(" :poop: ", begin + ":poop:" + end);
+  output.replace(" (y) ", begin + "(y)" + end);
+  output.replace(" &gt;:( ", begin + ">:(" + end);
+
+
 
   output = output.left(output.count()-1);
   output = output.right(output.count()-1); // cut those two spaces I added
