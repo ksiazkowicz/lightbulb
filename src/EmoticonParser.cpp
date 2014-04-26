@@ -74,9 +74,12 @@ QString EmoticonParser::parseEmoticons(QString string) {
   output.replace(" :x ", begin + ":x" + end);
 
   output.replace(" :&gt; ", begin + ":>" + end);
+
   output.replace(" B) ", begin + "B)" + end);
+  output.replace(" B-| ", begin + "B)" + end);
+
   output.replace(" %) ", begin + "%)" + end);
-  output.replace(" o.O ", begin + "%)" + end);
+  output.replace(" o.O ", begin + "%)" + end); //not
   output.replace(" :@ ", begin + ":@" + end);
   output.replace(" ;&gt; ", begin + ";>" + end);
   output.replace(" >) ", begin + ">)" + end);
@@ -85,20 +88,25 @@ QString EmoticonParser::parseEmoticons(QString string) {
   output.replace(" -_- ", begin + "=_=" + end);
 
   //Facebook Related Emoticons
-  output.replace(" :/ ", begin + ":/" + end);
-  output.replace(" :'( ", begin + ":'(" + end);
+  output.replace(" :/ ", begin + ":/" + end); //not
+  output.replace(" :'( ", begin + ":'(" + end);//not
   output.replace(" 3:) ", begin + "3:)" + end);
   output.replace(" O:) ", begin + "O:)" + end);
-  output.replace(" &gt;:O ", begin + ">:O" + end);
   output.replace(" :v ", begin + ":v" + end);
   output.replace(" :3 ", begin + ":3" + end);
   output.replace(" :|] ", begin + ":|]" + end);
   output.replace(" :putnam: ", begin + ":putnam:" + end);
   output.replace(" (^^^) ", begin + "(^^^)" + end);
-  output.replace(" &lt;('') ", begin + "peng" + end);
+  output.replace(" &lt;('') ", begin + "peng" + end);//not
   output.replace(" :poop: ", begin + ":poop:" + end);
-  output.replace(" (y) ", begin + "(y)" + end);
   output.replace(" &gt;:( ", begin + ">:(" + end);
+  output.replace(" ^_^ ", begin + "^_^" + end);
+
+  output.replace(" (y) ", begin + "(y)" + end);
+  output.replace(" :like: ", begin + "(y)" + end);
+
+  output.replace(" &gt;:O ", begin + ">:O" + end);
+  output.replace(" >.< ", begin + ">:O" + end);
 
 
 
