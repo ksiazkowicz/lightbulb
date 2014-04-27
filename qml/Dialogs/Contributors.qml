@@ -65,7 +65,7 @@ CommonDialog {
                     title: qsTr("Contributors")
                     titleFont.bold: true
                     titleFont.pixelSize: platformStyle.fontSizeLarge + 1
-                    value: "Fabian Hüllmantel\nPaul Wallace\nDickson Leong\nBhavin\nMotaz Alnuweiri"
+                    value: "Fabian Hüllmantel\nPaul Wallace\nDickson Leong\nBhavin Gandhi\nMotaz Alnuweiri"
                 }
 
                 DetailsItem {
