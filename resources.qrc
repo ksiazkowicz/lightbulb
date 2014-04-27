@@ -49,6 +49,7 @@
         <file alias="fb/thumb">images/smileys/fb/thumb.png</file>
         <file alias="fb/unsure">images/smileys/fb/unshure.png</file>
         <file alias="fb/upset">images/smileys/fb/upset.png</file>
+        <file alias="fb/kiki">images/smileys/fb/kiki.png</file>
     </qresource>
     <qresource prefix="/presence">
         <file alias="away">images/presence/presence-away.svg</file>

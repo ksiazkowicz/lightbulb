@@ -103,7 +103,8 @@ QString EmoticonParser::parseEmoticons(QString string) {
   output.replace(" &lt;(\") ", begin + "fb/peng" + end);
   output.replace(" :poop: ", begin + "fb/poop" + end);
   output.replace(" &gt;:( ", begin + "fb/grumpy" + end);
-  //output.replace(" ^_^ ", begin + "^_^" + end);
+  output.replace(" ^_^ ", begin + "fb/kiki" + end);
+  output.replace(" ^^ ", begin + "fb/kiki" + end);
 
   output.replace(" (y) ", begin + "fb/thumb" + end);
   output.replace(" :like: ", begin + "fb/thumb" + end);
