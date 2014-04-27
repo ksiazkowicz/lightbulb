@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **********************************************************************/
 
 #include "EmoticonParser.h"
+#include <QDebug>
 
 EmoticonParser::EmoticonParser(QObject *parent) :
   QObject(parent)
@@ -32,81 +33,83 @@ EmoticonParser::EmoticonParser(QObject *parent) :
 }
 
 QString EmoticonParser::parseEmoticons(QString string) {
+  qDebug() << string;
+
   QString output = " " + string + " ";
 
-  output.replace(" :) ", begin + ":)" + end);
-  output.replace(" :-) ", begin + ":)" + end);
+  output.replace(" :) ", begin + "happy" + end);
+  output.replace(" :-) ", begin + "happy" + end);
 
-  output.replace(" :D ", begin + ":D" + end);
-  output.replace(" :-D ", begin + ":-D" + end);
+  output.replace(" :D ", begin + "laugh" + end);
+  output.replace(" :-D ", begin + "laugh2" + end);
 
-  output.replace(" ;) ", begin + ";)" + end);
-  output.replace(" ;-) ", begin + ";)" + end);
+  output.replace(" ;) ", begin + "wink" + end);
+  output.replace(" ;-) ", begin + "wink" + end);
 
-  output.replace(" ;D ", begin + ";D" + end);
-  output.replace(" ;-D ", begin + ";D" + end);
+  output.replace(" ;D ", begin + "wink2" + end);
+  output.replace(" ;-D ", begin + "wink2" + end);
 
-  output.replace(" :( ", begin + ":(" + end);
-  output.replace(" :-( ", begin + ":(" + end);
+  output.replace(" :( ", begin + "sad" + end);
+  output.replace(" :-( ", begin + "sad" + end);
 
-  output.replace(" :P ", begin + ":P" + end);
-  output.replace(" :-P ", begin + ":P" + end);
-  output.replace(" :p ", begin + ":P" + end);
-  output.replace(" :-p ", begin + ":P" + end);
+  output.replace(" :P ", begin + "tounge" + end);
+  output.replace(" :-P ", begin + "tounge" + end);
+  output.replace(" :p ", begin + "tounge" + end);
+  output.replace(" :-p ", begin + "tounge" + end);
 
-  output.replace(" ;( ", begin + ";(" + end);
-  output.replace(" ;-( ", begin + ";(" + end);
+  output.replace(" ;( ", begin + "cry" + end);
+  output.replace(" ;-( ", begin + "cry" + end);
 
-  output.replace(" :| ", begin + ":|" + end);
-  output.replace(" &lt;3 ", begin + "<3" + end);
+  output.replace(" :| ", begin + "indifference" + end);
+  output.replace(" &lt;3 ", begin + "heart" + end);
 
-  output.replace(" :\\ ", begin + ":\\" + end);
-  output.replace(" :-\\ ", begin + ":\\" + end);
+  output.replace(" :\\ ", begin + "skeptical" + end);
+  output.replace(" :-\\ ", begin + "skeptical" + end);
 
-  output.replace(" :o ", begin + ":O" + end);
-  output.replace(" :O ", begin + ":O" + end);
-  output.replace(" o.o ", begin + ":O" + end);
+  output.replace(" :o ", begin + "suprised" + end);
+  output.replace(" :O ", begin + "suprised" + end);
+  output.replace(" o.o ", begin + "suprised" + end);
 
-  output.replace(" :* ", begin + ":*" + end);
-  output.replace(" ;* ", begin + ":*" + end);
+  output.replace(" :* ", begin + "kiss" + end);
+  output.replace(" ;* ", begin + "kiss" + end);
 
-  output.replace(" :X ", begin + ":X" + end);
-  output.replace(" :x ", begin + ":x" + end);
+  output.replace(" :X ", begin + "quiet" + end);
+  output.replace(" :x ", begin + "quiet" + end);
 
-  output.replace(" :&gt; ", begin + ":>" + end);
+  output.replace(" :&gt; ", begin + "smile" + end);
 
-  output.replace(" B) ", begin + "B)" + end);
-  output.replace(" B-| ", begin + "B)" + end);
+  output.replace(" B) ", begin + "cool" + end);
+  output.replace(" B-| ", begin + "cool" + end);
 
-  output.replace(" %) ", begin + "%)" + end);
-  output.replace(" o.O ", begin + "%)" + end); //not
-  output.replace(" :@ ", begin + ":@" + end);
-  output.replace(" ;&gt; ", begin + ";>" + end);
-  output.replace(" >) ", begin + ">)" + end);
-  output.replace(" 8) ", begin + "8)" + end);
-  output.replace(" (=_=) ", begin + "=_=" + end);
-  output.replace(" -_- ", begin + "=_=" + end);
+  output.replace(" %) ", begin + "confused" + end);
+  output.replace(" o.O ", begin + "confused" + end); //not
+  output.replace(" :@ ", begin + "angry" + end);
+  output.replace(" ;&gt; ", begin + "wink3" + end);
+  output.replace(" >) ", begin + "evil" + end);
+  output.replace(" 8) ", begin + "nerdsmile" + end);
+  output.replace(" (=_=) ", begin + "tired" + end);
+  output.replace(" -_- ", begin + "tired" + end);
 
   //Facebook Related Emoticons
-  output.replace(" :/ ", begin + ":/" + end); //not
-  output.replace(" :'( ", begin + ":'(" + end);//not
-  output.replace(" 3:) ", begin + "3:)" + end);
-  output.replace(" O:) ", begin + "O:)" + end);
-  output.replace(" :v ", begin + ":v" + end);
-  output.replace(" :3 ", begin + ":3" + end);
-  output.replace(" :|] ", begin + ":|]" + end);
-  output.replace(" :putnam: ", begin + ":putnam:" + end);
-  output.replace(" (^^^) ", begin + "(^^^)" + end);
-  output.replace(" &lt;('') ", begin + "peng" + end);//not
-  output.replace(" :poop: ", begin + ":poop:" + end);
-  output.replace(" &gt;:( ", begin + ">:(" + end);
-  output.replace(" ^_^ ", begin + "^_^" + end);
+  output.replace(" :/ ", begin + "fb/unsure" + end);
+  output.replace(" :'( ", begin + "fb/cry" + end);
+  output.replace(" 3:) ", begin + "fb/devil" + end);
+  output.replace(" O:) ", begin + "fb/angel" + end);
+  output.replace(" :v ", begin + "fb/pacman" + end);
+  output.replace(" :3 ", begin + "fb/curlylips" + end);
+  output.replace(" :|] ", begin + "fb/robot" + end);
+  output.replace(" :putnam: ", begin + "fb/putnam" + end);
+  output.replace(" (^^^) ", begin + "fb/shark" + end);
+  output.replace(" &lt;(\") ", begin + "fb/peng" + end);
+  output.replace(" :poop: ", begin + "fb/poop" + end);
+  output.replace(" &gt;:( ", begin + "fb/grumpy" + end);
+  //output.replace(" ^_^ ", begin + "^_^" + end);
 
-  output.replace(" (y) ", begin + "(y)" + end);
-  output.replace(" :like: ", begin + "(y)" + end);
+  output.replace(" (y) ", begin + "fb/thumb" + end);
+  output.replace(" :like: ", begin + "fb/thumb" + end);
 
-  output.replace(" &gt;:O ", begin + ">:O" + end);
-  output.replace(" >.< ", begin + ">:O" + end);
+  output.replace(" &gt;:O ", begin + "fb/upset" + end);
+  output.replace(" &gt;.&lt; ", begin + "fb/upset" + end);
 
 
 
