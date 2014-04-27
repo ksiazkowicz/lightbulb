@@ -31,7 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 MyCache::MyCache(QObject *parent) : StoreVCard(parent)
 {
     pathMeegIMHome = QDir::homePath() + "/" + ".config" + "/" + "Lightbulb";
-    pathMeegIMCache = pathMeegIMHome + "/" + QString("cache");
+    pathMeegIMCache = QDir::currentPath() + QDir::separator() + QString("cache");
 
     this->setCachePath( pathMeegIMCache );
 }

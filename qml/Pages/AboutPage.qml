@@ -53,10 +53,10 @@ Page {
         Text {
             id: programName
             color: vars.textColor
-            text: "Lightbulb " + xmppConnectivity.client.version + " α"
+            text: "Lightbulb IM " + xmppConnectivity.client.version + " α"
             anchors { top: logo.bottom; topMargin: 5; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
             horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: platformStyle.fontSizeMedium*1.5
+            font.pixelSize: platformStyle.fontSizeMedium*1.3
         }
 
         Text {
@@ -64,7 +64,7 @@ Page {
             anchors { top: programName.bottom; leftMargin: 10; rightMargin: 10; left: parent.left; right: parent.right }
             color: vars.textColor
             wrapMode: Text.Wrap
-            text: "Maciej Janiszewski (pisarzk@gmail.com)"
+            text: "coded with ♥ and coffee"
             font.pixelSize: platformStyle.fontSizeSmall
             horizontalAlignment: Text.AlignHCenter
         }

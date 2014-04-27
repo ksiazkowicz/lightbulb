@@ -29,9 +29,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDebug>
 
 QString Settings::appName = "Lightbulb";
-QString Settings::confFolder = QDir::homePath() + QDir::separator() + ".config" + QDir::separator() + appName;
-QString Settings::cacheFolder = confFolder + QDir::separator() + QString("cache");
-QString Settings::confFile = confFolder + QDir::separator() + Settings::appName + ".conf";
+QString Settings::cacheFolder = QDir::currentPath() + QDir::separator() + QString("cache");
+QString Settings::confFile = QDir::currentPath() + QDir::separator() + Settings::appName + ".conf";
 
 Settings::Settings(QObject *parent) : QSettings(Settings::confFile, QSettings::NativeFormat , parent) {
     alm = new AccountsListModel(this);

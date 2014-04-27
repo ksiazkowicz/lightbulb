@@ -73,7 +73,7 @@ PageStackWindow {
                 notify.updateNotifiers()
             } else {
                 vars.isActive = false
-                if ((vars.globalUnreadCount>0 || vars.isBlinkingOverrideEnabled) && settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff")) blink.running = true
+                if ((vars.globalUnreadCount>0 || vars.isBlinkingOverrideEnabled) && settings.gBool("behavior", "wibblyWobblyTimeyWimeyStuff")) blink.running = true
                 vars.isChatInProgress = false
             }
         }
@@ -95,7 +95,7 @@ PageStackWindow {
             } else if (jid !== xmppConnectivity.chatJid || !vars.isActive) vars.globalUnreadCount++
 
             // get the blinker running if enabled and app is inactive
-            if (!vars.isActive && settings.gBool("notifications", "wibblyWobblyTimeyWimeyStuff")) blink.running = true;
+            if (!vars.isActive && settings.gBool("behavior", "wibblyWobblyTimeyWimeyStuff")) blink.running = true;
 
             // play sound and vibration
             notify.notifySndVibr("MsgRecv")
