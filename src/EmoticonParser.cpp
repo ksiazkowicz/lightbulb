@@ -82,10 +82,10 @@ QString EmoticonParser::parseEmoticons(QString string) {
   output.replace(" B-| ", begin + "cool" + end);
 
   output.replace(" %) ", begin + "confused" + end);
-  output.replace(" o.O ", begin + "confused" + end); //not
+  output.replace(" o.O ", begin + "confused" + end);
   output.replace(" :@ ", begin + "angry" + end);
   output.replace(" ;&gt; ", begin + "wink3" + end);
-  output.replace(" >) ", begin + "evil" + end);
+  output.replace(" &gt;) ", begin + "evil" + end);
   output.replace(" 8) ", begin + "nerdsmile" + end);
   output.replace(" (=_=) ", begin + "tired" + end);
   output.replace(" -_- ", begin + "tired" + end);
