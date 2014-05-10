@@ -90,7 +90,7 @@ Page {
         Text {
             id: niceInfo
             color: vars.textColor
-            text: qsTr("During development of this software, no mobile device was harmed.")
+            text: qsTr("Made possible thanks to AWESOME Symbian community")
             width: parent.width
             anchors { top: names.bottom; topMargin: 24; horizontalCenter: parent.horizontalCenter }
             wrapMode: Text.WordWrap

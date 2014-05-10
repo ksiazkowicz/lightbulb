@@ -81,7 +81,7 @@ CommonDialog {
                     title: qsTr("Donators")
                     titleFont.bold: true
                     titleFont.pixelSize: platformStyle.fontSizeLarge + 1
-                    value: "Elena Archinova\nJuan Pablo Ambriz Guzman"
+                    value: "Pece Murtanovski\nPaul Wallace\nFabian Hüllmantel\nJerome Redon\nElena Archinova\nJuan Pablo Ambriz Guzman"
                 }
             }
         }
