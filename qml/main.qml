@@ -82,17 +82,19 @@ PageStackWindow {
     Connections {
         target: xmppConnectivity
         onNotifyMsgReceived: {
-            // show discreet popup if enabled
-            if (settings.gBool("notifications", "usePopupRecv") === true && (xmppConnectivity.chatJid !== jid || !vars.isActive)) {
-                if (settings.gBool("behavior","msgInDiscrPopup")) avkon.showPopup(name,body,settings.gBool("behavior","linkInDiscrPopup"))
-                else avkon.showPopup(globalUnreadCount + " unread messages", "New message from "+ name + ".",settings.gBool("behavior","linkInDiscrPopup"))
-            }
-
             // handle global unread count. I should have both global and local unread count later
             if (!vars.isChatInProgress) {
                 vars.globalUnreadCount++
                 if (jid === xmppConnectivity.chatJid) vars.tempUnreadCount++
             } else if (jid !== xmppConnectivity.chatJid || !vars.isActive) vars.globalUnreadCount++
+
+            // show discreet popup if enabled
+            if (settings.gBool("notifications", "usePopupRecv") && (xmppConnectivity.chatJid !== jid || !vars.isActive)) {
+                if (settings.gBool("behavior","msgInDiscrPopup"))
+                        avkon.showPopup(name,body,settings.gBool("behavior","linkInDiscrPopup"))
+                else
+                    avkon.showPopup(vars.globalUnreadCount + " unread messages", "New message from "+ name + ".",settings.gBool("behavior","linkInDiscrPopup"))
+            }
 
             // get the blinker running if enabled and app is inactive
             if (!vars.isActive && settings.gBool("behavior", "wibblyWobblyTimeyWimeyStuff")) blink.running = true;

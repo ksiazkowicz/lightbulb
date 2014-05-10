@@ -121,6 +121,8 @@ public:
       return "";
     }
 
+    Q_INVOKABLE int getGlobalUnreadCount();
+
 signals:
     void accountChanged();
     void rosterChanged();

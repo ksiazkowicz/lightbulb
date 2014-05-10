@@ -103,7 +103,6 @@ CommonDialog {
                     iconSource: main.platformInverted ? "qrc:/toolbar/close_inverse" : "qrc:/toolbar/close"
                     anchors { top: parent.top; bottom: parent.bottom; right: parent.right }
                     onClicked: {
-                        vars.globalUnreadCount = vars.globalUnreadCount - parseInt(xmppConnectivity.client.getPropertyByJid(jid, "unreadMsg"))
                         xmppConnectivity.closeChat(account,jid)
                         xmppConnectivity.resetUnreadMessages(account,jid)
                         if (jid == xmppConnectivity.chatJid) {
@@ -112,6 +111,8 @@ CommonDialog {
                             statusBarText.text = "Contacts"
                             pageStack.pop();
                         }
+                        vars.globalUnreadCount = xmppConnectivity.getGlobalUnreadCount()
+                        notify.updateNotifiers()
                     }
                     scale: 0.7
                     smooth: true

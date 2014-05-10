@@ -27,7 +27,13 @@ import com.nokia.symbian 1.1
 
 Page {
     id: aboutPage
-    tools: toolBarLayout
+    tools: ToolBarLayout {
+        ToolButton {
+            iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
+            onClicked: { statusBarText.text = "Contacts"
+                pageStack.pop() }
+        }
+    }
 
     Component.onCompleted: { statusBarText.text = qsTr("About...") } //set statusbar text to "About..."
 
@@ -117,18 +123,8 @@ Page {
         }
 
         flickableItem: about
-        interactive: false
         orientation: Qt.Vertical
         platformInverted: main.platformInverted
-    }
-
-    ToolBarLayout {
-        id: toolBarLayout
-        ToolButton {
-            iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
-            onClicked: { statusBarText.text = "Contacts"
-                pageStack.pop() }
-        }
     }
 }
 

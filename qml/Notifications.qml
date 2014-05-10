@@ -91,7 +91,7 @@ Item {
             var name,presence,unreadCount,accountId;
             for (var i=0; i<4;i++) {
                 name = xmppConnectivity.getChatProperty(i+1,"name")
-                presence = xmppConnectivity.getChatProperty(i+1,"presence")
+                presence = getPresenceId(xmppConnectivity.getChatProperty(i+1,"presence"))
                 unreadCount = xmppConnectivity.getChatProperty(i+1,"unreadMsg")
                 accountId = xmppConnectivity.getChatProperty(i+1,"accountId")
                 hsWidget.changeRow(i,name,presence,accountId,unreadCount,false)
@@ -102,7 +102,7 @@ Item {
             var name,presence,unreadCount,accountId;
             for (var i=0; i<4;i++) {
                 name = xmppConnectivity.getChangeProperty(i+1,"name")
-                presence = xmppConnectivity.getChangeProperty(i+1,"presence")
+                presence = getPresenceId(xmppConnectivity.getChangeProperty(i+1,"presence"))
                 unreadCount = xmppConnectivity.getChangeProperty(i+1,"unreadMsg")
                 accountId = xmppConnectivity.getChangeProperty(i+1,"accountId")
                 hsWidget.changeRow(i,name,presence,accountId,unreadCount,false)

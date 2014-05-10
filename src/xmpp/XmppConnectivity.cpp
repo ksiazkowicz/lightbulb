@@ -282,3 +282,14 @@ QString XmppConnectivity::generateAccountName(QString host, QString jid) {
   if (host != "") return host;
   return jid;
 }
+
+int XmppConnectivity::getGlobalUnreadCount() {
+  int count = 0;
+  ChatsItemModel* currentChat;
+  for (int i=0;i<chats->rowCount();i++) {
+      currentChat = (ChatsItemModel*)chats->getElementByID(i);
+      count = count+ this->getPropertyByJid(currentChat->accountID(),"unreadMsg",currentChat->jid()).toInt();
+    }
+  currentChat = 0;
+  return count;
+}
