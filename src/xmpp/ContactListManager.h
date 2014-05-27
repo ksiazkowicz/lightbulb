@@ -16,6 +16,8 @@ public:
 
    Q_INVOKABLE QString getPropertyByOrderID(int id,QString property);
    Q_INVOKABLE QString getPropertyByJid(QString bareJid,QString property);
+
+   Q_INVOKABLE void resetUnreadMessages(QString accountId,QString bareJid);
   
 signals:
   void rosterChanged();
@@ -23,6 +25,7 @@ signals:
   
 public slots:
   void addContact(QString acc,QString jid, QString name);
+  void plusUnreadMessage(QString acc,QString jid);
 
 private:
   RosterListModel* roster;

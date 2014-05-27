@@ -182,8 +182,8 @@ public slots:
 
     Q_INVOKABLE void closeChat(QString accountId, QString bareJid) { clients->value(accountId)->closeChat(bareJid); }
     Q_INVOKABLE void closeChat(QString bareJid) { clients->value(currentClient)->closeChat(bareJid); }
-    Q_INVOKABLE void resetUnreadMessages(QString accountId, QString bareJid) { clients->value(accountId)->resetUnreadMessages(bareJid); }
-    Q_INVOKABLE void resetUnreadMessages(QString bareJid) { clients->value(currentClient)->resetUnreadMessages(bareJid); }
+    Q_INVOKABLE void resetUnreadMessages(QString accountId, QString bareJid) { contacts->resetUnreadMessages(accountId,bareJid); }
+    Q_INVOKABLE void resetUnreadMessages(QString bareJid) { contacts->resetUnreadMessages(currentClient,bareJid); }
 
     // widget
     void handleContactStatusChange(QString accountId, QString bareJid) {
