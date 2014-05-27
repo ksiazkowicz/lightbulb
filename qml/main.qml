@@ -37,7 +37,7 @@ PageStackWindow {
     Globals { id: vars }
 
     function openChat() {
-        xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.chatJid )
+        xmppConnectivity.resetUnreadMessages( xmppConnectivity.currentAccount, xmppConnectivity.chatJid )
         notify.updateNotifiers()
 
         if (pageStack.depth > 1) {

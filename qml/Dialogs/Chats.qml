@@ -56,7 +56,7 @@ CommonDialog {
                 }
                 Image {
                     id: imgPresence
-                    source: xmppConnectivity.getPropertyByJid(account,"presence",jid)
+                    source: xmppConnectivity.getPropertyByJid(account,jid,"presence")
                     sourceSize.height: 24
                     sourceSize.width: 24
                     anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
@@ -74,8 +74,8 @@ CommonDialog {
                 }
                 Text {
                     anchors { verticalCenter: parent.verticalCenter; left: imgPresence.right; right: parent.right; rightMargin: 5; leftMargin: 10 }
-                    property int unreadMsg: parseInt(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))
-                    text: unreadMsg > 0 ? "[" + xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid) + "] " + name : name
+                    property int unreadMsg: parseInt(xmppConnectivity.getPropertyByJid(account,jid,"unreadMsg"))
+                    text: unreadMsg > 0 ? "[" + xmppConnectivity.getPropertyByJid(account,jid,"unreadMsg") + "] " + name : name
                     font.pixelSize: 18
                     clip: true
                     color: vars.textColor

@@ -19,7 +19,7 @@ void ContactListManager::addContact(QString acc, QString jid, QString name) {
   }
 
   // nope, append it
-  RosterItemModel* contact = new RosterItemModel(name,jid,"","qrc:/presence/unknown","",0,acc);
+  RosterItemModel* contact = new RosterItemModel(name,jid,"","qrc:/presence/offline","",0,acc);
   roster->append(contact);
 }
 
@@ -32,6 +32,14 @@ void ContactListManager::plusUnreadMessage(QString acc, QString jid) {
   }
 
   contact->setUnreadMsg(contact->unreadMsg()+1);
+}
+void ContactListManager::changePresence(QString accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus) {
+  RosterItemModel *contact = (RosterItemModel*)roster->find( accountId + ";" + bareJid );
+  if (contact != 0) {
+      contact->setResource(resource);
+      contact->setPresence(picStatus);
+      contact->setStatusText(txtStatus);
+    }
 }
 void ContactListManager::resetUnreadMessages(QString accountId, QString bareJid) {
   RosterItemModel *contact = (RosterItemModel*)roster->find( accountId + ";" + bareJid );

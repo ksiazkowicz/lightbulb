@@ -108,14 +108,6 @@ public :
     Q_INVOKABLE void typingStart( QString bareJid, QString resource );
     Q_INVOKABLE void typingStop( QString bareJid, QString resource );
 
-    /*--- unread msg ---*/
-    Q_INVOKABLE void resetUnreadMessages( QString bareJid ) {
-        /*RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid );
-        if( item != 0 )
-            item->setUnreadMsg( 0 );*/
-    }
-    Q_INVOKABLE void setUnreadMessages( QString bareJid, int count ) { emit updateContact(m_accountId,bareJid,"unreadMsg",count); }
-
     /*--- vCard ---*/
     Q_INVOKABLE void requestVCard( QString bareJid );
 
@@ -223,6 +215,7 @@ signals:
 
     // contact list manager
     void contactAdded(QString acc,QString jid, QString name);
+    void presenceChanged(QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus);
 
 public slots:
     void clientStateChanged( QXmppClient::State state );
