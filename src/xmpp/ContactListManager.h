@@ -15,7 +15,7 @@ public:
   RosterListModel* getRoster() { return roster; }
 
    Q_INVOKABLE QString getPropertyByOrderID(int id,QString property);
-   Q_INVOKABLE QString getPropertyByJid(QString bareJid,QString property);
+   Q_INVOKABLE QString getPropertyByJid(QString accountId,QString bareJid,QString property);
 
    Q_INVOKABLE void resetUnreadMessages(QString accountId,QString bareJid);
   

@@ -162,7 +162,7 @@ bool XmppConnectivity::resetSettings() { return QFile::remove(lSettings->confFil
 
 // handling stuff from MyXmppClient
 void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine) {
-    if (mine == 0) emit notifyMsgReceived(contacts->getPropertyByJid(bareJid,"name"),bareJid,body.left(30));
+    if (mine == 0) emit notifyMsgReceived(this->getPropertyByJid(m_accountId,bareJid,"name"),bareJid,body.left(30));
 
     body = body.replace(">", "&gt;");  //fix for > stuff
     body = body.replace("<", "&lt;");  //and < stuff too ^^
@@ -181,7 +181,7 @@ void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString
 // handling chats list
 void XmppConnectivity::chatOpened(QString accountId, QString bareJid) {
   if (!chats->checkIfExists(bareJid)) {
-    ChatsItemModel* chat = new ChatsItemModel(contacts->getPropertyByJid(bareJid,"name"),bareJid,accountId);
+    ChatsItemModel* chat = new ChatsItemModel(this->getPropertyByJid(accountId,bareJid,"name"),bareJid,accountId);
     chats->append(chat);
     qDebug() << "XmppConnectivity::chatOpened(): appending"<< qPrintable(bareJid) << "from account" << accountId << "to chats list.";
     emit chatsChanged();
@@ -201,8 +201,7 @@ void XmppConnectivity::chatClosed(QString accId, QString bareJid) { //this poorl
 }
 
 QString XmppConnectivity::getPropertyByJid(QString account,QString jid,QString property) {
-  return contacts->getPropertyByJid(jid,property);
-  //else return "(unknown)";
+  return contacts->getPropertyByJid(account,jid,property);
 }
 
 QString XmppConnectivity::getPreservedMsg(QString jid) {  //this poorly written piece of shit should take care of account id one day
