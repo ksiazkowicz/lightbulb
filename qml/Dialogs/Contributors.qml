@@ -73,7 +73,7 @@ CommonDialog {
                     title: qsTr("Testing")
                     titleFont.bold: true
                     titleFont.pixelSize: platformStyle.fontSizeLarge + 1
-                    value: "Mohamed Zinhom\nKonrad Bąk\nGodwin Tgn\nRudmata\nRicardo Partida\nmassi93"
+                    value: "Mohamed Zinhom\nKonrad Bąk\nGodwin Tgn\nRudmata\nRicardo Partida\nMaximiliano Caleca"
                 }
 
                 DetailsItem {

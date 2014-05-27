@@ -42,7 +42,8 @@ public:
         rolePresence,
         roleStatusText,
         roleUnreadMsg,
-        roleAvatar
+        roleAvatar,
+        roleAccountId
       };
 
 public:
@@ -54,6 +55,7 @@ public:
           contactStatusText = "";
           contactUnreadMsg = 0;
           contactAvatar = "qrc:/avatar";
+          contactAccountID = "";
       }
       explicit RosterItemModel( const QString &_contactName,
                                        const QString &_contactJid,
@@ -61,13 +63,15 @@ public:
                                        const QString &_contactPresence,
                                        const QString &_contactStatusText,
                                        const int _contactUnreadMsg,
+                                       const QString &_contactAccountID,
                                        QObject *parent = 0 ) : ListItem(parent),
           contactName(_contactName),
           contactJid(_contactJid),
           contactResource(_contactResource),
           contactStatusText(_contactStatusText),
           contactPresence(_contactPresence),
-          contactUnreadMsg(_contactUnreadMsg)
+          contactUnreadMsg(_contactUnreadMsg),
+          contactAccountID(_contactAccountID)
       {
       }
 
@@ -87,6 +91,8 @@ public:
           return unreadMsg();
         case roleAvatar:
           return avatar();
+        case roleAccountId:
+          return accountId();
         default:
           return QVariant();
         }
@@ -100,6 +106,7 @@ public:
           names[roleStatusText] = "statusText";
           names[roleUnreadMsg] = "unreadMsg";
           names[roleAvatar] = "avatar";
+          names[roleAccountId] = "accountId";
           return names;
         }
 
@@ -155,6 +162,13 @@ public:
           }
       }
 
+      void setAccountID( const QString &_accountId ) {
+        if (contactAccountID != _accountId) {
+            contactAccountID = _accountId;
+            emit dataChanged();
+          }
+      }
+
       inline QString presence() const { return contactPresence; }
       inline QString name() const { return contactName; }
       inline QString jid() const { return contactJid; }
@@ -162,6 +176,7 @@ public:
       inline QString statusText() const { return contactStatusText; }
       inline int unreadMsg() const { return contactUnreadMsg; }
       inline QString avatar() const { return contactAvatar; }
+      inline QString accountId() const { return contactAccountID; }
 
       void copy( const RosterItemModel* item ) {
           contactName = item->name();
@@ -181,6 +196,7 @@ public:
       QString contactPresence;
       QString contactStatusText;
       QString contactAvatar;
+      QString contactAccountID;
       int contactUnreadMsg;
 };
 

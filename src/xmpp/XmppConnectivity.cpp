@@ -43,6 +43,7 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
     dbWorker->moveToThread(dbThread);
     dbThread->start();
 
+    contacts = new ContactListManager();
     chats = new ChatsListModel();
 
     for (int i=0; i<lSettings->accountsCount(); i++) {
@@ -62,7 +63,6 @@ XmppConnectivity::~XmppConnectivity() {
     if (msgWrapper != NULL) delete msgWrapper;
     if (clients != NULL) delete clients;
     if (cachedMessages != NULL) delete cachedMessages;
-    if (roster != NULL) delete roster;
     if (chats != NULL) delete chats;
     if (lCache != NULL) delete lCache;
 
@@ -87,13 +87,16 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
         clients->value(index)->setPort(5222);
     }
     clients->value(index)->setAccountId(index);
-    connect(clients->value(index),SIGNAL(rosterChanged()),this,SLOT(changeRoster()));
     connect(clients->value(index),SIGNAL(updateContact(QString,QString,QString,int)),this,SLOT(updateContact(QString,QString,QString,int)));
     connect(clients->value(index),SIGNAL(insertMessage(QString,QString,QString,QString,int)),this,SLOT(insertMessage(QString,QString,QString,QString,int)));
     connect(clients->value(index),SIGNAL(chatOpened(QString,QString)),this,SLOT(chatOpened(QString,QString)));
     connect(clients->value(index),SIGNAL(chatClosed(QString,QString)),this,SLOT(chatClosed(QString,QString)));
     connect(clients->value(index),SIGNAL(contactRenamed(QString,QString)),this,SLOT(renameChatContact(QString,QString)));
     connect(clients->value(index),SIGNAL(contactStatusChanged(QString,QString)),this,SLOT(handleContactStatusChange(QString,QString)));
+
+    // connect ContactListManager
+    connect(clients->value(index),SIGNAL(contactAdded(QString,QString,QString)),contacts,SLOT(addContact(QString,QString,QString)));
+
     qDebug().nospace() << "XmppConnectivity::initializeAccount(): initialized account " << qPrintable(clients->value(index)->getMyJid()) << "/" << qPrintable(clients->value(index)->getResource());
 
     if (lSettings->gBool(index,"connectOnStart")) {
@@ -110,14 +113,12 @@ void XmppConnectivity::changeAccount(QString accountId) {
         currentClient = accountId;
         selectedClient = clients->value(accountId);
         emit accountChanged();
-        changeRoster();
         qDebug() << "XmppConnectivity::changeAccount(): selected account is" << qPrintable(clients->value(accountId)->getMyJid());
     }
     if (accountId == "null") {
         currentClient  = "";
         selectedClient = new MyXmppClient();
         emit accountChanged();
-        changeRoster();
         qDebug() << "XmppConnectivity::changeAccount(): no selected account";
     }
 }
@@ -161,7 +162,7 @@ bool XmppConnectivity::resetSettings() { return QFile::remove(lSettings->confFil
 
 // handling stuff from MyXmppClient
 void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine) {
-    if (mine == 0) emit notifyMsgReceived(clients->value(m_accountId)->getPropertyByJid(bareJid,"name"),bareJid,body.left(30));
+    if (mine == 0) emit notifyMsgReceived(contacts->getPropertyByJid(bareJid,"name"),bareJid,body.left(30));
 
     body = body.replace(">", "&gt;");  //fix for > stuff
     body = body.replace("<", "&lt;");  //and < stuff too ^^
@@ -178,7 +179,7 @@ void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString
 // handling chats list
 void XmppConnectivity::chatOpened(QString accountId, QString bareJid) {
   if (!chats->checkIfExists(bareJid)) {
-    ChatsItemModel* chat = new ChatsItemModel(clients->value(accountId)->getPropertyByJid(bareJid,"name"),bareJid,accountId);
+    ChatsItemModel* chat = new ChatsItemModel(contacts->getPropertyByJid(bareJid,"name"),bareJid,accountId);
     chats->append(chat);
     qDebug() << "XmppConnectivity::chatOpened(): appending"<< qPrintable(bareJid) << "from account" << accountId << "to chats list.";
     emit chatsChanged();
@@ -197,10 +198,9 @@ void XmppConnectivity::chatClosed(QString accId, QString bareJid) { //this poorl
   removeChat(accId,bareJid);
 }
 
-QString XmppConnectivity::getPropertyByJid(QString account,QString property,QString jid) {
-  if (clients->value(account) != 0)
-    return clients->value(account)->getPropertyByJid(jid,property);
-  else return "(unknown)";
+QString XmppConnectivity::getPropertyByJid(QString account,QString jid,QString property) {
+  return contacts->getPropertyByJid(jid,property);
+  //else return "(unknown)";
 }
 
 QString XmppConnectivity::getPreservedMsg(QString jid) {  //this poorly written piece of shit should take care of account id one day
@@ -288,8 +288,12 @@ int XmppConnectivity::getGlobalUnreadCount() {
   ChatsItemModel* currentChat;
   for (int i=0;i<chats->rowCount();i++) {
       currentChat = (ChatsItemModel*)chats->getElementByID(i);
-      count = count+ this->getPropertyByJid(currentChat->accountID(),"unreadMsg",currentChat->jid()).toInt();
+      count = count+ this->getPropertyByJid(currentChat->accountID(),currentChat->jid(),"unreadMsg").toInt();
     }
   currentChat = 0;
   return count;
+}
+
+RosterListModel* XmppConnectivity::getRoster() {
+  return contacts->getRoster();
 }
