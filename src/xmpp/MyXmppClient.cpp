@@ -3,7 +3,7 @@
 src/xmpp/MyXmppClient.cpp
 -- wrapper between qxmpp library and XmppConnectivity
 
-Copyright (c) 2013 Maciej Janiszewski
+Copyright (c) 2013-2014 Maciej Janiszewski
 heavily based on the work by Anatoliy Kozlov
 
 This file is part of Lightbulb.
@@ -111,7 +111,6 @@ void MyXmppClient::error(QXmppClient::Error e) {
         QXmppPresence pr = xmppClient->clientPresence();
         this->presenceReceived( pr );
         QXmppPresence presence( QXmppPresence::Unavailable );
-        this->clearPresence();
         xmppClient->setClientPresence( presence );
 
         emit errorHappened( errString );
@@ -405,7 +404,6 @@ void MyXmppClient::setStatus( StatusXmpp __status) {
             break;
           case Offline:
             m_status = __status;
-            this->clearPresence();
             break;
           default: break;
         }
@@ -465,20 +463,6 @@ void MyXmppClient::initRoster() {
         }
         emit contactAdded(m_accountId,bareJid,name);
     }
-    //emit rosterChanged();
-}
-
-void MyXmppClient::clearPresence() {
-    qDebug() << "MyXmppClient::clearPresence() called";
-
-   /* for( int j=0; j < cachedRoster->rowCount(); j++ ) {
-        RosterItemModel *itemExists = (RosterItemModel*)cachedRoster->getElementByID(j);
-        if (itemExists != 0) {
-          itemExists->setPresence( this->getPicPresence( QXmppPresence::Unavailable ) );
-        }
-        itemExists = 0; delete itemExists;
-    }
-    emit rosterChanged();*/
 }
 
 void MyXmppClient::itemAdded(const QString &bareJid ) {
@@ -493,23 +477,12 @@ void MyXmppClient::itemAdded(const QString &bareJid ) {
 }
 
 void MyXmppClient::itemChanged(const QString &bareJid ) {
-    qDebug() << "MyXmppClient::itemChanged(): " << bareJid;
-
-    /*QXmppRosterIq::Item rosterEntry = rosterManager->getRosterEntry( bareJid );
-    if (rosterEntry.name() != "") {
-        RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid );
-        if( item != 0 ) item->setContactName( rosterEntry.name() );
-        emit contactRenamed(bareJid,rosterEntry.name());
-        item = 0; delete item;
-    }*/
+  QXmppRosterIq::Item rosterEntry = rosterManager->getRosterEntry( bareJid );
+  emit nameChanged(m_accountId,bareJid,rosterEntry.name());
 }
 
 void MyXmppClient::itemRemoved(const QString &bareJid ) {
-    qDebug() << "MyXmppClient::itemRemoved(): " << bareJid;
-
-    int indxItem = -1;
-    /*RosterItemModel *itemExists = (RosterItemModel*)cachedRoster->find( bareJid, indxItem );
-    if( itemExists ) if( indxItem >= 0 ) cachedRoster->takeRow( indxItem );*/
+  emit contactRemoved(m_accountId,bareJid);
 }
 
 void MyXmppClient::addContact( QString bareJid, QString nick, QString group, bool sendSubscribe ) {

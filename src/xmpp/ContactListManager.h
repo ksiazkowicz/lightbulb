@@ -27,6 +27,8 @@ public slots:
   void addContact(QString acc,QString jid, QString name);
   void plusUnreadMessage(QString acc,QString jid);
   void changePresence(QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus);
+  void changeName(QString m_accountId,QString bareJid,QString name);
+  void removeContact(QString acc,QString bareJid);
 
 private:
   RosterListModel* roster;

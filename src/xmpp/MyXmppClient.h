@@ -198,7 +198,6 @@ signals:
     void hostChanged();
     void portChanged();
     void resourceChanged();
-    void openChatsChanged();
     void chatOpened( QString accountId, QString bareJid );
     void chatClosed( QString accountId, QString bareJid );
     void accountIdChanged();
@@ -216,6 +215,8 @@ signals:
     // contact list manager
     void contactAdded(QString acc,QString jid, QString name);
     void presenceChanged(QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus);
+    void nameChanged(QString m_accountId,QString bareJid,QString name);
+    void contactRemoved(QString acc,QString bareJid);
 
 public slots:
     void clientStateChanged( QXmppClient::State state );
@@ -237,7 +238,6 @@ private slots:
 private:
     // functions
     void initRosterManager();
-    void clearPresence();
 
     // private variables
     QString m_bareJidLastMessage;
