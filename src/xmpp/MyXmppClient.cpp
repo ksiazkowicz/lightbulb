@@ -121,56 +121,49 @@ void MyXmppClient::error(QXmppClient::Error e) {
 
 void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
 {
-    /*QString bareJid = vCard.from();
-
-    RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid );
-
+    QString bareJid = vCard.from();
     vCardData dataVCard;
 
-    if( item != 0 )
-    {
-        // set nickname
-        QXmppRosterIq::Item itemRoster = rosterManager->getRosterEntry( bareJid );
-        QString nickName = vCard.nickName();
-        if( (!nickName.isEmpty()) && (!nickName.isNull()) && (itemRoster.name().isEmpty()) ) {
-            qDebug() << "MyXmppClient::initPresence: updating name for"<< bareJid;
-            item->setContactName( nickName );
-        }
+    // set nickname
+    QXmppRosterIq::Item itemRoster = rosterManager->getRosterEntry( bareJid );
+    QString nickName = vCard.nickName();
+    if( (!nickName.isEmpty()) && (!nickName.isNull()) && (itemRoster.name().isEmpty()) ) {
+        qDebug() << "MyXmppClient::initPresence: updating name for"<< bareJid;
+        emit nameChanged(m_accountId,bareJid,nickName);
+    }
 
-        // avatar
-        bool isAvatarCreated = true;
-        QString avatarFile = cacheIM->getAvatarCache( bareJid );
-        if( (avatarFile.isEmpty() || avatarFile == "qrc:/avatar" || (flVCardRequest != "")) && vCard.photo() != "" ) {
-            isAvatarCreated =  cacheIM->setAvatarCache( bareJid, vCard.photo() );
-        }
-        item->setAvatar(cacheIM->getAvatarCache(bareJid));
+    // avatar
+    bool isAvatarCreated = true;
+    QString avatarFile = cacheIM->getAvatarCache( bareJid );
+    if( (avatarFile.isEmpty() || avatarFile == "qrc:/avatar" || (flVCardRequest != "")) && vCard.photo() != "" ) {
+        isAvatarCreated =  cacheIM->setAvatarCache( bareJid, vCard.photo() );
+    }
+    item->setAvatar(cacheIM->getAvatarCache(bareJid));
 
-        dataVCard.nickName = nickName;
-        dataVCard.firstName = vCard.firstName();
-        dataVCard.fullName = vCard.fullName();;
-        dataVCard.middleName = vCard.middleName();
-        dataVCard.lastName = vCard.lastName();
-        dataVCard.url = vCard.url();
-        dataVCard.eMail = vCard.email();
+    dataVCard.nickName = nickName;
+    dataVCard.firstName = vCard.firstName();
+    dataVCard.fullName = vCard.fullName();;
+    dataVCard.middleName = vCard.middleName();
+    dataVCard.lastName = vCard.lastName();
+    dataVCard.url = vCard.url();
+    dataVCard.eMail = vCard.email();
 
-        if( flVCardRequest == bareJid ) {
-            qmlVCard->setPhoto( avatarFile );
-            qmlVCard->setNickName( vCard.nickName() );
-            qmlVCard->setMiddleName( vCard.middleName() );
-            qmlVCard->setLastName( vCard.lastName() );
-            qmlVCard->setFullName( vCard.fullName() );
-            qmlVCard->setName( vCard.firstName() );
-            qmlVCard->setBirthday( vCard.birthday().toString("dd.MM.yyyy") );
-            qmlVCard->setEMail( vCard.email() );
-            qmlVCard->setUrl( vCard.url() );
-            qmlVCard->setJid( bareJid );
-            flVCardRequest = "";
-            emit vCardChanged();
-        }
+    if( flVCardRequest == bareJid ) {
+        qmlVCard->setPhoto( avatarFile );
+        qmlVCard->setNickName( vCard.nickName() );
+        qmlVCard->setMiddleName( vCard.middleName() );
+        qmlVCard->setLastName( vCard.lastName() );
+        qmlVCard->setFullName( vCard.fullName() );
+        qmlVCard->setName( vCard.firstName() );
+        qmlVCard->setBirthday( vCard.birthday().toString("dd.MM.yyyy") );
+        qmlVCard->setEMail( vCard.email() );
+        qmlVCard->setUrl( vCard.url() );
+        qmlVCard->setJid( bareJid );
+        flVCardRequest = "";
+        emit vCardChanged();
+    }
 
-        cacheIM->setVCard( bareJid, dataVCard );
-    }*/
-
+    cacheIM->setVCard( bareJid, dataVCard );
 }
 
 void MyXmppClient::requestVCard(QString bareJid) //Q_INVOKABLE
