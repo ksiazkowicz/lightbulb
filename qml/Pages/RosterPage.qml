@@ -110,13 +110,11 @@ Page {
                     }
                     Rectangle {
                         color: "transparent"
-                        width: wrapper.height * 0.30
+                        width: imgPresence.width * 0.30
                         height: width
-                        anchors.right: parent.right
-                        anchors.bottom: parent.bottom
+                        anchors { right: parent.right; bottom: parent.bottom }
                         visible: vars.showUnreadCount ? unreadMsg != 0 : false
                         Text {
-                            id: txtUnreadMsg
                             text: unreadMsg
                             font.pixelSize: 0.72*parent.width
                             anchors.centerIn: parent
