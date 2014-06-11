@@ -198,8 +198,6 @@ signals:
     void hostChanged();
     void portChanged();
     void resourceChanged();
-    void chatOpened( QString accountId, QString bareJid );
-    void chatClosed( QString accountId, QString bareJid );
     void accountIdChanged();
     void vCardChanged();
     void errorHappened( const QString &errorString );
@@ -220,9 +218,6 @@ signals:
 
 public slots:
     void clientStateChanged( QXmppClient::State state );
-
-    Q_INVOKABLE void openChat( QString jid ) { emit chatOpened( m_accountId, jid ); }
-    Q_INVOKABLE void closeChat( QString jid ) { emit chatClosed( m_accountId, jid ); }
 
 private slots:
     void initRoster();

@@ -69,10 +69,12 @@ CommonDialog {
             else settings.sStr("","behavior","lastStatusText")
         }
 
-        content: Item {
+        content: Column {
             width: parent.width-20
-            height: 200
+            height: content.height
             anchors.horizontalCenter: parent.horizontalCenter
+
+            spacing: 5
 
             TumblerColumn {
                 id: colStatus
@@ -102,14 +104,15 @@ CommonDialog {
             Tumbler {
                 platformInverted: main.platformInverted
                 id: tumbler
-                anchors { top: parent.top; topMargin: 5; left: parent.left; right: parent.right; bottom: wrapperTextEdit.top; bottomMargin: 5 }
+                height: 150
+                anchors { left: parent.left; right: parent.right }
                 columns: [ colStatus ]
             }
 
             TextField {
                 id: wrapperTextEdit
                 height: 50
-                anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
+                anchors {left: parent.left; right: parent.right }
                 placeholderText: qsTr("Status text")
                 text: vars.lastStatus
             }

@@ -49,92 +49,6 @@ Page {
 
     /*******************************************************************************/
 
-    function getAccountStatusIcon()
-    {
-        if (xmppConnectivity.client.stateConnect === 2)
-            return "qrc:/presence/unknown"
-        else
-            return "qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.client.status)
-    }
-
-    function getAccountName()
-    {
-        if (xmppConnectivity.currentAccount === "")
-            return "N/A"
-        else
-            return xmppConnectivity.currentAccountName
-    }
-
-    Rectangle {
-        id: accountSwitcher
-        height: 46
-
-        gradient: Gradient {
-            GradientStop { position: 0; color: "#FBBE5B" }
-            GradientStop { position: 0.04; color: "#FAA824" }
-            GradientStop { position: 0.96; color: "#C74A17" }
-            GradientStop { position: 0.98; color: "#FAA419" }
-            GradientStop { position: 1; color: "#80000000" }
-        }
-
-        anchors { top: parent.top; left: parent.left; right: parent.right }
-
-        HeaderButton {
-            id: stateButton
-            iconSource: getAccountStatusIcon()
-            width: height
-            platformInverted: true
-
-            anchors {
-                left: parent.left
-                top: parent.top
-                bottom: parent.bottom
-            }
-
-            onClicked: {
-                if (settings.accounts.count() > 0)
-                    dialog.create("qrc:/dialogs/Status/Change");
-                else
-                    avkon.displayGlobalNote("You have to set-up an account first.", true)
-            }
-        }
-
-        Text {
-            id: titleText
-
-            anchors {
-                verticalCenter: parent.verticalCenter
-                left: stateButton.right
-                leftMargin: platformStyle.paddingMedium
-                right: accountsButton.left
-                rightMargin: platformStyle.paddingMedium
-            }
-
-            text: getAccountName()
-            color: "white"
-            font.pixelSize: 24
-            font.bold: true
-            elide: Text.ElideRight
-            style: Text.Raised
-            horizontalAlignment: Text.AlignLeft
-        }
-
-        HeaderButton {
-            id: accountsButton
-            iconSource: privateStyle.toolBarIconPath("toolbar-list", false)
-            width: height
-            platformInverted: true
-
-            anchors {
-                right: parent.right
-                top: parent.top
-                bottom: parent.bottom
-            }
-
-            onClicked: dialog.create("qrc:/dialogs/AccountSwitcher")
-        }
-    }
-
     Component {
         id: componentRosterItem
 
@@ -239,7 +153,7 @@ Page {
 
                 onPressAndHold: {
                     vars.selectedJid = jid
-                    dialog.createWithProperties("qrc:/menus/Roster/Contact",{"contactName":txtJid.contact,"contactJid":jid})
+                    dialog.createWithProperties("qrc:/menus/Roster/Contact",{"accountId": accountId,"contactName":txtJid.contact,"contactJid":jid})
                 }
             }
             Image {
@@ -262,7 +176,7 @@ Page {
 
     Flickable {
         id: rosterView
-        anchors { top: accountSwitcher.bottom; left: parent.left; right: parent.right; bottom: rosterSearch.top; }
+        anchors { top: parent.top; left: parent.left; right: parent.right; bottom: rosterSearch.top; }
         contentHeight: columnContent.height
         contentWidth: columnContent.width
         clip: true
@@ -283,7 +197,7 @@ Page {
         id: scrollBar
 
         anchors {
-            top: accountSwitcher.bottom
+            top: parent.top
             bottom: rosterSearch.top
             right: parent.right
             margins: platformStyle.paddingSmall
@@ -339,7 +253,7 @@ Page {
         }
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-add_inverse" : "toolbar-add"
-            onClicked: dialog.create("qrc:/dialogs/Contact/Add")
+            onClicked: dialog.createWithContext("qrc:/dialogs/Contact/Add")
         }
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-search_inverse" : "toolbar-search"
@@ -388,7 +302,7 @@ Page {
 
         color: main.platformInverted ? "white" : "black"
         opacity: 0.7
-        anchors { top: accountSwitcher.bottom; left: parent.left; right: parent.right; bottom: parent.bottom }
+        anchors { top: parent.top; left: parent.left; right: parent.right; bottom: parent.bottom }
         NumberAnimation { properties: "visible"; duration: 200 }
 
         visible: xmppConnectivity.client.status == XmppClient.Offline

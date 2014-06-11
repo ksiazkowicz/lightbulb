@@ -151,11 +151,13 @@ public slots:
     Q_INVOKABLE QString getAvatarByJid(QString bareJid) { return lCache->getAvatarCache(bareJid); }
 
     // handling chats list
-    void chatOpened(QString accountId,QString bareJid);
-    void chatClosed(QString accountId,QString bareJid);
     Q_INVOKABLE QString getPropertyByJid(QString account,QString jid,QString property);
     Q_INVOKABLE QString getPreservedMsg(QString jid);
     Q_INVOKABLE void preserveMsg(QString jid,QString message);
+
+    Q_INVOKABLE void openChat(QString accountId, QString bareJid);
+    Q_INVOKABLE void openChat(QString bareJid) { this->openChat(currentClient,bareJid); }
+    Q_INVOKABLE void closeChat(QString accountId, QString bareJid);
 
     Q_INVOKABLE void setMsgLimit(int limit) {
       msgLimit = limit;
@@ -179,9 +181,7 @@ public slots:
       if (item != 0) item->setContactName(name);
       item = 0; delete item;
     }
-
-    Q_INVOKABLE void closeChat(QString accountId, QString bareJid) { clients->value(accountId)->closeChat(bareJid); }
-    Q_INVOKABLE void closeChat(QString bareJid) { clients->value(currentClient)->closeChat(bareJid); }
+    Q_INVOKABLE void closeChat(QString bareJid) { this->closeChat(currentClient,bareJid); }
     Q_INVOKABLE void resetUnreadMessages(QString accountId, QString bareJid) { contacts->resetUnreadMessages(accountId,bareJid); }
     Q_INVOKABLE void resetUnreadMessages(QString bareJid) { contacts->resetUnreadMessages(currentClient,bareJid); }
 
@@ -193,6 +193,14 @@ public slots:
       latestStatusChanges.append(accountId+";"+bareJid);
       if (latestStatusChanges.count()>4) latestStatusChanges.removeFirst();
       emit widgetDataChanged();
+    }
+
+    // contact list management
+    Q_INVOKABLE void addContact(QString accountId, QString bareJid, QString nick) {
+      clients->value(accountId)->addContact(bareJid,nick,"",true);
+    }
+    Q_INVOKABLE void renameContact(QString accountId, QString bareJid, QString newName) {
+      clients->value(accountId)->renameContact(bareJid,newName);
     }
 
 private:

@@ -33,6 +33,7 @@ CommonDialog {
     buttonTexts: [qsTr("OK"), qsTr("Cancel")]
     property string contactName: ""
     property string contactJid:  ""
+    property string accountId:   ""
 
     // Code for dynamic load
     Component.onCompleted: {
@@ -45,7 +46,7 @@ CommonDialog {
 
     onButtonClicked: {
         if ((index === 0) && ( newNameText.text != "" )) {
-           xmppConnectivity.client.renameContact( contactJid, newNameText.text )
+           xmppConnectivity.renameContact( accountId, contactJid, newNameText.text )
         }
     }
 
