@@ -5,6 +5,7 @@ ContactListManager::ContactListManager(QObject *parent) :
   QObject(parent)
 {
   roster = new RosterListModel();
+  rosterOffline = new RosterListModel();
 }
 
 void ContactListManager::addContact(QString acc, QString jid, QString name) {
@@ -39,6 +40,18 @@ void ContactListManager::changePresence(QString accountId,QString bareJid,QStrin
       contact->setResource(resource);
       contact->setPresence(picStatus);
       contact->setStatusText(txtStatus);
+    }
+  contact = (RosterItemModel*)rosterOffline->find(accountId+";"+bareJid);
+  if (contact != 0) {
+      if (picStatus != "qrc:/presence/offline") {
+          contact->setResource(resource);
+          contact->setPresence(picStatus);
+          contact->setStatusText(txtStatus);
+      } else
+          rosterOffline->removeId(accountId+";"+bareJid);
+    } else {
+      contact = (RosterItemModel*)roster->find(accountId+";"+bareJid);
+      roster->append(contact);
     }
 }
 void ContactListManager::changeName(QString accountId,QString bareJid,QString name) {

@@ -34,6 +34,7 @@ public slots:
 
 private:
   RosterListModel* roster;
+  RosterListModel* rosterOffline;
   
 };
 
