@@ -138,7 +138,7 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
     if( (avatarFile.isEmpty() || avatarFile == "qrc:/avatar" || (flVCardRequest != "")) && vCard.photo() != "" ) {
         isAvatarCreated =  cacheIM->setAvatarCache( bareJid, vCard.photo() );
     }
-    item->setAvatar(cacheIM->getAvatarCache(bareJid));
+    //item->setAvatar(cacheIM->getAvatarCache(bareJid));
 
     dataVCard.nickName = nickName;
     dataVCard.firstName = vCard.firstName();

@@ -22,6 +22,7 @@ void ContactListManager::addContact(QString acc, QString jid, QString name) {
   // nope, append it
   RosterItemModel* contact = new RosterItemModel(name,jid,"","qrc:/presence/offline","",0,acc);
   roster->append(contact);
+  qDebug() << "contact appended";
 }
 
 void ContactListManager::plusUnreadMessage(QString acc, QString jid) {
@@ -35,24 +36,27 @@ void ContactListManager::plusUnreadMessage(QString acc, QString jid) {
   contact->setUnreadMsg(contact->unreadMsg()+1);
 }
 void ContactListManager::changePresence(QString accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus) {
+  qDebug() << "ContactListManager::changePresence() called";
   RosterItemModel *contact = (RosterItemModel*)roster->find( accountId + ";" + bareJid );
   if (contact != 0) {
       contact->setResource(resource);
       contact->setPresence(picStatus);
       contact->setStatusText(txtStatus);
     }
+  qDebug() << "presence updated";
   contact = (RosterItemModel*)rosterOffline->find(accountId+";"+bareJid);
-  if (contact != 0) {
-      if (picStatus != "qrc:/presence/offline") {
+  if (picStatus != "qrc:/presence/offline") {
+      if (contact!=0) {
           contact->setResource(resource);
           contact->setPresence(picStatus);
           contact->setStatusText(txtStatus);
-      } else
-          rosterOffline->removeId(accountId+";"+bareJid);
-    } else {
-      contact = (RosterItemModel*)roster->find(accountId+";"+bareJid);
-      roster->append(contact);
-    }
+        } else {
+          contact = (RosterItemModel*)roster->find(accountId+";"+bareJid);
+          RosterItemModel *contactNew = new RosterItemModel(contact->name(),bareJid,resource,picStatus,txtStatus,contact->unreadMsg(),accountId);
+          rosterOffline->append(contactNew);
+        }
+    } else if (contact != 0)
+        rosterOffline->removeId(accountId+";"+bareJid);
 }
 void ContactListManager::changeName(QString accountId,QString bareJid,QString name) {
   RosterItemModel *contact = (RosterItemModel*)roster->find( accountId + ";" + bareJid );
