@@ -165,7 +165,7 @@ Page {
             id: titleText
             anchors { horizontalCenter: parent.horizontalCenter; verticalCenter: parent.verticalCenter }
             text: "Getting Started"
-            color: "white"
+            color: vars.textColor
             font.pixelSize: platformStyle.fontSizeMedium*1.5
         }
     }

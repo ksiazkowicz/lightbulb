@@ -58,6 +58,8 @@ class XmppConnectivity : public QObject
     Q_PROPERTY(QString currentAccount READ getCurrentAccount WRITE changeAccount NOTIFY accountChanged)
     Q_PROPERTY(QString currentAccountName READ getCurrentAccountName NOTIFY accountChanged)
     Q_PROPERTY(int messagesLimit READ getMsgLimit WRITE setMsgLimit NOTIFY msgLimitChanged )
+
+    Q_PROPERTY(bool offlineContactsVisibility READ getVisibility WRITE setVisibility NOTIFY visibilityChanged)
 public:
     explicit XmppConnectivity(QObject *parent = 0);
     ~XmppConnectivity();
@@ -140,6 +142,7 @@ signals:
     void msgLimitChanged();
 
     void widgetDataChanged();
+    void visibilityChanged();
     
 public slots:
     void updateContact(QString m_accountId,QString bareJid,QString property,int count) {
@@ -202,6 +205,9 @@ public slots:
     Q_INVOKABLE void renameContact(QString accountId, QString bareJid, QString newName) {
       clients->value(accountId)->renameContact(bareJid,newName);
     }
+
+    Q_INVOKABLE void setVisibility(bool state)   { contacts->setOfflineContactsState(state); emit rosterChanged(); }
+    Q_INVOKABLE bool getVisibility()           { return contacts->getOfflineContactsState(); }
 
 private:
     QString currentClient;

@@ -12,7 +12,7 @@ class ContactListManager : public QObject
 
 public:
   explicit ContactListManager(QObject *parent = 0);
-  RosterListModel* getRoster() { return rosterOffline; }
+  RosterListModel* getRoster();
 
    Q_INVOKABLE QString getPropertyByOrderID(int id,QString property);
    Q_INVOKABLE QString getPropertyByJid(QString accountId,QString bareJid,QString property);
@@ -32,9 +32,14 @@ public slots:
   void changeName(QString m_accountId,QString bareJid,QString name);
   void removeContact(QString acc,QString bareJid);
 
+  void setOfflineContactsState(bool state) { showOfflineContacts = state; }
+  bool getOfflineContactsState()           { return showOfflineContacts;  }
+
 private:
   RosterListModel* roster;
   RosterListModel* rosterOffline;
+
+  bool showOfflineContacts;
   
 };
 
