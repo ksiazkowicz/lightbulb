@@ -89,6 +89,8 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
     clients->value(index)->setAccountId(index);
     connect(clients->value(index),SIGNAL(updateContact(QString,QString,QString,int)),this,SLOT(updateContact(QString,QString,QString,int)));
     connect(clients->value(index),SIGNAL(insertMessage(QString,QString,QString,QString,int)),this,SLOT(insertMessage(QString,QString,QString,QString,int)));
+    connect(clients->value(index),SIGNAL(chatOpened(QString,QString)),this,SLOT(chatOpened(QString,QString)));
+    connect(clients->value(index),SIGNAL(chatClosed(QString,QString)),this,SLOT(chatClosed(QString,QString)));
     connect(clients->value(index),SIGNAL(contactRenamed(QString,QString)),this,SLOT(renameChatContact(QString,QString)));
     connect(clients->value(index),SIGNAL(contactStatusChanged(QString,QString)),this,SLOT(handleContactStatusChange(QString,QString)));
 
@@ -169,8 +171,6 @@ void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString
     body = body.replace("<", "&lt;");  //and < stuff too ^^
     body = msgWrapper->parseMsgOnLink(body);
 
-    this->openChat(m_accountId,bareJid);
-
     if (!cachedMessages->contains(bareJid)) cachedMessages->insert(bareJid,new MsgListModel());
     MsgItemModel* message = new MsgItemModel(body,date,mine);
     cachedMessages->value(bareJid)->append(message);
@@ -182,24 +182,24 @@ void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString
 }
 
 // handling chats list
-void XmppConnectivity::openChat(QString accountId, QString bareJid) {
+void XmppConnectivity::chatOpened(QString accountId, QString bareJid) {
   if (!chats->checkIfExists(bareJid)) {
     ChatsItemModel* chat = new ChatsItemModel(this->getPropertyByJid(accountId,bareJid,"name"),bareJid,accountId);
     chats->append(chat);
-    qDebug() << "XmppConnectivity::openChat(): appending"<< qPrintable(bareJid) << "from account" << accountId << "to chats list.";
+    qDebug() << "XmppConnectivity::chatOpened(): appending"<< qPrintable(bareJid) << "from account" << accountId << "to chats list.";
     emit chatsChanged();
   }
   if (!cachedMessages->contains(bareJid)) cachedMessages->insert(bareJid,new MsgListModel());
   addChat(accountId,bareJid);
 }
 
-void XmppConnectivity::closeChat(QString accId, QString bareJid) {
+void XmppConnectivity::chatClosed(QString accId, QString bareJid) { //this poorly written piece of shit should take care of account id one day
   for (int i=0; i<chats->count(); i++) {
       ChatsItemModel *itemExists = (ChatsItemModel*)chats->getElementByID(i);
       if (itemExists->jid() == bareJid && itemExists->accountID() == accId)
           chats->takeRow(i);
   }
-  qDebug() << "XmppConnectivity::closeChat(): chat closed";
+  qDebug() << "XmppConnectivity::chatClosed(): chat closed";
   removeChat(accId,bareJid);
 }
 

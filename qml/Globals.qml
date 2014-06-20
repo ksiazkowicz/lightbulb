@@ -49,6 +49,4 @@ Item {
     property bool                    showContactStatusText: settings.gBool("ui","showContactStatusText")
     property bool                    rosterLayoutAvatar: settings.gBool("ui","rosterLayoutAvatar")
     property string                  selectedJid: ""
-    property bool                    awaitingContext: false
-    property string                  dialogQmlFile: ""
 }

@@ -81,7 +81,7 @@ Page {
 
     property string contactName: ""
     Component.onCompleted: {
-        xmppConnectivity.openChat( xmppConnectivity.currentAccount,xmppConnectivity.chatJid )
+        xmppConnectivity.client.openChat( xmppConnectivity.chatJid )
         statusBarText.text = contactName
     }
 

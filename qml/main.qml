@@ -34,23 +34,7 @@ PageStackWindow {
     platformInverted:                settings.gBool("ui","invertPlatform")
     platformSoftwareInputPanelEnabled: true
 
-    Globals { id: vars
-        onAwaitingContextChanged: {
-            if (!awaitingContext && dialogQmlFile != "") {
-                dialog.create(dialogQmlFile)
-                dialogQmlFile = "";
-            }
-        }
-
-    }
-
-    function getAccountStatusIcon()
-    {
-        if (xmppConnectivity.client.stateConnect === 2)
-            return "qrc:/presence/unknown"
-        else
-            return "qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.client.status)
-    }
+    Globals { id: vars }
 
     function openChat() {
         xmppConnectivity.resetUnreadMessages( xmppConnectivity.currentAccount, xmppConnectivity.chatJid )
@@ -205,12 +189,6 @@ PageStackWindow {
         function createWithProperties(qmlfile, properties){
             c=Qt.createComponent(qmlfile);
             c.createObject(main, properties)
-        }
-        function createWithContext(qmlFile) {
-            c=Qt.createComponent("qrc:/dialogs/AccountSwitcher")
-            c.createObject(main)
-            vars.awaitingContext = true;
-            vars.dialogQmlFile = qmlFile;
         }
     }
 

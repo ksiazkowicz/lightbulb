@@ -40,7 +40,7 @@ Page {
         listModelResources.clear()
         xmppConnectivity.page = 1
         console.log( xmppConnectivity.chatJid )
-        xmppConnectivity.openChat( xmppConnectivity.currentAccount,xmppConnectivity.chatJid )
+        xmppConnectivity.client.openChat( xmppConnectivity.chatJid )
 
         statusBarText.text = contactName
 
@@ -168,7 +168,7 @@ Page {
         onNotifyMsgReceived: if( jid == xmppConnectivity.chatJid ) vars.resourceJid = xmppConnectivity.client.resourceLastMsg
         onQmlChatChanged: {
             listModelResources.clear()
-            xmppConnectivity.openChat( xmppConnectivity.currentAccount,xmppConnectivity.chatJid )
+            xmppConnectivity.client.openChat( xmppConnectivity.chatJid )
             contactName = xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,xmppConnectivity.chatJid,"name")
             statusBarText.text = contactName
 
@@ -289,7 +289,7 @@ Page {
             iconSource: main.platformInverted ? "qrc:/toolbar/chats_inverse" : "qrc:/toolbar/chats"
             onClicked: {
                 xmppConnectivity.preserveMsg(xmppConnectivity.chatJid,txtMessage.text)
-                xmppConnectivity.resetUnreadMessages( xmppConnectivity.chatJid ) //cleans unread count for this JID
+                xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.chatJid ) //cleans unread count for this JID
                 dialog.create("qrc:/dialogs/Chats")
             }
             Image {

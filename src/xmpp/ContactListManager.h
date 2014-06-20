@@ -18,8 +18,6 @@ public:
    Q_INVOKABLE QString getPropertyByJid(QString accountId,QString bareJid,QString property);
 
    Q_INVOKABLE void resetUnreadMessages(QString accountId,QString bareJid);
-
-  void clearPresenceForAccount(QString accountId);
   
 signals:
   void rosterChanged();

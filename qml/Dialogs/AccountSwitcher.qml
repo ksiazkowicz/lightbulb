@@ -28,11 +28,15 @@ import com.nokia.symbian 1.1
 CommonDialog {
     id: accountSwitcher
     privateCloseIcon: true
-    titleText: qsTr("Select context")
-    buttonTexts: ["OK"]
+    titleText: qsTr("Available accounts")
+    buttonTexts: [qsTr("Settings")]
     height: 320
 
     platformInverted: main.platformInverted
+
+    onButtonClicked: {
+        main.pageStack.push( "qrc:/pages/Accounts" )
+    }
 
     content: ListView {
         id: listViewAccounts
@@ -106,8 +110,5 @@ CommonDialog {
         isCreated = true }
     property bool isCreated: false
 
-    onStatusChanged: if (isCreated && accountSwitcher.status === DialogStatus.Closed) {
-                         vars.awaitingContext = false;
-                         accountSwitcher.destroy()
-                     }
+    onStatusChanged: if (isCreated && accountSwitcher.status === DialogStatus.Closed) accountSwitcher.destroy()
 }

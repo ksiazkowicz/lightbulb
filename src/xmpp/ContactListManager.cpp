@@ -84,12 +84,3 @@ QString ContactListManager::getPropertyByOrderID(int id, QString property) {
   }
   return "";
 }
-
-void ContactListManager::clearPresenceForAccount(QString accountId) {
-  RosterItemModel* element;
-  for (int i=0;i<roster->count();i++) {
-      element = (RosterItemModel*)roster->getElementByID(i);
-      if (element != 0 && element->accountId() == accountId)
-        element->setPresence("qrc:/presence/offline");
-    }
-}

@@ -282,6 +282,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         m_bareJidLastMessage = getBareJidByJid(xmppMsg.from());
         m_resourceLastMessage = getResourceByJid(xmppMsg.from());
 
+        this->openChat( bareJid_from );
         emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.from()),xmppMsg.body(),QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0);
     }
 }
