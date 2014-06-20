@@ -38,14 +38,6 @@ public:
 
     Q_INVOKABLE void append( RosterItemModel *item ) { this->appendRow( item ); }
     Q_INVOKABLE void remove( int index ) { this->removeRow( index ); }
-    Q_INVOKABLE void removeId ( QString id ) {
-      RosterItemModel *contact;
-      for (int i=0;i<roster->count();i++) {
-        contact = (RosterItemModel*)roster->getElementByID(i);
-        if (contact->id() == id)
-          roster->remove(i);
-      }
-    }
     Q_INVOKABLE int count() { return this->rowCount(); }
 
     Q_INVOKABLE void clearList() { this->clear(); }
