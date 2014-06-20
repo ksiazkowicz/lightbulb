@@ -12,7 +12,7 @@ class ContactListManager : public QObject
 
 public:
   explicit ContactListManager(QObject *parent = 0);
-  RosterListModel* getRoster() { return rosterOffline; }
+  RosterListModel* getRoster() { return roster; }
 
    Q_INVOKABLE QString getPropertyByOrderID(int id,QString property);
    Q_INVOKABLE QString getPropertyByJid(QString accountId,QString bareJid,QString property);

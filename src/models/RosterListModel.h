@@ -40,10 +40,10 @@ public:
     Q_INVOKABLE void remove( int index ) { this->removeRow( index ); }
     Q_INVOKABLE void removeId ( QString id ) {
       RosterItemModel *contact;
-      for (int i=0;i<this->count();i++) {
-        contact = (RosterItemModel*)this->getElementByID(i);
+      for (int i=0;i<roster->count();i++) {
+        contact = (RosterItemModel*)roster->getElementByID(i);
         if (contact->id() == id)
-          this->remove(i);
+          roster->remove(i);
       }
     }
     Q_INVOKABLE int count() { return this->rowCount(); }
