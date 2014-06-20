@@ -173,7 +173,7 @@ public :
     void setStatus( StatusXmpp __status );
 
     bool getTyping() const { return m_flTyping; }
-    void setTyping( QString &jid, const bool isTyping ) { m_flTyping = isTyping; emit typingChanged(jid, isTyping); }
+    void setTyping( QString &jid, const bool isTyping ) { m_flTyping = isTyping; emit typingChanged(m_accountId, jid, isTyping); }
 
     RosterListModel* getCachedRoster() const { return cachedRoster; }
 
@@ -208,11 +208,8 @@ public :
 	
 signals:
     void versionChanged();
-    void connectingChanged();
     void statusTextChanged();
-    void statusChanged();
     void rosterChanged();
-    void typingChanged( QString bareJid, bool isTyping );
     void myJidChanged();
     void myPasswordChanged();
     void hostChanged();
@@ -222,9 +219,6 @@ signals:
     void chatOpened( QString accountId, QString bareJid );
     void chatClosed( QString accountId, QString bareJid );
     void accountIdChanged();
-    void vCardChanged();
-    void errorHappened( const QString &errorString );
-    void subscriptionReceived( const QString bareJid );
     void keepAliveChanged();
     void contactStatusChanged(QString accountId, QString bareJid);
 
@@ -232,6 +226,13 @@ signals:
     void updateContact(QString m_accountId,QString bareJid,QString property,int count);
     void insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine);
     void contactRenamed(QString jid,QString name);
+
+    void connectingChanged(const QString accountId);
+    void errorHappened(const QString accountId,const QString &errorString);
+    void subscriptionReceived(const QString accountId,const QString bareJid);
+    void statusChanged(const QString accountId);
+    void typingChanged(const QString accountId, QString bareJid, bool isTyping);
+    void vCardChanged(const QString accountId);
 
 public slots:
     void clientStateChanged( QXmppClient::State state );
@@ -252,6 +253,8 @@ private slots:
     void messageReceivedSlot( const QXmppMessage &msg );
     void presenceReceived( const QXmppPresence & presence );
     void error(QXmppClient::Error);
+
+    void notifyNewSubscription(QString bareJid) { emit subscriptionReceived(m_accountId, bareJid); }
 
 private:
     // functions

@@ -45,9 +45,10 @@ class QDeclarativeView;
 class QAvkonHelper : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool switchToApp READ getSwitchToAppProperty WRITE setSwitchToAppProperty)
 public:
     explicit QAvkonHelper(QDeclarativeView *view, QObject *parent = 0);
-    Q_INVOKABLE void showPopup(QString title,QString message, bool goToApp);
+    Q_INVOKABLE void showPopup(QString title,QString message);
     Q_INVOKABLE void notificationBlink(int device);
     Q_INVOKABLE void displayGlobalNote(QString message, bool isError);
     Q_INVOKABLE QString openFileSelectionDlg();
@@ -70,12 +71,17 @@ private:
 
     bool chatIconStatus;
     AvkonMedia* iAudioPlayer;
+
+    bool _switchToApp;
     
 signals:
     
 public slots:
     void cleanLastMsg() { lastPopup=""; }
     void playNotification(QString path);
+
+    bool getSwitchToAppProperty()          { return _switchToApp; }
+    void setSwitchToAppProperty(bool data) { _switchToApp = data; }
     
 };
 

@@ -29,8 +29,9 @@ import lightbulb 1.0
 
 CommonDialog {
     id: reconDialog
-    titleText: qsTr("Connection lost")
+    titleText: qsTr("Connection lost ") + "(" + xmppConnectivity.getAccountName(accountId) + ")"
     property int timeLeft: 10
+    property string accountId: ""
     platformInverted: main.platformInverted
 
     buttonTexts: [qsTr("Cancel")]

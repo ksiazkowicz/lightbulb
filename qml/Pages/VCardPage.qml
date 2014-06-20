@@ -53,8 +53,8 @@ Page {
     // Code for destroying the page after pop
     onStatusChanged: if (vCardPage.status === PageStatus.Inactive) vCardPage.destroy()
 
-    Connections {
-        target: xmppVCard
+    XmppVCard {
+        id: xmppVCard
         onVCardChanged: {
             //console.log( "QML: VCardPage: onVCardChanged: " + xmppVCard.nickname )
             if( xmppVCard.photo != "" ) {

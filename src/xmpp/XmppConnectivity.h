@@ -130,15 +130,19 @@ signals:
     void pageChanged();
     void sqlMessagesChanged();
     void chatJidChanged();
-
     void chatsChanged();
-
     void notifyMsgReceived(QString name,QString jid,QString body);
-
     void qmlChatChanged();
     void msgLimitChanged();
-
     void widgetDataChanged();
+
+    // MyXmppClient ones
+    void xmppConnectingChanged    (const QString accountId);
+    void xmppErrorHappened        (const QString accountId, const QString &errorString);
+    void xmppStatusChanged        (const QString accountId);
+    void xmppVCardChanged         (const QString accountId);
+    void xmppSubscriptionReceived (const QString accountId, const QString bareJid);
+    void xmppTypingChanged        (const QString accountId, QString bareJid, bool isTyping);
     
 public slots:
     void changeRoster() {
@@ -199,6 +203,10 @@ public slots:
     }
 
     Q_INVOKABLE void updateAvatarCachingSetting(bool setting);
+    Q_INVOKABLE void acceptSubscription(QString accountId,QString bareJid) { clients->value(accountId)->acceptSubscribtion(bareJid); }
+    Q_INVOKABLE void rejectSubscription(QString accountId,QString bareJid) { clients->value(accountId)->rejectSubscribtion(bareJid); }
+    Q_INVOKABLE int  getConnectionStatusByAccountId(QString accountId)     { return clients->value(accountId)->getStateConnect(); }
+    Q_INVOKABLE int  getStatusByAccountId(QString accountId)               { return clients->value(accountId)->getStatus(); }
 
 private:
     QString currentClient;

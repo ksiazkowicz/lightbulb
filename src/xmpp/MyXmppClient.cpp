@@ -101,7 +101,7 @@ void MyXmppClient::clientStateChanged(QXmppClient::State state) {
         this->setMyPresence( Offline, m_statusText );
     }
     if (m_stateConnect != before)
-      emit connectingChanged(); //check if stateConnect changed
+      emit connectingChanged(m_accountId); //check if stateConnect changed
 }
 
 void MyXmppClient::error(QXmppClient::Error e) {
@@ -117,7 +117,7 @@ void MyXmppClient::error(QXmppClient::Error e) {
         this->clearPresence();
         xmppClient->setClientPresence( presence );
 
-        emit errorHappened( errString );
+        emit errorHappened(m_accountId,errString);
     }
 }
 
@@ -169,7 +169,7 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
             qmlVCard->setUrl( vCard.url() );
             qmlVCard->setJid( bareJid );
             flVCardRequest = "";
-            emit vCardChanged();
+            emit vCardChanged(m_accountId);
         }
 
         cacheIM->setVCard( bareJid, dataVCard );
@@ -271,14 +271,14 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
     else if( xmppMsg.state() == QXmppMessage::Composing ) {
         if (bareJid_from != "") {
             m_flTyping = true;
-            emit typingChanged( bareJid_from, true);
+            emit typingChanged(m_accountId,bareJid_from, true);
             qDebug() << bareJid_from << " is composing.";
         }
     }
     else if( xmppMsg.state() == QXmppMessage::Paused ) {
         if (bareJid_from != "") {
             m_flTyping = false;
-            emit typingChanged( bareJid_from, false);
+            emit typingChanged(m_accountId,bareJid_from, false);
             qDebug() << bareJid_from << " paused.";
         }
     } else {
@@ -378,7 +378,7 @@ void MyXmppClient::presenceReceived( const QXmppPresence & presence ) {
               case QXmppPresence::DND: m_status = DND; break;
             }
         }
-        emit statusChanged();
+        emit statusChanged(m_accountId);
     }
 }
 
@@ -480,7 +480,7 @@ void MyXmppClient::initRosterManager() {
 
   QObject::connect( rosterManager, SIGNAL(presenceChanged(QString,QString)), this, SLOT(initPresence(const QString, const QString)), Qt::UniqueConnection );
   QObject::connect( rosterManager, SIGNAL(rosterReceived()), this, SLOT(initRoster()), Qt::UniqueConnection );
-  QObject::connect( rosterManager, SIGNAL(subscriptionReceived(QString)), this, SIGNAL(subscriptionReceived(QString)), Qt::UniqueConnection );
+  QObject::connect( rosterManager, SIGNAL(subscriptionReceived(QString)), this, SLOT(notifyNewSubscription(QString)), Qt::UniqueConnection );
   QObject::connect( rosterManager, SIGNAL(itemAdded(QString)), this, SLOT(itemAdded(QString)), Qt::UniqueConnection );
   QObject::connect( rosterManager, SIGNAL(itemRemoved(QString)), this, SLOT(itemRemoved(QString)), Qt::UniqueConnection );
   QObject::connect( rosterManager, SIGNAL(itemChanged(QString)), this, SLOT(itemChanged(QString)), Qt::UniqueConnection );
