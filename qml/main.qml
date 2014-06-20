@@ -175,7 +175,6 @@ PageStackWindow {
         if (settings.gStr("behavior","lastAccount") !== "false") changeAccount(settings.gStr("behavior","lastAccount"));
         checkIfFirstRun()
         xmppConnectivity.client.keepAlive = settings.gInt("behavior", "keepAliveInterval")
-        xmppConnectivity.offlineContactsVisibility = !vars.hideOffline
     }
 
     /************************( stuff to do when running this app )*****************************/

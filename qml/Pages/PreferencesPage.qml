@@ -151,7 +151,6 @@ Page {
                 right: parent.right
                 top: parent.top
                 bottom: parent.bottom
-                topMargin: 2
             }
 
             onClicked: selectionDialog.open()

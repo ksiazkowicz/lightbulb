@@ -42,7 +42,7 @@ public:
       RosterItemModel *contact;
       for (int i=0;i<this->count();i++) {
         contact = (RosterItemModel*)this->getElementByID(i);
-        if (contact != 0 && contact->id() == id)
+        if (contact->id() == id)
           this->remove(i);
       }
     }

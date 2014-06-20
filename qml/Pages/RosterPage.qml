@@ -45,14 +45,6 @@ Page {
         onChatJidChanged: if (xmppConnectivity.chatJid == "") vars.selectedJid = "";
     }
 
-    Connections {
-        target: vars
-        onHideOfflineChanged: {
-            if (rosterSearch.height == 0)
-                xmppConnectivity.offlineContactsVisibility = !vars.hideOffline
-        }
-    }
-
     Component.onCompleted: statusBarText.text = "Contacts"
 
     /*******************************************************************************/
@@ -64,7 +56,7 @@ Page {
             id: wrapper
             width: rosterView.width
             color: "transparent"
-            visible: rosterSearch.text !== "" ? (txtJid.contact.toLowerCase().indexOf(rosterSearch.text.toLowerCase()) != -1 ? true : false ) : true
+            visible: rosterSearch.text !== "" ? (txtJid.contact.toLowerCase().indexOf(rosterSearch.text.toLowerCase()) != -1 ? true : false ) : presence === "qrc:/presence/offline" ? !vars.hideOffline : true
             height: vars.rosterItemHeight - txtJid.font.pixelSize > txtJid.height ? vars.rosterItemHeight : txtJid.height + txtJid.font.pixelSize
 
             gradient: gr_free
@@ -222,12 +214,6 @@ Page {
         placeholderText: qsTr("Tap to write")
 
         Behavior on height { SmoothedAnimation { velocity: 200 } }
-        onTextChanged: {
-            if (text.length > 0) {
-                if (!xmppConnectivity.offlineContactsVisibility)
-                    xmppConnectivity.offlineContactsVisibility = true;
-            } else if (xmppConnectivity.offlineContactsVisibility != !vars.hideOffline) xmppConnectivity.offlineContactsVisibility = !vars.hideOffline
-        }
     }
 
     Item {
@@ -271,13 +257,8 @@ Page {
             iconSource: main.platformInverted ? "toolbar-search_inverse" : "toolbar-search"
             onClicked: {
                 if (rosterSearch.height == 50) {
-                    if (xmppConnectivity.offlineContactsVisibility != !vars.hideOffline)
-                            xmppConnectivity.offlineContactsVisibility = !vars.hideOffline;
                     rosterSearch.height = 0;
-                    rosterSearch.text = "";
-                } else {
-                    rosterSearch.height = 50;
-                }
+                    rosterSearch.text = ""; } else rosterSearch.height = 50
             }
         }
 
