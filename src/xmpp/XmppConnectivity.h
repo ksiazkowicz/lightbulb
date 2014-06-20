@@ -107,7 +107,7 @@ public:
         QString presenceJid = latestChats.at(latestChats.count()-index);
         if (property == "accountId")
           return presenceJid.split(';').at(0);
-        //return contacts->getPropertyByJid(presenceJid.split(';').at(1),property);
+        return contacts->getPropertyByJid(presenceJid.split(';').at(1),property);
         } else if (property == "presence") return "-2";
       return "";
     }
@@ -117,7 +117,7 @@ public:
         QString presenceJid = latestStatusChanges.at(latestStatusChanges.count()-index);
         if (property == "accountId")
           return presenceJid.split(';').at(0);
-        //return contacts->getPropertyByJid(presenceJid.split(';').at(1),property);
+        return contacts->getPropertyByJid(presenceJid.split(';').at(1),property);
         } else if (property == "presence") return "-2";
       return "";
     }
@@ -187,7 +187,7 @@ public slots:
 
     // widget
     void handleContactStatusChange(QString accountId, QString bareJid) {
-      if (this->getPropertyByJid(accountId,bareJid,"presence") == "qrc:/presence/offline") return;
+      if (contacts->getPropertyByJid(bareJid,"presence") == "qrc:/presence/offline") return;
       if (latestStatusChanges.contains(accountId+";"+bareJid))
             latestStatusChanges.removeAt(latestStatusChanges.indexOf(accountId+";"+bareJid));
       latestStatusChanges.append(accountId+";"+bareJid);

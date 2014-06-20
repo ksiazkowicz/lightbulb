@@ -111,7 +111,7 @@ public:
         }
 
 
-      virtual QString id() const { return contactAccountID + ";" + contactJid; }
+      virtual QString id() const { return contactJid; }
 
       void setPresence( const QString &_contactPresence ) {
           if(contactPresence != _contactPresence) {
