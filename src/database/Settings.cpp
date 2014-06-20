@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "src/models/AccountsListModel.h"
 #include <QDebug>
 
-QString Settings::appName = "Lightbulb";
+QString Settings::appName = "Fluorescent";
 QString Settings::cacheFolder = QDir::currentPath() + QDir::separator() + QString("cache");
 QString Settings::confFile = QDir::currentPath() + QDir::separator() + Settings::appName + ".conf";
 

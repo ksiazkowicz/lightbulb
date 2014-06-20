@@ -59,7 +59,7 @@ Page {
         Text {
             id: programName
             color: vars.textColor
-            text: "Lightbulb IM " + xmppConnectivity.client.version + " α"
+            text: "Fluorescent IM " + xmppConnectivity.client.version + " α"
             anchors { top: logo.bottom; topMargin: 5; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
             horizontalAlignment: Text.AlignHCenter
             font.pixelSize: platformStyle.fontSizeMedium*1.3

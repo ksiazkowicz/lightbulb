@@ -39,7 +39,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 LightbulbHSWidget::LightbulbHSWidget(QObject *parent) :
     QObject(parent)
 {
-    widget = QHSWidget::create("wideimage", "Lightbulb", "0xE22AC278", this);
+    widget = QHSWidget::create("wideimage", "Fluorescent", "0xE00AC666", this);
     connect(widget, SIGNAL(handleEvent(QHSWidget*, QHSEvent)), this, SLOT(handleEvent(QHSWidget*, QHSEvent) ));
     connect(widget, SIGNAL(handleItemEvent(QHSWidget*, QString, QHSItemEvent)), this, SLOT(handleItemEvent(QHSWidget*, QString, QHSItemEvent)));
     widgetData = new WidgetDataModel(this);

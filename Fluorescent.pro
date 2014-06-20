@@ -1,12 +1,12 @@
 #######################################################################
-# Lightbulb.pro
-# -- Lightbulb project file
+# Fluorescent.pro
+# -- Fluorescent project file
 #
 # Copyright (c) 2013 Maciej Janiszewski
 #
-# This file is part of Lightbulb.
+# This file is part of Fluorescent.
 #
-# Lightbulb is free software: you can redistribute it and/or modify
+# Fluorescent is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -22,10 +22,10 @@
 
 QT += declarative network sql svg
 
-VERSION = 0.3
+VERSION = 0.4
 
 symbian {
-    TARGET.UID3 = 0xE22AC278
+    TARGET.UID3 = 0xE00AC666
     TARGET.CAPABILITY += NetworkServices WriteDeviceData ReadDeviceData ReadUserData WriteUserData LocalServices
     TARGET.EPOCHEAPSIZE = 0x200000 0x1F400000
     CONFIG += qt-components
@@ -33,7 +33,7 @@ symbian {
     vendorinfo += "%{\"n1958 Apps\"}" ":\"n1958 Apps\""
     my_deployment.pkg_prerules = vendorinfo
     DEPLOYMENT += my_deployment
-    DEPLOYMENT.display_name = Lightbulb
+    DEPLOYMENT.display_name = Fluorescent
 
     DEFINES += APP_VERSION=\"$$VERSION\"
 
@@ -130,33 +130,33 @@ qtcAddDeployment()
 include(qxmpp/qxmpp.pri)
 INCLUDEPATH += qxmpp/base/ qxmpp/client
 
-addFiles.pkg_postrules += "\"HSWidgetPlugin0xE22AC278.dll\" - \"!:\\sys\\bin\\HSWidgetPlugin0xE22AC278.dll\""
+addFiles.pkg_postrules += "\"HSWidgetPlugin0xE00AC666.dll\" - \"!:\\sys\\bin\\HSWidgetPlugin0xE00AC666.dll\""
 
-addFiles.pkg_postrules += "\"sounds\\Message_Received.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Message_Received.wav\""
-addFiles.pkg_postrules += "\"sounds\\Message_Sent.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Message_Sent.wav\""
-addFiles.pkg_postrules += "\"sounds\\New_Message.wav\" - \"!:\\data\\.config\\Lightbulb\\sounds\\Subscription_Request.wav\""
+addFiles.pkg_postrules += "\"sounds\\Message_Received.wav\" - \"!:\\data\\.config\\Fluorescent\\sounds\\Message_Received.wav\""
+addFiles.pkg_postrules += "\"sounds\\Message_Sent.wav\" - \"!:\\data\\.config\\Fluorescent\\sounds\\Message_Sent.wav\""
+addFiles.pkg_postrules += "\"sounds\\New_Message.wav\" - \"!:\\data\\.config\\Fluorescent\\sounds\\Subscription_Request.wav\""
 
 # Belle Albus widget skin
-addFiles.pkg_postrules += "\"widget\\Belle Albus\\background.png\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Belle Albus\\background.png\""
-addFiles.pkg_postrules += "\"widget\\Belle Albus\\fader.png\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Belle Albus\\fader.png\""
-addFiles.pkg_postrules += "\"widget\\Belle Albus\\settings.txt\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Belle Albus\\settings.txt\""
+addFiles.pkg_postrules += "\"widget\\Belle Albus\\background.png\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Belle Albus\\background.png\""
+addFiles.pkg_postrules += "\"widget\\Belle Albus\\fader.png\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Belle Albus\\fader.png\""
+addFiles.pkg_postrules += "\"widget\\Belle Albus\\settings.txt\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Belle Albus\\settings.txt\""
 
 # Belle Atricolor widget skin
-addFiles.pkg_postrules += "\"widget\\Belle Atricolor\\background.png\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Belle Atricolor\\background.png\""
-addFiles.pkg_postrules += "\"widget\\Belle Atricolor\\fader.png\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Belle Atricolor\\fader.png\""
-addFiles.pkg_postrules += "\"widget\\Belle Atricolor\\settings.txt\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Belle Atricolor\\settings.txt\""
+addFiles.pkg_postrules += "\"widget\\Belle Atricolor\\background.png\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Belle Atricolor\\background.png\""
+addFiles.pkg_postrules += "\"widget\\Belle Atricolor\\fader.png\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Belle Atricolor\\fader.png\""
+addFiles.pkg_postrules += "\"widget\\Belle Atricolor\\settings.txt\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Belle Atricolor\\settings.txt\""
 
 # Jelly Bean by Rudmata
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\background.png\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\background.png\""
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\fader.png\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\fader.png\""
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\settings.txt\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\settings.txt\""
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\unread.svg\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\unread.svg\""
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\away.svg\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\presence\\away.svg\""
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\busy.svg\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\presence\\busy.svg\""
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\chatty.svg\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\presence\\chatty.svg\""
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\offline.svg\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\presence\\offline.svg\""
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\online.svg\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\presence\\online.svg\""
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\xa.svg\" - \"C:\\data\\.config\\Lightbulb\\widgets\\Jelly Bean\\presence\\xa.svg\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\background.png\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\background.png\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\fader.png\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\fader.png\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\settings.txt\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\settings.txt\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\unread.svg\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\unread.svg\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\away.svg\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\presence\\away.svg\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\busy.svg\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\presence\\busy.svg\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\chatty.svg\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\presence\\chatty.svg\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\offline.svg\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\presence\\offline.svg\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\online.svg\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\presence\\online.svg\""
+addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\xa.svg\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\presence\\xa.svg\""
 
 
 DEPLOYMENT += addFiles
