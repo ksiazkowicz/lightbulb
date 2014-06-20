@@ -41,24 +41,12 @@ void ContactListManager::changePresence(QString accountId,QString bareJid,QStrin
       contact->setStatusText(txtStatus);
     }
 }
-void ContactListManager::changeName(QString accountId,QString bareJid,QString name) {
-  RosterItemModel *contact = (RosterItemModel*)roster->find( accountId + ";" + bareJid );
-  if (contact != 0)
-    contact->setContactName(name);
-}
-void ContactListManager::removeContact(QString acc,QString bareJid) {
-  RosterItemModel *contact;
-  for (int i=0;i<roster->count();i++) {
-      contact = (RosterItemModel*)roster->getElementByID(i);
-      if (contact->id() == acc+";"+bareJid)
-        roster->remove(i);
-    }
-}
 void ContactListManager::resetUnreadMessages(QString accountId, QString bareJid) {
   RosterItemModel *contact = (RosterItemModel*)roster->find( accountId + ";" + bareJid );
   if (contact != 0)
     contact->setUnreadMsg(0);
 }
+
 QString ContactListManager::getPropertyByJid( QString accountId, QString bareJid, QString property ) {
     RosterItemModel *item = (RosterItemModel*)roster->find( accountId + ";" + bareJid );
     if (item != 0) {
