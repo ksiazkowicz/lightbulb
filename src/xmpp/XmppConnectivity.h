@@ -40,7 +40,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "src/models/ChatsListModel.h"
 #include "src/models/MsgListModel.h"
 #include "src/models/MsgItemModel.h"
-#include "src/xmpp/ContactListManager.h"
 
 class XmppConnectivity : public QObject
 {
@@ -107,7 +106,7 @@ public:
         QString presenceJid = latestChats.at(latestChats.count()-index);
         if (property == "accountId")
           return presenceJid.split(';').at(0);
-        return contacts->getPropertyByJid(presenceJid.split(';').at(1),property);
+        return clients->value(presenceJid.split(';').at(0))->getPropertyByJid(presenceJid.split(';').at(1),property);
         } else if (property == "presence") return "-2";
       return "";
     }
@@ -117,7 +116,7 @@ public:
         QString presenceJid = latestStatusChanges.at(latestStatusChanges.count()-index);
         if (property == "accountId")
           return presenceJid.split(';').at(0);
-        return contacts->getPropertyByJid(presenceJid.split(';').at(1),property);
+        return clients->value(presenceJid.split(';').at(0))->getPropertyByJid(presenceJid.split(';').at(1),property);
         } else if (property == "presence") return "-2";
       return "";
     }
@@ -142,6 +141,10 @@ signals:
     void widgetDataChanged();
     
 public slots:
+    void changeRoster() {
+        roster = selectedClient->getCachedRoster();
+        emit rosterChanged();
+    }
     void updateContact(QString m_accountId,QString bareJid,QString property,int count) {
         dbWorker->executeQuery(QStringList() << "updateContact" << m_accountId << bareJid << property << QString::number(count));
     }
@@ -153,7 +156,7 @@ public slots:
     // handling chats list
     void chatOpened(QString accountId,QString bareJid);
     void chatClosed(QString accountId,QString bareJid);
-    Q_INVOKABLE QString getPropertyByJid(QString account,QString jid,QString property);
+    Q_INVOKABLE QString getPropertyByJid(QString account,QString property,QString jid);
     Q_INVOKABLE QString getPreservedMsg(QString jid);
     Q_INVOKABLE void preserveMsg(QString jid,QString message);
 
@@ -187,7 +190,7 @@ public slots:
 
     // widget
     void handleContactStatusChange(QString accountId, QString bareJid) {
-      if (contacts->getPropertyByJid(bareJid,"presence") == "qrc:/presence/offline") return;
+      if (clients->value(accountId)->getPropertyByJid(bareJid,"presence") == "qrc:/presence/offline") return;
       if (latestStatusChanges.contains(accountId+";"+bareJid))
             latestStatusChanges.removeAt(latestStatusChanges.indexOf(accountId+";"+bareJid));
       latestStatusChanges.append(accountId+";"+bareJid);
@@ -203,9 +206,8 @@ private:
 
     QMap<QString,MsgListModel*> *cachedMessages;
 
-    RosterListModel* getRoster();
-
-    ContactListManager *contacts;
+    RosterListModel* roster;
+    RosterListModel* getRoster() { return roster; }
 
     QString getCurrentAccountName();
 

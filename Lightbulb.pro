@@ -80,8 +80,7 @@ SOURCES += src/main.cpp \
     src/database/Settings.cpp \
     src/database/SkinSelectorHandler.cpp \
     src/avkon/AvkonMedia.cpp \
-    src/EmoticonParser.cpp \
-    src/xmpp/ContactListManager.cpp
+    src/EmoticonParser.cpp
 
 HEADERS += src/xmpp/MyXmppClient.h \
     src/cache/MyCache.h \
@@ -109,8 +108,7 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/avkon/AvkonMedia.h \
     src/EmoticonParser.h \
     src/models/WidgetDataModel.h \
-    src/models/WidgetItemModel.h \
-    src/xmpp/ContactListManager.h
+    src/models/WidgetItemModel.h
 
 OTHER_FILES += README.md \
     qml/Dialogs/*.* \

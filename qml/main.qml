@@ -41,8 +41,8 @@ PageStackWindow {
         notify.updateNotifiers()
 
         if (pageStack.depth > 1) {
-            if (!vars.isChatInProgress) pageStack.replace("qrc:/pages/Messages",{"contactName":xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,xmppConnectivity.chatJid,"name")}); else xmppConnectivity.emitQmlChat()
-        } else pageStack.push("qrc:/pages/Messages",{"contactName":xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,xmppConnectivity.chatJid,"name")})
+            if (!vars.isChatInProgress) pageStack.replace("qrc:/pages/Messages",{"contactName":xmppConnectivity.client.getPropertyByJid(xmppConnectivity.chatJid,"name")}); else xmppConnectivity.emitQmlChat()
+        } else pageStack.push("qrc:/pages/Messages",{"contactName":xmppConnectivity.client.getPropertyByJid(xmppConnectivity.chatJid,"name")})
     }
 
     Timer {
@@ -145,8 +145,8 @@ PageStackWindow {
         }
         onTypingChanged: {
             if (settings.gBool("notifications", "notifyTyping") == true && (xmppConnectivity.chatJid !== bareJid || !vars.isActive) && xmppConnectivity.client.myBareJid !== bareJid) {
-                if (isTyping) avkon.showPopup(xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,bareJid,"name"),"is typing a message...",settings.gBool("behavior","linkInDiscrPopup"))
-                else avkon.showPopup(xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,bareJid,"name"),"stopped typing.",settings.gBool("behavior","linkInDiscrPopup"))
+                if (isTyping) avkon.showPopup(xmppConnectivity.client.getPropertyByJid(bareJid,"name"),"is typing a message...",settings.gBool("behavior","linkInDiscrPopup"))
+                else avkon.showPopup(xmppConnectivity.client.getPropertyByJid(bareJid,"name"),"stopped typing.",settings.gBool("behavior","linkInDiscrPopup"))
             }
         }
     } //XmppClient

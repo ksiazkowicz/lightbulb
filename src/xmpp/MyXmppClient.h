@@ -46,6 +46,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "src/database/Settings.h"
 
+#include "src/models/RosterListModel.h"
 #include "src/models/RosterItemModel.h"
 
 #include "src/cache/QMLVCard.h"
@@ -63,6 +64,7 @@ class MyXmppClient : public QObject
     Q_PROPERTY( StatusXmpp status READ getStatus WRITE setStatus NOTIFY statusChanged )
     Q_PROPERTY( QString statusText READ getStatusText WRITE setStatusText  NOTIFY statusTextChanged )
     Q_PROPERTY( bool isTyping READ getTyping NOTIFY typingChanged )
+    Q_PROPERTY( RosterListModel* cachedRoster READ getCachedRoster NOTIFY rosterChanged)
     Q_PROPERTY( QString myBareJid READ getMyJid WRITE setMyJid NOTIFY myJidChanged )
     Q_PROPERTY( QString myPassword READ getPassword() WRITE setPassword  NOTIFY myPasswordChanged )
     Q_PROPERTY( QString host READ getHost WRITE setHost NOTIFY hostChanged )
@@ -110,9 +112,9 @@ public :
 
     /*--- unread msg ---*/
     Q_INVOKABLE void resetUnreadMessages( QString bareJid ) {
-        /*RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid );
+        RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid );
         if( item != 0 )
-            item->setUnreadMsg( 0 );*/
+            item->setUnreadMsg( 0 );
     }
     Q_INVOKABLE void setUnreadMessages( QString bareJid, int count ) { emit updateContact(m_accountId,bareJid,"unreadMsg",count); }
 
@@ -126,7 +128,10 @@ public :
     Q_INVOKABLE bool sendMyMessage( QString bareJid, QString resource, QString msgBody );
 
     /*--- info by jid ---*/
+    Q_INVOKABLE QString getPropertyByJid( QString bareJid, QString property );
     Q_INVOKABLE QStringList getResourcesByJid (QString bareJid) { return rosterManager->getResources(bareJid); }
+
+    Q_INVOKABLE QString getPropertyByOrderID(int id,QString property);
 
     static QString getBareJidByJid( const QString &jid );
     static QString getResourceByJid( const QString &jid );
@@ -141,6 +146,8 @@ public :
     Q_INVOKABLE bool unsubscribe (const QString bareJid) { return rosterManager->unsubscribe(bareJid); }
     Q_INVOKABLE bool acceptSubscribtion (const QString bareJid) { return rosterManager->acceptSubscription(bareJid); }
     Q_INVOKABLE bool rejectSubscribtion (const QString bareJid) { return rosterManager->refuseSubscription(bareJid); }
+
+    RosterListModel* cachedRoster;
 
     /*--- version ---*/
     static QString myVersion;
@@ -165,6 +172,8 @@ public :
 
     bool getTyping() const { return m_flTyping; }
     void setTyping( QString &jid, const bool isTyping ) { m_flTyping = isTyping; emit typingChanged(jid, isTyping); }
+
+    RosterListModel* getCachedRoster() const { return cachedRoster; }
 
     QString getMyJid() const { return m_myjid; }
     void setMyJid( const QString& myjid ) { if(myjid!=m_myjid) {m_myjid=myjid; emit myJidChanged(); } }
@@ -200,6 +209,7 @@ signals:
     void connectingChanged();
     void statusTextChanged();
     void statusChanged();
+    void rosterChanged();
     void typingChanged( QString bareJid, bool isTyping );
     void myJidChanged();
     void myPasswordChanged();
@@ -220,9 +230,6 @@ signals:
     void updateContact(QString m_accountId,QString bareJid,QString property,int count);
     void insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine);
     void contactRenamed(QString jid,QString name);
-
-    // contact list manager
-    void contactAdded(QString acc,QString jid, QString name);
 
 public slots:
     void clientStateChanged( QXmppClient::State state );
