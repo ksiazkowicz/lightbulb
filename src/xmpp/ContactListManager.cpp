@@ -14,18 +14,6 @@ void ContactListManager::addContact(QString acc, QString jid, QString name) {
   //emit rosterChanged();
 }
 
-void ContactListManager::plusUnreadMessage(QString acc, QString jid) {
-  RosterItemModel *contact = (RosterItemModel*)roster->find( jid );
-  if (contact != 0)
-    contact->setUnreadMsg(contact->unreadMsg()+1);
-}
-
-void ContactListManager::resetUnreadMessages(QString accountId, QString bareJid) {
-  RosterItemModel *contact = (RosterItemModel*)roster->find( bareJid );
-  if (contact != 0)
-    contact->setUnreadMsg(0);
-}
-
 QString ContactListManager::getPropertyByJid( QString bareJid, QString property ) {
     RosterItemModel *item = (RosterItemModel*)roster->find( bareJid );
     if (item != 0) {

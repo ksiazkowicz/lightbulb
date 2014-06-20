@@ -228,7 +228,10 @@ public slots:
     void clientStateChanged( QXmppClient::State state );
 
     Q_INVOKABLE void openChat( QString jid ) { emit chatOpened( m_accountId, jid ); }
-    Q_INVOKABLE void closeChat( QString jid ) { emit chatClosed( m_accountId, jid ); }
+    Q_INVOKABLE void closeChat( QString jid ) {
+      this->resetUnreadMessages( jid );
+      emit chatClosed( m_accountId, jid );
+    }
 
 private slots:
     void initRoster();

@@ -291,6 +291,21 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         m_resourceLastMessage = getResourceByJid(xmppMsg.from());
 
         this->openChat( bareJid_from );
+
+        /*RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid_from );
+        if( item != 0 ) { int cnt = item->unreadMsg(); item->setUnreadMsg( ++cnt ); } else {
+          RosterItemModel *itemModel = new RosterItemModel( );
+          itemModel->setPresence( this->getPicPresence( QXmppPresence::Unavailable ) );
+          itemModel->setContactName( bareJid_from );
+          itemModel->setJid( bareJid_from );
+          itemModel->setUnreadMsg( 1 );
+          itemModel->setStatusText( "");
+          cachedRoster->append(itemModel);
+          itemModel = 0;
+          delete itemModel;
+        }
+        item = 0; delete item;*/
+
         emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.from()),xmppMsg.body(),QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0);
     }
 }

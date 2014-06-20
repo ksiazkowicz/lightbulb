@@ -174,8 +174,6 @@ void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString
     dbWorker->executeQuery(QStringList() << "insertMessage" << m_accountId << bareJid << body << date << QString::number(mine));
 
     addChat(m_accountId,bareJid);
-
-    contacts->plusUnreadMessage(m_accountId,bareJid);
 }
 
 // handling chats list
