@@ -147,9 +147,9 @@ PageStackWindow {
                (chatJid !== bareJid || !vars.isActive) &&
                (currentAccount == accountId && client.myBareJid !== bareJid)) {
                 if (isTyping)
-                    avkon.showPopup(getPropertyByJid(accountId,bareJid,"name"),"is typing a message...")
+                    avkon.showPopup(getPropertyByJid(accountId,"name",bareJid),"is typing a message...")
                 else
-                    avkon.showPopup(getPropertyByJid(accountId,bareJid,"name"),"stopped typing.")
+                    avkon.showPopup(getPropertyByJid(accountId,"name",bareJid),"stopped typing.")
             }
         }
     }
