@@ -227,7 +227,6 @@ Page {
                 anchors.fill: parent
 
                 onClicked: {
-                    if (xmppConnectivity.currentAccount != accountId) xmppConnectivity.currentAccount = accountId
                     xmppConnectivity.chatJid = jid
                     vars.selectedJid = jid
                     vars.globalUnreadCount = vars.globalUnreadCount - unreadMsg

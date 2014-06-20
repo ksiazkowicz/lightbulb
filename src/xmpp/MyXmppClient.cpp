@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "MyXmppClient.h"
 
-QString MyXmppClient::myVersion = "0.4";
+QString MyXmppClient::myVersion = "0.4 Debug";
 
 MyXmppClient::MyXmppClient() : QObject(0) {
     xmppClient = new QXmppClient( this );
@@ -299,20 +299,48 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
 
 void MyXmppClient::initPresence(const QString& bareJid, const QString& resource)
 {
+    /*int indxItem = -1;
+    RosterItemModel *item = (RosterItemModel*)cachedRoster->find( bareJid, indxItem );
+
+    if( item == 0 ) {
+        return;
+    }
+
     QXmppPresence xmppPresence = rosterManager->getPresence( bareJid, resource );
     QXmppPresence::Type statusJid = xmppPresence.type();
 
     QStringList _listResources = this->getResourcesByJid( bareJid );
-    if( (_listResources.count() > 0) && (!_listResources.contains(resource)) ) {
+    if( (_listResources.count() > 0) && (!_listResources.contains(resource)) )
+    {
         qDebug() << bareJid << "/" << resource << " ****************[" <<_listResources<<"]" ;
-        if( statusJid == QXmppPresence::Unavailable )
+        if( statusJid == QXmppPresence::Unavailable ) {
             return;
+        }
     }
 
-    QString picStatus = this->getPicPresence( xmppPresence );
-    QString txtStatus = this->getTextStatus( xmppPresence.statusText(), xmppPresence );
+    item->setResource( resource );
 
-    emit presenceChanged(m_accountId,bareJid,resource,picStatus,txtStatus);
+    QString picStatus = this->getPicPresence( xmppPresence );
+    item->setPresence( picStatus );
+
+    QString txtStatus = this->getTextStatus( xmppPresence.statusText(), xmppPresence );
+    item->setStatusText( txtStatus );
+
+    RosterItemModel *itemExists = (RosterItemModel*)cachedRoster->find( bareJid, indxItem );
+
+    if( itemExists != 0 ) {
+        itemExists->copy( item );
+        QString picStatusPrev = itemExists->presence();
+        if( picStatusPrev != picStatus )
+        {
+            //emit presenceJidChanged( bareJid, txtStatus, picStatus );
+            emit rosterChanged();
+        }
+    }
+    item = 0; itemExists = 0;
+    delete item; delete itemExists;
+
+    emit contactStatusChanged(m_accountId,bareJid);*/
 }
 
 void MyXmppClient::presenceReceived( const QXmppPresence & presence ) {
@@ -336,12 +364,13 @@ void MyXmppClient::presenceReceived( const QXmppPresence & presence ) {
     }
 }
 
-QString MyXmppClient::getPicPresence( const QXmppPresence &presence ) const {
+QString MyXmppClient::getPicPresence( const QXmppPresence &presence ) const
+{
     QString picPresenceName;
     QXmppPresence::Type status = presence.type();
-    if( status != QXmppPresence::Available )
-      picPresenceName = "qrc:/presence/offline";
-    else {
+    if( status != QXmppPresence::Available ) picPresenceName = "qrc:/presence/offline";
+    else
+    {
         QXmppPresence::AvailableStatusType availableStatus = presence.availableStatusType();
         if( availableStatus == QXmppPresence::Online ) picPresenceName = "qrc:/presence/online";
         else if ( availableStatus == QXmppPresence::Chat ) picPresenceName = "qrc:/presence/chatty";
@@ -353,10 +382,9 @@ QString MyXmppClient::getPicPresence( const QXmppPresence &presence ) const {
     return picPresenceName;
 }
 
-QString MyXmppClient::getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const {
-  if (!textStatus.isEmpty() && !textStatus.isNull())
-    return textStatus;
-  else return "";
+QString MyXmppClient::getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const
+{
+  if( (!textStatus.isEmpty()) && (!textStatus.isNull()) ) return textStatus; else return "";
 }
 
 void MyXmppClient::setStatusText( const QString &__statusText )
@@ -447,6 +475,8 @@ void MyXmppClient::initRoster() {
         return;
     }
 
+    //cachedRoster->cleanList();
+
     QStringList listBareJids = rosterManager->getRosterBareJids();
 
     for( int j=0; j < listBareJids.length(); j++ )
@@ -482,14 +512,25 @@ void MyXmppClient::clearPresence() {
 }
 
 void MyXmppClient::itemAdded(const QString &bareJid ) {
+    qDebug() << "MyXmppClient::itemAdded(): " << bareJid;
     QStringList resourcesList = rosterManager->getResources( bareJid );
+
+    /*RosterItemModel *itemExists = (RosterItemModel*)cachedRoster->find(bareJid);
+
+    if (itemExists == 0) {
+      RosterItemModel *itemModel = new RosterItemModel( );
+      itemModel->setPresence( this->getPicPresence(QXmppPresence::Unavailable) );
+      itemModel->setJid( bareJid );
+      itemModel->setAvatar(cacheIM->getAvatarCache(bareJid));
+      cachedRoster->append( itemModel );
+      itemModel = 0; delete itemModel;
+    };
+    itemExists = 0; delete itemExists;
 
     for( int L = 0; L<resourcesList.length(); L++ ) {
         QString resource = resourcesList.at(L);
         this->initPresence( bareJid, resource );
-    }
-
-    emit contactAdded(m_accountId,bareJid,"");
+    }*/
 }
 
 void MyXmppClient::itemChanged(const QString &bareJid ) {
