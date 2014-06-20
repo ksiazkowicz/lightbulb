@@ -198,6 +198,8 @@ public slots:
       emit widgetDataChanged();
     }
 
+    Q_INVOKABLE void updateAvatarCachingSetting(bool setting);
+
 private:
     QString currentClient;
     QMap<QString,MyXmppClient*> *clients;

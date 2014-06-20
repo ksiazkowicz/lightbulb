@@ -83,6 +83,8 @@ class MyXmppClient : public QObject
     MyCache* cacheIM;
 
 public :
+    bool disableAvatarCaching;
+
     enum StateConnect {
         Disconnect = 0,
         Connected = 1,

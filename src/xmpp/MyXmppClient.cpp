@@ -144,7 +144,7 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
         /* avatar */
         bool isAvatarCreated = true;
         QString avatarFile = cacheIM->getAvatarCache( bareJid );
-        if( (avatarFile.isEmpty() || avatarFile == "qrc:/avatar" || (flVCardRequest != "")) && vCard.photo() != "" ) {
+        if( (avatarFile.isEmpty() || avatarFile == "qrc:/avatar" || (flVCardRequest != "")) && vCard.photo() != "" && !disableAvatarCaching) {
             isAvatarCreated =  cacheIM->setAvatarCache( bareJid, vCard.photo() );
         }
         item->setAvatar(cacheIM->getAvatarCache(bareJid));
@@ -507,7 +507,7 @@ void MyXmppClient::initRoster() {
         QString name = itemRoster.name();
         vCardData vCdata = cacheIM->getVCard( bareJid );
 
-        if ( vCdata.isEmpty() ) {
+        if ( vCdata.isEmpty() && !disableAvatarCaching ) {
             qDebug() << "MyXmppClient::initRoster():" << bareJid << "has no VCard. Requesting.";
             vCardManager->requestVCard( bareJid );
         }

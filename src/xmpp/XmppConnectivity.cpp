@@ -100,6 +100,8 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
         clients->value(index)->goOnline(lSettings->get("behavior","lastStatus").toString());
     }
 
+    clients->value(index)->disableAvatarCaching = lSettings->get("behavior","disableAvatarCaching").toBool();
+
     delete account;
     return true;
 }
@@ -292,4 +294,12 @@ int XmppConnectivity::getGlobalUnreadCount() {
     }
   currentChat = 0;
   return count;
+}
+
+void XmppConnectivity::updateAvatarCachingSetting(bool setting) {
+  QMap<QString,MyXmppClient*>::iterator i;
+  for (i = clients->begin(); i != clients->end(); i++) {
+      if (clients->value(i.key()) != 0)
+          clients->value(i.key())->disableAvatarCaching = setting;
+    }
 }
