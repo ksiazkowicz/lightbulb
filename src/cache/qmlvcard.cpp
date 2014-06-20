@@ -24,53 +24,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "qmlvcard.h"
 #include <QDebug>
+#include <StoreVCard.h>
+#include <QDir.h>
 
 QMLVCard::QMLVCard(QObject *parent) : QObject(parent)
 {
-    m_photo = "";
-    m_nickname = "";
-    m_name = "";
-    m_middlename = "";
-    m_lastname = "";
-    m_fullname = "";
-    m_birthday = "";
-    m_email = "";
-    m_url = "";
 }
 
-void QMLVCard::setVCard( QMLVCard *value )
-{
-    m_vcard =value;
-
-    m_photo = value->getPhoto();
-    m_nickname = value->getNickName();
-    m_name = value->getName();
-    m_middlename = value->getMiddleName();
-    m_lastname = value->getLastName();
-    m_fullname = value->getFullName();
-    m_birthday = value->getBirthday();
-    m_email = value->getEMail();
-    m_url = value->getUrl();
-    m_jid = value->getJid();
-    #ifdef QT_DEBUG
-        //qDebug()<<"***>"<<m_photo <<m_nickname<<m_name<<m_middlename<<m_lastname<<m_fullname<<m_birthday<<m_email<<m_url<<m_jid;
-    #endif
-
-
-    emit vCardChanged();
+void QMLVCard::clearData() { //Q_INVOKABLE
+  m_photo = "";
+  m_nickname = "";
+  m_name = "";
+  m_middlename = "";
+  m_lastname = "";
+  m_fullname = "";
+  m_birthday = "";
+  m_email = "";
+  m_url = "";
+  m_jid = "";
 }
 
-void QMLVCard::clearData() //Q_INVOKABLE
-{
-    m_vcard = 0;
-    m_photo = "";
-    m_nickname = "";
-    m_name = "";
-    m_middlename = "";
-    m_lastname = "";
-    m_fullname = "";
-    m_birthday = "";
-    m_email = "";
-    m_url = "";
-    m_jid = "";
+void QMLVCard::loadVCard(QString bareJid) { //Q_INVOKABLE
+  StoreVCard storage;
+  storage.setCachePath(QDir::currentPath() + QDir::separator() + QString("cache"));
+  vCardData data = storage.getVCard(bareJid);
+
+  m_nickname = data.nickName;
+  m_name = data.firstName;
+  m_middlename = data.middleName;
+  m_lastname = data.lastName;
+  m_fullname = data.fullName;
+  m_email = data.eMail;
+  m_url = data.url;
+  m_jid = bareJid;
+  emit vCardChanged();
 }

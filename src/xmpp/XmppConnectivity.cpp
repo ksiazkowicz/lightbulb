@@ -95,7 +95,6 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
     connect(clients->value(index),SIGNAL(contactRenamed(QString,QString)),this,SLOT(renameChatContact(QString,QString)));
     connect(clients->value(index),SIGNAL(contactStatusChanged(QString,QString)),this,SLOT(handleContactStatusChange(QString,QString)));
 
-    connect(clients->value(index),SIGNAL(vCardChanged(QString)),this,SIGNAL(xmppVCardChanged(QString)));
     connect(clients->value(index),SIGNAL(connectingChanged(QString)),this,SIGNAL(xmppConnectingChanged(QString)));
     connect(clients->value(index),SIGNAL(statusChanged(QString)),this,SIGNAL(xmppStatusChanged(QString)));
     connect(clients->value(index),SIGNAL(errorHappened(QString,QString)),this,SIGNAL(xmppErrorHappened(QString,QString)));

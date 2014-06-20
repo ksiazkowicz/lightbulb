@@ -37,7 +37,6 @@ MyXmppClient::MyXmppClient() : QObject(0) {
     m_status = Offline;
     m_keepAlive = 60;
 
-    qmlVCard = new QMLVCard();
 
     xmppClient->versionManager().setClientName("Lightbulb");
     xmppClient->versionManager().setClientVersion( MyXmppClient::myVersion );
@@ -58,7 +57,6 @@ MyXmppClient::~MyXmppClient() {
     if (cachedRoster != NULL) delete cachedRoster;
     if (vCardManager != NULL) delete vCardManager;
     if (xmppClient != NULL) delete xmppClient;
-    if (qmlVCard != NULL) delete qmlVCard;
 }
 
 // ---------- connection ---------------------------------------------------------------------------------------------------------
@@ -144,7 +142,7 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
         /* avatar */
         bool isAvatarCreated = true;
         QString avatarFile = cacheIM->getAvatarCache( bareJid );
-        if( (avatarFile.isEmpty() || avatarFile == "qrc:/avatar" || (flVCardRequest != "")) && vCard.photo() != "" && !disableAvatarCaching) {
+        if( (avatarFile.isEmpty() || avatarFile == "qrc:/avatar") && vCard.photo() != "" && !disableAvatarCaching) {
             isAvatarCreated =  cacheIM->setAvatarCache( bareJid, vCard.photo() );
         }
         item->setAvatar(cacheIM->getAvatarCache(bareJid));
@@ -157,33 +155,9 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
         dataVCard.url = vCard.url();
         dataVCard.eMail = vCard.email();
 
-        if( flVCardRequest == bareJid ) {
-            qmlVCard->setPhoto( avatarFile );
-            qmlVCard->setNickName( vCard.nickName() );
-            qmlVCard->setMiddleName( vCard.middleName() );
-            qmlVCard->setLastName( vCard.lastName() );
-            qmlVCard->setFullName( vCard.fullName() );
-            qmlVCard->setName( vCard.firstName() );
-            qmlVCard->setBirthday( vCard.birthday().toString("dd.MM.yyyy") );
-            qmlVCard->setEMail( vCard.email() );
-            qmlVCard->setUrl( vCard.url() );
-            qmlVCard->setJid( bareJid );
-            flVCardRequest = "";
-            emit vCardChanged(m_accountId);
-        }
-
         cacheIM->setVCard( bareJid, dataVCard );
     }
 
-}
-
-void MyXmppClient::requestVCard(QString bareJid) //Q_INVOKABLE
-{
-    qDebug() << "MyXmppClient::requestVCard(" + bareJid + ") called";
-    if (vCardManager && (flVCardRequest == "") ) {
-        vCardManager->requestVCard( bareJid );
-        flVCardRequest = bareJid;
-    }
 }
 
 // ---------- Typing notifications (broken) --------------------------------------------------------------------------------------

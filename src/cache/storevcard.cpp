@@ -106,8 +106,7 @@ bool StoreVCard::setVCard( const QString &bareJid, vCardData &vCard )
 
     QString fileVCard = pathCache + QDir::separator() + bareJid + QDir::separator() +"vCard.xml";
     QFile xmlVCardFile(fileVCard);
-    if( !xmlVCardFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
-    {
+    if( !xmlVCardFile.open( QIODevice::WriteOnly | QIODevice::Text ) ) {
         qCritical()  << "commitVCard: Failed to open file for writing: " <<  fileVCard;
         return false;
     }

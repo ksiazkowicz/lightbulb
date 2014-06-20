@@ -49,7 +49,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "src/models/RosterListModel.h"
 #include "src/models/RosterItemModel.h"
 
-#include "src/cache/QMLVCard.h"
 #include "src/cache/MyCache.h"
 
 class MyXmppClient : public QObject
@@ -71,15 +70,12 @@ class MyXmppClient : public QObject
     Q_PROPERTY( int port READ getPort WRITE setPort NOTIFY portChanged )
     Q_PROPERTY( QString resource READ getResource WRITE setResource NOTIFY resourceChanged )
     Q_PROPERTY( QString accountId READ getAccountId WRITE setAccountId NOTIFY accountIdChanged )
-    Q_PROPERTY( QMLVCard* vcard READ getVCard NOTIFY vCardChanged )
     Q_PROPERTY( int keepAlive READ getKeepAlive WRITE setKeepAlive NOTIFY keepAliveChanged )
 
     QXmppClient *xmppClient;
     QXmppRosterManager *rosterManager;
     QXmppVCardManager *vCardManager;
 
-    QMLVCard* qmlVCard;
-    QString flVCardRequest;
     MyCache* cacheIM;
 
 public :
@@ -119,9 +115,6 @@ public :
             item->setUnreadMsg( 0 );
     }
     Q_INVOKABLE void setUnreadMessages( QString bareJid, int count ) { emit updateContact(m_accountId,bareJid,"unreadMsg",count); }
-
-    /*--- vCard ---*/
-    Q_INVOKABLE void requestVCard( QString bareJid );
 
     /*--- connect/disconnect ---*/
     Q_INVOKABLE void connectToXmppServer();
@@ -199,8 +192,6 @@ public :
             emit accountIdChanged();
         }
     }
-    QMLVCard* getVCard() const { return qmlVCard; }
-
     int getKeepAlive() const { return m_keepAlive; }
     void setKeepAlive(int arg) { if (m_keepAlive != arg) { m_keepAlive = arg; emit keepAliveChanged(); } }
 
@@ -232,7 +223,6 @@ signals:
     void subscriptionReceived(const QString accountId,const QString bareJid);
     void statusChanged(const QString accountId);
     void typingChanged(const QString accountId, QString bareJid, bool isTyping);
-    void vCardChanged(const QString accountId);
 
 public slots:
     void clientStateChanged( QXmppClient::State state );

@@ -30,7 +30,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class QMLVCard : public QObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY( QMLVCard )
 
     Q_PROPERTY( QString photo READ getPhoto NOTIFY vCardChanged )
     Q_PROPERTY( QString nickname READ getNickName NOTIFY vCardChanged )
@@ -43,13 +42,11 @@ class QMLVCard : public QObject
     Q_PROPERTY( QString url READ getUrl NOTIFY vCardChanged )
     Q_PROPERTY( QString jid READ getJid NOTIFY vCardChanged )
 
-    Q_PROPERTY( QMLVCard* vcard READ getVCard WRITE setVCard NOTIFY vCardChanged )
-
 public:
     explicit QMLVCard(QObject *parent = 0);
 
     QString getPhoto() const { return m_photo; }
-    void setPhoto( const QString &photo ) { if(photo != m_photo) { m_photo =photo; } }
+    void setPhoto( const QString &value ) { if(value != m_photo) { m_photo =value; } }
 
     QString getNickName() const { return m_nickname; }
     void setNickName( const QString &value ) { if(value != m_nickname) { m_nickname =value; } }
@@ -74,14 +71,12 @@ public:
 
     QString getUrl() const { return m_url; }
     void setUrl( const QString &value ) { if(value != m_url) { m_url =value; } }
-    
-    QMLVCard* getVCard() const { return m_vcard; }
-    void setVCard( QMLVCard *value );
 
     QString getJid() const { return m_jid; }
     void setJid( const QString &value ) { if(value != m_jid) { m_jid =value; } }
 
     Q_INVOKABLE void clearData();
+    Q_INVOKABLE void loadVCard(QString bareJid);
 
 signals:
     void vCardChanged();
@@ -99,8 +94,6 @@ private:
     QString m_birthday;
     QString m_url;
     QString m_jid;
-    QMLVCard *m_vcard;
-    
 };
 
 #endif // QMLVCARD_H

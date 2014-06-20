@@ -31,6 +31,8 @@ Page {
     id: vCardPage
     tools: toolBar
 
+    property string accountId:         ""
+
     property string contactJid:        ""
     property string contactName:       ""
     property string contactPresence:   xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,"presence",contactJid)
@@ -48,36 +50,27 @@ Page {
     property string vCardBirthday:     ""
     property string vCardUrl:          ""
 
-    Component.onCompleted: xmppConnectivity.client.requestVCard( contactJid )
-
     // Code for destroying the page after pop
     onStatusChanged: if (vCardPage.status === PageStatus.Inactive) vCardPage.destroy()
 
     XmppVCard {
-        id: xmppVCard
+        Component.onCompleted:
+            loadVCard(contactJid)
         onVCardChanged: {
-            //console.log( "QML: VCardPage: onVCardChanged: " + xmppVCard.nickname )
-            if( xmppVCard.photo != "" ) {
-                vCardPhoto = xmppVCard.photo
-            }
-            vCardNickName = xmppVCard.nickname
-            vCardName = xmppVCard.name
-            vCardMiddleName = xmppVCard.middlename
-            vCardLastName = xmppVCard.lastname
-            vCardFullName = xmppVCard.fullname
-            vCardEmail = xmppVCard.email
-            vCardBirthday = xmppVCard.birthday
-            vCardUrl = xmppVCard.url
+            vCardNickName = nickname
+            vCardName = name
+            vCardMiddleName = middlename
+            vCardLastName = lastname
+            vCardFullName = fullname
+            vCardEmail = email
+            vCardBirthday = birthday
+            vCardUrl = url
         }
     }
 
     Flickable {
         id: flickArea
-        anchors.top: parent.top; anchors.topMargin: 12
-        anchors.bottom: parent.bottom; anchors.bottomMargin: 12
-        anchors.left: parent.left; anchors.leftMargin: 20
-        anchors.right: parent.right; anchors.rightMargin: 20
-
+        anchors { top: parent.top; topMargin: 12; bottom: parent.bottom; bottomMargin: 12; left: parent.left; leftMargin: 20; right: parent.right; rightMargin: 20 }
         contentHeight: columnContent.height
         contentWidth: columnContent.width
 

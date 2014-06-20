@@ -140,7 +140,6 @@ signals:
     void xmppConnectingChanged    (const QString accountId);
     void xmppErrorHappened        (const QString accountId, const QString &errorString);
     void xmppStatusChanged        (const QString accountId);
-    void xmppVCardChanged         (const QString accountId);
     void xmppSubscriptionReceived (const QString accountId, const QString bareJid);
     void xmppTypingChanged        (const QString accountId, QString bareJid, bool isTyping);
     
@@ -207,6 +206,10 @@ public slots:
     Q_INVOKABLE void rejectSubscription(QString accountId,QString bareJid) { clients->value(accountId)->rejectSubscribtion(bareJid); }
     Q_INVOKABLE int  getConnectionStatusByAccountId(QString accountId)     { return clients->value(accountId)->getStateConnect(); }
     Q_INVOKABLE int  getStatusByAccountId(QString accountId)               { return clients->value(accountId)->getStatus(); }
+
+    Q_INVOKABLE void removeContact(QString accountId,QString bareJid) { clients->value(accountId)->removeContact(bareJid); }
+    Q_INVOKABLE void subscribe(QString accountId,QString bareJid)     { clients->value(accountId)->subscribe(bareJid); }
+    Q_INVOKABLE void unsubscribe(QString accountId,QString bareJid)   { clients->value(accountId)->unsubscribe(bareJid); }
 
 private:
     QString currentClient;
