@@ -61,6 +61,9 @@ CommonDialog {
                 default: ret = XmppClient.Unknown; break;
             }
 
+            if (!network.connectionStatus)
+                network.openConnection()
+
             xmppConnectivity.client.setMyPresence( ret, wrapperTextEdit.text )
             vars.lastStatus = wrapperTextEdit.text
             vars.lastUsedStatus = colStatus.selectedIndex

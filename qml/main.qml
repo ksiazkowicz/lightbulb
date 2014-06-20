@@ -159,6 +159,9 @@ PageStackWindow {
         if (settings.gStr("behavior","lastAccount") !== "false") changeAccount(settings.gStr("behavior","lastAccount"));
         checkIfFirstRun()
         xmppConnectivity.client.keepAlive = settings.gInt("behavior", "keepAliveInterval")
+
+        if (!network.connectionStatus)
+            network.openConnection()
     }
 
     /************************( stuff to do when running this app )*****************************/
@@ -193,10 +196,9 @@ PageStackWindow {
     }
 
     Clipboard { id: clipboard }
-
     Notifications { id: notify }
-
     ListModel { id: listModelResources }
+    NetworkManager { id: network }
 
     StatusBar { id: sbar; y: -main.y
         Item {
