@@ -30,8 +30,8 @@ import lightbulb 1.0
 
 PageStackWindow {
     id: main
-    property int splitscreenY:       0
-    platformInverted:                settings.gBool("ui","invertPlatform")
+    property int splitscreenY:         0
+    platformInverted:                  settings.gBool("ui","invertPlatform")
     platformSoftwareInputPanelEnabled: true
 
     Globals { id: vars
@@ -57,11 +57,11 @@ PageStackWindow {
         notify.updateNotifiers()
 
         if (pageStack.depth > 1) {
-            if (!vars.isChatInProgress) pageStack.replace("qrc:/pages/Messages",{"contactName":xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,xmppConnectivity.chatJid,"name")}); else xmppConnectivity.emitQmlChat()
-        } else pageStack.push("qrc:/pages/Messages",{"contactName":xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,xmppConnectivity.chatJid,"name")})
+            if (!vars.isChatInProgress) pageStack.replace("qrc:/pages/Messages",{"contactName":xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,"name",xmppConnectivity.chatJid)}); else xmppConnectivity.emitQmlChat()
+        } else pageStack.push("qrc:/pages/Messages",{"contactName":xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,"name",xmppConnectivity.chatJid)})
     }
 
-    Timer {
+    Timer               {
         id: blink
         interval: 100
         running: true
@@ -74,7 +74,7 @@ PageStackWindow {
         }
     }
 
-    Connections {
+    Connections         {
         target: Qt.application
         onActiveChanged: {
             if (Qt.application.active) {
@@ -95,21 +95,21 @@ PageStackWindow {
         }
     }
 
-    Connections {
-        target: xmppConnectivity
+    XmppConnectivity    {
+        id: xmppConnectivity
         onNotifyMsgReceived: {
             // handle global unread count. I should have both global and local unread count later
             if (!vars.isChatInProgress) {
                 vars.globalUnreadCount++
-                if (jid === xmppConnectivity.chatJid) vars.tempUnreadCount++
-            } else if (jid !== xmppConnectivity.chatJid || !vars.isActive) vars.globalUnreadCount++
+                if (jid === chatJid) vars.tempUnreadCount++
+            } else if (jid !== chatJid || !vars.isActive) vars.globalUnreadCount++
 
             // show discreet popup if enabled
-            if (settings.gBool("notifications", "usePopupRecv") && (xmppConnectivity.chatJid !== jid || !vars.isActive)) {
+            if (settings.gBool("notifications", "usePopupRecv") && (chatJid !== jid || !vars.isActive)) {
                 if (settings.gBool("behavior","msgInDiscrPopup"))
-                        avkon.showPopup(name,body,settings.gBool("behavior","linkInDiscrPopup"))
+                        avkon.showPopup(name,body)
                 else
-                    avkon.showPopup(vars.globalUnreadCount + " unread messages", "New message from "+ name + ".",settings.gBool("behavior","linkInDiscrPopup"))
+                    avkon.showPopup(vars.globalUnreadCount + " unread messages", "New message from "+ name + ".")
             }
 
             // get the blinker running if enabled and app is inactive
@@ -121,88 +121,91 @@ PageStackWindow {
             // update chats icon and widget if required
             notify.updateNotifiers()
         }
-    }
-
-    Connections {
-        target: xmppConnectivity.client
-        onConnectingChanged: {
+        onXmppConnectingChanged: {
             if (settings.gBool("notifications", "notifyConnection")) {
-                if (xmppConnectivity.client.stateConnect === 0) {
-                    avkon.showPopup(xmppConnectivity.currentAccountName,"Disconnected. :c",settings.gBool("behavior","linkInDiscrPopup"));
-                }
-                if (xmppConnectivity.client.stateConnect === 1) {
-                    notify.notifySndVibr("NotifyConn")
-                    avkon.showPopup(xmppConnectivity.currentAccountName,"Status changed to " + notify.getStatusNameByIndex(xmppConnectivity.client.status),settings.gBool("behavior","linkInDiscrPopup"));
-                }
-                if (xmppConnectivity.client.stateConnect === 2) {
-                    avkon.showPopup(xmppConnectivity.currentAccountName,"Connecting...",settings.gBool("behavior","linkInDiscrPopup"));
+                switch (getConnectionStatusByAccountId(accountId)) {
+                    case 0:
+                        avkon.showPopup(getAccountName(accountId),"Disconnected. :c");
+                        break;
+                    case 1:
+                        notify.notifySndVibr("NotifyConn")
+                        avkon.showPopup(getAccountName(accountId),"Status changed to " + notify.getStatusNameByIndex(xmppConnectivity.client.status));
+                        break;
+                    case 2:
+                        avkon.showPopup(getAccountName(accountId),"Connecting...");
+                        break;
                 }
             }
         }
-        onErrorHappened: {
+        onXmppErrorHappened: {
             if (settings.gBool("behavior", "reconnectOnError"))
-                dialog.create("qrc:/dialogs/Status/Reconnect")
+                dialog.createWithProperties("qrc:/dialogs/Status/Reconnect",{"accountId": accountId})
         }
-        onStatusChanged: {
-            console.log( "XmppClient::onStatusChanged:" + xmppConnectivity.client.status )
-            notify.updateNotifiers()
+        onXmppStatusChanged: {
+            console.log( "XmppClient::onStatusChanged (" + accountId + ")" + getStatusByAccountId(accountId) )
+            if (accountId == currentAccount)
+                notify.updateNotifiers()
         }
-        onVCardChanged: xmppVCard.vcard = xmppConnectivity.client.vcard
-        onSubscriptionReceived: {
-            console.log( "XmppClient::onSubscriptionReceived(" + bareJid + ")" )
-            if (settings.gBool("notifications","notifySubscription") == true) avkon.showPopup("Subscription request",bareJid,settings.gBool("behavior","linkInDiscrPopup"))
-            notify.notifySndVibr("MsgSub")            
-            if (avkon.displayAvkonQueryDialog("Subscription", qsTr("Do you want to accept subscription request from ") + bareJid + qsTr("?"))) {
-                xmppConnectivity.client.acceptSubscribtion(bareJid)
-            } else {
-                xmppConnectivity.client.rejectSubscribtion(bareJid)
+        onXmppSubscriptionReceived: {
+            console.log( "XmppConnectivity::onXmppSubscriptionReceived(" + accountId + "," + bareJid + ")" )
+            if (settings.gBool("notifications","notifySubscription") == true)
+                avkon.showPopup("Subscription request",bareJid)
+
+            notify.notifySndVibr("MsgSub")
+
+            if (avkon.displayAvkonQueryDialog("Subscription (" + getAccountName(accountId) + ")", qsTr("Do you want to accept subscription request from ") + bareJid + qsTr("?")))
+                acceptSubscribtion(accountId,bareJid)
+            else
+                rejectSubscribtion(accountId,bareJid)
+
+        }
+        onXmppTypingChanged: {
+            console.log( "XmppConnectivity::onXmppTypingChanged(" + accountId + "," + bareJid + "," + isTyping + ")" )
+            if (settings.gBool("notifications", "notifyTyping") == true &&
+               (chatJid !== bareJid || !vars.isActive) &&
+               (currentAccount == accountId && client.myBareJid !== bareJid)) {
+                if (isTyping)
+                    avkon.showPopup(getPropertyByJid(accountId,"name",bareJid),"is typing a message...")
+                else
+                    avkon.showPopup(getPropertyByJid(accountId,"name",bareJid),"stopped typing.")
             }
-
         }
-        onTypingChanged: {
-            if (settings.gBool("notifications", "notifyTyping") == true && (xmppConnectivity.chatJid !== bareJid || !vars.isActive) && xmppConnectivity.client.myBareJid !== bareJid) {
-                if (isTyping) avkon.showPopup(xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,bareJid,"name"),"is typing a message...",settings.gBool("behavior","linkInDiscrPopup"))
-                else avkon.showPopup(xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,bareJid,"name"),"stopped typing.",settings.gBool("behavior","linkInDiscrPopup"))
-            }
-        }
-    } //XmppClient
-
-    XmppConnectivity { id: xmppConnectivity }
-    Settings { id: settings }
-    XmppVCard { id: xmppVCard }
-
-    Component.onCompleted: {
-        if (settings.gStr("behavior","lastAccount") !== "false") changeAccount(settings.gStr("behavior","lastAccount"));
-        checkIfFirstRun()
-        xmppConnectivity.client.keepAlive = settings.gInt("behavior", "keepAliveInterval")
-        xmppConnectivity.offlineContactsVisibility = !vars.hideOffline
     }
+    Settings            { id: settings }
+    Clipboard           { id: clipboard }
+    Notifications       { id: notify }
+    ListModel           { id: listModelResources }
+    NetworkManager      { id: network }
+    Globals             { id: vars }
 
     /************************( stuff to do when running this app )*****************************/
+    Component.onCompleted:      {
+        avkon.switchToApp = settings.gBool("behavior","linkInDiscrPopup")
+        if (settings.gStr("behavior","lastAccount") !== "false")
+            changeAccount(settings.gStr("behavior","lastAccount"));
 
-    function checkIfFirstRun() {
-        if (!settings.gBool("main","not_first_run")) pageStack.push("qrc:/pages/FirstRun")
-        else pageStack.push("qrc:/pages/Roster")
+        if (!settings.gBool("main","not_first_run"))
+            pageStack.push("qrc:/pages/FirstRun")
+        else
+            pageStack.push("qrc:/pages/Roster")
+			
+		xmppConnectivity.offlineContactsVisibility = !vars.hideOffline
     }
-
     function changeAccount(acc) {
         xmppConnectivity.changeAccount(acc);
-        avkon.hideChatIcon()
         notify.updateNotifiers()
         settings.sStr(xmppConnectivity.currentAccount,"behavior","lastAccount")
     }
-
     /****************************( Dialog windows, menus and stuff)****************************/
 
-    QtObject{
+    QtObject  {
         id:dialog;
         property Component c:null;
-		
+
         function create(qmlfile){
             c=Qt.createComponent(qmlfile);
             c.createObject(main)
         }
-
         function createWithProperties(qmlfile, properties){
             c=Qt.createComponent(qmlfile);
             c.createObject(main, properties)
@@ -214,37 +217,29 @@ PageStackWindow {
             vars.dialogQmlFile = qmlFile;
         }
     }
-
-    Clipboard { id: clipboard }
-
-    Notifications { id: notify }
-
-    ListModel { id: listModelResources }
-
-    StatusBar { id: sbar; y: -main.y
+    StatusBar {
+        y: -main.y
         Item {
-                  anchors { left: parent.left; leftMargin: 6; verticalCenter: parent.verticalCenter }
-                  width: sbar.width - 183; height: parent.height
-                  clip: true;
-
-                  Text{
-                      id: statusBarText
-                      anchors.verticalCenter: parent.verticalCenter
-                      maximumLineCount: 1
-                      color: "white"
-                      font.pointSize: 6
-                    }
-                    Rectangle{
-                        width: 25
-                        anchors { top: parent.top; bottom: parent.bottom; right: parent.right }
-                        rotation: -90
-
-                        gradient: Gradient{
+            anchors { left: parent.left; leftMargin: 6; bottom: parent.bottom; top: parent.top }
+            width: parent.width - 186;
+            clip: true
+            Text {
+                id: statusBarText
+                anchors.verticalCenter: parent.verticalCenter
+                maximumLineCount: 1
+                color: "white"
+                font.pointSize: 6
+             }
+             Rectangle {
+                width: 25
+                anchors { top: parent.top; bottom: parent.bottom; right: parent.right }
+                rotation: -90
+                gradient: Gradient {
                             GradientStop { position: 0.0; color: "#00000000" }
                             GradientStop { position: 1.0; color: "#ff000000" }
                         }
-                    }
-                }
+             }
+        }
     }
 
     /***************( splitscreen input )***************/
@@ -266,8 +261,6 @@ PageStackWindow {
             }
         ]
     }
-
-
     /***************(overlay)**********/
     Rectangle {
         color: main.platformInverted ? "white" : "black"
