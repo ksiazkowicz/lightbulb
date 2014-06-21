@@ -48,7 +48,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "src/models/RosterItemModel.h"
 
-#include "src/cache/QMLVCard.h"
 #include "src/cache/MyCache.h"
 
 class MyXmppClient : public QObject
@@ -69,18 +68,17 @@ class MyXmppClient : public QObject
     Q_PROPERTY( int port READ getPort WRITE setPort NOTIFY portChanged )
     Q_PROPERTY( QString resource READ getResource WRITE setResource NOTIFY resourceChanged )
     Q_PROPERTY( QString accountId READ getAccountId WRITE setAccountId NOTIFY accountIdChanged )
-    Q_PROPERTY( QMLVCard* vcard READ getVCard NOTIFY vCardChanged )
     Q_PROPERTY( int keepAlive READ getKeepAlive WRITE setKeepAlive NOTIFY keepAliveChanged )
 
     QXmppClient *xmppClient;
     QXmppRosterManager *rosterManager;
     QXmppVCardManager *vCardManager;
 
-    QMLVCard* qmlVCard;
-    QString flVCardRequest;
     MyCache* cacheIM;
 
 public :
+    bool disableAvatarCaching;
+
     enum StateConnect {
         Disconnect = 0,
         Connected = 1,
@@ -107,9 +105,6 @@ public :
     /*--- typing ---*/
     Q_INVOKABLE void typingStart( QString bareJid, QString resource );
     Q_INVOKABLE void typingStop( QString bareJid, QString resource );
-
-    /*--- vCard ---*/
-    Q_INVOKABLE void requestVCard( QString bareJid );
 
     /*--- connect/disconnect ---*/
     Q_INVOKABLE void connectToXmppServer();
@@ -156,7 +151,7 @@ public :
     void setStatus( StatusXmpp __status );
 
     bool getTyping() const { return m_flTyping; }
-    void setTyping( QString &jid, const bool isTyping ) { m_flTyping = isTyping; emit typingChanged(jid, isTyping); }
+    void setTyping( QString &jid, const bool isTyping ) { m_flTyping = isTyping; emit typingChanged(m_accountId, jid, isTyping); }
 
     QString getMyJid() const { return m_myjid; }
     void setMyJid( const QString& myjid ) { if(myjid!=m_myjid) {m_myjid=myjid; emit myJidChanged(); } }
@@ -180,8 +175,6 @@ public :
             emit accountIdChanged();
         }
     }
-    QMLVCard* getVCard() const { return qmlVCard; }
-
     int getKeepAlive() const { return m_keepAlive; }
     void setKeepAlive(int arg) { if (m_keepAlive != arg) { m_keepAlive = arg; emit keepAliveChanged(); } }
 
@@ -189,19 +182,13 @@ public :
 	
 signals:
     void versionChanged();
-    void connectingChanged();
     void statusTextChanged();
-    void statusChanged();
-    void typingChanged( QString bareJid, bool isTyping );
     void myJidChanged();
     void myPasswordChanged();
     void hostChanged();
     void portChanged();
     void resourceChanged();
     void accountIdChanged();
-    void vCardChanged();
-    void errorHappened( const QString &errorString );
-    void subscriptionReceived( const QString bareJid );
     void keepAliveChanged();
     void contactStatusChanged(QString accountId, QString bareJid);
 
@@ -210,7 +197,13 @@ signals:
     void insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine);
     void contactRenamed(QString jid,QString name);
 
-    // contact list manager
+    void connectingChanged(const QString accountId);
+    void errorHappened(const QString accountId,const QString &errorString);
+    void subscriptionReceived(const QString accountId,const QString bareJid);
+    void statusChanged(const QString accountId);
+    void typingChanged(const QString accountId, QString bareJid, bool isTyping);
+	
+	// contact list manager
     void contactAdded(QString acc,QString jid, QString name);
     void presenceChanged(QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus);
     void nameChanged(QString m_accountId,QString bareJid,QString name);
@@ -229,6 +222,8 @@ private slots:
     void messageReceivedSlot( const QXmppMessage &msg );
     void presenceReceived( const QXmppPresence & presence );
     void error(QXmppClient::Error);
+
+    void notifyNewSubscription(QString bareJid) { emit subscriptionReceived(m_accountId, bareJid); }
 
 private:
     // functions

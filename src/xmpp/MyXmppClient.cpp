@@ -37,7 +37,6 @@ MyXmppClient::MyXmppClient() : QObject(0) {
     m_status = Offline;
     m_keepAlive = 60;
 
-    qmlVCard = new QMLVCard();
 
     xmppClient->versionManager().setClientName("Lightbulb");
     xmppClient->versionManager().setClientVersion( MyXmppClient::myVersion );
@@ -55,7 +54,6 @@ MyXmppClient::~MyXmppClient() {
     if (cacheIM != NULL) delete cacheIM;
     if (vCardManager != NULL) delete vCardManager;
     if (xmppClient != NULL) delete xmppClient;
-    if (qmlVCard != NULL) delete qmlVCard;
 }
 
 // ---------- connection ---------------------------------------------------------------------------------------------------------
@@ -98,7 +96,7 @@ void MyXmppClient::clientStateChanged(QXmppClient::State state) {
         this->setMyPresence( Offline, m_statusText );
     }
     if (m_stateConnect != before)
-      emit connectingChanged(); //check if stateConnect changed
+      emit connectingChanged(m_accountId); //check if stateConnect changed
 }
 
 void MyXmppClient::error(QXmppClient::Error e) {
@@ -111,9 +109,10 @@ void MyXmppClient::error(QXmppClient::Error e) {
         QXmppPresence pr = xmppClient->clientPresence();
         this->presenceReceived( pr );
         QXmppPresence presence( QXmppPresence::Unavailable );
+        this->clearPresence();
         xmppClient->setClientPresence( presence );
 
-        emit errorHappened( errString );
+        emit errorHappened(m_accountId,errString);
     }
 }
 
@@ -135,10 +134,10 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
     // avatar
     bool isAvatarCreated = true;
     QString avatarFile = cacheIM->getAvatarCache( bareJid );
-    if( (avatarFile.isEmpty() || avatarFile == "qrc:/avatar" || (flVCardRequest != "")) && vCard.photo() != "" ) {
+    if( (avatarFile.isEmpty() || avatarFile == "qrc:/avatar") && vCard.photo() != "" && !disableAvatarCaching) {
         isAvatarCreated =  cacheIM->setAvatarCache( bareJid, vCard.photo() );
     }
-    //item->setAvatar(cacheIM->getAvatarCache(bareJid));
+    item->setAvatar(cacheIM->getAvatarCache(bareJid));
 
     dataVCard.nickName = nickName;
     dataVCard.firstName = vCard.firstName();
@@ -148,31 +147,7 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
     dataVCard.url = vCard.url();
     dataVCard.eMail = vCard.email();
 
-    if( flVCardRequest == bareJid ) {
-        qmlVCard->setPhoto( avatarFile );
-        qmlVCard->setNickName( vCard.nickName() );
-        qmlVCard->setMiddleName( vCard.middleName() );
-        qmlVCard->setLastName( vCard.lastName() );
-        qmlVCard->setFullName( vCard.fullName() );
-        qmlVCard->setName( vCard.firstName() );
-        qmlVCard->setBirthday( vCard.birthday().toString("dd.MM.yyyy") );
-        qmlVCard->setEMail( vCard.email() );
-        qmlVCard->setUrl( vCard.url() );
-        qmlVCard->setJid( bareJid );
-        flVCardRequest = "";
-        emit vCardChanged();
-    }
-
     cacheIM->setVCard( bareJid, dataVCard );
-}
-
-void MyXmppClient::requestVCard(QString bareJid) //Q_INVOKABLE
-{
-    qDebug() << "MyXmppClient::requestVCard(" + bareJid + ") called";
-    if (vCardManager && (flVCardRequest == "") ) {
-        vCardManager->requestVCard( bareJid );
-        flVCardRequest = bareJid;
-    }
 }
 
 // ---------- Typing notifications (broken) --------------------------------------------------------------------------------------
@@ -260,14 +235,14 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
     else if( xmppMsg.state() == QXmppMessage::Composing ) {
         if (bareJid_from != "") {
             m_flTyping = true;
-            emit typingChanged( bareJid_from, true);
+            emit typingChanged(m_accountId,bareJid_from, true);
             qDebug() << bareJid_from << " is composing.";
         }
     }
     else if( xmppMsg.state() == QXmppMessage::Paused ) {
         if (bareJid_from != "") {
             m_flTyping = false;
-            emit typingChanged( bareJid_from, false);
+            emit typingChanged(m_accountId,bareJid_from, false);
             qDebug() << bareJid_from << " paused.";
         }
     } else {
@@ -323,7 +298,7 @@ void MyXmppClient::presenceReceived( const QXmppPresence & presence ) {
               case QXmppPresence::DND: m_status = DND; break;
             }
         }
-        emit statusChanged();
+        emit statusChanged(m_accountId);
     }
 }
 
@@ -424,7 +399,7 @@ void MyXmppClient::initRosterManager() {
 
   QObject::connect( rosterManager, SIGNAL(presenceChanged(QString,QString)), this, SLOT(initPresence(const QString, const QString)), Qt::UniqueConnection );
   QObject::connect( rosterManager, SIGNAL(rosterReceived()), this, SLOT(initRoster()), Qt::UniqueConnection );
-  QObject::connect( rosterManager, SIGNAL(subscriptionReceived(QString)), this, SIGNAL(subscriptionReceived(QString)), Qt::UniqueConnection );
+  QObject::connect( rosterManager, SIGNAL(subscriptionReceived(QString)), this, SLOT(notifyNewSubscription(QString)), Qt::UniqueConnection );
   QObject::connect( rosterManager, SIGNAL(itemAdded(QString)), this, SLOT(itemAdded(QString)), Qt::UniqueConnection );
   QObject::connect( rosterManager, SIGNAL(itemRemoved(QString)), this, SLOT(itemRemoved(QString)), Qt::UniqueConnection );
   QObject::connect( rosterManager, SIGNAL(itemChanged(QString)), this, SLOT(itemChanged(QString)), Qt::UniqueConnection );
