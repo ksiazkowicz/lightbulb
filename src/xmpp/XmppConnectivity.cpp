@@ -92,6 +92,12 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
     connect(clients->value(index),SIGNAL(contactRenamed(QString,QString)),this,SLOT(renameChatContact(QString,QString)));
     connect(clients->value(index),SIGNAL(contactStatusChanged(QString,QString)),this,SLOT(handleContactStatusChange(QString,QString)));
 
+    connect(clients->value(index),SIGNAL(connectingChanged(QString)),this,SIGNAL(xmppConnectingChanged(QString)));
+    connect(clients->value(index),SIGNAL(statusChanged(QString)),this,SIGNAL(xmppStatusChanged(QString)));
+    connect(clients->value(index),SIGNAL(errorHappened(QString,QString)),this,SIGNAL(xmppErrorHappened(QString,QString)));
+    connect(clients->value(index),SIGNAL(subscriptionReceived(QString,QString)),this,SIGNAL(xmppSubscriptionReceived(QString,QString)));
+    connect(clients->value(index),SIGNAL(typingChanged(QString,QString,bool)),this,SIGNAL(xmppTypingChanged(QString,QString,bool)));
+	
     // connect ContactListManager
     connect(clients->value(index),SIGNAL(contactAdded(QString,QString,QString)),contacts,SLOT(addContact(QString,QString,QString)));
     connect(clients->value(index),SIGNAL(presenceChanged(QString,QString,QString,QString,QString)),contacts,SLOT(changePresence(QString,QString,QString,QString,QString)));
@@ -103,6 +109,8 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
     if (lSettings->gBool(index,"connectOnStart")) {
         clients->value(index)->goOnline(lSettings->get("behavior","lastStatus").toString());
     }
+
+    clients->value(index)->disableAvatarCaching = lSettings->get("behavior","disableAvatarCaching").toBool();
 
     delete account;
     return true;
@@ -163,7 +171,7 @@ bool XmppConnectivity::resetSettings() { return QFile::remove(lSettings->confFil
 
 // handling stuff from MyXmppClient
 void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine) {
-    if (mine == 0) emit notifyMsgReceived(this->getPropertyByJid(m_accountId,bareJid,"name"),bareJid,body.left(30));
+    if (mine == 0) emit notifyMsgReceived(this->getPropertyByJid(m_accountId,"name",bareJid),bareJid,body.left(30));
 
     body = body.replace(">", "&gt;");  //fix for > stuff
     body = body.replace("<", "&lt;");  //and < stuff too ^^
@@ -184,7 +192,7 @@ void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString
 // handling chats list
 void XmppConnectivity::openChat(QString accountId, QString bareJid) {
   if (!chats->checkIfExists(bareJid)) {
-    ChatsItemModel* chat = new ChatsItemModel(this->getPropertyByJid(accountId,bareJid,"name"),bareJid,accountId);
+    ChatsItemModel* chat = new ChatsItemModel(this->getPropertyByJid(accountId,"name",bareJid),bareJid,accountId);
     chats->append(chat);
     qDebug() << "XmppConnectivity::openChat(): appending"<< qPrintable(bareJid) << "from account" << accountId << "to chats list.";
     emit chatsChanged();
@@ -203,7 +211,7 @@ void XmppConnectivity::closeChat(QString accId, QString bareJid) {
   removeChat(accId,bareJid);
 }
 
-QString XmppConnectivity::getPropertyByJid(QString account,QString jid,QString property) {
+QString XmppConnectivity::getPropertyByJid(QString account,QString property,QString jid) {
   return contacts->getPropertyByJid(account,jid,property);
 }
 
@@ -292,7 +300,7 @@ int XmppConnectivity::getGlobalUnreadCount() {
   ChatsItemModel* currentChat;
   for (int i=0;i<chats->rowCount();i++) {
       currentChat = (ChatsItemModel*)chats->getElementByID(i);
-      count = count+ this->getPropertyByJid(currentChat->accountID(),currentChat->jid(),"unreadMsg").toInt();
+      count = count+ this->getPropertyByJid(currentChat->accountID(),"unreadMsg",currentChat->jid()).toInt();
     }
   currentChat = 0;
   return count;
@@ -300,4 +308,12 @@ int XmppConnectivity::getGlobalUnreadCount() {
 
 RosterListModel* XmppConnectivity::getRoster() {
   return contacts->getRoster();
+}
+
+void XmppConnectivity::updateAvatarCachingSetting(bool setting) {
+  QMap<QString,MyXmppClient*>::iterator i;
+  for (i = clients->begin(); i != clients->end(); i++) {
+      if (clients->value(i.key()) != 0)
+          clients->value(i.key())->disableAvatarCaching = setting;
+    }
 }

@@ -143,8 +143,19 @@ signals:
 
     void widgetDataChanged();
     void visibilityChanged();
+ 
+    // MyXmppClient ones
+    void xmppConnectingChanged    (const QString accountId);
+    void xmppErrorHappened        (const QString accountId, const QString &errorString);
+    void xmppStatusChanged        (const QString accountId);
+    void xmppSubscriptionReceived (const QString accountId, const QString bareJid);
+    void xmppTypingChanged        (const QString accountId, QString bareJid, bool isTyping);
     
 public slots:
+    void changeRoster() {
+        roster = selectedClient->getCachedRoster();
+        emit rosterChanged();
+    }
     void updateContact(QString m_accountId,QString bareJid,QString property,int count) {
         dbWorker->executeQuery(QStringList() << "updateContact" << m_accountId << bareJid << property << QString::number(count));
     }
@@ -154,10 +165,9 @@ public slots:
     Q_INVOKABLE QString getAvatarByJid(QString bareJid) { return lCache->getAvatarCache(bareJid); }
 
     // handling chats list
-    Q_INVOKABLE QString getPropertyByJid(QString account,QString jid,QString property);
+    Q_INVOKABLE QString getPropertyByJid(QString account,QString property,QString jid);
     Q_INVOKABLE QString getPreservedMsg(QString jid);
     Q_INVOKABLE void preserveMsg(QString jid,QString message);
-
     Q_INVOKABLE void openChat(QString accountId, QString bareJid);
     Q_INVOKABLE void openChat(QString bareJid) { this->openChat(currentClient,bareJid); }
     Q_INVOKABLE void closeChat(QString accountId, QString bareJid);
@@ -184,6 +194,7 @@ public slots:
       if (item != 0) item->setContactName(name);
       item = 0; delete item;
     }
+
     Q_INVOKABLE void closeChat(QString bareJid) { this->closeChat(currentClient,bareJid); }
     Q_INVOKABLE void resetUnreadMessages(QString accountId, QString bareJid) { contacts->resetUnreadMessages(accountId,bareJid); }
     Q_INVOKABLE void resetUnreadMessages(QString bareJid) { contacts->resetUnreadMessages(currentClient,bareJid); }
@@ -198,16 +209,24 @@ public slots:
       emit widgetDataChanged();
     }
 
-    // contact list management
+    Q_INVOKABLE void setVisibility(bool state)   { contacts->setOfflineContactsState(state); emit rosterChanged(); }
+    Q_INVOKABLE bool getVisibility()           { return contacts->getOfflineContactsState(); }
+
+    Q_INVOKABLE void updateAvatarCachingSetting(bool setting);
+    Q_INVOKABLE void acceptSubscription(QString accountId,QString bareJid) { clients->value(accountId)->acceptSubscribtion(bareJid); }
+    Q_INVOKABLE void rejectSubscription(QString accountId,QString bareJid) { clients->value(accountId)->rejectSubscribtion(bareJid); }
+    Q_INVOKABLE int  getConnectionStatusByAccountId(QString accountId)     { return clients->value(accountId)->getStateConnect(); }
+    Q_INVOKABLE int  getStatusByAccountId(QString accountId)               { return clients->value(accountId)->getStatus(); }
+
     Q_INVOKABLE void addContact(QString accountId, QString bareJid, QString nick) {
       clients->value(accountId)->addContact(bareJid,nick,"",true);
     }
     Q_INVOKABLE void renameContact(QString accountId, QString bareJid, QString newName) {
       clients->value(accountId)->renameContact(bareJid,newName);
     }
-
-    Q_INVOKABLE void setVisibility(bool state)   { contacts->setOfflineContactsState(state); emit rosterChanged(); }
-    Q_INVOKABLE bool getVisibility()           { return contacts->getOfflineContactsState(); }
+    Q_INVOKABLE void removeContact(QString accountId,QString bareJid) { clients->value(accountId)->removeContact(bareJid); }
+    Q_INVOKABLE void subscribe(QString accountId,QString bareJid)     { clients->value(accountId)->subscribe(bareJid); }
+    Q_INVOKABLE void unsubscribe(QString accountId,QString bareJid)   { clients->value(accountId)->unsubscribe(bareJid); }
 
 private:
     QString currentClient;
@@ -218,7 +237,6 @@ private:
     QMap<QString,MsgListModel*> *cachedMessages;
 
     RosterListModel* getRoster();
-
     ContactListManager *contacts;
 
     QString getCurrentAccountName();
