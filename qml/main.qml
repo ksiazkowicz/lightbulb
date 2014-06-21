@@ -176,7 +176,6 @@ PageStackWindow {
     Notifications       { id: notify }
     ListModel           { id: listModelResources }
     NetworkManager      { id: network }
-    Globals             { id: vars }
 
     /************************( stuff to do when running this app )*****************************/
     Component.onCompleted:      {

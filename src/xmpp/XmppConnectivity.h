@@ -152,10 +152,6 @@ signals:
     void xmppTypingChanged        (const QString accountId, QString bareJid, bool isTyping);
     
 public slots:
-    void changeRoster() {
-        roster = selectedClient->getCachedRoster();
-        emit rosterChanged();
-    }
     void updateContact(QString m_accountId,QString bareJid,QString property,int count) {
         dbWorker->executeQuery(QStringList() << "updateContact" << m_accountId << bareJid << property << QString::number(count));
     }

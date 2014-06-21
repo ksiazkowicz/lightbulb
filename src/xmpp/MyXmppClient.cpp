@@ -109,7 +109,6 @@ void MyXmppClient::error(QXmppClient::Error e) {
         QXmppPresence pr = xmppClient->clientPresence();
         this->presenceReceived( pr );
         QXmppPresence presence( QXmppPresence::Unavailable );
-        this->clearPresence();
         xmppClient->setClientPresence( presence );
 
         emit errorHappened(m_accountId,errString);
@@ -137,7 +136,7 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
     if( (avatarFile.isEmpty() || avatarFile == "qrc:/avatar") && vCard.photo() != "" && !disableAvatarCaching) {
         isAvatarCreated =  cacheIM->setAvatarCache( bareJid, vCard.photo() );
     }
-    item->setAvatar(cacheIM->getAvatarCache(bareJid));
+    //item->setAvatar(cacheIM->getAvatarCache(bareJid));
 
     dataVCard.nickName = nickName;
     dataVCard.firstName = vCard.firstName();
