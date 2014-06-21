@@ -93,6 +93,7 @@ Item {
                 checked: settings.gBool("behavior","linkInDiscrPopup")
                 anchors { right: parent.right; rightMargin: platformStyle.paddingSmall; verticalCenter: parent.verticalCenter }
                 onCheckedChanged: {
+                    avkon.switchToApp = checked
                     settings.sBool(checked,"behavior","linkInDiscrPopup")
                 }
             }

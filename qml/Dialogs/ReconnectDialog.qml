@@ -29,8 +29,9 @@ import lightbulb 1.0
 
 CommonDialog {
     id: reconDialog
-    titleText: qsTr("Connection lost")
+    titleText: qsTr("Connection lost ") + "(" + xmppConnectivity.getAccountName(accountId) + ")"
     property int timeLeft: 10
+    property string accountId: ""
     platformInverted: main.platformInverted
 
     buttonTexts: [qsTr("Cancel")]
@@ -38,7 +39,10 @@ CommonDialog {
     // Code for dynamic load
     Component.onCompleted: {
         open();
-        isCreated = true }
+        isCreated = true
+        if (!network.connectionStatus)
+            network.openConnection()
+    }
     property bool isCreated: false
 
     onStatusChanged: if (isCreated && reconDialog.status === DialogStatus.Closed) reconDialog.destroy()
@@ -56,18 +60,8 @@ CommonDialog {
             if (timeLeft > 0) {
                 timeLeft--
             } else {
-                var ret = ""
-
-                switch (main.lastUsedStatus) {
-                    case 0: ret = XmppClient.Online; break;
-                    case 1: ret = XmppClient.Chat; break;
-                    case 2: ret = XmppClient.Away; break;
-                    case 3: ret = XmppClient.XA; break;
-                    case 4: ret = XmppClient.DND; break;
-                    case 5: ret = XmppClient.Offline; break;
-                    default: ret = XmppClient.Unknown; break;
-                }
-                xmppConnectivity.client.setMyPresence( ret, main.laststatus )
+                xmppConnectivity.client.keepAlive = settings.gBool("behavior","keepAliveInterval")
+                xmppConnectivity.client.setMyPresence( XmppClient.Online, main.laststatus )
                 reconDialog.close()
                 running = false
             }

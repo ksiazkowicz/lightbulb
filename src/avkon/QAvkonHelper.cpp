@@ -97,13 +97,13 @@ void QAvkonHelper::playNotification(QString path) {
   iAudioPlayer->PlayL(kPath);
 }
 
-void QAvkonHelper::showPopup(QString title, QString message, bool goToApp) {
+void QAvkonHelper::showPopup(QString title, QString message) {
     TPtrC16 sTitle(reinterpret_cast<const TUint16*>(title.utf16()));
     TPtrC16 sMessage(reinterpret_cast<const TUint16*>(message.utf16()));
 
     if (lastPopup != title + ";" + message) lastPopup = title + ";" + message; else return;
 
-    if (goToApp) {
+    if (_switchToApp) {
         TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(sTitle, sMessage,KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL, {0xE22AC278}));
     } else TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(sTitle, sMessage,KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL));
     QTimer::singleShot(2000,this,SLOT(cleanLastMsg()));

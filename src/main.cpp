@@ -44,6 +44,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "SkinSelectorHandler.h"
 #include "XmppConnectivity.h"
 #include "EmoticonParser.h"
+#include "NetworkManager.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
@@ -58,6 +59,8 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     qmlRegisterType<LightbulbHSWidget>("lightbulb", 1, 0, "HSWidget" );
     qmlRegisterType<SkinSelectorHandler>("lightbulb",1,0,"SelectorHandler");
     qmlRegisterType<XmppConnectivity>("lightbulb",1,0,"XmppConnectivity");
+
+    qmlRegisterType<NetworkManager>("lightbulb",1,0,"NetworkManager");
 
     qmlRegisterType<SymbiosisAPIClient>("lightbulb", 1, 0, "SymbiosisAPI" );
 

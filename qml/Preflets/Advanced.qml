@@ -59,6 +59,18 @@ Item {
             }
         }
 
+        CheckBox {
+            id: disableAvatarCaching
+            text: qsTr("Disable avatar caching")
+            checked: settings.gBool("behavior","disableAvatarCaching")
+            platformInverted: main.platformInverted
+            onCheckedChanged: {
+                settings.sBool(checked,"behavior","disableAvatarCaching")
+                xmppConnectivity.updateAvatarCachingSetting(checked)
+            }
+        }
+
+
         Text {
             text: qsTr("Visible messages limit")
             font.pixelSize: 20

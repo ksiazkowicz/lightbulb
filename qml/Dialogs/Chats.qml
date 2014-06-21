@@ -56,7 +56,7 @@ CommonDialog {
                 }
                 Image {
                     id: imgPresence
-                    source: xmppConnectivity.getPropertyByJid(account,jid,"presence")
+                    source: xmppConnectivity.getPropertyByJid(account,"presence",jid)
                     sourceSize.height: 24
                     sourceSize.width: 24
                     anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
@@ -74,8 +74,8 @@ CommonDialog {
                 }
                 Text {
                     anchors { verticalCenter: parent.verticalCenter; left: imgPresence.right; right: parent.right; rightMargin: 5; leftMargin: 10 }
-                    property int unreadMsg: parseInt(xmppConnectivity.getPropertyByJid(account,jid,"unreadMsg"))
-                    text: unreadMsg > 0 ? "[" + xmppConnectivity.getPropertyByJid(account,jid,"unreadMsg") + "] " + name : name
+                    property int unreadMsg: parseInt(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))
+                    text: unreadMsg > 0 ? "[" + unreadMsg + "] " + name : name
                     font.pixelSize: 18
                     clip: true
                     color: vars.textColor
@@ -92,7 +92,7 @@ CommonDialog {
                         if (xmppConnectivity.currentAccount != account) xmppConnectivity.currentAccount = account
                         if (index > -1 && xmppConnectivity.chatJid != jid) {
                             xmppConnectivity.chatJid = jid
-                            vars.globalUnreadCount = vars.globalUnreadCount - parseInt(xmppConnectivity.getPropertyByJid(account,jid, "unreadMsg"))
+                            vars.globalUnreadCount = vars.globalUnreadCount - parseInt(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))
                             main.openChat()
                         }
                         close()
