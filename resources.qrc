@@ -109,7 +109,6 @@
     <qresource prefix="/Preflets">
         <file alias="Popups">qml/Preflets/Popups.qml</file>
         <file alias="Colors">qml/Preflets/Colors.qml</file>
-        <file alias="Widget">qml/Preflets/Widget.qml</file>
         <file alias="Advanced">qml/Preflets/Advanced.qml</file>
         <file alias="Roster">qml/Preflets/Roster.qml</file>
         <file alias="Events">qml/Preflets/Events.qml</file>

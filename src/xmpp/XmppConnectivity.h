@@ -95,13 +95,11 @@ public:
       removeChat(account,bareJid,true);
       latestChats.append(account+";"+bareJid);
       if (latestChats.count()>10) latestChats.removeFirst();
-      emit widgetDataChanged();
     }
 
     void removeChat(QString account, QString bareJid,bool silent=false) {
       if (latestChats.contains(account+";"+bareJid))
         latestChats.removeAt(latestChats.indexOf(account+";"+bareJid));
-      if (!silent) emit widgetDataChanged();
     }
 
     Q_INVOKABLE QString getChatProperty(int index, QString property) {

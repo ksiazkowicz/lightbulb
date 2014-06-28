@@ -258,7 +258,6 @@ Page {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: avkon.minimize();
             onPlatformPressAndHold: {
-                notify.cleanWidget()
                 avkon.hideChatIcon()
                 Qt.quit();
             }

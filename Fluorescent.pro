@@ -20,7 +20,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #######################################################################
 
-QT += declarative network sql svg
+QT += declarative network sql
 
 VERSION = 0.4
 
@@ -62,6 +62,7 @@ symbian {
 # lines and add the respective components to the MOBILITY variable.
 CONFIG += mobility
 MOBILITY += mutlimedia feedback systeminfo
+MOBILITY += publishsubscribe
 
 DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS
 
@@ -72,28 +73,24 @@ SOURCES += src/main.cpp \
     src/cache/StoreVCard.cpp \
     src/xmpp/MessageWrapper.cpp \
     src/cache/QMLVCard.cpp \
-    src/avkon/LightbulbHSWidget.cpp \
     src/database/DatabaseManager.cpp \
     src/avkon/QAvkonHelper.cpp \
     src/xmpp/XmppConnectivity.cpp \
     src/database/DatabaseWorker.cpp \
     src/database/Settings.cpp \
-    src/database/SkinSelectorHandler.cpp \
     src/avkon/AvkonMedia.cpp \
     src/EmoticonParser.cpp \
-	src/xmpp/ContactListManager.cpp \
-    src/avkon/NetworkManager.cpp
+    src/xmpp/ContactListManager.cpp \
+    src/avkon/NetworkManager.cpp \
+    src/avkon/DataPublisher.cpp
 
 HEADERS += src/xmpp/MyXmppClient.h \
     src/cache/MyCache.h \
     src/cache/StoreVCard.h \
     src/xmpp/MessageWrapper.h \
     src/cache/QMLVCard.h \
-    src/avkon/QHSWidget.h \
-    src/avkon/LightbulbHSWidget.h \
     src/database/DatabaseManager.h \
     src/avkon/QAvkonHelper.h \
-    src/avkon/SymbiosisAPIClient.h \
     src/xmpp/XmppConnectivity.h \
     src/database/DatabaseWorker.h \
     src/database/Settings.h \
@@ -102,17 +99,15 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/models/ListModel.h \
     src/models/RosterItemModel.h \
     src/models/RosterListModel.h \
-    src/database/SkinSelectorHandler.h \
     src/models/ChatsListModel.h \
     src/models/ChatsItemModel.h \
     src/models/MsgListModel.h \
     src/models/MsgItemModel.h \
     src/avkon/AvkonMedia.h \
     src/EmoticonParser.h \
-    src/models/WidgetDataModel.h \
-    src/models/WidgetItemModel.h \
-	src/xmpp/ContactListManager.h \
-    src/avkon/NetworkManager.h
+    src/xmpp/ContactListManager.h \
+    src/avkon/NetworkManager.h \
+    src/avkon/DataPublisher.h
 
 OTHER_FILES += README.md \
     qml/Dialogs/*.* \
@@ -131,35 +126,6 @@ qtcAddDeployment()
 #qxmpp
 include(qxmpp/qxmpp.pri)
 INCLUDEPATH += qxmpp/base/ qxmpp/client
-
-addFiles.pkg_postrules += "\"HSWidgetPlugin0xE00AC666.dll\" - \"!:\\sys\\bin\\HSWidgetPlugin0xE00AC666.dll\""
-
-addFiles.pkg_postrules += "\"sounds\\Message_Received.wav\" - \"!:\\data\\.config\\Fluorescent\\sounds\\Message_Received.wav\""
-addFiles.pkg_postrules += "\"sounds\\Message_Sent.wav\" - \"!:\\data\\.config\\Fluorescent\\sounds\\Message_Sent.wav\""
-addFiles.pkg_postrules += "\"sounds\\New_Message.wav\" - \"!:\\data\\.config\\Fluorescent\\sounds\\Subscription_Request.wav\""
-
-# Belle Albus widget skin
-addFiles.pkg_postrules += "\"widget\\Belle Albus\\background.png\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Belle Albus\\background.png\""
-addFiles.pkg_postrules += "\"widget\\Belle Albus\\fader.png\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Belle Albus\\fader.png\""
-addFiles.pkg_postrules += "\"widget\\Belle Albus\\settings.txt\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Belle Albus\\settings.txt\""
-
-# Belle Atricolor widget skin
-addFiles.pkg_postrules += "\"widget\\Belle Atricolor\\background.png\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Belle Atricolor\\background.png\""
-addFiles.pkg_postrules += "\"widget\\Belle Atricolor\\fader.png\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Belle Atricolor\\fader.png\""
-addFiles.pkg_postrules += "\"widget\\Belle Atricolor\\settings.txt\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Belle Atricolor\\settings.txt\""
-
-# Jelly Bean by Rudmata
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\background.png\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\background.png\""
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\fader.png\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\fader.png\""
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\settings.txt\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\settings.txt\""
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\unread.svg\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\unread.svg\""
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\away.svg\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\presence\\away.svg\""
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\busy.svg\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\presence\\busy.svg\""
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\chatty.svg\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\presence\\chatty.svg\""
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\offline.svg\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\presence\\offline.svg\""
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\online.svg\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\presence\\online.svg\""
-addFiles.pkg_postrules += "\"widget\\Jelly Bean\\presence\\xa.svg\" - \"C:\\data\\.config\\Fluorescent\\widgets\\Jelly Bean\\presence\\xa.svg\""
-
 
 DEPLOYMENT += addFiles
 

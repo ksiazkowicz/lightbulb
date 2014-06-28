@@ -37,11 +37,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "MsgListModel.h"
 #include "QMLVCard.h"
 #include "Settings.h"
-#include "LightbulbHSWidget.h"
 #include "QAvkonHelper.h"
 #include "DatabaseManager.h"
-#include "SymbiosisAPIClient.h"
-#include "SkinSelectorHandler.h"
 #include "XmppConnectivity.h"
 #include "EmoticonParser.h"
 #include "NetworkManager.h"
@@ -56,13 +53,9 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     qmlRegisterType<Settings>("lightbulb", 1, 0, "Settings" );
     qmlRegisterType<QMLVCard>("lightbulb", 1, 0, "XmppVCard" );
     qmlRegisterType<ClipboardAdapter>("lightbulb", 1, 0, "Clipboard" );
-    qmlRegisterType<LightbulbHSWidget>("lightbulb", 1, 0, "HSWidget" );
-    qmlRegisterType<SkinSelectorHandler>("lightbulb",1,0,"SelectorHandler");
     qmlRegisterType<XmppConnectivity>("lightbulb",1,0,"XmppConnectivity");
 
     qmlRegisterType<NetworkManager>("lightbulb",1,0,"NetworkManager");
-
-    qmlRegisterType<SymbiosisAPIClient>("lightbulb", 1, 0, "SymbiosisAPI" );
 
     qmlRegisterUncreatableType<SqlQueryModel>("lightbulb", 1, 0, "SqlQuery", "");
     qmlRegisterUncreatableType<AccountsListModel>("lightbulb", 1, 0, "AccountsList", "Use settings.accounts instead");

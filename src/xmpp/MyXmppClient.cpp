@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *********************************************************************/
 
 #include "MyXmppClient.h"
+#include "DataPublisher.h"
 
 QString MyXmppClient::myVersion = "0.4";
 

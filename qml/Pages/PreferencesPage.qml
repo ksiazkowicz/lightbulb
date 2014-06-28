@@ -35,7 +35,6 @@ Page {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
                 if (vars.isRestartRequired) {
-                    if (settings.gBool("widget","enableHsWidget")) notify.cleanWidget()
                     avkon.restartApp();
                 } else pageStack.pop();
                 vars.isBlinkingOverrideEnabled = false;
@@ -52,7 +51,6 @@ Page {
         model: ListModel {
             ListElement { name: "Events" }
             ListElement { name: "Popups" }
-            ListElement { name: "Widget" }
             ListElement { name: "Connection" }
             ListElement { name: "Notification LED" }
             ListElement { name: "Colors" }
@@ -72,31 +70,26 @@ Page {
                     break;
                 }
                 case 2: {
-                    titleText.text = "Homescreen widget";
-                    preflet.source = "qrc:/Preflets/Widget";
-                    break;
-                }
-                case 3: {
                     titleText.text = "Connection";
                     preflet.source = "qrc:/Preflets/Connection";
                     break;
                 }
-                case 4: {
+                case 3: {
                     titleText.text = "Notification LED";
                     preflet.source = "qrc:/Preflets/LED";
                     break;
                 }
-                case 5: {
+                case 4: {
                     titleText.text = "Colors";
                     preflet.source = "qrc:/Preflets/Colors";
                     break;
                 }
-                case 6: {
+                case 5: {
                     titleText.text = "Contact list";
                     preflet.source = "qrc:/Preflets/Roster";
                     break;
                 }
-                case 7: {
+                case 6: {
                     titleText.text = "Advanced";
                     preflet.source = "qrc:/Preflets/Advanced";
                     break;
