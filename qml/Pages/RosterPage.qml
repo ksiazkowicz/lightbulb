@@ -256,11 +256,7 @@ Page {
         id: toolBarLayout
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
-            onClicked: avkon.minimize();
-            onPlatformPressAndHold: {
-                avkon.hideChatIcon()
-                Qt.quit();
-            }
+            onClicked: main.pageStack.pop()
         }
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-add_inverse" : "toolbar-add"
@@ -277,33 +273,6 @@ Page {
                 } else {
                     rosterSearch.height = 50;
                 }
-            }
-        }
-
-        ToolButton {
-            id: toolBarButtonChats
-            iconSource: main.platformInverted ? "qrc:/toolbar/chats_inverse" : "qrc:/toolbar/chats"
-            onClicked: dialog.create("qrc:/dialogs/Chats")
-
-            Image {
-                id: imgMarkUnread
-                source: main.platformInverted ? "qrc:/unread-mark_inverse" : "qrc:/unread-mark"
-                smooth: true
-                sourceSize.width: toolBarButtonChats.width
-                sourceSize.height: toolBarButtonChats.width
-                width: toolBarButtonChats.width
-                height: toolBarButtonChats.width
-                visible: vars.globalUnreadCount != 0
-                anchors.centerIn: parent
-            }
-            Text {
-                id: txtUnreadMsg
-                text: vars.globalUnreadCount
-                font.pixelSize: 16
-                anchors.centerIn: parent
-                visible: vars.globalUnreadCount != 0
-                z: 1
-                color: main.platformInverted ? "white" : "black"
             }
         }
         ToolButton {

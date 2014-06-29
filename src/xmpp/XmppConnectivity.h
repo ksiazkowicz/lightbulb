@@ -134,7 +134,7 @@ signals:
 
     void chatsChanged();
 
-    void notifyMsgReceived(QString name,QString jid,QString body);
+    void notifyMsgReceived(QString name,QString jid,QString body,QString account);
 
     void qmlChatChanged();
     void msgLimitChanged();
@@ -148,6 +148,7 @@ signals:
     void xmppStatusChanged        (const QString accountId);
     void xmppSubscriptionReceived (const QString accountId, const QString bareJid);
     void xmppTypingChanged        (const QString accountId, QString bareJid, bool isTyping);
+    void xmppPresenceChanged      (QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus);
     
 public slots:
     void updateContact(QString m_accountId,QString bareJid,QString property,int count) {

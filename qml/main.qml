@@ -97,78 +97,15 @@ PageStackWindow {
 
     XmppConnectivity    {
         id: xmppConnectivity
-        onNotifyMsgReceived: {
-            // handle global unread count. I should have both global and local unread count later
-            if (!vars.isChatInProgress) {
-                vars.globalUnreadCount++
-                if (jid === chatJid) vars.tempUnreadCount++
-            } else if (jid !== chatJid || !vars.isActive) vars.globalUnreadCount++
-
-            // show discreet popup if enabled
-            if (settings.gBool("notifications", "usePopupRecv") && (chatJid !== jid || !vars.isActive)) {
-                if (settings.gBool("behavior","msgInDiscrPopup"))
-                        avkon.showPopup(name,body)
-                else
-                    avkon.showPopup(vars.globalUnreadCount + " unread messages", "New message from "+ name + ".")
-            }
-
-            // get the blinker running if enabled and app is inactive
-            if (!vars.isActive && settings.gBool("behavior", "wibblyWobblyTimeyWimeyStuff")) blink.running = true;
-
-            // play sound and vibration
-            notify.notifySndVibr("MsgRecv")
-
-            // update chats icon and widget if required
-            notify.updateNotifiers()
-        }
-        onXmppConnectingChanged: {
-            if (settings.gBool("notifications", "notifyConnection")) {
-                switch (getConnectionStatusByAccountId(accountId)) {
-                    case 0:
-                        avkon.showPopup(getAccountName(accountId),"Disconnected. :c");
-                        break;
-                    case 1:
-                        notify.notifySndVibr("NotifyConn")
-                        avkon.showPopup(getAccountName(accountId),"Status changed to " + notify.getStatusNameByIndex(xmppConnectivity.client.status));
-                        break;
-                    case 2:
-                        avkon.showPopup(getAccountName(accountId),"Connecting...");
-                        break;
-                }
-            }
-        }
         onXmppErrorHappened: {
             if (settings.gBool("behavior", "reconnectOnError"))
                 dialog.createWithProperties("qrc:/dialogs/Status/Reconnect",{"accountId": accountId})
         }
-        onXmppStatusChanged: {
-            console.log( "XmppClient::onStatusChanged (" + accountId + ")" + getStatusByAccountId(accountId) )
-            if (accountId == currentAccount)
-                notify.updateNotifiers()
-        }
         onXmppSubscriptionReceived: {
-            console.log( "XmppConnectivity::onXmppSubscriptionReceived(" + accountId + "," + bareJid + ")" )
-            if (settings.gBool("notifications","notifySubscription") == true)
-                avkon.showPopup("Subscription request",bareJid)
-
-            notify.notifySndVibr("MsgSub")
-
             if (avkon.displayAvkonQueryDialog("Subscription (" + getAccountName(accountId) + ")", qsTr("Do you want to accept subscription request from ") + bareJid + qsTr("?")))
                 acceptSubscribtion(accountId,bareJid)
             else
                 rejectSubscribtion(accountId,bareJid)
-
-        }
-        onXmppTypingChanged: {
-            console.log( "XmppConnectivity::onXmppTypingChanged(" + accountId + "," + bareJid + "," + isTyping + ")" )
-            if (settings.gBool("notifications", "notifyTyping") == true &&
-               (chatJid !== bareJid || !vars.isActive) &&
-               (currentAccount == accountId && client.myBareJid !== bareJid)) {
-                if (isTyping)
-                    avkon.showPopup(getPropertyByJid(accountId,"name",bareJid),"is typing a message...")
-                else
-                    avkon.showPopup(getPropertyByJid(accountId,"name",bareJid),"stopped typing.")
-            }
         }
     }
     Settings            { id: settings }
@@ -186,7 +123,7 @@ PageStackWindow {
         if (!settings.gBool("main","not_first_run"))
             pageStack.push("qrc:/pages/FirstRun")
         else
-            pageStack.push("qrc:/pages/Roster")
+            pageStack.push("qrc:/pages/Events")
 			
 		xmppConnectivity.offlineContactsVisibility = !vars.hideOffline
     }
@@ -261,7 +198,7 @@ PageStackWindow {
         ]
     }
     /***************(overlay)**********/
-    Rectangle {
+    /*Rectangle {
         color: main.platformInverted ? "white" : "black"
         anchors.fill: parent
         visible: xmppConnectivity.client.stateConnect === 2
@@ -276,5 +213,5 @@ PageStackWindow {
                 font.pixelSize: platformStyle.fontSizeSmall
             }
         }
-    }
+    }*/
 }

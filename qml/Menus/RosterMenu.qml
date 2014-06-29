@@ -32,22 +32,6 @@ Menu {
     // define the items in the menu and corresponding actions
     content: MenuLayout {
         MenuItem {
-            text: "Status ("+notify.getStatusNameByIndex(xmppConnectivity.client.status)+")"
-            onClicked: {
-                if (settings.accounts.count() > 0)
-                    dialog.createWithContext("qrc:/dialogs/Status/Change");
-                else
-                    avkon.displayGlobalNote("You have to set-up an account first.", true)
-            }
-            platformInverted: main.platformInverted
-        }
-        MenuItem {
-            text: qsTr("Accounts")
-            platformInverted: main.platformInverted
-            onClicked: main.pageStack.push( "qrc:/pages/Accounts" )
-        }
-
-        MenuItem {
             text: qsTr("Preferences")
             platformInverted: main.platformInverted
             onClicked: main.pageStack.push( "qrc:/pages/Preferences" )

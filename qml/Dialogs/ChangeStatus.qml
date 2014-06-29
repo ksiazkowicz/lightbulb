@@ -34,6 +34,7 @@ CommonDialog {
     privateCloseIcon: true
 
     property bool storeStatus: settings.gBool("behavior","storeLastStatus")
+    property string accountId: ""
 
     platformInverted: main.platformInverted
 
@@ -63,6 +64,9 @@ CommonDialog {
 
             if (!network.connectionStatus)
                 network.openConnection()
+
+            if (accountId !== "")
+                main.changeAccount(accountId)
 
             xmppConnectivity.client.setMyPresence( ret, wrapperTextEdit.text )
             vars.lastStatus = wrapperTextEdit.text
