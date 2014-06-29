@@ -35,11 +35,19 @@ Page {
     Flickable {
         anchors { fill: parent; leftMargin: 5; rightMargin: 5 }
         contentWidth: width
+        contentHeight: mainView.implicitHeight
         flickableDirection: Flickable.VerticalFlick
         clip: true
         Column {
-            anchors { fill: parent }
+            id: mainView
+            anchors { left: parent.left; right: parent.right }
             spacing: 5
+            move: Transition {
+                     NumberAnimation {
+                         properties: "y"
+                         easing.type: Easing.OutBounce
+                     }
+                 }
 
             Item {
                 id: account
@@ -83,9 +91,13 @@ Page {
                     interactive: false
                     anchors { right: name.right; left: name.left; top: name.bottom }
                     cellWidth: 48
-                    delegate: ToolButton {
+                    delegate: MouseArea {
                         height: 32
-                        width: 32
+                        width: 48
+                        onClicked: {
+                            dialog.createWithProperties("qrc:/dialogs/Status/Change", {"accountId": accGRID})
+                        }
+
                         Connections {
                             target: xmppConnectivity
                             onXmppStatusChanged: {
@@ -96,23 +108,16 @@ Page {
 
                         Image {
                             sourceSize { height: 32; width: 32 }
-                            anchors.fill: parent
+                            anchors.centerIn: parent
                             smooth: true
                             source: "qrc:/accounts/" + accIcon
                             Image {
                                 id: accPresence
-                                width: 12
-                                height: 12
+                                width: 12; height: width
                                 anchors { right: parent.right; bottom: parent.bottom }
                                 source: "qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accGRID))
                                 smooth: true
                                 sourceSize { width: 12; height: 12 }
-                            }
-                        }
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: {
-                                dialog.createWithProperties("qrc:/dialogs/Status/Change", {"accountId": accGRID})
                             }
                         }
                     }
@@ -130,7 +135,8 @@ Page {
                     width: parent.width - clearBtn.width
                     color: "#ffffff"
                     text: qsTr("Events")
-                    font.pixelSize: 26
+                    font { pixelSize: 22; bold: true }
+                    opacity: 0.7
                     verticalAlignment: Text.AlignVCenter
                 }
                 ToolButton {
@@ -145,13 +151,11 @@ Page {
             Repeater {
                 model: eventListModel
                 anchors { left: parent.left; right: parent.right }
-                delegate: Component {
-                    Item {
-                        id: notification
-                        width: parent.width
-                        height: 64
-
-                        Image {
+                delegate: Item {
+                    id: notification
+                    width: parent.width
+                    height: 64
+                    Image {
                             id: icon
                             width: parent.height
                             height: parent.height
@@ -183,16 +187,17 @@ Page {
                                 }
                             }
                         }
-                        Column {
-                            anchors { right: parent.right; rightMargin: 5; left: icon.right; leftMargin: 10; verticalCenter: notification.verticalCenter }
+                    Column {
+                            anchors { left: icon.right; leftMargin: 10; verticalCenter: notification.verticalCenter }
                             Text {
                                 color: "#ffffff"
-                                text: eventText
-                                width: parent.width - 15
-                                horizontalAlignment: Text.AlignJustify
+                                textFormat: Text.PlainText
+                                width: mainPage.width - 25 - 90
+                                maximumLineCount: 1
                                 font.pixelSize: 20
+                                text: eventText
+                                wrapMode: Text.WrapAnywhere
                                 elide: Text.ElideRight
-                                clip: true
                             }
                             Text {
                                 color: "#b9b9b9"
@@ -201,9 +206,9 @@ Page {
                                 horizontalAlignment: Text.AlignJustify
                                 font.pixelSize: 20
                                 elide: Text.ElideRight
+                                maximumLineCount: 1
                             }
                         }
-                    }
                 }
             }
             Item {
@@ -226,15 +231,17 @@ Page {
                 height: 50
                 Text {
                     height: parent.height
-                    width: parent.width - 50
+                    width: parent.width - chatBtn.width
                     color: "#ffffff"
                     text: qsTr("Chats")
-                    font.pixelSize: 26
+                    font { pixelSize: 22; bold: true }
+                    opacity: 0.7
                     verticalAlignment: Text.AlignVCenter
                 }
                 ToolButton {
-                    width: parent.height
+                    id: chatBtn
                     height: parent.height
+                    width: height
                     text: ""
                     iconSource: "toolbar-add"
                     onClicked: main.pageStack.push( "qrc:/pages/Roster" )
@@ -334,9 +341,7 @@ Page {
            }
        }
        ToolButton {
-           id: toolBarButtonOptions
            iconSource: main.platformInverted ? "toolbar-menu_inverse" : "toolbar-menu"
-           smooth: true
            onClicked: dialog.create("qrc:/menus/Roster/Options")
        }
    }
