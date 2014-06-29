@@ -57,7 +57,7 @@ Item {
         onXmppTypingChanged: {
             console.log( "XmppConnectivity::onXmppTypingChanged(" + accountId + "," + bareJid + "," + isTyping + ")" )
             if (settings.gBool("notifications", "notifyTyping") == true &&
-               (chatJid !== bareJid || !vars.isActive) &&
+               (xmppConnectivity.chatJid !== bareJid || !vars.isActive) &&
                (currentAccount == accountId && client.myBareJid !== bareJid)) {
                 if (isTyping)
                     avkon.showPopup(getPropertyByJid(accountId,"name",bareJid),"is typing a message...")

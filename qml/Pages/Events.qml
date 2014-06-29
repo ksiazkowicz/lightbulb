@@ -1,5 +1,6 @@
 import QtQuick 1.1
 import com.nokia.symbian 1.1
+import lightbulb 1.0
 import "../Components"
 
 Page {
@@ -9,6 +10,23 @@ Page {
         target: xmppConnectivity
         onNotifyMsgReceived: {
             eventListModel.appendEvent(xmppConnectivity.getAvatarByJid(jid),true,parseInt(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))+1,body,name,true)
+        }
+        onChatJidChanged: {
+            eventListModel.findAndRemove(xmppConnectivity.getAvatarByJid(xmppConnectivity.chatJid),true,xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,"name",xmppConnectivity.chatJid),true)
+        }
+        onPersonalityChanged: {
+            vCardHandler.loadVCard(settings.gStr("behavior","personality"))
+            avatar.source = xmppConnectivity.getAvatarByJid(settings.gStr("behavior","personality"))
+        }
+    }
+
+    XmppVCard {
+        id: vCardHandler
+        Component.onCompleted:
+            loadVCard(settings.gStr("behavior","personality"))
+        onVCardChanged: {
+            if (fullname !== "")
+                name.text = fullname
         }
     }
 
@@ -30,6 +48,11 @@ Page {
                     return i
             return -1;
         }
+        function findAndRemove(icon,mark,description,mask) {
+            for (var i=0;i<count;i++)
+                if (get(i).iconPath === icon && get(i).mark === mark && get(i).descriptionText === description && get(i).avatarMask === mask)
+                    remove(i)
+        }
     }
 
     Flickable {
@@ -42,6 +65,7 @@ Page {
             id: mainView
             anchors { left: parent.left; right: parent.right }
             spacing: 5
+
             move: Transition {
                      NumberAnimation {
                          properties: "y"
@@ -59,7 +83,7 @@ Page {
                     width: 64
                     height: 64
                     clip: true
-                    source: "qrc:/avatar"
+                    source: xmppConnectivity.getAvatarByJid(settings.gStr("behavior","personality"))
 
                     Image {
                         anchors.fill: parent
@@ -72,7 +96,7 @@ Page {
                     id: name
                     width: 215
                     height: 31
-                    text: qsTr("Maciej Janiszewski")
+                    text: qsTr("Me")
                     anchors { left: avatar.right; leftMargin: 24; top: parent.top}
                     color: platformStyle.colorNormalLight
                     font.pixelSize: 24
@@ -153,7 +177,7 @@ Page {
                 anchors { left: parent.left; right: parent.right }
                 delegate: Item {
                     id: notification
-                    width: parent.width
+                    width: mainView.width
                     height: 64
                     Image {
                             id: icon

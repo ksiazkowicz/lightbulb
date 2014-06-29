@@ -125,6 +125,7 @@ public:
     Q_INVOKABLE int getGlobalUnreadCount();
 
 signals:
+    void personalityChanged();
     void accountChanged();
     void rosterChanged();
 
@@ -222,6 +223,8 @@ public slots:
     Q_INVOKABLE void removeContact(QString accountId,QString bareJid) { clients->value(accountId)->removeContact(bareJid); }
     Q_INVOKABLE void subscribe(QString accountId,QString bareJid)     { clients->value(accountId)->subscribe(bareJid); }
     Q_INVOKABLE void unsubscribe(QString accountId,QString bareJid)   { clients->value(accountId)->unsubscribe(bareJid); }
+
+    Q_INVOKABLE void updateMyData(QString jid);
 
 private:
     QString currentClient;

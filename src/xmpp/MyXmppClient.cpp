@@ -148,6 +148,10 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
     dataVCard.eMail = vCard.email();
 
     cacheIM->setVCard( bareJid, dataVCard );
+
+    if (bareJid == m_myjid) {
+        emit iFoundYourParentsGoddamit(m_myjid);
+      }
 }
 
 // ---------- Typing notifications (broken) --------------------------------------------------------------------------------------
@@ -429,6 +433,13 @@ void MyXmppClient::initRoster() {
             vCardManager->requestVCard( bareJid );
         }
         emit contactAdded(m_accountId,bareJid,name);
+    }
+
+    vCardData vCdata = cacheIM->getVCard( m_myjid );
+    if ( vCdata.isEmpty() ) {
+        qDebug() << "MyXmppClient::initRoster():" << m_myjid << "has no VCard. Requesting.";
+        cacheIM->addCacheJid(m_myjid);
+        vCardManager->requestVCard( m_myjid );
     }
 }
 

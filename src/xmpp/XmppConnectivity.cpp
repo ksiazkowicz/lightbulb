@@ -87,6 +87,8 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
         clients->value(index)->setPort(5222);
     }
     clients->value(index)->setAccountId(index);
+    connect(clients->value(index),SIGNAL(iFoundYourParentsGoddamit(QString)),this,SLOT(updateMyData(QString)));
+
     connect(clients->value(index),SIGNAL(updateContact(QString,QString,QString,int)),this,SLOT(updateContact(QString,QString,QString,int)));
     connect(clients->value(index),SIGNAL(insertMessage(QString,QString,QString,QString,int)),this,SLOT(insertMessage(QString,QString,QString,QString,int)));
     connect(clients->value(index),SIGNAL(contactRenamed(QString,QString)),this,SLOT(renameChatContact(QString,QString)));
@@ -317,4 +319,15 @@ void XmppConnectivity::updateAvatarCachingSetting(bool setting) {
       if (clients->value(i.key()) != 0)
           clients->value(i.key())->disableAvatarCaching = setting;
     }
+}
+
+void XmppConnectivity::updateMyData(QString jid) {
+  QString currentPersonality = lSettings->gStr("behavior","personality");
+  QString currentAvatar = lCache->getAvatarCache(currentPersonality);
+  QString newAvatar = lCache->getAvatarCache(jid);
+
+  if ((currentPersonality == "") || (currentPersonality != jid && currentAvatar == "qrc:/avatar" && newAvatar != "qrc:/avatar")) {
+    lSettings->sStr(jid,"behavior","personality");
+    emit personalityChanged();
+  }
 }

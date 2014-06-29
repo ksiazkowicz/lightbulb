@@ -209,6 +209,8 @@ signals:
     void nameChanged(QString m_accountId,QString bareJid,QString name);
     void contactRemoved(QString acc,QString bareJid);
 
+    void iFoundYourParentsGoddamit(QString jid);
+
 public slots:
     void clientStateChanged( QXmppClient::State state );
 
