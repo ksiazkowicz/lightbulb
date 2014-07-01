@@ -31,22 +31,17 @@ class QMLVCard : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY( QString photo READ getPhoto NOTIFY vCardChanged )
     Q_PROPERTY( QString nickname READ getNickName NOTIFY vCardChanged )
     Q_PROPERTY( QString name READ getName NOTIFY vCardChanged )
     Q_PROPERTY( QString middlename READ getMiddleName NOTIFY vCardChanged )
     Q_PROPERTY( QString lastname READ getLastName NOTIFY vCardChanged )
     Q_PROPERTY( QString fullname READ getFullName NOTIFY vCardChanged )
     Q_PROPERTY( QString email READ getEMail NOTIFY vCardChanged )
-    Q_PROPERTY( QString birthday READ getBirthday NOTIFY vCardChanged )
     Q_PROPERTY( QString url READ getUrl NOTIFY vCardChanged )
     Q_PROPERTY( QString jid READ getJid NOTIFY vCardChanged )
 
 public:
     explicit QMLVCard(QObject *parent = 0);
-
-    QString getPhoto() const { return m_photo; }
-    void setPhoto( const QString &value ) { if(value != m_photo) { m_photo =value; } }
 
     QString getNickName() const { return m_nickname; }
     void setNickName( const QString &value ) { if(value != m_nickname) { m_nickname =value; } }
@@ -66,9 +61,6 @@ public:
     QString getEMail() const { return m_email; }
     void setEMail( const QString &value ) { if(value != m_email) { m_email =value; } }
 
-    QString getBirthday() const { return m_birthday; }
-    void setBirthday( const QString &value ) { if(value != m_birthday) { m_birthday =value; } }
-
     QString getUrl() const { return m_url; }
     void setUrl( const QString &value ) { if(value != m_url) { m_url =value; } }
 
@@ -84,14 +76,12 @@ signals:
 public slots:
 
 private:
-    QString m_photo;
     QString m_nickname;
     QString m_name;
     QString m_middlename;
     QString m_lastname;
     QString m_fullname;
     QString m_email;
-    QString m_birthday;
     QString m_url;
     QString m_jid;
 };

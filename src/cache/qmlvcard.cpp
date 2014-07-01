@@ -32,13 +32,11 @@ QMLVCard::QMLVCard(QObject *parent) : QObject(parent)
 }
 
 void QMLVCard::clearData() { //Q_INVOKABLE
-  m_photo = "";
   m_nickname = "";
   m_name = "";
   m_middlename = "";
   m_lastname = "";
   m_fullname = "";
-  m_birthday = "";
   m_email = "";
   m_url = "";
   m_jid = "";

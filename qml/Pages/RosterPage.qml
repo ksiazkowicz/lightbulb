@@ -236,7 +236,7 @@ Page {
 
                 onPressAndHold: {
                     vars.selectedJid = jid
-                    dialog.createWithProperties("qrc:/menus/Roster/Contact",{"contactName":txtJid.contact,"contactJid":jid})
+                    dialog.createWithProperties("qrc:/menus/Roster/Contact",{"accountId": xmppConnectivity.currentAccount, "contactName":txtJid.contact,"contactJid":jid})
                 }
             }
             Image {

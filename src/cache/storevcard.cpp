@@ -28,76 +28,71 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDir>
 #include <QDebug>
 
-StoreVCard::StoreVCard(QObject *parent) : QObject(parent)
-{
+StoreVCard::StoreVCard(QObject *parent) : QObject(parent) {
 }
 
-QString StoreVCard::getElementStore( const QDomDocument *doc, const QString &nodeName )
-{
+QString StoreVCard::getElementStore( const QDomDocument *doc, const QString &nodeName ) {
     QString ret("");
 
     QDomNode nodeElement = doc->elementsByTagName( nodeName ).item(0);
     QDomNode te = nodeElement.firstChild();
 
-    if( !te.isNull() ) {
+    if (!te.isNull())
         ret = te.nodeValue();
-    }
 
     return ret;
 }
 
 
 
-bool StoreVCard::setVCard( const QString &bareJid, vCardData &vCard )
-{
+bool StoreVCard::setVCard( const QString &bareJid, vCardData &vCard ) {
     QDomDocument vCardXMLDoc("vCard");
 
-    if( pathCache.isEmpty() ) {
+    if( pathCache.isEmpty() )
         return false;
-    }
 
     QDomElement rootVCard = vCardXMLDoc.createElement("vCard");
     vCardXMLDoc.appendChild( rootVCard );
 
     QDomElement nodeNickname = vCardXMLDoc.createElement( "nickName" );
     rootVCard.appendChild(nodeNickname);
-    QDomText txtNickname = vCardXMLDoc.createTextNode( vCard.nickName );
+    QDomText txtNickname = vCardXMLDoc.createTextNode( vCard.nickName.toUtf8() );
     nodeNickname.appendChild( txtNickname );
 
     //setElementStore( "firstName", vCard.firstName );
     nodeNickname = vCardXMLDoc.createElement( "firstName" );
     rootVCard.appendChild(nodeNickname);
-    txtNickname = vCardXMLDoc.createTextNode( vCard.firstName );
+    txtNickname = vCardXMLDoc.createTextNode( vCard.firstName.toUtf8() );
     nodeNickname.appendChild( txtNickname );
 
     //setElementStore( "middleName", vCard.middleName );
     nodeNickname = vCardXMLDoc.createElement( "middleName" );
     rootVCard.appendChild(nodeNickname);
-    txtNickname = vCardXMLDoc.createTextNode( vCard.middleName );
+    txtNickname = vCardXMLDoc.createTextNode( vCard.middleName.toUtf8() );
     nodeNickname.appendChild( txtNickname );
 
     //setElementStore( "lastName", vCard.lastName );
     nodeNickname = vCardXMLDoc.createElement( "lastName" );
     rootVCard.appendChild(nodeNickname);
-    txtNickname = vCardXMLDoc.createTextNode( vCard.lastName );
+    txtNickname = vCardXMLDoc.createTextNode( vCard.lastName.toUtf8() );
     nodeNickname.appendChild( txtNickname );
 
     //setElementStore( "url", vCard.url );
     nodeNickname = vCardXMLDoc.createElement( "url" );
     rootVCard.appendChild(nodeNickname);
-    txtNickname = vCardXMLDoc.createTextNode( vCard.url );
+    txtNickname = vCardXMLDoc.createTextNode( vCard.url.toUtf8() );
     nodeNickname.appendChild( txtNickname );
 
     //setElementStore( "eMail", vCard.eMail );
     nodeNickname = vCardXMLDoc.createElement( "eMail" );
     rootVCard.appendChild(nodeNickname);
-    txtNickname = vCardXMLDoc.createTextNode( vCard.eMail );
+    txtNickname = vCardXMLDoc.createTextNode( vCard.eMail.toUtf8() );
     nodeNickname.appendChild( txtNickname );
 
     //setElementStore( "fullName", vCard.fullName );
     nodeNickname = vCardXMLDoc.createElement( "fullName" );
     rootVCard.appendChild(nodeNickname);
-    txtNickname = vCardXMLDoc.createTextNode( vCard.fullName );
+    txtNickname = vCardXMLDoc.createTextNode( vCard.fullName.toUtf8() );
     nodeNickname.appendChild( txtNickname );
 
     #ifdef QT_DEBUG
@@ -151,7 +146,6 @@ vCardData StoreVCard::getVCard( const QString &bareJid )
     #ifdef QT_DEBUG
     //qDebug() << "isVCardEmpty ? " << data.isEmpty();
     #endif
-
 
     return data;
 }

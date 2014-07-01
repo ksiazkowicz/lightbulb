@@ -29,44 +29,30 @@ import "../Components"
 
 Page {
     id: vCardPage
-    tools: toolBar
+    tools: ToolBarLayout {
+        ToolButton {
+            iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
+            onClicked: {
+                pageStack.pop()
+                statusBarText.text = "Contacts"
+                xmppConnectivity.chatJid = ""
+            }
+        }
+    }
 
     property string accountId:         ""
 
     property string contactJid:        ""
     property string contactName:       ""
-    property string contactPresence:   xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,"presence",contactJid)
-    property string contactStatusText: xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,"statusText",contactJid)
-
-    property bool   readOnly:          true
-
-    property alias  vCardPhoto:        avatar.source
-    property string vCardNickName:     ""
-    property string vCardName:         ""
-    property string vCardMiddleName:   ""
-    property string vCardLastName:     ""
-    property string vCardFullName:     ""
-    property string vCardEmail:        ""
-    property string vCardBirthday:     ""
-    property string vCardUrl:          ""
+    property string contactPresence:   xmppConnectivity.getPropertyByJid(accountId,"presence",contactJid)
+    property string contactStatusText: xmppConnectivity.getPropertyByJid(accountId,"statusText",contactJid)
 
     // Code for destroying the page after pop
     onStatusChanged: if (vCardPage.status === PageStatus.Inactive) vCardPage.destroy()
 
-    XmppVCard {
-        Component.onCompleted:
-            loadVCard(contactJid)
-        onVCardChanged: {
-            vCardNickName = nickname
-            vCardName = name
-            vCardMiddleName = middlename
-            vCardLastName = lastname
-            vCardFullName = fullname
-            vCardEmail = email
-            vCardBirthday = birthday
-            vCardUrl = url
-        }
-    }
+    Component.onCompleted: vCard.loadVCard(contactJid)
+
+    XmppVCard { id: vCard }
 
     Flickable {
         id: flickArea
@@ -91,7 +77,7 @@ Page {
                     smooth: true
                     width: 128
                     height: width
-                    source: "qrc:/avatar"
+                    source: xmppConnectivity.getAvatarByJid(contactJid)
                     sourceSize { height: height; width: width }
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -130,43 +116,43 @@ Page {
 
             DetailsItem {
                 title: qsTr("Nickname")
-                value: vCardNickName
+                value: vCard.nickname
                 valueFont.bold: true
-                visible: vCardNickName != ""
+                visible: value != ""
             }
-            LineItem {visible: vCardNickName != ""}
+            LineItem {visible: vCard.nickname != ""}
 
             DetailsItem {
                 title: qsTr("Name")
-                value: vCardName
+                value: vCard.name
                 valueFont.bold: true
-                visible: vCardName != ""
+                visible: value != ""
             }
-            LineItem {visible: vCardName != ""}
+            LineItem {visible: vCard.name != ""}
 
             DetailsItem {
                 title: qsTr("Middle name")
-                value: vCardMiddleName
+                value: vCard.middlename
                 valueFont.bold: true
-                visible: vCardMiddleName != ""
+                visible: value != ""
             }
-            LineItem {visible: vCardMiddleName != ""}
+            LineItem {visible: vCard.middlename != ""}
 
             DetailsItem {
                 title: qsTr("Lastname")
-                value: vCardLastName
+                value: vCard.lastname
                 valueFont.bold: true
-                visible: vCardLastName != ""
+                visible: value != ""
             }
-            LineItem {visible: vCardLastName != ""}
+            LineItem {visible: vCard.lastname != ""}
 
             DetailsItem {
                 title: qsTr("Full name")
-                value: vCardFullName
+                value: vCard.fullname
                 valueFont.bold: true
-                visible: vCardFullName != ""
+                visible: value != ""
             }
-            LineItem {visible: vCardFullName != ""}
+            LineItem {visible: vCard.fullname != ""}
 
             DetailsItem {
                 title: qsTr("Jabber ID")
@@ -177,41 +163,20 @@ Page {
 
             DetailsItem {
                 title: qsTr("E-mail")
-                value: vCardEmail
+                value: vCard.email
                 valueFont.bold: true
-                visible: vCardEmail != ""
+                visible: value != ""
             }
-            LineItem { visible: vCardEmail != ""}
-
-            DetailsItem {
-                title: qsTr("Birthday")
-                value: vCardBirthday
-                valueFont.bold: true
-                visible: vCardBirthday != ""
-            }
-            LineItem { visible: vCardBirthday != ""}
+            LineItem { visible: vCard.email != ""}
 
             DetailsItem {
                 title: qsTr("Website")
-                value: "<a href=\"" + vCardUrl + "\">" + vCardUrl + "</a>"
+                value: "<a href=\"" + vCard.url + "\">" + vCard.url + "</a>"
                 valueFont.bold: true
                 wrapMode: Text.WrapAnywhere
-                visible: vCardUrl != ""
+                visible: vCard.url != ""
             }
         }
 
     }
-
-    ToolBarLayout {
-        id: toolBar
-        ToolButton {
-            iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
-            onClicked: {
-                pageStack.pop()
-                statusBarText.text = "Contacts"
-                xmppConnectivity.chatJid = ""
-            }
-        }
-    }
-
 }
