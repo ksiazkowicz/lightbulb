@@ -117,7 +117,7 @@ Page {
             }
             Rectangle {
                 id: bubbleCenter
-                anchors { fill: parent; rightMargin: isMine == true ? 64 : 6; leftMargin: isMine == true ? 6 : 64; topMargin: triangleTop.height+10; bottomMargin: triangleBottom.height+10 }
+                anchors { fill: wrapper; rightMargin: isMine == true ? 64 : 6; leftMargin: isMine == true ? 6 : 64; topMargin: triangleTop.height+10; bottomMargin: triangleBottom.height+10 }
                 color: isMine == true ? "#56565b" : "#e6e6eb"
                 Text {
                       id: message
