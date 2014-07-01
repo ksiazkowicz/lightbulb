@@ -8,12 +8,10 @@ Page {
 
     Connections {
         target: xmppConnectivity
-        onNotifyMsgReceived: {
-            eventListModel.appendEvent(xmppConnectivity.getAvatarByJid(jid),true,parseInt(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))+1,body,name,true)
-        }
-        onChatJidChanged: {
-            eventListModel.findAndRemove(xmppConnectivity.getAvatarByJid(xmppConnectivity.chatJid),true,xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,"name",xmppConnectivity.chatJid),true)
-        }
+        onNotifyMsgReceived:
+            eventListModel.appendEvent(xmppConnectivity.getAvatarByJid(jid),true,parseInt(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))+1,body,name,true,"message")
+        onChatJidChanged:
+            eventListModel.findAndRemove(xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,"name",xmppConnectivity.chatJid),"message")
         onPersonalityChanged: {
             vCardHandler.loadVCard(settings.gStr("behavior","personality"))
             avatar.source = xmppConnectivity.getAvatarByJid(settings.gStr("behavior","personality"))
@@ -22,8 +20,7 @@ Page {
 
     XmppVCard {
         id: vCardHandler
-        Component.onCompleted:
-            loadVCard(settings.gStr("behavior","personality"))
+        Component.onCompleted: loadVCard(settings.gStr("behavior","personality"))
         onVCardChanged: {
             if (fullname !== "")
                 name.text = fullname
@@ -32,26 +29,26 @@ Page {
 
     ListModel {
         id: eventListModel
-        function appendEvent(icon,mark,markCount,text,description,mask) {
+        function appendEvent(icon,mark,markCount,text,description,mask,type) {
             var found = find(icon,mark,description,mask)
             if (found > -1) {
                 set(found,{"eventText": text, "markCount":markCount})
                 move(found,0,1)
             } else {
-                append({"iconPath": icon, "mark": mark, "markCount": markCount, "eventText": text,"descriptionText": description,"avatarMask":mask})
+                append({"iconPath": icon, "mark": mark, "markCount": markCount, "eventText": text,"descriptionText": description,"avatarMask":mask,"type":type})
                 move(count-1,0,1)
             }
         }
-        function find(icon,mark,description,mask) {
+        function find(description,type) {
             for (var i=0;i<count;i++)
-                if (get(i).iconPath === icon && get(i).mark === mark && get(i).descriptionText === description && get(i).avatarMask === mask)
+                if (get(i).descriptionText === description && get(i).type === type)
                     return i
             return -1;
         }
-        function findAndRemove(icon,mark,description,mask) {
-            for (var i=0;i<count;i++)
-                if (get(i).iconPath === icon && get(i).mark === mark && get(i).descriptionText === description && get(i).avatarMask === mask)
-                    remove(i)
+        function findAndRemove(description,type) {
+            var found = find(description,type);
+            if (found > -1)
+                remove(found);
         }
     }
 
@@ -175,10 +172,16 @@ Page {
             Repeater {
                 model: eventListModel
                 anchors { left: parent.left; right: parent.right }
-                delegate: Item {
+                delegate: MouseArea {
                     id: notification
                     width: mainView.width
                     height: 64
+
+                    onClicked: {
+                        if (type == "message")
+                            console.log("Message lol")
+                    }
+
                     Image {
                             id: icon
                             width: parent.height
@@ -355,7 +358,6 @@ Page {
     }
 
     tools: ToolBarLayout {
-       id: toolBarLayout
        ToolButton {
            iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
            onClicked: avkon.minimize();

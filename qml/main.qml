@@ -44,14 +44,6 @@ PageStackWindow {
 
     }
 
-    function getAccountStatusIcon()
-    {
-        if (xmppConnectivity.client.stateConnect === 2)
-            return "qrc:/presence/unknown"
-        else
-            return "qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.client.status)
-    }
-
     function openChat() {
         xmppConnectivity.resetUnreadMessages( xmppConnectivity.currentAccount, xmppConnectivity.chatJid )
         notify.updateNotifiers()
@@ -97,10 +89,8 @@ PageStackWindow {
 
     XmppConnectivity    {
         id: xmppConnectivity
-        onXmppErrorHappened: {
-            if (settings.gBool("behavior", "reconnectOnError"))
-                dialog.createWithProperties("qrc:/dialogs/Status/Reconnect",{"accountId": accountId})
-        }
+        onXmppErrorHappened: if (settings.gBool("behavior", "reconnectOnError"))
+                                dialog.createWithProperties("qrc:/dialogs/Status/Reconnect",{"accountId": accountId})
         onXmppSubscriptionReceived: {
             if (avkon.displayAvkonQueryDialog("Subscription (" + getAccountName(accountId) + ")", qsTr("Do you want to accept subscription request from ") + bareJid + qsTr("?")))
                 acceptSubscribtion(accountId,bareJid)
