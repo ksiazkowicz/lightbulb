@@ -27,8 +27,8 @@ void ContactListManager::plusUnreadMessage(QString acc, QString jid) {
 
   if (contact == 0) {
     this->addContact(acc,jid,jid);
-    contact = (RosterItemModel*)roster->find( acc + ";" + jid );
     plusUnreadMessage(acc,jid);
+    return;
   } else {
     contact->setUnreadMsg(contact->unreadMsg()+1);
   }
