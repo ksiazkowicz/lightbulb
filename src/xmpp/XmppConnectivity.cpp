@@ -94,7 +94,7 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
     connect(clients->value(index),SIGNAL(contactStatusChanged(QString,QString)),this,SLOT(handleContactStatusChange(QString,QString)));
 
     connect(clients->value(index),SIGNAL(connectingChanged(QString)),this,SIGNAL(xmppConnectingChanged(QString)));
-    connect(clients->value(index),SIGNAL(statusChanged(QString)),this,SIGNAL(xmppStatusChanged(QString)));
+    connect(clients->value(index),SIGNAL(statusChanged(QString)),this,SLOT(handleXmppStatusChange(QString)));
     connect(clients->value(index),SIGNAL(errorHappened(QString,QString)),this,SIGNAL(xmppErrorHappened(QString,QString)));
     connect(clients->value(index),SIGNAL(subscriptionReceived(QString,QString)),this,SIGNAL(xmppSubscriptionReceived(QString,QString)));
     connect(clients->value(index),SIGNAL(typingChanged(QString,QString,bool)),this,SIGNAL(xmppTypingChanged(QString,QString,bool)));
@@ -341,4 +341,14 @@ void XmppConnectivity::updateMyData(QString jid) {
     lSettings->sStr(jid,"behavior","personality");
     emit personalityChanged();
   }
+}
+
+void XmppConnectivity::handleXmppStatusChange (const QString accountId) {
+  if (clients->value(accountId) == 0)
+    return;
+
+  if (clients->value(accountId)->getStatus() == MyXmppClient::Offline)
+    contacts->clearPresenceForAccount(accountId);
+
+  emit xmppStatusChanged(accountId);
 }

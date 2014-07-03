@@ -152,6 +152,9 @@ signals:
     void xmppPresenceChanged      (QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus);
     
 public slots:
+    void handleXmppStatusChange (const QString accountId);
+
+
     void updateContact(QString m_accountId,QString bareJid,QString property,int count) {
         dbWorker->executeQuery(QStringList() << "updateContact" << m_accountId << bareJid << property << QString::number(count));
     }

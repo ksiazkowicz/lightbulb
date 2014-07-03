@@ -29,9 +29,8 @@ void ContactListManager::plusUnreadMessage(QString acc, QString jid) {
     this->addContact(acc,jid,jid);
     plusUnreadMessage(acc,jid);
     return;
-  } else {
+  } else
     contact->setUnreadMsg(contact->unreadMsg()+1);
-  }
 
   if (contact->presence() != "qrc:/presence/offline") {
       RosterItemModel *contactOffline = (RosterItemModel*)rosterOffline->find( acc + ";" + jid);
@@ -68,11 +67,21 @@ void ContactListManager::changeName(QString accountId,QString bareJid,QString na
   RosterItemModel *contact = (RosterItemModel*)roster->find( accountId + ";" + bareJid );
   if (contact != 0)
     contact->setContactName(name);
+
+  contact = (RosterItemModel*)rosterOffline->find( accountId + ";" + bareJid );
+  if (contact != 0)
+    contact->setContactName(name);
 }
 void ContactListManager::removeContact(QString acc,QString bareJid) {
   RosterItemModel *contact;
   for (int i=0;i<roster->count();i++) {
       contact = (RosterItemModel*)roster->getElementByID(i);
+      if (contact->id() == acc+";"+bareJid)
+        roster->remove(i);
+    }
+
+  for (int i=0;i<rosterOffline->count();i++) {
+      contact = (RosterItemModel*)rosterOffline->getElementByID(i);
       if (contact->id() == acc+";"+bareJid)
         roster->remove(i);
     }
@@ -120,6 +129,12 @@ void ContactListManager::clearPresenceForAccount(QString accountId) {
       element = (RosterItemModel*)roster->getElementByID(i);
       if (element != 0 && element->accountId() == accountId)
         element->setPresence("qrc:/presence/offline");
+    }
+
+  for (int i=0;i<rosterOffline->count();i++) {
+      element = (RosterItemModel*)rosterOffline->getElementByID(i);
+      if (element != 0 && element->accountId() == accountId)
+        rosterOffline->remove(i);
     }
 }
 
