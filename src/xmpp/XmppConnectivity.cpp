@@ -91,7 +91,6 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
 
     connect(clients->value(index),SIGNAL(updateContact(QString,QString,QString,int)),this,SLOT(updateContact(QString,QString,QString,int)));
     connect(clients->value(index),SIGNAL(insertMessage(QString,QString,QString,QString,int)),this,SLOT(insertMessage(QString,QString,QString,QString,int)));
-    connect(clients->value(index),SIGNAL(contactRenamed(QString,QString)),this,SLOT(renameChatContact(QString,QString)));
     connect(clients->value(index),SIGNAL(contactStatusChanged(QString,QString)),this,SLOT(handleContactStatusChange(QString,QString)));
 
     connect(clients->value(index),SIGNAL(connectingChanged(QString)),this,SIGNAL(xmppConnectingChanged(QString)));
@@ -105,6 +104,7 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
     connect(clients->value(index),SIGNAL(presenceChanged(QString,QString,QString,QString,QString)),contacts,SLOT(changePresence(QString,QString,QString,QString,QString)));
     connect(clients->value(index),SIGNAL(presenceChanged(QString,QString,QString,QString,QString)), this, SIGNAL(xmppPresenceChanged(QString,QString,QString,QString,QString)));
     connect(clients->value(index),SIGNAL(nameChanged(QString,QString,QString)),contacts,SLOT(changeName(QString,QString,QString)));
+    connect(clients->value(index),SIGNAL(nameChanged(QString,QString,QString)),this,SLOT(updateChatName(QString,QString,QString)));
     connect(clients->value(index),SIGNAL(contactRemoved(QString,QString)),contacts,SLOT(removeContact(QString,QString)));
 
     qDebug().nospace() << "XmppConnectivity::initializeAccount(): initialized account " << qPrintable(clients->value(index)->getMyJid()) << "/" << qPrintable(clients->value(index)->getResource());
@@ -195,7 +195,7 @@ void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString
 // handling chats list
 void XmppConnectivity::openChat(QString accountId, QString bareJid) {
   if (!chats->checkIfExists(bareJid)) {
-    ChatsItemModel* chat = new ChatsItemModel(this->getPropertyByJid(accountId,"name",bareJid),bareJid,accountId);
+    ChatsItemModel* chat = new ChatsItemModel(contacts->getPropertyByJid(accountId,bareJid,"name"),bareJid,accountId);
     chats->append(chat);
     qDebug() << "XmppConnectivity::openChat(): appending"<< qPrintable(bareJid) << "from account" << accountId << "to chats list.";
     emit chatsChanged();
@@ -228,6 +228,17 @@ void XmppConnectivity::preserveMsg(QString jid,QString message) { //this poorly 
   ChatsItemModel* chat = (ChatsItemModel*)chats->find(jid);
   if (chat != 0) chat->setChatMsg(message);
   chat = 0; delete chat;
+}
+
+void XmppConnectivity::updateChatName(QString m_accountId, QString bareJid, QString name) {
+  qDebug().nospace() << "XmppConnectivity::updateChatName(" +m_accountId+","+bareJid+","+name+") called";
+  for (int i=0; i<chats->count(); i++) {
+      ChatsItemModel *itemExists = (ChatsItemModel*)chats->getElementByID(i);
+      if (itemExists->jid() == bareJid && itemExists->accountID() == m_accountId) {
+          itemExists->setContactName(name);
+          qDebug() << "XmppConnectivity::updateChatName() name updated";
+      }
+  }
 }
 
 // handling adding and removing accounts

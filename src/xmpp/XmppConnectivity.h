@@ -167,11 +167,9 @@ public slots:
     Q_INVOKABLE void openChat(QString accountId, QString bareJid);
     Q_INVOKABLE void openChat(QString bareJid) { this->openChat(currentClient,bareJid); }
     Q_INVOKABLE void closeChat(QString accountId, QString bareJid);
+    void updateChatName(QString m_accountId,QString bareJid,QString name);
 
-    Q_INVOKABLE void setMsgLimit(int limit) {
-      msgLimit = limit;
-    }
-
+    Q_INVOKABLE void setMsgLimit(int limit) { msgLimit = limit; }
     int getMsgLimit() { return msgLimit; }
 
     Q_INVOKABLE void emitQmlChat() {
@@ -185,11 +183,6 @@ public slots:
     void accountModified(QString id);
 
     Q_INVOKABLE int getStatusByIndex(QString accountId);
-    void renameChatContact(QString bareJid,QString name) {
-      ChatsItemModel* item = (ChatsItemModel*)chats->find(bareJid);
-      if (item != 0) item->setContactName(name);
-      item = 0; delete item;
-    }
 
     Q_INVOKABLE void closeChat(QString bareJid) { this->closeChat(currentClient,bareJid); }
     Q_INVOKABLE void resetUnreadMessages(QString accountId, QString bareJid) { contacts->resetUnreadMessages(accountId,bareJid); }

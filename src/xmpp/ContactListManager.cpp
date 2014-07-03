@@ -28,8 +28,10 @@ void ContactListManager::plusUnreadMessage(QString acc, QString jid) {
   if (contact == 0) {
     this->addContact(acc,jid,jid);
     contact = (RosterItemModel*)roster->find( acc + ";" + jid );
+    plusUnreadMessage(acc,jid);
+  } else {
+    contact->setUnreadMsg(contact->unreadMsg()+1);
   }
-  contact->setUnreadMsg(contact->unreadMsg()+1);
 
   if (contact->presence() != "qrc:/presence/offline") {
       RosterItemModel *contactOffline = (RosterItemModel*)rosterOffline->find( acc + ";" + jid);

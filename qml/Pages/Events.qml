@@ -30,7 +30,7 @@ Page {
     ListModel {
         id: eventListModel
         function appendEvent(icon,mark,markCount,text,description,mask,type) {
-            var found = find(icon,mark,description,mask)
+            var found = find(description,type)
             if (found > -1) {
                 set(found,{"eventText": text, "markCount":markCount})
                 move(found,0,1)
