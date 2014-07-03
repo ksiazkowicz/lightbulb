@@ -5,6 +5,7 @@ import "../Components"
 
 Page {
     id: mainPage
+    Component.onCompleted: statusBarText.text = "Events"
 
     Connections {
         target: xmppConnectivity

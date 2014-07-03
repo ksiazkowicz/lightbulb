@@ -24,21 +24,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import QtQuick 1.1
 import com.nokia.symbian 1.1
-import com.nokia.extras 1.1
 import lightbulb 1.0
-import "../Components"
 
 Page {
     id: rosterPage
-    objectName: "rosterPage"
-    tools: toolBarLayout
-
-
-    Connections {
-        target: xmppConnectivity.client
-        onErrorHappened: errorText.text = errorString
-        onStatusChanged: if (xmppConnectivity.client.status == XmppClient.Offline) errorText.text = ""
-    }
 
     Connections {
         target: xmppConnectivity
@@ -185,7 +174,6 @@ Page {
         anchors { top: parent.top; left: parent.left; right: parent.right; bottom: rosterSearch.top; }
         contentHeight: columnContent.height
         contentWidth: columnContent.width
-        clip: true
 
         flickableDirection: Flickable.VerticalFlick
         Column {
@@ -252,11 +240,13 @@ Page {
         ]
     }
 
-    ToolBarLayout {
-        id: toolBarLayout
+    tools: ToolBarLayout {
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
-            onClicked: main.pageStack.pop()
+            onClicked: {
+                statusBarText.text = "Events"
+                main.pageStack.pop()
+            }
         }
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-add_inverse" : "toolbar-add"
@@ -273,54 +263,6 @@ Page {
                 } else {
                     rosterSearch.height = 50;
                 }
-            }
-        }
-        ToolButton {
-            id: toolBarButtonOptions
-            iconSource: main.platformInverted ? "toolbar-menu_inverse" : "toolbar-menu"
-            smooth: true
-            onClicked: dialog.create("qrc:/menus/Roster/Options")
-        }
-    }
-
-    Rectangle {
-
-        color: main.platformInverted ? "white" : "black"
-        opacity: 0.7
-        anchors { top: parent.top; left: parent.left; right: parent.right; bottom: parent.bottom }
-        NumberAnimation { properties: "visible"; duration: 200 }
-
-        visible: xmppConnectivity.client.status == XmppClient.Offline
-
-        Rectangle {
-            anchors.centerIn: parent
-            color: "transparent"
-            height: sadface.height + 5 + offlineText.height + 10 + errorText.height
-            width: offlineText.width
-            visible: xmppConnectivity.client.status == XmppClient.Offline
-            Text {
-                id: sadface
-                color: vars.textColor
-                anchors { top: parent.top; left: parent.left }
-                visible: parent.visible
-                text: ":("
-                font.pixelSize: 64
-            }
-            Text {
-                id: offlineText
-                color: vars.textColor
-                anchors { top: sadface.bottom; horizontalCenter: parent.horizontalCenter; topMargin: 5 }
-                visible: parent.visible
-                text: settings.accounts.count() > 0 ? (xmppConnectivity.currentAccount == "" ? "No account\nselected" : "You're offline") : "No accounts\navailable"
-                font.pixelSize: 32
-            }
-            Text {
-                id: errorText
-                color: vars.textColor
-                anchors { top: offlineText.bottom; topMargin: 10 }
-                visible: parent.visible
-                text: ""
-                font.pixelSize: 16
             }
         }
     }

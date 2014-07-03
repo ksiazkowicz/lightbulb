@@ -270,7 +270,7 @@ Page {
                 if (isTyping) xmppConnectivity.client.typingStop( xmppConnectivity.chatJid, vars.resourceJid )
                 pageStack.pop()
                 vars.isChatInProgress = false
-                statusBarText.text = "Contacts"
+                statusBarText.text = "Events"
                 xmppConnectivity.resetUnreadMessages( xmppConnectivity.chatJid )
                 xmppConnectivity.chatJid = ""
             }
