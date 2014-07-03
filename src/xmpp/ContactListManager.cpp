@@ -46,20 +46,23 @@ void ContactListManager::changePresence(QString accountId,QString bareJid,QStrin
       contact->setResource(resource);
       contact->setPresence(picStatus);
       contact->setStatusText(txtStatus);
-    }
+    } else return;
 
   RosterItemModel *contactOffline = (RosterItemModel*)rosterOffline->find(accountId+";"+bareJid);
   if (picStatus != "qrc:/presence/offline") {
+      qDebug() << "isn't offline should do stuff";
       if (contactOffline!=0) {
           contactOffline->setResource(resource);
           contactOffline->setPresence(picStatus);
           contactOffline->setStatusText(txtStatus);
         } else {
+          qDebug() << "appending crap";
           RosterItemModel *contactNew = new RosterItemModel(contact->name(),bareJid,resource,picStatus,txtStatus,contact->unreadMsg(),accountId);
           rosterOffline->append(contactNew);
         }
     } else if (contactOffline != 0)
         rosterOffline->removeId(accountId+";"+bareJid);
+  qDebug() << "presence changed";
 }
 void ContactListManager::changeName(QString accountId,QString bareJid,QString name) {
   RosterItemModel *contact = (RosterItemModel*)roster->find( accountId + ";" + bareJid );
