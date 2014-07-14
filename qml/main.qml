@@ -158,6 +158,7 @@ PageStackWindow {
     Notifications       { id: notify }
     ListModel           { id: listModelResources }
     NetworkManager      { id: network }
+    MigrationManager    { id: migration }
     Globals             { id: vars }
 
     /************************( stuff to do when running this app )*****************************/
@@ -166,9 +167,15 @@ PageStackWindow {
         if (settings.gStr("behavior","lastAccount") !== "false")
             changeAccount(settings.gStr("behavior","lastAccount"));
 
-        if (!settings.gBool("main","not_first_run"))
-            pageStack.push("qrc:/pages/FirstRun")
-        else
+        if (!settings.gBool("main","not_first_run")) {
+            if (migration.isMigrationPossible())
+                if (avkon.displayAvkonQueryDialog("Migration","Lightbulb detected a settings file from older version of the app, would you like the app to import them?"))
+                    pageStack.push("qrc:/pages/Migration")
+                else
+                    pageStack.push("qrc:/pages/FirstRun")
+            else
+                pageStack.push("qrc:/pages/FirstRun")
+        } else
             pageStack.push("qrc:/pages/Roster")
     }
     function changeAccount(acc) {

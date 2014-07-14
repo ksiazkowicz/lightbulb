@@ -28,17 +28,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "src/models/AccountsListModel.h"
 #include <QDebug>
 
-QString Settings::appName = "Lightbulb";
-QString Settings::cacheFolder = QDir::currentPath() + QDir::separator() + QString("cache");
-QString Settings::confFile = QDir::currentPath() + QDir::separator() + Settings::appName + ".conf";
+QString Settings::cacheFolder;
+QString Settings::confFile = QDir::currentPath() + QDir::separator() + "Settings.conf";
 
 Settings::Settings(QObject *parent) : QSettings(Settings::confFile, QSettings::NativeFormat , parent) {
     alm = new AccountsListModel(this);
     this->initListOfAccounts();
-}
 
-QString Settings::getAppDrive() {
-  return QDir::currentPath().left(3);
+    cacheFolder = QDir::currentPath() + QDir::separator() + QString("cache");
+
+    if (get("paths","cache") != "")
+      cacheFolder = get("paths","cache").toString();
 }
 
 /*************************** (generic settings) **************************/

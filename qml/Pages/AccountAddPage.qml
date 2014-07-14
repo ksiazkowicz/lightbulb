@@ -291,7 +291,7 @@ Page {
 
                 statusBarText.text = "Contacts"
                 //settings.refresh()
-                pageStack.pop()
+                avkon.restartAppAcc();
             }
         }
     }

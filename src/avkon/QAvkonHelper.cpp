@@ -224,6 +224,22 @@ void QAvkonHelper::restartApp() {
     }
 }
 
+void QAvkonHelper::restartAppAcc() {
+  CAknGlobalMsgQuery* pDlg = CAknGlobalMsgQuery::NewL();//creating the pointer
+  CleanupStack::PushL(pDlg);                      //exception handling
+  TRequestStatus iStatus;                         //the app should wait until the user selected an option
+  pDlg->ShowMsgQueryL(iStatus, _L("Lightbulb must be restarted for changes to take effect. Sorry for the inconvenience."), R_AVKON_SOFTKEYS_OK_EMPTY, _L("I'm sorry. I'm so sorry."), KNullDesC,0,-1,CAknQueryDialog::ENoTone);
+
+  User::WaitForRequest(iStatus);                  //the app should wait until the user selected an option
+
+  CleanupStack::PopAndDestroy(pDlg);              //freeing CleanupStack
+  if (iStatus.Int() == EAknSoftkeyOk) {
+        QProcess::startDetached(QApplication::applicationFilePath());
+        exit(12);
+        hideChatIcon();
+    }
+}
+
 bool QAvkonHelper::displayAvkonQueryDialog(QString title, QString message) {
     // based on https://github.com/huellif/RebootMe/blob/master/main.cpp, Fabian Hüllmantel
 

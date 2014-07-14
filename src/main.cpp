@@ -45,6 +45,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "XmppConnectivity.h"
 #include "EmoticonParser.h"
 #include "NetworkManager.h"
+#include "MigrationManager.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
@@ -61,6 +62,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     qmlRegisterType<XmppConnectivity>("lightbulb",1,0,"XmppConnectivity");
 
     qmlRegisterType<NetworkManager>("lightbulb",1,0,"NetworkManager");
+    qmlRegisterType<MigrationManager>("lightbulb",1,0,"MigrationManager");
 
     qmlRegisterType<SymbiosisAPIClient>("lightbulb", 1, 0, "SymbiosisAPI" );
 
