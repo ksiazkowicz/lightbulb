@@ -112,7 +112,9 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/models/WidgetDataModel.h \
     src/models/WidgetItemModel.h \
     src/avkon/NetworkManager.h \
-    src/database/MigrationManager.h
+    src/database/MigrationManager.h \
+    src/models/NetworkCfgItemModel.h \
+    src/models/NetworkCfgListModel.h
 
 OTHER_FILES += README.md \
     qml/Dialogs/*.* \

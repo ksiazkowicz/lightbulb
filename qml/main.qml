@@ -157,7 +157,10 @@ PageStackWindow {
     Clipboard           { id: clipboard }
     Notifications       { id: notify }
     ListModel           { id: listModelResources }
-    NetworkManager      { id: network }
+    NetworkManager      {
+        id: network
+        currentIAP: settings.gInt("behavior","internetAccessPoint");
+    }
     MigrationManager    { id: migration }
     Globals             { id: vars }
 

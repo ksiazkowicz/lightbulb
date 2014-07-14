@@ -68,6 +68,28 @@ Item {
                 settings.sInt(interval,"behavior", "keepAliveInterval")
             }
         }
+
+        SelectionListItem {
+            id: iapSelection
+            platformInverted: main.platformInverted
+            subTitle: settings.gInt("behavior","internetAccessPoint") >= 1
+                      ? network.getIAPNameByID(settings.gInt("behavior","internetAccessPoint"))
+                      : "Use default"
+            anchors { left: parent.left; right: parent.right }
+            title: "Access Point"
+
+            onClicked: dialog.create("qrc:/dialogs/AccessPointSelector")
+            Connections {
+                target: network
+                onCurrentIAPChanged: {
+                    iapSelection.subTitle = settings.gInt("behavior","internetAccessPoint") >= 1
+                              ? network.getIAPNameByID(settings.gInt("behavior","internetAccessPoint"))
+                              : "Use default"
+                }
+            }
+
+        }
+
     }
 }
 

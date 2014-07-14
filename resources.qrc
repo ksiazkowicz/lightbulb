@@ -71,6 +71,7 @@
         <file alias="Contributors">qml/Dialogs/Contributors.qml</file>
         <file alias="Resources">qml/Dialogs/ResourcesDialog.qml</file>
         <file alias="AccountDetails">qml/Dialogs/AccountDetails.qml</file>
+        <file alias="AccessPointSelector">qml/Dialogs/AccessPointsDialog.qml</file>
     </qresource>
     <qresource prefix="/pages">
         <file alias="About">qml/Pages/AboutPage.qml</file>
