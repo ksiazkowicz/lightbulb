@@ -36,7 +36,7 @@ void NetworkManager::openConnection() {
 
     QNetworkConfiguration cfg;
 
-    if (currentIAP < 1)
+    if (currentIAP < 0)
       cfg = manager.defaultConfiguration();
     else
       cfg = manager.allConfigurations().at(currentIAP);

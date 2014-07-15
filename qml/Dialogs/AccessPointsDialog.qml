@@ -28,7 +28,6 @@ import com.nokia.symbian 1.1
 CommonDialog {
     id: dlgIAP
     titleText: qsTr("Available Access Points")
-    privateCloseIcon: true
     platformInverted: main.platformInverted
     height: data.contentHeight+48 > parent.height-64 ? parent.height - 64 : data.contentHeight+48
 
@@ -90,6 +89,7 @@ CommonDialog {
                             onClicked: {
                                 settings.sInt(id,"behavior", "internetAccessPoint")
                                 network.currentIAP = id
+                                ettings.sBool(true,"behavior","isIAPSet")
                                 dlgIAP.close()
                             } //onClicked
                         } //MouseArea

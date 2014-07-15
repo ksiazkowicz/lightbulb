@@ -178,8 +178,11 @@ PageStackWindow {
                     pageStack.push("qrc:/pages/FirstRun")
             else
                 pageStack.push("qrc:/pages/FirstRun")
-        } else
+        } else {
+            if (!settings.gBool("behavior","isIAPSet"))
+                dialog.create("qrc:/dialogs/AccessPointSelector")
             pageStack.push("qrc:/pages/Roster")
+        }
     }
     function changeAccount(acc) {
         xmppConnectivity.changeAccount(acc);
