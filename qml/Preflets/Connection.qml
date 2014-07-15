@@ -36,6 +36,7 @@ Item {
         CheckBox {
             id: cbNeedReconnect
             text: qsTr("Reconnect on error")
+            anchors { left: parent.left; leftMargin: 10; }
             checked: settings.gBool("behavior", "reconnectOnError")
             platformInverted: main.platformInverted
             onCheckedChanged: {
@@ -48,6 +49,7 @@ Item {
             font.pixelSize: 20
             font.bold: true
             color: vars.textColor
+            anchors { left: parent.left; leftMargin: 10; }
         }
         TextField {
             id: tiKeepAlive
@@ -76,7 +78,7 @@ Item {
                       ? network.getIAPNameByID(settings.gInt("behavior","internetAccessPoint"))
                       : "Use default"
             anchors { left: parent.left; right: parent.right }
-            title: "Access Point"
+            title: "Internet Access Point"
 
             onClicked: dialog.create("qrc:/dialogs/AccessPointSelector")
             Connections {

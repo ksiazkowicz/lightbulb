@@ -30,7 +30,7 @@ CommonDialog {
     titleText: qsTr("Available Access Points")
     privateCloseIcon: true
     platformInverted: main.platformInverted
-    height: data.contentHeight > parent.height ? parent.height - 64 : data.contentHeight
+    height: data.contentHeight+48 > parent.height-64 ? parent.height - 64 : data.contentHeight+48
 
     // Code for dynamic load
     Component.onCompleted: {
@@ -61,12 +61,20 @@ CommonDialog {
                             GradientStop { position: 0; color: "#1C87DD" }
                             GradientStop { position: 1; color: "#51A8FB" }
                         }
+                        Image {
+                            anchors { left: parent.left; verticalCenter: parent.verticalCenter; leftMargin: 16 }
+                            source: "qrc:/networks/" + bearer + (main.platformInverted ? "_inverse" : "")
+                            sourceSize { width: 32; height: 32 }
+                            width: 32
+                            height: 32
+
+                        }
+
                         Text {
                             id: textConfig
                             text: name
-                            font.pixelSize: parent.height/2
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.verticalCenter: parent.verticalCenter
+                            font.pixelSize: platformStyle.fontSizeSmall
+                            anchors { left: parent.left; leftMargin: 64; verticalCenter: parent.verticalCenter; }
                             color: vars.textColor
                             font.bold: false
                         }

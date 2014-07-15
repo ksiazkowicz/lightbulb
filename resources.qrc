@@ -149,4 +149,14 @@
         <file alias="LineItem.qml">qml/Components/LineItem.qml</file>
         <file alias="HeaderButton.qml">qml/Components/HeaderButton.qml</file>
     </qresource>
+    <qresource prefix="/networks">
+        <file alias="2G">images/networks/2G.svg</file>
+        <file alias="Bluetooth">images/networks/Bluetooth.svg</file>
+        <file alias="WLAN">images/networks/wlan.svg</file>
+        <file alias="Default">images/networks/Internet.svg</file>
+        <file alias="2G_inverse">images/networks/2G_inverse.svg</file>
+        <file alias="Bluetooth_inverse">images/networks/Bluetooth_inverse.svg</file>
+        <file alias="Default_inverse">images/networks/Internet_inverse.svg</file>
+        <file alias="WLAN_inverse">images/networks/wlan_inverse.svg</file>
+    </qresource>
 </RCC>
