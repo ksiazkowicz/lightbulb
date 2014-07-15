@@ -216,6 +216,10 @@ void QAvkonHelper::minimize() const {
     m_view->lower();
 }
 
+void QAvkonHelper::setAppHiddenState(bool state) {
+  //m_view->setHidden(state);
+}
+
 void QAvkonHelper::restartApp() {
     if (displayAvkonQueryDialog("Close","Are you sure you want to restart the app?"))
     {

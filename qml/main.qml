@@ -173,6 +173,8 @@ PageStackWindow {
 
     /************************( stuff to do when running this app )*****************************/
     Component.onCompleted:      {
+        avkon.setAppHiddenState(settings.gBool("behavior","hideFromTaskMgr"));
+
         avkon.switchToApp = settings.gBool("behavior","linkInDiscrPopup")
         if (settings.gStr("behavior","lastAccount") !== "false")
             changeAccount(settings.gStr("behavior","lastAccount"));

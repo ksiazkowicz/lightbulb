@@ -62,6 +62,7 @@ public:
     Q_INVOKABLE bool displayAvkonQueryDialog(QString title, QString message);
 
     Q_INVOKABLE bool isInSilentMode() { return iAudioPlayer->isInSilentMode(); }
+    Q_INVOKABLE void setAppHiddenState(bool state);
 
 private:
     TInt iNoteId;
