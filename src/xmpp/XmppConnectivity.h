@@ -175,9 +175,9 @@ public slots:
     }
 
     // handling clients
-    void accountAdded(QString id);
+    Q_INVOKABLE void accountAdded(QString id);
     Q_INVOKABLE void accountRemoved(QString id);
-    void accountModified(QString id);
+    Q_INVOKABLE void accountModified(QString id);
 
     Q_INVOKABLE int getStatusByIndex(QString accountId);
     void renameChatContact(QString bareJid,QString name) {

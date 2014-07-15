@@ -87,19 +87,19 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
         clients->value(index)->setPort(5222);
     }
     clients->value(index)->setAccountId(index);
-    connect(clients->value(index),SIGNAL(rosterChanged()),this,SLOT(changeRoster()));
-    connect(clients->value(index),SIGNAL(updateContact(QString,QString,QString,int)),this,SLOT(updateContact(QString,QString,QString,int)));
-    connect(clients->value(index),SIGNAL(insertMessage(QString,QString,QString,QString,int)),this,SLOT(insertMessage(QString,QString,QString,QString,int)));
-    connect(clients->value(index),SIGNAL(chatOpened(QString,QString)),this,SLOT(chatOpened(QString,QString)));
-    connect(clients->value(index),SIGNAL(chatClosed(QString,QString)),this,SLOT(chatClosed(QString,QString)));
-    connect(clients->value(index),SIGNAL(contactRenamed(QString,QString)),this,SLOT(renameChatContact(QString,QString)));
-    connect(clients->value(index),SIGNAL(contactStatusChanged(QString,QString)),this,SLOT(handleContactStatusChange(QString,QString)));
+    connect(clients->value(index),SIGNAL(rosterChanged()),this,SLOT(changeRoster()),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(updateContact(QString,QString,QString,int)),this,SLOT(updateContact(QString,QString,QString,int)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(insertMessage(QString,QString,QString,QString,int)),this,SLOT(insertMessage(QString,QString,QString,QString,int)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(chatOpened(QString,QString)),this,SLOT(chatOpened(QString,QString)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(chatClosed(QString,QString)),this,SLOT(chatClosed(QString,QString)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(contactRenamed(QString,QString)),this,SLOT(renameChatContact(QString,QString)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(contactStatusChanged(QString,QString)),this,SLOT(handleContactStatusChange(QString,QString)),Qt::UniqueConnection);
 
-    connect(clients->value(index),SIGNAL(connectingChanged(QString)),this,SIGNAL(xmppConnectingChanged(QString)));
-    connect(clients->value(index),SIGNAL(statusChanged(QString)),this,SIGNAL(xmppStatusChanged(QString)));
-    connect(clients->value(index),SIGNAL(errorHappened(QString,QString)),this,SIGNAL(xmppErrorHappened(QString,QString)));
-    connect(clients->value(index),SIGNAL(subscriptionReceived(QString,QString)),this,SIGNAL(xmppSubscriptionReceived(QString,QString)));
-    connect(clients->value(index),SIGNAL(typingChanged(QString,QString,bool)),this,SIGNAL(xmppTypingChanged(QString,QString,bool)));
+    connect(clients->value(index),SIGNAL(connectingChanged(QString)),this,SIGNAL(xmppConnectingChanged(QString)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(statusChanged(QString)),this,SIGNAL(xmppStatusChanged(QString)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(errorHappened(QString,QString)),this,SIGNAL(xmppErrorHappened(QString,QString)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(subscriptionReceived(QString,QString)),this,SIGNAL(xmppSubscriptionReceived(QString,QString)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(typingChanged(QString,QString,bool)),this,SIGNAL(xmppTypingChanged(QString,QString,bool)),Qt::UniqueConnection);
 
     qDebug().nospace() << "XmppConnectivity::initializeAccount(): initialized account " << qPrintable(clients->value(index)->getMyJid()) << "/" << qPrintable(clients->value(index)->getResource());
 
@@ -227,8 +227,8 @@ void XmppConnectivity::preserveMsg(QString jid,QString message) { //this poorly 
 // handling adding and removing accounts
 void XmppConnectivity::accountAdded(QString id) {
   qDebug().nospace() << "XmppConnectivity::accountAdded(): initializing account "
-                     << qPrintable(id)<<"::"<<qPrintable(lSettings->getAccount(lSettings->getAccountId(id))->jid());
-  initializeAccount(id,lSettings->getAccount(lSettings->getAccountId(id)));
+                     << qPrintable(id)<<"::"<<qPrintable(lSettings->getAccountByID(id)->jid());
+  initializeAccount(id,lSettings->getAccountByID(id));
 }
 
 
@@ -255,8 +255,8 @@ void XmppConnectivity::accountRemoved(QString id) {
 
 void XmppConnectivity::accountModified(QString id) {
  qDebug().nospace() << "XmppConnectivity::accountModified(): reinitializing account "
-           << qPrintable(id)<<"::"<<qPrintable(lSettings->getAccount(lSettings->getAccountId(id))->jid());
-  initializeAccount(id,lSettings->getAccount(lSettings->getAccountId(id)));
+           << qPrintable(id)<<"::"<<qPrintable(lSettings->getAccountByID(id)->jid());
+  initializeAccount(id,lSettings->getAccountByID(id));
   if (id == currentClient) emit accountChanged();
 }
 

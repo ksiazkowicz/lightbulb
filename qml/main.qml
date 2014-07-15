@@ -153,14 +153,21 @@ PageStackWindow {
             }
         }
     }
-    Settings            { id: settings }
-    Clipboard           { id: clipboard }
-    Notifications       { id: notify }
-    ListModel           { id: listModelResources }
-    NetworkManager      {
+    Settings {
+        id: settings
+        onAccountAdded: xmppConnectivity.accountAdded(accId)
+        onAccountRemoved: xmppConnectivity.accountRemoved(accId)
+        onAccountEdited: xmppConnectivity.accountModified(accId)
+    }
+
+    NetworkManager  {
         id: network
         currentIAP: settings.gInt("behavior","internetAccessPoint");
     }
+
+    Clipboard           { id: clipboard }
+    Notifications       { id: notify }
+    ListModel           { id: listModelResources }
     MigrationManager    { id: migration }
     Globals             { id: vars }
 

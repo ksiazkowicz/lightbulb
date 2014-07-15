@@ -102,8 +102,7 @@ void Settings::initListOfAccounts() {
     QStringList listAcc = value("accounts",QStringList()).toStringList();
     endGroup();
 
-    for (int i=0; i<alm->rowCount(); i++)
-        alm->removeRow(i);
+    alm->clear();
 
     QStringList::const_iterator itr = listAcc.begin();
     while ( itr != listAcc.end() ) {
@@ -159,28 +158,47 @@ void Settings::setAccount(
     int p = _port.toInt(&ok);
     if( ok ) { set( QVariant(p), _jid, "port" ); }
 
+    AccountsItemModel* account;
+
     if (isNew) {
-        AccountsItemModel* account = new AccountsItemModel();
+        account = new AccountsItemModel();
         account->setGRID(_grid);
-        account->setHost(_host);
-        account->setIcon(_icon);
-        account->setJid(_jid);
-        account->setPasswd(_pass);
-        account->setManuallyHostPort(manuallyHostPort);
-        account->setPort(p);
-        alm->append(account);
-        qDebug() << "element appended but this piece of shit is retarded";
-        emit accountsListChanged();
-        addAccount(_grid);
-    } else {
-        initListOfAccounts();
-        emit accountEdited(_grid);
-    }
+    } else
+        account = (AccountsItemModel*)alm->find(_grid);
+
+    account->setHost(_host);
+    account->setIcon(_icon);
+    account->setJid(_jid);
+    account->setPasswd(_pass);
+    account->setManuallyHostPort(manuallyHostPort);
+    account->setPort(p);
+
+    if (isNew) {
+      alm->append(account);
+      emit accountsListChanged();
+      addAccount(_grid);
+    } else
+      emit accountEdited(_grid);
 }
 
 AccountsItemModel* Settings::getAccount(int index) {
   if (alm->getElementByID(index) != 0)
     return (AccountsItemModel*)alm->getElementByID(index);
+}
+
+AccountsItemModel* Settings::getAccountByID(QString grid) {
+  QString name = get(grid,"name").toString();
+  QString icon = get(grid,"icon").toString();
+  QString jid = get(grid,"jid").toString();
+  QString passwd = get(grid,"passwd").toString();
+
+  QString host = get(grid,"host").toString();
+  int port = get(grid,"port").toInt();
+  QString resource = get(grid,"resource").toString();
+  bool isManuallyHostPort = get(grid,"use_host_port").toBool();
+
+  AccountsItemModel *aim = new AccountsItemModel( grid, name, icon, jid, passwd, resource, host, port, isManuallyHostPort, this );
+  return aim;
 }
 
 int Settings::getAccountId(QString grid) {

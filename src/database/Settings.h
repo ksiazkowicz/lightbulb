@@ -65,6 +65,7 @@ public:
     AccountsListModel* getAccounts() const { return alm; }
 
     AccountsItemModel* getAccount(int index);
+    AccountsItemModel* getAccountByID(QString grid);
     int getAccountId(QString grid);
     int accountsCount() { return alm->count(); }
 
