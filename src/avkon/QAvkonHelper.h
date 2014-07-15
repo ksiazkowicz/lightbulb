@@ -61,6 +61,8 @@ public:
     Q_INVOKABLE void restartAppAcc();
     Q_INVOKABLE bool displayAvkonQueryDialog(QString title, QString message);
 
+    Q_INVOKABLE bool isInSilentMode() { return iAudioPlayer->isInSilentMode(); }
+
 private:
     TInt iNoteId;
     CAknGlobalNote* iNote;

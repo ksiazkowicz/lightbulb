@@ -25,14 +25,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "AvkonMedia.h"
 #include <eikenv.h>
+#include <QSystemInfo>
+#include <QSystemDeviceInfo>
 #include "aknnotewrappers.h"
 
 // CONSTANTS
 const TInt KOneSecond = 1000 * 1000; // 1 second in microseconds
 const TInt KVolumeDenominator = 2;
 
+using namespace QtMobility;
+
 AvkonMedia::AvkonMedia()
 {
+  deviceInfo = new QSystemDeviceInfo();
 }
 
 AvkonMedia::~AvkonMedia()
@@ -153,5 +158,9 @@ void AvkonMedia::DisplayErrorMessage(TInt aError)
 	buffer.AppendFormat(KErrorMessage, aError);
 	TRAP_IGNORE(CEikonEnv::Static()->InfoWinL(KNullDesC, buffer));
 	}
+
+bool AvkonMedia::isInSilentMode() {
+  return (QSystemDeviceInfo::Profile)deviceInfo->currentProfile() == QSystemDeviceInfo::SilentProfile;
+}
 
 // End of File

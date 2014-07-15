@@ -94,7 +94,8 @@ void QAvkonHelper::hideChatIcon() {
 
 void QAvkonHelper::playNotification(QString path) {
   TPtrC16 kPath(reinterpret_cast<const TUint16*>(path.utf16()));
-  iAudioPlayer->PlayL(kPath);
+  if (!iAudioPlayer->isInSilentMode())
+    iAudioPlayer->PlayL(kPath);
 }
 
 void QAvkonHelper::showPopup(QString title, QString message) {
