@@ -3,6 +3,10 @@
 #include <QFile.h>
 #include <QDir.h>
 #include <QDebug>
+#include <QSettings>
+#include <QVariant>
+
+const QString path = QDir::homePath() + QDir::separator() + ".config" + QDir::separator()+ "Lightbulb" + QDir::separator() + "Lightbulb.conf";
 
 MigrationManager::MigrationManager(QObject *parent) :
   QObject(parent)
@@ -11,26 +15,18 @@ MigrationManager::MigrationManager(QObject *parent) :
 
 bool MigrationManager::isMigrationPossible() {
   qDebug() << "MigrationManager::isMigrationPossible() called. Checking if migration is possible.";
-  qDebug() << QDir::homePath() + QDir::separator() + ".config" + QDir::separator()+ "Lightbulb" + QDir::separator() + "Lightbulb.conf";
   QFile file;
-  bool result = file.exists(QDir::homePath() + QDir::separator() + ".config" + QDir::separator()+"Lightbulb"+QDir::separator() + "Lightbulb.conf");
+  bool result = file.exists(path);
   qDebug() << "MigrationManager::isMigrationPossible() returned" << result;
   return result;
 }
 
-bool MigrationManager::migrateSettings() {
-  qDebug() << "MigrationManager::migrateSettings() called. Attempting to migrate settings.";
-  QDir fileMgr;
-  bool result;
-  qDebug() << "MigrationManager::migrateSettings(): Attempting to remove new config.";
-  result = fileMgr.remove(QDir::currentPath() + QDir::separator() + "Settings.conf");
-  if (result) {
-      result = fileMgr.rename(QDir::homePath() + QDir::separator() + ".config" + QDir::separator()+QDir::separator() + "Lightbulb.conf",QDir::currentPath() + QDir::separator() + "Settings.conf");
-    }
-  qDebug() << "MigrationManager::migrateSettings() returned" << result;
-  return result;
-}
+QVariant MigrationManager::getData(QString group, QString key) {
+  if (oldSettings == NULL)
+      oldSettings = new QSettings(path,QSettings::NativeFormat);
 
-bool MigrationManager::clearOldCache() {
-  qDebug() << "MigrationManager::clearOldCache() called. Attempting to migrate settings.";
+  oldSettings->beginGroup( group );
+  QVariant ret = oldSettings->value( key, false );
+  oldSettings->endGroup();
+  return ret;
 }

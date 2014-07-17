@@ -150,6 +150,7 @@ bool XmppConnectivity::dbRemoveDb() {
     return ret;
 }
 bool XmppConnectivity::cleanCache() { return this->removeDir(lCache->getMeegIMCachePath()); }
+bool XmppConnectivity::cleanCache(QString path) { return this->removeDir(path); }
 bool XmppConnectivity::removeDir(const QString &dirName) {
     bool result = true;
     QDir dir(dirName);

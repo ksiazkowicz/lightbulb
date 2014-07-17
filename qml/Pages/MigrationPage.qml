@@ -49,6 +49,27 @@ Page {
     // Code for destroying the page after pop
     onStatusChanged: if (migraPage.status === PageStatus.Inactive) migraPage.destroy()
 
+    function migrate() {
+        if (accCheckBox.checked) {
+
+        }
+        if (uiCheckbox.checked) {
+
+        }
+        if (eventsCheckBox.checked) {
+
+        }
+        if (advCheckBox.checked) {
+
+        }
+        if (cacheCheckBox.checked) {
+
+        }
+        if (behaviorCheckBox.checked) {
+
+        }
+    }
+
     Flickable {
         id: migra
         flickableDirection: Flickable.VerticalFlick
@@ -60,40 +81,54 @@ Page {
             spacing: 5
 
             Text {
+                color: vars.textColor
+                anchors { left: parent.left; right: parent.right; leftMargin: 10; rightMargin: 10 }
+                font.pixelSize: 32
+                text: "Welcome back!"
+                height: 64
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            Text {
                 id: text
                 color: vars.textColor
                 anchors { left: parent.left; right: parent.right; leftMargin: 10; rightMargin: 10 }
                 wrapMode: Text.WordWrap
+
                 font.pixelSize: 20
-                text: "Welcome back!\n\nIt looks like you've used Lightbulb 0.3 before and you want to import your old settings. You can choose the data relevant to you and the app would load them.\nTap on \"Next\" whenever you're ready to begin, or just tap on \"Close\" to close the wizard. :)"
+                text: "Apparently you've been using Lightbulb " + migration.getData("main","last_used_rel") + " before. You can choose the data relevant to you and the app would import them.\n\nTap on \"Next\" whenever you're ready to begin, or just tap on \"Close\" to close the wizard. :)"
             }
 
             CheckBox {
+                id: accCheckBox
+                platformInverted: main.platformInverted
                 text: qsTr("Accounts")
             }
             CheckBox {
+                id: uiCheckBox
+                platformInverted: main.platformInverted
                 text: qsTr("User interface settings")
             }
             CheckBox {
+                id: eventsCheckBox
+                platformInverted: main.platformInverted
                 text: qsTr("Notification settings")
             }
             CheckBox {
+                id: advCheckBox
+                platformInverted: main.platformInverted
                 text: qsTr("Advanced settings")
             }
             CheckBox {
+                id: cacheCheckBox
+                platformInverted: main.platformInverted
                 text: qsTr("Use old avatar cache directory")
             }
             CheckBox {
-                text: qsTr("Connection settings")
-            }
-            CheckBox {
+                id: behaviorCheckBox
+                platformInverted: main.platformInverted
                 text: qsTr("Behavior")
             }
-            CheckBox {
-                text: qsTr("Saved status text")
-            }
-
-
         }
 
     }

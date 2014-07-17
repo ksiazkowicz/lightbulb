@@ -175,11 +175,13 @@ PageStackWindow {
     Component.onCompleted:      {
         avkon.setAppHiddenState(settings.gBool("behavior","hideFromTaskMgr"));
 
+        pageStack.push("qrc:/pages/Migration")
+
         avkon.switchToApp = settings.gBool("behavior","linkInDiscrPopup")
         if (settings.gStr("behavior","lastAccount") !== "false")
             changeAccount(settings.gStr("behavior","lastAccount"));
 
-        if (!settings.gBool("main","not_first_run")) {
+        /*if (!settings.gBool("main","not_first_run")) {
             if (migration.isMigrationPossible())
                 if (avkon.displayAvkonQueryDialog("Migration","Lightbulb detected a settings file from older version of the app, would you like the app to import them?"))
                     pageStack.push("qrc:/pages/Migration")
@@ -188,10 +190,12 @@ PageStackWindow {
             else
                 pageStack.push("qrc:/pages/FirstRun")
         } else {
+            settings.sStr(xmppConnectivity.client.version,"main","last_used_rel")
+
             if (!settings.gBool("behavior","isIAPSet"))
                 dialog.create("qrc:/dialogs/AccessPointSelector")
             pageStack.push("qrc:/pages/Roster")
-        }
+        }*/
     }
     function changeAccount(acc) {
         xmppConnectivity.changeAccount(acc);

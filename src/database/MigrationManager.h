@@ -2,6 +2,7 @@
 #define MIGRATIONMANAGER_H
 
 #include <QObject>
+#include <QSettings>
 
 class MigrationManager : public QObject
 {
@@ -13,9 +14,10 @@ signals:
   
 public slots:
   Q_INVOKABLE bool isMigrationPossible();
-  bool migrateSettings();
-  bool clearOldCache();
-  
+  Q_INVOKABLE QVariant getData(QString group, QString key);
+
+private:
+  QSettings *oldSettings;  
 };
 
 #endif // MIGRATIONMANAGER_H
