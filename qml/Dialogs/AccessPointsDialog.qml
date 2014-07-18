@@ -89,7 +89,7 @@ CommonDialog {
                             onClicked: {
                                 settings.sInt(id,"behavior", "internetAccessPoint")
                                 network.currentIAP = id
-                                ettings.sBool(true,"behavior","isIAPSet")
+                                settings.sBool(true,"behavior","isIAPSet")
                                 dlgIAP.close()
                             } //onClicked
                         } //MouseArea

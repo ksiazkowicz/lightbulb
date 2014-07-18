@@ -35,7 +35,7 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
     clients = new QMap<QString,MyXmppClient*>;
     cachedMessages = new QMap<QString,MsgListModel*>;
     lSettings = new Settings();
-    lCache = new MyCache();
+    lCache = new MyCache(lSettings->gStr("paths","cache"));
     lCache->createHomeDir();
 
     dbWorker = new DatabaseWorker;
@@ -149,7 +149,7 @@ bool XmppConnectivity::dbRemoveDb() {
     sqlQuery->deleteLater();
     return ret;
 }
-bool XmppConnectivity::cleanCache() { return this->removeDir(lCache->getMeegIMCachePath()); }
+bool XmppConnectivity::cleanCache() { return this->removeDir(lCache->getCachePath()); }
 bool XmppConnectivity::cleanCache(QString path) { return this->removeDir(path); }
 bool XmppConnectivity::removeDir(const QString &dirName) {
     bool result = true;

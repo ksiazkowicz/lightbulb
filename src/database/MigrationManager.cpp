@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QSettings>
 #include <QVariant>
+#include <QStringList>
 
 const QString path = QDir::homePath() + QDir::separator() + ".config" + QDir::separator()+ "Lightbulb" + QDir::separator() + "Lightbulb.conf";
 
@@ -29,4 +30,8 @@ QVariant MigrationManager::getData(QString group, QString key) {
   QVariant ret = oldSettings->value( key, false );
   oldSettings->endGroup();
   return ret;
+}
+
+QStringList MigrationManager::getListOfAccounts() {
+    return getData("accounts","accounts").toStringList();
 }

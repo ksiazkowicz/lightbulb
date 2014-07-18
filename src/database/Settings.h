@@ -40,7 +40,6 @@ class Settings : public QSettings
     AccountsListModel *alm;
 
 protected:
-    void addAccount(  const QString&  acc );
     QStringList getListAccounts();
 
 public:
@@ -50,6 +49,8 @@ public:
     static QString confFolder;
     static QString cacheFolder;
     static QString confFile;
+
+    Q_INVOKABLE void addAccount(  const QString&  acc );
 
     Q_INVOKABLE QVariant get(QString group, QString key);
     Q_INVOKABLE void     set(QVariant data, QString group, QString key);

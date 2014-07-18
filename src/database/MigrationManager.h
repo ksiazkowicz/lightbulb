@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QSettings>
+#include <QStringList>
 
 class MigrationManager : public QObject
 {
@@ -15,6 +16,7 @@ signals:
 public slots:
   Q_INVOKABLE bool isMigrationPossible();
   Q_INVOKABLE QVariant getData(QString group, QString key);
+  Q_INVOKABLE QStringList getListOfAccounts();
 
 private:
   QSettings *oldSettings;  

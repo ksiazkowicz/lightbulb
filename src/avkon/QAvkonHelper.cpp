@@ -158,6 +158,7 @@ QString QAvkonHelper::openFileSelectionDlg() {
     }
 }
 
+
 void QAvkonHelper::openDefaultBrowser(const QUrl &url) const {
     _LIT(KBrowserPrefix, "4 " );
     // code ported from Tweetian by Dickson
@@ -229,18 +230,19 @@ void QAvkonHelper::restartApp() {
     }
 }
 
-void QAvkonHelper::restartAppAcc() {
-  CAknGlobalMsgQuery* pDlg = CAknGlobalMsgQuery::NewL();//creating the pointer
-  CleanupStack::PushL(pDlg);                      //exception handling
-  TRequestStatus iStatus;                         //the app should wait until the user selected an option
-  pDlg->ShowMsgQueryL(iStatus, _L("Lightbulb must be restarted for changes to take effect. Sorry for the inconvenience."), R_AVKON_SOFTKEYS_OK_EMPTY, _L("I'm sorry. I'm so sorry."), KNullDesC,0,-1,CAknQueryDialog::ENoTone);
+void QAvkonHelper::restartAppMigra() {
+  CAknGlobalMsgQuery* pDlg = CAknGlobalMsgQuery::NewL();
+  CleanupStack::PushL(pDlg);
+  TRequestStatus iStatus;
+  pDlg->ShowMsgQueryL(iStatus, _L("Lightbulb will now be restarted. Have fun. ^^"), R_AVKON_SOFTKEYS_OK_EMPTY, _L("Migration completed"), KNullDesC,0,-1,CAknQueryDialog::ENoTone);
 
-  User::WaitForRequest(iStatus);                  //the app should wait until the user selected an option
+  User::WaitForRequest(iStatus);
 
-  CleanupStack::PopAndDestroy(pDlg);              //freeing CleanupStack
+  CleanupStack::PopAndDestroy(pDlg);
   if (iStatus.Int() == EAknSoftkeyOk) {
         QProcess::startDetached(QApplication::applicationFilePath());
-        exit(12);
+        m_view->close();
+        //exit(12);
         hideChatIcon();
     }
 }
