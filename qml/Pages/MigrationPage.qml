@@ -56,8 +56,8 @@ Page {
 
             for (var i=0;i<list.length;i++) {
                 var temp;
-
                 settings.addAccount(list[i])
+
                 temp = migration.getData(list[i],"connectOnStart");
 
                 if (temp == "false")

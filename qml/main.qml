@@ -109,17 +109,10 @@ PageStackWindow {
         id: network
         currentIAP: settings.gInt("behavior","internetAccessPoint");
     }
-    Settings            { id: settings }
-    Clipboard           { id: clipboard }
-    Notifications       { id: notify }
-    ListModel           { id: listModelResources }
-    NetworkManager      { id: network }
-
     Clipboard           { id: clipboard }
     Notifications       { id: notify }
     ListModel           { id: listModelResources }
     MigrationManager    { id: migration }
-    Globals             { id: vars }
 
     /************************( stuff to do when running this app )*****************************/
     Component.onCompleted:      {

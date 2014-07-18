@@ -8,8 +8,8 @@
 #include <qnetworkconfigmanager.h>
 #include <qnetworksession.h>
 
-#include "NetworkCfgListModel.h"
-#include "NetworkCfgItemModel.h"
+#include "src/models/NetworkCfgListModel.h"
+#include "src/models/NetworkCfgItemModel.h"
 
 class NetworkManager : public QObject
 {

@@ -53,10 +53,6 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
 
     connect(dbWorker, SIGNAL(messagesChanged()), this, SLOT(updateMessages()), Qt::UniqueConnection);
     connect(dbWorker, SIGNAL(sqlMessagesUpdated()), this, SIGNAL(sqlMessagesChanged()), Qt::UniqueConnection);
-
-    connect(lSettings,SIGNAL(accountAdded(QString)),this,SLOT(accountAdded(QString)),Qt::UniqueConnection);
-    connect(lSettings,SIGNAL(accountEdited(QString)),this,SLOT(accountModified(QString)),Qt::UniqueConnection);
-    connect(lSettings,SIGNAL(accountRemoved(QString)),this,SLOT(accountRemoved(QString)),Qt::UniqueConnection);
 }
 
 XmppConnectivity::~XmppConnectivity() {
@@ -243,13 +239,12 @@ void XmppConnectivity::updateChatName(QString m_accountId, QString bareJid, QStr
 }
 
 // handling adding and removing accounts
+// handling adding and removing accounts
 void XmppConnectivity::accountAdded(QString id) {
   qDebug().nospace() << "XmppConnectivity::accountAdded(): initializing account "
-                     << qPrintable(id)<<"::"<<qPrintable(lSettings->getAccount(lSettings->getAccountId(id))->jid());
-  initializeAccount(id,lSettings->getAccount(lSettings->getAccountId(id)));
+                     << qPrintable(id)<<"::"<<qPrintable(lSettings->getAccountByID(id)->jid());
+  initializeAccount(id,lSettings->getAccountByID(id));
 }
-
-
 void XmppConnectivity::accountRemoved(QString id) {
   qDebug().nospace() << "XmppConnectivity::accountRemoved(): removing account "
            << qPrintable(id)<<"::"<<qPrintable(clients->value(id)->getMyJid());
@@ -270,11 +265,10 @@ void XmppConnectivity::accountRemoved(QString id) {
           chats->takeRow(i);
   }
 }
-
 void XmppConnectivity::accountModified(QString id) {
  qDebug().nospace() << "XmppConnectivity::accountModified(): reinitializing account "
-           << qPrintable(id)<<"::"<<qPrintable(lSettings->getAccount(lSettings->getAccountId(id))->jid());
-  initializeAccount(id,lSettings->getAccount(lSettings->getAccountId(id)));
+           << qPrintable(id)<<"::"<<qPrintable(lSettings->getAccountByID(id)->jid());
+  initializeAccount(id,lSettings->getAccountByID(id));
   if (id == currentClient) emit accountChanged();
 }
 
