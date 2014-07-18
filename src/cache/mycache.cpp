@@ -28,47 +28,40 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QFile>
 #include <QDebug>
 
-MyCache::MyCache(QObject *parent) : StoreVCard(parent)
-{
-    pathMeegIMHome = QDir::homePath() + "/" + ".config" + "/" + "Lightbulb";
-    pathMeegIMCache = QDir::currentPath() + QDir::separator() + QString("cache");
+MyCache::MyCache(QString path, QObject *parent) : StoreVCard(parent) {
+  qDebug() << path;
+    if (path == "" || path == "false")
+      cachePath = QDir::currentPath() + QString("/cache");
+    else
+      cachePath = path;
 
-    this->setCachePath( pathMeegIMCache );
+    qDebug () << cachePath;
+
+    this->setCachePath( cachePath );
 }
 
-bool MyCache::createHomeDir() const
-{
+bool MyCache::createHomeDir() const {
     bool retValue = false;
 
-    QDir hD( pathMeegIMHome );
-    if( hD.exists() == false ) {
-        if( ! hD.mkdir(pathMeegIMHome) ) {
-            qCritical() << "Error: Cannot create home directory !";
-            return retValue;
-        }
-    }
-
-    QDir cD( pathMeegIMCache );
-    if( cD.exists() == false ) {
-        if( ! cD.mkdir(pathMeegIMCache) ) {
+    QDir cD(cachePath);
+    if (cD.exists() == false) {
+        if (!cD.mkdir(cachePath+"/")) {
+            qDebug() << "trying" << cachePath;
             qCritical() << "Error: Cannot create cache directory !";
             return retValue;
         }
     }
 
     retValue = true;
-
     return retValue;
 }
 
 
-bool MyCache::addCacheJid(const QString &jid)
-{
-    if( this->existsCacheJid(jid) ) {
+bool MyCache::addCacheJid(const QString &jid) {
+    if( this->existsCacheJid(jid) )
         return true;
-    }
 
-    QString jidCache = pathMeegIMCache + "\\" + jid;
+    QString jidCache = cachePath + "\\" + jid;
     QDir jD( jidCache );
     if( ! jD.mkdir(jidCache) ) {
         qCritical() << "Error: Cannot create cache directory: " << jid;
@@ -78,9 +71,9 @@ bool MyCache::addCacheJid(const QString &jid)
     return true;
 }
 
-bool MyCache::setAvatarCache(const QString &jid, const QByteArray &avatar) const
-{
-    if( !(this->existsCacheJid(jid)) ) return false;
+bool MyCache::setAvatarCache(const QString &jid, const QByteArray &avatar) const {
+    if (!this->existsCacheJid(jid))
+      return false;
 
     QBuffer buffer;
     buffer.setData( avatar );
@@ -88,7 +81,7 @@ bool MyCache::setAvatarCache(const QString &jid, const QByteArray &avatar) const
     QImageReader imageReader(&buffer);
     QImage avatarImage = imageReader.read();
 
-    QString avatarJid = pathMeegIMCache + "/" + jid + "/" + QString("avatar.png");
+    QString avatarJid = cachePath + "/" + jid + "/" + QString("avatar.png");
 
     if (avatarImage.size() != QSize(0,0)) {
       if( avatarImage.save(avatarJid) ) {
@@ -99,10 +92,10 @@ bool MyCache::setAvatarCache(const QString &jid, const QByteArray &avatar) const
     return false;
 }
 
-QString MyCache::getAvatarCache(const QString &jid) const
-{
-    QString avatarJid = pathMeegIMCache + "/" + jid + "/" + QString("avatar.png");
-    if( QFile::exists(avatarJid) ) return "file:///" + avatarJid;
+QString MyCache::getAvatarCache(const QString &jid) const {
+    QString avatarJid = cachePath + "/" + jid + "/" + QString("avatar.png");
+    if (QFile::exists(avatarJid))
+      return "file:///" + avatarJid;
 
     return "qrc:/avatar";
 }

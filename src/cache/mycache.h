@@ -33,17 +33,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class MyCache : public StoreVCard
 {
     Q_OBJECT
-
-    QString pathMeegIMHome;
-    QString pathMeegIMCache;
+    QString cachePath;
 
 public:
-    explicit MyCache(QObject *parent = 0);
+    explicit MyCache(QString path, QObject *parent = 0);
 
     bool createHomeDir() const;
 
     inline bool existsCacheJid(const QString &jid) const {
-        QDir jD( pathMeegIMCache + QDir::separator() + jid );
+        QDir jD( cachePath + QDir::separator() + jid );
         return jD.exists();
     }
     bool addCacheJid( const QString &jid );
@@ -51,8 +49,7 @@ public:
     bool setAvatarCache( const QString &jid, const QByteArray &avatar ) const;
     QString getAvatarCache( const QString &jid ) const;
 
-    QString getMeegIMCachePath() const { return pathMeegIMCache; }
-    QString getMeegIMHomePath() const { return pathMeegIMHome; }
+    QString getCachePath() const { return cachePath; }
     
 signals:
     

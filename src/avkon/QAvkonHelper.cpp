@@ -94,7 +94,8 @@ void QAvkonHelper::hideChatIcon() {
 
 void QAvkonHelper::playNotification(QString path) {
   TPtrC16 kPath(reinterpret_cast<const TUint16*>(path.utf16()));
-  iAudioPlayer->PlayL(kPath);
+  if (!iAudioPlayer->isInSilentMode())
+    iAudioPlayer->PlayL(kPath);
 }
 
 void QAvkonHelper::showPopup(QString title, QString message) {
@@ -157,6 +158,7 @@ QString QAvkonHelper::openFileSelectionDlg() {
     }
 }
 
+
 void QAvkonHelper::openDefaultBrowser(const QUrl &url) const {
     _LIT(KBrowserPrefix, "4 " );
     // code ported from Tweetian by Dickson
@@ -215,11 +217,32 @@ void QAvkonHelper::minimize() const {
     m_view->lower();
 }
 
+void QAvkonHelper::setAppHiddenState(bool state) {
+  //m_view->setHidden(state);
+}
+
 void QAvkonHelper::restartApp() {
     if (displayAvkonQueryDialog("Close","Are you sure you want to restart the app?"))
     {
         QProcess::startDetached(QApplication::applicationFilePath());
         exit(12);
+        hideChatIcon();
+    }
+}
+
+void QAvkonHelper::restartAppMigra() {
+  CAknGlobalMsgQuery* pDlg = CAknGlobalMsgQuery::NewL();
+  CleanupStack::PushL(pDlg);
+  TRequestStatus iStatus;
+  pDlg->ShowMsgQueryL(iStatus, _L("Lightbulb will now be restarted. Have fun. ^^"), R_AVKON_SOFTKEYS_OK_EMPTY, _L("Migration completed"), KNullDesC,0,-1,CAknQueryDialog::ENoTone);
+
+  User::WaitForRequest(iStatus);
+
+  CleanupStack::PopAndDestroy(pDlg);
+  if (iStatus.Int() == EAknSoftkeyOk) {
+        QProcess::startDetached(QApplication::applicationFilePath());
+        m_view->close();
+        //exit(12);
         hideChatIcon();
     }
 }

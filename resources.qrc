@@ -73,6 +73,7 @@
         <file alias="Contributors">qml/Dialogs/Contributors.qml</file>
         <file alias="Resources">qml/Dialogs/ResourcesDialog.qml</file>
         <file alias="AccountDetails">qml/Dialogs/AccountDetails.qml</file>
+        <file alias="AccessPointSelector">qml/Dialogs/AccessPointsDialog.qml</file>
     </qresource>
     <qresource prefix="/pages">
         <file alias="About">qml/Pages/AboutPage.qml</file>
@@ -85,6 +86,7 @@
         <file alias="FirstRun">qml/Pages/FirstRunPage.qml</file>
         <file alias="Accounts">qml/Pages/AccountsPage.qml</file>
         <file alias="Events">qml/Pages/Events.qml</file>
+        <file alias="Migration">qml/Pages/MigrationPage.qml</file>
     </qresource>
     <qresource prefix="/toolbar">
         <file alias="close">images/toolbar/toolbar-close.svg</file>
@@ -148,5 +150,15 @@
         <file alias="DetailsItem.qml">qml/Components/DetailsItem.qml</file>
         <file alias="LineItem.qml">qml/Components/LineItem.qml</file>
         <file alias="HeaderButton.qml">qml/Components/HeaderButton.qml</file>
+    </qresource>
+    <qresource prefix="/networks">
+        <file alias="2G">images/networks/2G.svg</file>
+        <file alias="Bluetooth">images/networks/Bluetooth.svg</file>
+        <file alias="WLAN">images/networks/wlan.svg</file>
+        <file alias="Default">images/networks/Internet.svg</file>
+        <file alias="2G_inverse">images/networks/2G_inverse.svg</file>
+        <file alias="Bluetooth_inverse">images/networks/Bluetooth_inverse.svg</file>
+        <file alias="Default_inverse">images/networks/Internet_inverse.svg</file>
+        <file alias="WLAN_inverse">images/networks/wlan_inverse.svg</file>
     </qresource>
 </RCC>

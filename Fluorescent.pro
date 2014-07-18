@@ -82,7 +82,9 @@ SOURCES += src/main.cpp \
     src/EmoticonParser.cpp \
     src/xmpp/ContactListManager.cpp \
     src/avkon/NetworkManager.cpp \
-    src/avkon/DataPublisher.cpp
+    src/avkon/DataPublisher.cpp \
+    src/avkon/NetworkManager.cpp \
+    src/database/MigrationManager.cpp
 
 HEADERS += src/xmpp/MyXmppClient.h \
     src/cache/MyCache.h \
@@ -107,7 +109,11 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/EmoticonParser.h \
     src/xmpp/ContactListManager.h \
     src/avkon/NetworkManager.h \
-    src/avkon/DataPublisher.h
+    src/avkon/DataPublisher.h \
+    src/avkon/NetworkManager.h \
+    src/database/MigrationManager.h \
+    src/models/NetworkCfgItemModel.h \
+    src/models/NetworkCfgListModel.h
 
 OTHER_FILES += README.md \
     qml/Dialogs/*.* \

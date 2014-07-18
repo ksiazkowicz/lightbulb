@@ -43,6 +43,7 @@ Page {
                     do {
                         pageStack.pop()
                     } while (pageStack.depth > 1)
+                    dialog.create("qrc:/dialogs/AccessPointSelector")
                     pageStack.push("qrc:/pages/Roster")
                 } else { selectedIndex--; switchPreflet(); }
             }

@@ -43,7 +43,6 @@ PageStackWindow {
         }
 
     }
-
     function openChat() {
         xmppConnectivity.resetUnreadMessages( xmppConnectivity.currentAccount, xmppConnectivity.chatJid )
         notify.updateNotifiers()
@@ -98,24 +97,51 @@ PageStackWindow {
                 rejectSubscribtion(accountId,bareJid)
         }
     }
+	
+    Settings {
+        id: settings
+        onAccountAdded: xmppConnectivity.accountAdded(accId)
+        onAccountRemoved: xmppConnectivity.accountRemoved(accId)
+        onAccountEdited: xmppConnectivity.accountModified(accId)
+    }
+
+    NetworkManager  {
+        id: network
+        currentIAP: settings.gInt("behavior","internetAccessPoint");
+    }
     Settings            { id: settings }
     Clipboard           { id: clipboard }
     Notifications       { id: notify }
     ListModel           { id: listModelResources }
     NetworkManager      { id: network }
 
+    Clipboard           { id: clipboard }
+    Notifications       { id: notify }
+    ListModel           { id: listModelResources }
+    MigrationManager    { id: migration }
+    Globals             { id: vars }
+
     /************************( stuff to do when running this app )*****************************/
     Component.onCompleted:      {
         avkon.switchToApp = settings.gBool("behavior","linkInDiscrPopup")
-        if (settings.gStr("behavior","lastAccount") !== "false")
-            changeAccount(settings.gStr("behavior","lastAccount"));
-
-        if (!settings.gBool("main","not_first_run"))
-            pageStack.push("qrc:/pages/FirstRun")
-        else
-            pageStack.push("qrc:/pages/Events")
-			
 		xmppConnectivity.offlineContactsVisibility = !vars.hideOffline
+        avkon.setAppHiddenState(settings.gBool("behavior","hideFromTaskMgr"));
+
+        if (!settings.gBool("main","not_first_run")) {
+            if (migration.isMigrationPossible()) {
+                if (avkon.displayAvkonQueryDialog("Migration","Fluorescent detected a settings file from older version of the app, would you like the app to import them?"))
+                    pageStack.push("qrc:/pages/Migration")
+                else
+                    pageStack.push("qrc:/pages/FirstRun")
+            } else
+                pageStack.push("qrc:/pages/FirstRun")
+        } else {
+            settings.sStr(xmppConnectivity.client.version,"main","last_used_rel")
+
+            if (!settings.gBool("behavior","isIAPSet"))
+                dialog.create("qrc:/dialogs/AccessPointSelector")
+            pageStack.push("qrc:/pages/Events")
+        }
     }
     function changeAccount(acc) {
         xmppConnectivity.changeAccount(acc);
@@ -135,12 +161,6 @@ PageStackWindow {
         function createWithProperties(qmlfile, properties){
             c=Qt.createComponent(qmlfile);
             c.createObject(main, properties)
-        }
-        function createWithContext(qmlFile) {
-            c=Qt.createComponent("qrc:/dialogs/AccountSwitcher")
-            c.createObject(main)
-            vars.awaitingContext = true;
-            vars.dialogQmlFile = qmlFile;
         }
     }
     StatusBar {

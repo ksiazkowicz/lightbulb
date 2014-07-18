@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 18.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Warstwa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 -5 67 67" enable-background="new 0 -5 67 67" xml:space="preserve">
+<g>
+	<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="33.5107" y1="39.3486" x2="33.5107" y2="49.1235">
+		<stop  offset="0" style="stop-color:#FFFFFF"/>
+		<stop  offset="0.5743" style="stop-color:#B2B2B2"/>
+		<stop  offset="1" style="stop-color:#FFFFFF"/>
+	</linearGradient>
+	<rect x="28.4" y="37.1" opacity="5.000000e-002" fill="url(#SVGID_1_)" width="10.2" height="11.7"/>
+	<g>
+		<rect x="1.7" y="3" fill="none" width="63.6" height="54.2"/>
+		<path opacity="0.15" enable-background="new    " d="M32.7,52.4c-1,0-1.9-0.9-1.9-1.9V29.2L16.1,18c-0.5-0.4-0.7-0.9-0.7-1.5V9.7
+			c0-1,0.9-1.9,1.9-1.9h31.9c0.5,0,1,0.2,1.3,0.6c0.4,0.4,0.6,0.8,0.6,1.4v6.8c0,0.5-0.3,1.1-0.7,1.4L36.1,29.2v21.4
+			c0,1-0.9,1.9-1.9,1.9H32.7z M30.8,22.4v-9.4H20.7v1.8L30.8,22.4z M36.1,22.4l9.7-7.4v-2h-9.7V22.4z"/>
+		<path opacity="0.3" enable-background="new    " d="M32.7,52.4c-0.5,0-1-0.4-1-1V29.7L16.7,18.1c-0.2-0.2-0.3-0.4-0.3-0.7v-6.8
+			c0-0.5,0.4-0.9,0.9-0.9h31.9c0.3,0,0.5,0.1,0.7,0.3c0.2,0.2,0.3,0.4,0.3,0.7v6.8c0,0.3-0.2,0.5-0.4,0.7L35.2,29.7v21.8
+			c0,0.5-0.4,1-0.9,1H32.7z M35.2,25.3l11.6-8.8v-3.4H35.2V25.3z M19.7,16.3l12.1,9V13.1H19.7V16.3z"/>
+		
+			<linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="33.2099" y1="4.6616" x2="33.2099" y2="47.4116" gradientTransform="matrix(1 0 0 -1 4.000000e-002 56.1543)">
+			<stop  offset="0" style="stop-color:#D0CBC5"/>
+			<stop  offset="0.5031" style="stop-color:#FAFCEF"/>
+			<stop  offset="0.9693" style="stop-color:#FFFFFF"/>
+		</linearGradient>
+		<path fill="url(#SVGID_2_)" d="M32.7,51.5c-0.5,0-1-0.4-1-1V28.7L16.7,17.2c-0.2-0.2-0.3-0.4-0.3-0.7V9.7c0-0.5,0.4-1,0.9-1h31.9
+			c0.3,0,0.5,0.1,0.7,0.3c0.2,0.2,0.3,0.4,0.3,0.7v6.8c0,0.3-0.2,0.5-0.4,0.7L35.2,28.7v21.8c0,0.5-0.4,1-0.9,1H32.7z M35.2,24.3
+			l11.6-8.8v-3.4H35.2V24.3z M19.7,15.4l12.1,9V12.1H19.7V15.4z"/>
+		<path fill="#FFFFFF" d="M35.2,25.3l11.6-8.8v-1l-11.6,8.8V25.3z M19.7,16.3l12.1,9v-1l-12.1-9V16.3z M49.9,9
+			c-0.2-0.2-0.4-0.3-0.7-0.3H17.3c-0.5,0-0.9,0.4-0.9,1v0.9c0-0.5,0.4-0.9,0.9-0.9h31.9c0.3,0,0.5,0.1,0.7,0.3
+			c0.2,0.2,0.3,0.4,0.3,0.7v-1C50.1,9.4,50,9.2,49.9,9z"/>
+	</g>
+</g>
+</svg>

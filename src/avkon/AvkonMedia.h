@@ -30,6 +30,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <e32base.h>
 #include <MdaAudioSamplePlayer.h>
 
+#include <QSystemInfo>
+#include <QSystemDeviceInfo>
+
+using namespace QtMobility;
+
 class AvkonMedia : public CBase, public MMdaAudioPlayerCallback
 	{
 public: // Constructors and destructor
@@ -61,7 +66,9 @@ public: // Member variables
 	CMdaAudioPlayerUtility* iPlayerUtility;
 	TTimeIntervalMicroSeconds AudioTrackduration;
 
+	QSystemDeviceInfo *deviceInfo;
 
-	};
+	bool isInSilentMode();
+};
 
 #endif // AVKONMEDIA_H

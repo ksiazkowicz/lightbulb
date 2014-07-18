@@ -4,6 +4,19 @@
 NetworkManager::NetworkManager(QObject *parent) :
   QObject(parent) {
   qDebug() << "NetworkManager::NetworkManager(): initialized";
+
+  m_configurationsManager = new QNetworkConfigurationManager();
+  m_configurations = new NetworkCfgListModel();
+  appendConfig("Use default","Default",-1);
+
+  QList<QNetworkConfiguration> confList = m_configurationsManager->allConfigurations();
+  for (int i=0; i<confList.count();i++) {
+      QNetworkConfiguration conf = confList.at(i);
+      if (conf.purpose() == QNetworkConfiguration::PublicPurpose && conf.bearerTypeName() != "") {
+        qDebug() << "NetworkManager::NetworkManager(): found config at" << i << "name:" << conf.name() << "typeName" << conf.bearerTypeName();
+        appendConfig(conf.name(),conf.bearerTypeName(),i);
+      }
+  }
 }
 
 NetworkManager::~NetworkManager() {
@@ -21,8 +34,15 @@ void NetworkManager::openConnection() {
     const bool canStartIAP = (manager.capabilities()
         & QNetworkConfigurationManager::CanStartAndStopInterfaces);
 
-    // Is there default access point, use it
-    QNetworkConfiguration cfg = manager.defaultConfiguration();
+    QNetworkConfiguration cfg;
+
+    if (currentIAP < 0)
+      cfg = manager.defaultConfiguration();
+    else
+      cfg = manager.allConfigurations().at(currentIAP);
+
+    qDebug() << "NetworkManager::NetworkManager(): attempting to use access point. name:" << cfg.name() << "typeName" << cfg.bearerTypeName();
+
     if (!cfg.isValid() || !canStartIAP) {
         // Available Access Points not found
         qDebug() << "NetworkManager::openConnection(): No access points found.";
@@ -60,4 +80,27 @@ void NetworkManager::connectionStatusChanged() {
         }
     }
   emit connectionChanged();
+}
+
+void NetworkManager::appendConfig(QString name, QString bearer, int id) {
+  NetworkCfgItemModel *item = new NetworkCfgItemModel(name,bearer,id);
+  m_configurations->append(item);
+
+  emit configurationsChanged();
+}
+
+void NetworkManager::deleteConfig(int id) {
+  int rowNumber;
+  NetworkCfgItemModel *itemExists = (NetworkCfgItemModel*)m_configurations->find(QString::number(id),rowNumber);
+  if (itemExists != NULL)
+    m_configurations->takeRow(rowNumber);
+
+  emit configurationsChanged();
+}
+
+QString NetworkManager::getIAPNameByID(int _iapId) {
+  NetworkCfgItemModel *itemExists = (NetworkCfgItemModel*)m_configurations->find(QString::number(_iapId));
+  if (itemExists != NULL)
+    return itemExists->getCfgName();
+  else return "(unknown)";
 }

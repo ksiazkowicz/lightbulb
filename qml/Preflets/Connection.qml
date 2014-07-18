@@ -36,6 +36,7 @@ Item {
         CheckBox {
             id: cbNeedReconnect
             text: qsTr("Reconnect on error")
+            anchors { left: parent.left; leftMargin: 10; }
             checked: settings.gBool("behavior", "reconnectOnError")
             platformInverted: main.platformInverted
             onCheckedChanged: {
@@ -48,6 +49,7 @@ Item {
             font.pixelSize: 20
             font.bold: true
             color: vars.textColor
+            anchors { left: parent.left; leftMargin: 10; }
         }
         TextField {
             id: tiKeepAlive
@@ -68,6 +70,28 @@ Item {
                 settings.sInt(interval,"behavior", "keepAliveInterval")
             }
         }
+
+        SelectionListItem {
+            id: iapSelection
+            platformInverted: main.platformInverted
+            subTitle: settings.gInt("behavior","internetAccessPoint") >= 1
+                      ? network.getIAPNameByID(settings.gInt("behavior","internetAccessPoint"))
+                      : "Use default"
+            anchors { left: parent.left; right: parent.right }
+            title: "Internet Access Point"
+
+            onClicked: dialog.create("qrc:/dialogs/AccessPointSelector")
+            Connections {
+                target: network
+                onCurrentIAPChanged: {
+                    iapSelection.subTitle = settings.gInt("behavior","internetAccessPoint") >= 1
+                              ? network.getIAPNameByID(settings.gInt("behavior","internetAccessPoint"))
+                              : "Use default"
+                }
+            }
+
+        }
+
     }
 }
 

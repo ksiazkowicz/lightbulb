@@ -58,7 +58,11 @@ public:
     Q_INVOKABLE void hideChatIcon();
     Q_INVOKABLE void minimize() const;
     Q_INVOKABLE void restartApp();
+    Q_INVOKABLE void restartAppMigra();
     Q_INVOKABLE bool displayAvkonQueryDialog(QString title, QString message);
+
+    Q_INVOKABLE bool isInSilentMode() { return iAudioPlayer->isInSilentMode(); }
+    Q_INVOKABLE void setAppHiddenState(bool state);
 
 private:
     TInt iNoteId;

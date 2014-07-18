@@ -35,7 +35,7 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
     clients = new QMap<QString,MyXmppClient*>;
     cachedMessages = new QMap<QString,MsgListModel*>;
     lSettings = new Settings();
-    lCache = new MyCache();
+    lCache = new MyCache(lSettings->gStr("paths","cache"));
     lCache->createHomeDir();
 
     dbWorker = new DatabaseWorker;
@@ -87,25 +87,25 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
         clients->value(index)->setPort(5222);
     }
     clients->value(index)->setAccountId(index);
-    connect(clients->value(index),SIGNAL(iFoundYourParentsGoddamit(QString)),this,SLOT(updateMyData(QString)));
+    connect(clients->value(index),SIGNAL(iFoundYourParentsGoddamit(QString)),this,SLOT(updateMyData(QString)),Qt::UniqueConnection);
 
-    connect(clients->value(index),SIGNAL(updateContact(QString,QString,QString,int)),this,SLOT(updateContact(QString,QString,QString,int)));
-    connect(clients->value(index),SIGNAL(insertMessage(QString,QString,QString,QString,int)),this,SLOT(insertMessage(QString,QString,QString,QString,int)));
-    connect(clients->value(index),SIGNAL(contactStatusChanged(QString,QString)),this,SLOT(handleContactStatusChange(QString,QString)));
+    connect(clients->value(index),SIGNAL(updateContact(QString,QString,QString,int)),this,SLOT(updateContact(QString,QString,QString,int)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(insertMessage(QString,QString,QString,QString,int)),this,SLOT(insertMessage(QString,QString,QString,QString,int)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(contactStatusChanged(QString,QString)),this,SLOT(handleContactStatusChange(QString,QString)),Qt::UniqueConnection);
 
-    connect(clients->value(index),SIGNAL(connectingChanged(QString)),this,SIGNAL(xmppConnectingChanged(QString)));
-    connect(clients->value(index),SIGNAL(statusChanged(QString)),this,SLOT(handleXmppStatusChange(QString)));
-    connect(clients->value(index),SIGNAL(errorHappened(QString,QString)),this,SIGNAL(xmppErrorHappened(QString,QString)));
-    connect(clients->value(index),SIGNAL(subscriptionReceived(QString,QString)),this,SIGNAL(xmppSubscriptionReceived(QString,QString)));
-    connect(clients->value(index),SIGNAL(typingChanged(QString,QString,bool)),this,SIGNAL(xmppTypingChanged(QString,QString,bool)));
+    connect(clients->value(index),SIGNAL(connectingChanged(QString)),this,SIGNAL(xmppConnectingChanged(QString)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(statusChanged(QString)),this,SLOT(handleXmppStatusChange(QString)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(errorHappened(QString,QString)),this,SIGNAL(xmppErrorHappened(QString,QString)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(subscriptionReceived(QString,QString)),this,SIGNAL(xmppSubscriptionReceived(QString,QString)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(typingChanged(QString,QString,bool)),this,SIGNAL(xmppTypingChanged(QString,QString,bool)),Qt::UniqueConnection);
 	
     // connect ContactListManager
-    connect(clients->value(index),SIGNAL(contactAdded(QString,QString,QString)),contacts,SLOT(addContact(QString,QString,QString)));
-    connect(clients->value(index),SIGNAL(presenceChanged(QString,QString,QString,QString,QString)),contacts,SLOT(changePresence(QString,QString,QString,QString,QString)));
-    connect(clients->value(index),SIGNAL(presenceChanged(QString,QString,QString,QString,QString)), this, SIGNAL(xmppPresenceChanged(QString,QString,QString,QString,QString)));
-    connect(clients->value(index),SIGNAL(nameChanged(QString,QString,QString)),contacts,SLOT(changeName(QString,QString,QString)));
-    connect(clients->value(index),SIGNAL(nameChanged(QString,QString,QString)),this,SLOT(updateChatName(QString,QString,QString)));
-    connect(clients->value(index),SIGNAL(contactRemoved(QString,QString)),contacts,SLOT(removeContact(QString,QString)));
+    connect(clients->value(index),SIGNAL(contactAdded(QString,QString,QString)),contacts,SLOT(addContact(QString,QString,QString)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(presenceChanged(QString,QString,QString,QString,QString)),contacts,SLOT(changePresence(QString,QString,QString,QString,QString)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(presenceChanged(QString,QString,QString,QString,QString)), this, SIGNAL(xmppPresenceChanged(QString,QString,QString,QString,QString)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(nameChanged(QString,QString,QString)),contacts,SLOT(changeName(QString,QString,QString)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(nameChanged(QString,QString,QString)),this,SLOT(updateChatName(QString,QString,QString)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(contactRemoved(QString,QString)),contacts,SLOT(removeContact(QString,QString)),Qt::UniqueConnection);
 
     qDebug().nospace() << "XmppConnectivity::initializeAccount(): initialized account " << qPrintable(clients->value(index)->getMyJid()) << "/" << qPrintable(clients->value(index)->getResource());
 
@@ -153,7 +153,8 @@ bool XmppConnectivity::dbRemoveDb() {
     sqlQuery->deleteLater();
     return ret;
 }
-bool XmppConnectivity::cleanCache() { return this->removeDir(lCache->getMeegIMCachePath()); }
+bool XmppConnectivity::cleanCache() { return this->removeDir(lCache->getCachePath()); }
+bool XmppConnectivity::cleanCache(QString path) { return this->removeDir(path); }
 bool XmppConnectivity::removeDir(const QString &dirName) {
     bool result = true;
     QDir dir(dirName);

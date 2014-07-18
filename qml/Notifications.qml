@@ -116,7 +116,7 @@ Item {
     HapticsEffect { id: hapticsEffect }
 
     function notifySndVibr(how) {
-        if( settings.gBool("notifications","vibra"+how )) {
+        if( settings.gBool("notifications","vibra"+how && !avkon.isInSilentMode())) {
             hapticsEffect.duration = settings.gInt("notifications","vibra"+how+"Duration" )
             hapticsEffect.intensity = settings.gInt("notifications","vibra"+how+"Intensity" )/100
             hapticsEffect.running = true

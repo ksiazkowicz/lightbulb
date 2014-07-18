@@ -83,6 +83,7 @@ public:
     /* --- diagnostics --- */
     Q_INVOKABLE bool dbRemoveDb();
     Q_INVOKABLE bool cleanCache();
+    Q_INVOKABLE bool cleanCache(QString path);
     Q_INVOKABLE bool resetSettings();
 
     //
@@ -132,17 +133,14 @@ signals:
     void pageChanged();
     void sqlMessagesChanged();
     void chatJidChanged();
-
     void chatsChanged();
-
     void notifyMsgReceived(QString name,QString jid,QString body,QString account);
-
+	
     void qmlChatChanged();
     void msgLimitChanged();
-
     void widgetDataChanged();
     void visibilityChanged();
- 
+
     // MyXmppClient ones
     void xmppConnectingChanged    (const QString accountId);
     void xmppErrorHappened        (const QString accountId, const QString &errorString);
@@ -154,7 +152,6 @@ signals:
 public slots:
     void handleXmppStatusChange (const QString accountId);
 
-
     void updateContact(QString m_accountId,QString bareJid,QString property,int count) {
         dbWorker->executeQuery(QStringList() << "updateContact" << m_accountId << bareJid << property << QString::number(count));
     }
@@ -164,6 +161,7 @@ public slots:
     Q_INVOKABLE QString getAvatarByJid(QString bareJid) { return lCache->getAvatarCache(bareJid); }
 
     // handling chats list
+
     Q_INVOKABLE QString getPropertyByJid(QString account,QString property,QString jid);
     Q_INVOKABLE QString getPreservedMsg(QString jid);
     Q_INVOKABLE void preserveMsg(QString jid,QString message);
@@ -173,6 +171,7 @@ public slots:
     void updateChatName(QString m_accountId,QString bareJid,QString name);
 
     Q_INVOKABLE void setMsgLimit(int limit) { msgLimit = limit; }
+
     int getMsgLimit() { return msgLimit; }
 
     Q_INVOKABLE void emitQmlChat() {
@@ -181,15 +180,16 @@ public slots:
     }
 
     // handling clients
-    void accountAdded(QString id);
+    Q_INVOKABLE void accountAdded(QString id);
     Q_INVOKABLE void accountRemoved(QString id);
-    void accountModified(QString id);
+    Q_INVOKABLE void accountModified(QString id);
 
     Q_INVOKABLE int getStatusByIndex(QString accountId);
 
     Q_INVOKABLE void closeChat(QString bareJid) { this->closeChat(currentClient,bareJid); }
     Q_INVOKABLE void resetUnreadMessages(QString accountId, QString bareJid) { contacts->resetUnreadMessages(accountId,bareJid); }
     Q_INVOKABLE void resetUnreadMessages(QString bareJid) { contacts->resetUnreadMessages(currentClient,bareJid); }
+
 
     // widget
     void handleContactStatusChange(QString accountId, QString bareJid) {
@@ -203,13 +203,13 @@ public slots:
 
     Q_INVOKABLE void setVisibility(bool state)   { contacts->setOfflineContactsState(state); emit rosterChanged(); }
     Q_INVOKABLE bool getVisibility()           { return contacts->getOfflineContactsState(); }
-
+	
     Q_INVOKABLE void updateAvatarCachingSetting(bool setting);
     Q_INVOKABLE void acceptSubscription(QString accountId,QString bareJid) { clients->value(accountId)->acceptSubscribtion(bareJid); }
     Q_INVOKABLE void rejectSubscription(QString accountId,QString bareJid) { clients->value(accountId)->rejectSubscribtion(bareJid); }
     Q_INVOKABLE int  getConnectionStatusByAccountId(QString accountId)     { return clients->value(accountId)->getStateConnect(); }
     Q_INVOKABLE int  getStatusByAccountId(QString accountId)               { return clients->value(accountId)->getStatus(); }
-
+	
     Q_INVOKABLE void addContact(QString accountId, QString bareJid, QString nick) {
       clients->value(accountId)->addContact(bareJid,nick,"",true);
     }
