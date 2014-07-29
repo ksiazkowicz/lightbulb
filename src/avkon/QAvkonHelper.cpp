@@ -4,7 +4,7 @@ src/avkon/QAvkonHelper.cpp
 -- interface to native Symbian APIs
 
 Copyright (c) 2013 Maciej Janiszewski,
-                   Fabian Hüllmantel,
+                   Fabian Hï¿½llmantel,
                    Dickson Leong
 
 This file is part of Lightbulb.
@@ -105,7 +105,7 @@ void QAvkonHelper::showPopup(QString title, QString message) {
     if (lastPopup != title + ";" + message) lastPopup = title + ";" + message; else return;
 
     if (_switchToApp) {
-        TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(sTitle, sMessage,KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL, {0xE22AC278}));
+        TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(sTitle, sMessage,KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL, {0xE00AC666}));
     } else TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(sTitle, sMessage,KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL));
     QTimer::singleShot(2000,this,SLOT(cleanLastMsg()));
 }
@@ -248,7 +248,7 @@ void QAvkonHelper::restartAppMigra() {
 }
 
 bool QAvkonHelper::displayAvkonQueryDialog(QString title, QString message) {
-    // based on https://github.com/huellif/RebootMe/blob/master/main.cpp, Fabian Hüllmantel
+    // based on https://github.com/huellif/RebootMe/blob/master/main.cpp, Fabian Hï¿½llmantel
 
     TPtrC16 aTitle(reinterpret_cast<const TUint16*>(title.utf16()));     // convert title to Symbian string
     TPtrC16 aMessage(reinterpret_cast<const TUint16*>(message.utf16())); // convert message to Symbian string
