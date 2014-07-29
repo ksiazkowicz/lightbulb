@@ -28,6 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QtDeclarative/QDeclarativeView>
 #include <QtDeclarative/qdeclarative.h>
 #include <QUrl>
+#include <QDebug>
 #include "qmlapplicationviewer.h"
 
 #include "MyXmppClient.h"
@@ -49,8 +50,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Q_DECL_EXPORT int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
+    qDebug() << "Fluorescent 0.4 build 0002";
+    qDebug() << "Maciej Janiszewski";
+    qDebug() << "------------------";
+
+    qDebug() << "main(): Initializing splashscreen";
     QSplashScreen *splash = new QSplashScreen(QPixmap(":/splash"));
     splash->show();
+
+    qDebug() << "main(): Registering classes...";
 
     // expose C++ classes to QML
     qmlRegisterType<Settings>("lightbulb", 1, 0, "Settings" );
@@ -69,6 +77,9 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     qmlRegisterUncreatableType<MsgListModel>("lightbulb", 1, 0, "MsgModel", "because sliced bread is awesome");
     qmlRegisterUncreatableType<MyXmppClient>("lightbulb", 1, 0, "XmppClient", "Use XmppConnectivity.client instead" );
 
+    qDebug() << "main(): Classes registered";
+    qDebug() << "main(): Initializing view...";
+
     // initialize viewer and set it parameters
     QmlApplicationViewer viewer;
     QAvkonHelper avkon(&viewer);
@@ -83,11 +94,15 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     viewer.viewport()->setAttribute(Qt::WA_NoSystemBackground);
     viewer.setProperty("orientationMethod", 1);
 
+    qDebug() << "main(): Done. Loading QML file";
+
     viewer.setSource( QUrl(QLatin1String("qrc:/qml/main.qml")) );
     viewer.showFullScreen();
 
     splash->finish(&viewer);
     splash->deleteLater();
+
+    qDebug() << "main(): App is ready";
 
     return app.exec();
 }

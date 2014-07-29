@@ -61,7 +61,6 @@ class MyXmppClient : public QObject
     Q_PROPERTY( StateConnect stateConnect READ getStateConnect NOTIFY connectingChanged )
     Q_PROPERTY( StatusXmpp status READ getStatus WRITE setStatus NOTIFY statusChanged )
     Q_PROPERTY( QString statusText READ getStatusText WRITE setStatusText  NOTIFY statusTextChanged )
-    Q_PROPERTY( bool isTyping READ getTyping NOTIFY typingChanged )
     Q_PROPERTY( QString myBareJid READ getMyJid WRITE setMyJid NOTIFY myJidChanged )
     Q_PROPERTY( QString myPassword READ getPassword() WRITE setPassword  NOTIFY myPasswordChanged )
     Q_PROPERTY( QString host READ getHost WRITE setHost NOTIFY hostChanged )
@@ -102,15 +101,11 @@ public :
     /* --- presence --- */
     Q_INVOKABLE void setMyPresence( StatusXmpp status, QString textStatus );
 
-    /*--- typing ---*/
-    Q_INVOKABLE void typingStart( QString bareJid, QString resource );
-    Q_INVOKABLE void typingStop( QString bareJid, QString resource );
-
     /*--- connect/disconnect ---*/
     Q_INVOKABLE void connectToXmppServer();
 
     /*--- send msg ---*/
-    Q_INVOKABLE bool sendMyMessage( QString bareJid, QString resource, QString msgBody );
+    bool sendMessage(QString bareJid, QString resource, QString msgBody, int chatState);
 
     /*--- info by jid ---*/
     Q_INVOKABLE QStringList getResourcesByJid (QString bareJid) { return rosterManager->getResources(bareJid); }
@@ -150,9 +145,6 @@ public :
     StatusXmpp getStatus() const { return m_status; }
     void setStatus( StatusXmpp __status );
 
-    bool getTyping() const { return m_flTyping; }
-    void setTyping( QString &jid, const bool isTyping ) { m_flTyping = isTyping; emit typingChanged(m_accountId, jid, isTyping); }
-
     QString getMyJid() const { return m_myjid; }
     void setMyJid( const QString& myjid ) { if(myjid!=m_myjid) {m_myjid=myjid; emit myJidChanged(); } }
 
@@ -188,6 +180,7 @@ signals:
     void hostChanged();
     void portChanged();
     void resourceChanged();
+    void typingChanged(QString accountId, QString bareJid, bool isTyping);
     void accountIdChanged();
     void keepAliveChanged();
     void contactStatusChanged(QString accountId, QString bareJid);
@@ -201,9 +194,8 @@ signals:
     void errorHappened(const QString accountId,const QString &errorString);
     void subscriptionReceived(const QString accountId,const QString bareJid);
     void statusChanged(const QString accountId);
-    void typingChanged(const QString accountId, QString bareJid, bool isTyping);
-	
-	// contact list manager
+
+    // contact list manager
     void contactAdded(QString acc,QString jid, QString name);
     void presenceChanged(QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus);
     void nameChanged(QString m_accountId,QString bareJid,QString name);
@@ -238,7 +230,6 @@ private:
     StateConnect m_stateConnect;
     StatusXmpp m_status;
     QString m_statusText;
-    bool m_flTyping;
     QString m_myjid;
     QString m_password;
     QString m_host;

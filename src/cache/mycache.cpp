@@ -29,13 +29,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDebug>
 
 MyCache::MyCache(QString path, QObject *parent) : StoreVCard(parent) {
-  qDebug() << path;
     if (path == "" || path == "false")
       cachePath = QDir::currentPath() + QString("/cache");
     else
       cachePath = path;
-
-    qDebug () << cachePath;
 
     this->setCachePath( cachePath );
 }
@@ -47,7 +44,7 @@ bool MyCache::createHomeDir() const {
     if (cD.exists() == false) {
         if (!cD.mkdir(cachePath+"/")) {
             qDebug() << "trying" << cachePath;
-            qCritical() << "Error: Cannot create cache directory !";
+            qCritical() << "Error: Cannot create cache directory!" << cachePath;
             return retValue;
         }
     }
@@ -64,7 +61,7 @@ bool MyCache::addCacheJid(const QString &jid) {
     QString jidCache = cachePath + "\\" + jid;
     QDir jD( jidCache );
     if( ! jD.mkdir(jidCache) ) {
-        qCritical() << "Error: Cannot create cache directory: " << jid;
+        qCritical() << "Error: Cannot create cache directory: " << jidCache;
         return false;
     }
 

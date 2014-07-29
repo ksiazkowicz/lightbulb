@@ -30,6 +30,8 @@ Page {
     id: accountsPage
     tools: toolBarAccounts
 
+    property string pageName: "Accounts"
+
     Component {
         id: componentAccountItem
 
@@ -73,10 +75,6 @@ Page {
         platformInverted: main.platformInverted
     }
 
-    Component.onCompleted: {
-        statusBarText.text = qsTr("Accounts")
-    }
-
     // Code for destroying the page after pop
     onStatusChanged: if (accountsPage.status === PageStatus.Inactive) accountsPage.destroy()
 
@@ -88,10 +86,7 @@ Page {
 
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
-            onClicked: {
-                pageStack.pop()
-                statusBarText.text = "Contacts"
-            }
+            onClicked: pageStack.pop()
         }
 
         ToolButton {

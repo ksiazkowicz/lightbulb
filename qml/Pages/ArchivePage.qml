@@ -80,9 +80,9 @@ Page {
            }
 
     property string contactName: ""
+    property string pageName: contactName
     Component.onCompleted: {
         xmppConnectivity.openChat( xmppConnectivity.currentAccount,xmppConnectivity.chatJid )
-        statusBarText.text = contactName
     }
 
     // Code for destroying the page after pop

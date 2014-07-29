@@ -179,12 +179,20 @@ PageStackWindow {
                         }
              }
         }
+        Connections {
+            target: main.pageStack
+            onCurrentPageChanged: {
+                statusBarText.text = pageStack.currentPage.pageName
+            }
+        }
     }
 
     /***************( splitscreen input )***************/
     Item {
         id: splitViewInput
         anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
+
+        Behavior on height { PropertyAnimation { duration: 100 } }
 
         states: [
             State {

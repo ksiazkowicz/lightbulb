@@ -34,11 +34,12 @@ Page {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
                 pageStack.pop()
-                statusBarText.text = "Contacts"
                 xmppConnectivity.chatJid = ""
             }
         }
     }
+
+    property string pageName:          "VCard"
 
     property string accountId:         ""
 

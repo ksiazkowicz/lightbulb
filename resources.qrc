@@ -87,6 +87,7 @@
         <file alias="Accounts">qml/Pages/AccountsPage.qml</file>
         <file alias="Events">qml/Pages/Events.qml</file>
         <file alias="Migration">qml/Pages/MigrationPage.qml</file>
+        <file alias="Conversation">qml/Pages/ConversationPage.qml</file>
     </qresource>
     <qresource prefix="/toolbar">
         <file alias="close">images/toolbar/toolbar-close.svg</file>

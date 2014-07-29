@@ -56,6 +56,14 @@ Menu {
             }
         }
         MenuItem {
+            text: qsTr("Sliced bread")
+            platformInverted: main.platformInverted
+            onClicked: {
+                pageStack.push("qrc:/pages/Conversation",{"accountId": accountId,"contactName":contactName,"contactJid":contactJid,"isInArchiveMode":false})
+            }
+        }
+
+        MenuItem {
             text: qsTr("Rename")
             platformInverted: main.platformInverted
             onClicked: dialog.createWithProperties("qrc:/dialogs/Contact/Rename",{"accountId": accountId,"contactName": contactName, "contactJid": contactJid})

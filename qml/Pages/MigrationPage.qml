@@ -29,6 +29,7 @@ Page {
     id: migraPage
 
     property string settingsVersion: migration.getData("main","last_used_rel")
+    property string pageName: "Migration"
 
     tools: ToolBarLayout {
         id: toolBarLayout
@@ -43,8 +44,6 @@ Page {
         }
 
     }
-
-    Component.onCompleted: statusBarText.text = qsTr("Migration")
 
     // Code for destroying the page after pop
     onStatusChanged: if (migraPage.status === PageStatus.Inactive) migraPage.destroy()

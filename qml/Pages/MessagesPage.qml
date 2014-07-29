@@ -1,28 +1,3 @@
-/********************************************************************
-
-qml/Pages/MessagesPage.qml
--- contains conversation view, interfaces with XmppConnectivity to
--- display and send messages
-
-Copyright (c) 2013-2014 Maciej Janiszewski
-
-This file is part of Lightbulb.
-
-Lightbulb is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-*********************************************************************/
-
 import QtQuick 1.1
 import lightbulb 1.0
 import com.nokia.symbian 1.1
@@ -34,6 +9,7 @@ Page {
     property bool isTyping: false
     property bool emoticonsDisabled: settings.gBool("behavior","disableEmoticons")
     property string contactName: ""
+    property string pageName: contactName
 
     Component.onCompleted: {
         vars.resourceJid = ""
@@ -41,8 +17,6 @@ Page {
         xmppConnectivity.page = 1
         console.log( xmppConnectivity.chatJid )
         xmppConnectivity.openChat( xmppConnectivity.currentAccount,xmppConnectivity.chatJid )
-
-        statusBarText.text = contactName
 
         if( xmppConnectivity.client.bareJidLastMsg == xmppConnectivity.chatJid ) vars.resourceJid = xmppConnectivity.client.resourceLastMsg
 
@@ -122,11 +96,19 @@ Page {
                 Text {
                       id: message
                       anchors { top: parent.top; left: parent.left; leftMargin: 5; right: parent.right; rightMargin: 5 }
-                      text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (contactName === "" ? xmppConnectivity.chatJid : contactName) ) + ":</font> " + (emoticonsDisabled ? msgText : emoticon.parseEmoticons(msgText))
+                      property string messageText: msgText.replace(String.fromCharCode(10),"<br/>").replace(String.fromCharCode(11),"<br />").replace(String.fromCharCode(12),"<br />").replace(String.fromCharCode(13),"<br />")
+                      text: "<font color='#009FEB'>" + ( isMine == true ? qsTr("Me") : (contactName === "" ? xmppConnectivity.chatJid : contactName) ) + ":</font> " + (emoticonsDisabled ? messageText : emoticon.parseEmoticons(messageText))
                       color: isMine == true ? "white" : "black"
                       font.pixelSize: 16
                       wrapMode: Text.Wrap
                       onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
+
+                      Component.onCompleted: {
+                          console.log("nieeee")
+                          console.log(messageText)
+                          console.log("to smutne że")
+                          console.log(msgText)
+                      }
                 }
                 Text {
                       id: time
@@ -152,7 +134,7 @@ Page {
     } //Component
     /**-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**/
     function sendMessage() {
-        var ret = xmppConnectivity.client.sendMyMessage( xmppConnectivity.chatJid, vars.resourceJid, txtMessage.text )
+        var ret = xmppConnectivity.sendAMessage( xmppConnectivity.currentAccount, xmppConnectivity.chatJid, vars.resourceJid, txtMessage.text, 1 )
         if( ret ) {
               txtMessage.text = ""
               xmppConnectivity.client.typingStop( xmppConnectivity.chatJid, vars.resourceJid )
@@ -236,27 +218,6 @@ Page {
               }
               Component.onCompleted: text = xmppConnectivity.getPreservedMsg(xmppConnectivity.chatJid);
     }
-    Item {
-        id: splitViewInput
-
-        anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
-
-        Behavior on height { PropertyAnimation { duration: 1 } }
-
-        states: [
-            State {
-                name: "Visible"; when: inputContext.visible
-                PropertyChanges { target: splitViewInput; height: inputContext.height-toolBar.height }
-                PropertyChanges { target: vars; inputInProgress: true }
-            },
-
-            State {
-                name: "Hidden"; when: !inputContext.visible
-                PropertyChanges { target: splitViewInput; }
-                PropertyChanges { target: vars; inputInProgress: false }
-            }
-        ]
-    }
 
     /********************************( Toolbar )************************************/
     ToolBarLayout {
@@ -270,7 +231,6 @@ Page {
                 if (isTyping) xmppConnectivity.client.typingStop( xmppConnectivity.chatJid, vars.resourceJid )
                 pageStack.pop()
                 vars.isChatInProgress = false
-                statusBarText.text = "Events"
                 xmppConnectivity.resetUnreadMessages( xmppConnectivity.chatJid )
                 xmppConnectivity.chatJid = ""
             }

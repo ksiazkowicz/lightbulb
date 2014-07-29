@@ -42,7 +42,7 @@ Page {
         }
     }
 
-    Component.onCompleted: statusBarText.text = "Contacts"
+    property string pageName: "Contacts"
 
     /*******************************************************************************/
 
@@ -218,35 +218,11 @@ Page {
         }
     }
 
-    Item {
-        id: splitViewInput
-
-        anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
-
-        Behavior on height { PropertyAnimation { duration: 1 } }
-
-        states: [
-            State {
-                name: "Visible"; when: inputContext.visible
-                PropertyChanges { target: splitViewInput; height: inputContext.height - toolBarLayout.height }
-                PropertyChanges { target: vars; inputInProgress: true }
-            },
-
-            State {
-                name: "Hidden"; when: !inputContext.visible
-                PropertyChanges { target: splitViewInput; }
-                PropertyChanges { target: vars; inputInProgress: false }
-            }
-        ]
-    }
-
     tools: ToolBarLayout {
+        id: toolBarLayout
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
-            onClicked: {
-                statusBarText.text = "Events"
-                main.pageStack.pop()
-            }
+            onClicked: pageStack.pop()
         }
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-add_inverse" : "toolbar-add"
@@ -260,9 +236,7 @@ Page {
                             xmppConnectivity.offlineContactsVisibility = !vars.hideOffline;
                     rosterSearch.height = 0;
                     rosterSearch.text = "";
-                } else {
-                    rosterSearch.height = 50;
-                }
+                } else rosterSearch.height = 50;
             }
         }
     }

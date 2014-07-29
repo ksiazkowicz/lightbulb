@@ -56,13 +56,11 @@ Item {
         }
         onXmppTypingChanged: {
             console.log( "XmppConnectivity::onXmppTypingChanged(" + accountId + "," + bareJid + "," + isTyping + ")" )
-            if (settings.gBool("notifications", "notifyTyping") == true &&
-               (xmppConnectivity.chatJid !== bareJid || !vars.isActive) &&
-               (currentAccount == accountId && client.myBareJid !== bareJid)) {
+            if (settings.gBool("notifications", "notifyTyping") == true) {
                 if (isTyping)
-                    avkon.showPopup(getPropertyByJid(accountId,"name",bareJid),"is typing a message...")
+                    avkon.showPopup(xmppConnectivity.getPropertyByJid(accountId,"name",bareJid),"is typing a message...")
                 else
-                    avkon.showPopup(getPropertyByJid(accountId,"name",bareJid),"stopped typing.")
+                    avkon.showPopup(xmppConnectivity.getPropertyByJid(accountId,"name",bareJid),"stopped typing.")
             }
         }
         onXmppStatusChanged: {

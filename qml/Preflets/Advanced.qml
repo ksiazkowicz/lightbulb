@@ -32,7 +32,7 @@ Item {
         id: column
         spacing: platformStyle.paddingSmall
         anchors.horizontalCenter: parent.horizontalCenter;
-        width: parent.width
+        width: parent.width - 2*platformStyle.paddingSmall
 
         CheckBox {
             id: disableChatIcon

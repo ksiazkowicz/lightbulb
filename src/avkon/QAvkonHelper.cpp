@@ -75,9 +75,7 @@ QAvkonHelper::QAvkonHelper(QDeclarativeView *view, QObject *parent) :
 void QAvkonHelper::showChatIcon() {
     if (!chatIconStatus) {
         RProperty iProperty;
-        //to enable it:
         iProperty.Set(KPSUidCoreApplicationUIs, KCoreAppUIsUipInd, ECoreAppUIsShow);
-        qDebug() << "QAvkonHelper::showChatIcon()";
         chatIconStatus = true;
     }
 }
@@ -87,7 +85,6 @@ void QAvkonHelper::hideChatIcon() {
         RProperty iProperty;
         //to disable it:
         iProperty.Set( KPSUidCoreApplicationUIs, KCoreAppUIsUipInd, ECoreAppUIsDoNotShow);
-        qDebug() << "QAvkonHelper::hideChatIcon()";
         chatIconStatus = false;
     }
 }

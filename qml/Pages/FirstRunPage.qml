@@ -29,6 +29,7 @@ import com.nokia.extras 1.1
 Page {
     id: preferencesPage
     property int selectedIndex: 0
+    property string pageName: "First Run"
     tools: ToolBarLayout {
         id: toolBarLayout
         ToolButton {
@@ -183,8 +184,6 @@ Page {
             anchors.fill: parent
         }
     }
-
-    Component.onCompleted: statusBarText.text = qsTr("First Run")
 
     // Code for destroying the page after pop
     onStatusChanged: if (preferencesPage.status === PageStatus.Inactive) preferencesPage.destroy()

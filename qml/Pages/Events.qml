@@ -5,12 +5,14 @@ import "../Components"
 
 Page {
     id: mainPage
-    Component.onCompleted: statusBarText.text = "Events"
+    property string pageName: "Events"
 
     Connections {
         target: xmppConnectivity
-        onNotifyMsgReceived:
-            eventListModel.appendEvent(xmppConnectivity.getAvatarByJid(jid),true,parseInt(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))+1,body,name,true,"message")
+        onNotifyMsgReceived: {
+            if (xmppConnectivity.chatJid !== jid)
+                eventListModel.appendEvent(xmppConnectivity.getAvatarByJid(jid),true,parseInt(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))+1,body,name,true,"message")
+        }
         onChatJidChanged:
             eventListModel.findAndRemove(xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,"name",xmppConnectivity.chatJid),"message")
         onPersonalityChanged: {
@@ -81,6 +83,7 @@ Page {
                     width: 64
                     height: 64
                     clip: true
+                    smooth: true
                     source: xmppConnectivity.getAvatarByJid(settings.gStr("behavior","personality"))
 
                     Image {

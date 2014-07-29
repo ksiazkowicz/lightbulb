@@ -197,11 +197,19 @@ void XmppConnectivity::openChat(QString accountId, QString bareJid) {
     qDebug() << "XmppConnectivity::openChat(): appending"<< qPrintable(bareJid) << "from account" << accountId << "to chats list.";
     emit chatsChanged();
   }
-  if (!cachedMessages->contains(bareJid)) cachedMessages->insert(bareJid,new MsgListModel());
+
+  // send "Active" chat state
+  clients->value(accountId)->sendMessage(bareJid,"","",1);
+
+  if (!cachedMessages->contains(bareJid))
+    cachedMessages->insert(bareJid,new MsgListModel());
   addChat(accountId,bareJid);
 }
 
 void XmppConnectivity::closeChat(QString accId, QString bareJid) {
+  // send "Gone" chat state
+  clients->value(accId)->sendMessage(bareJid,"","",3);
+
   for (int i=0; i<chats->count(); i++) {
       ChatsItemModel *itemExists = (ChatsItemModel*)chats->getElementByID(i);
       if (itemExists->jid() == bareJid && itemExists->accountID() == accId)
@@ -346,4 +354,12 @@ void XmppConnectivity::handleXmppStatusChange (const QString accountId) {
     contacts->clearPresenceForAccount(accountId);
 
   emit xmppStatusChanged(accountId);
+}
+
+// handle messages and states
+bool XmppConnectivity::sendAMessage(QString accountId, QString recipientJid, QString recipientResource, QString body, int state) {
+  if (clients->value(accountId) == NULL)
+    return false;
+
+  return clients->value(accountId)->sendMessage(recipientJid,recipientResource,body,state);
 }

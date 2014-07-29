@@ -108,7 +108,6 @@ CommonDialog {
                         if (jid == xmppConnectivity.chatJid) {
                             vars.isChatInProgress = false
                             xmppConnectivity.chatJid = ""
-                            statusBarText.text = "Contacts"
                             pageStack.pop();
                         }
                         vars.globalUnreadCount = xmppConnectivity.getGlobalUnreadCount()

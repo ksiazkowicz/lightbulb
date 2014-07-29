@@ -222,6 +222,9 @@ public slots:
 
     Q_INVOKABLE void updateMyData(QString jid);
 
+    // handle messages and states
+    Q_INVOKABLE bool sendAMessage(QString accountId, QString recipientJid, QString recipientResource, QString body, int state);
+
 private:
     QString currentClient;
     QMap<QString,MyXmppClient*> *clients;

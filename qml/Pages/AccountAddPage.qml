@@ -30,6 +30,7 @@ Page {
 
     tools: toolBarLayout
     property string accGRID: ""
+    property string pageName: accGRID !== "" ? qsTr("Editing ") + xmppConnectivity.getAccountName(accGRID) : "New account"
 
     Component.onCompleted: {
         if (accGRID != "") {
@@ -48,9 +49,7 @@ Page {
             tiResource.text = settings.gStr(accGRID,'resource')
             if (tiName.text == "false")
                 tiName.text = "";
-
-            statusBarText.text = qsTr("Editing ") + xmppConnectivity.getAccountName(accGRID)
-        } else { statusBarText.text = qsTr("New account") }
+        }
     }
 
     // Code for destroying the page after pop
@@ -254,7 +253,6 @@ Page {
             onClicked: {
                 pageStack.replace( "qrc:/pages/Accounts" )
                 main.splitscreenY = 0
-                statusBarText.text = "Accounts"
             }
         }
 
@@ -288,9 +286,6 @@ Page {
                 if( jid=="" || pass=="" ) return
 
                 settings.setAccount( grid, name, icon, jid, pass, goonline, resource, host, port,  true )
-
-                statusBarText.text = "Contacts"
-                //settings.refresh()
                 pageStack.pop()
             }
         }

@@ -27,15 +27,13 @@ import com.nokia.symbian 1.1
 
 Page {
     id: aboutPage
+    property string pageName: "About..."
     tools: ToolBarLayout {
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
-            onClicked: { statusBarText.text = "Contacts"
-                pageStack.pop() }
+            onClicked: pageStack.pop()
         }
     }
-
-    Component.onCompleted: { statusBarText.text = qsTr("About...") } //set statusbar text to "About..."
 
     // Code for destroying the page after pop
     onStatusChanged: if (aboutPage.status === PageStatus.Inactive) aboutPage.destroy()

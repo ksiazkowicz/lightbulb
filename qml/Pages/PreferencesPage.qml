@@ -29,6 +29,7 @@ import "../Components"
 
 Page {
     id: preferencesPage
+    property string pageName: "Preferences"
     tools: ToolBarLayout {
         id: toolBarLayout
         ToolButton {
@@ -38,7 +39,6 @@ Page {
                     avkon.restartApp();
                 } else pageStack.pop();
                 vars.isBlinkingOverrideEnabled = false;
-                statusBarText.text = "Contacts"
             }
         }
     }
@@ -167,6 +167,4 @@ Page {
 
     // Code for destroying the page after pop
     onStatusChanged: if (preferencesPage.status === PageStatus.Inactive) preferencesPage.destroy()
-
-    Component.onCompleted: statusBarText.text = "Preferences"
 }

@@ -39,7 +39,6 @@ MyXmppClient::MyXmppClient() : QObject(0) {
     m_status = Offline;
     m_keepAlive = 60;
 
-
     xmppClient->versionManager().setClientName("Lightbulb");
     xmppClient->versionManager().setClientVersion( MyXmppClient::myVersion );
 
@@ -157,76 +156,31 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
       }
 }
 
-// ---------- Typing notifications (broken) --------------------------------------------------------------------------------------
-
-/* it sends information about typing : typing is started */
-void MyXmppClient::typingStart(QString bareJid, QString resource) {
-    qDebug() << bareJid << " " << "start typing...";
-    QXmppMessage xmppMsg;
-
-    QString jid_to = bareJid;
-    if( resource == "" ) jid_to += "/resource"; else jid_to += "/" + resource;
-    xmppMsg.setTo( jid_to );
-
-    QString jid_from = m_myjid + "/" + xmppClient->configuration().resource();
-    xmppMsg.setFrom( jid_from );
-
-    xmppMsg.setReceiptRequested( false );
-
-    QDateTime currTime = QDateTime::currentDateTime();
-    xmppMsg.setStamp( currTime );
-
-    xmppMsg.setState( QXmppMessage::Composing );
-
-    xmppClient->sendPacket( xmppMsg );
-}
-
-/* it sends information about typing : typing is stoped */
-void MyXmppClient::typingStop(QString bareJid, QString resource) {
-    qDebug() << bareJid << " " << "stop typing...";
-    QXmppMessage xmppMsg;
-
-    QString jid_to = bareJid;
-    if( resource == "" ) jid_to += "/resource"; else jid_to += "/" + resource;
-    xmppMsg.setTo( jid_to );
-
-    QString jid_from = m_myjid + "/" + xmppClient->configuration().resource();
-    xmppMsg.setFrom( jid_from );
-
-    xmppMsg.setReceiptRequested( false );
-
-    QDateTime currTime = QDateTime::currentDateTime();
-    xmppMsg.setStamp( currTime );
-
-    xmppMsg.setState( QXmppMessage::Paused );
-
-    xmppClient->sendPacket( xmppMsg );
-}
-
 // ---------- handling messages (receiving/sending) ------------------------------------------------------------------------------
 
-bool MyXmppClient::sendMyMessage(QString bareJid, QString resource, QString msgBody) //Q_INVOKABLE
-{
-    if (msgBody == "" || m_stateConnect != Connected) return false; // if message is empty or user not connected - BREAK
+bool MyXmppClient::sendMessage(QString bareJid, QString resource, QString msgBody, int chatState) {
+    if (m_stateConnect != Connected)
+      return false; // if user not connected - BREAK
 
     QXmppMessage xmppMsg;
 
-    QString jid_from = bareJid;
-    if( resource == "" ) jid_from += "/resource"; else jid_from += "/" + resource;
+    if (resource == "")
+      resource = "default";
 
-    xmppMsg.setTo( jid_from );
-    QString jid_to = m_myjid + "/" + xmppClient->configuration().resource();
-    xmppMsg.setFrom( jid_to );
+    xmppMsg.setTo( bareJid + "/" + resource );
+    xmppMsg.setFrom( m_myjid + "/" + xmppClient->configuration().resource() );
 
-    xmppMsg.setBody( msgBody );
+    QDateTime currTime = QDateTime::currentDateTime();
+    xmppMsg.setStamp( currTime );
 
-    xmppMsg.setState( QXmppMessage::Active );
+    if (msgBody != "")
+      xmppMsg.setBody(msgBody);
 
+    xmppMsg.setState((QXmppMessage::State)chatState);
     xmppClient->sendPacket( xmppMsg );
 
-    this->messageReceivedSlot( xmppMsg );
-
-    emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.to()),msgBody,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),1);
+    if (msgBody != "")
+      emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.to()),msgBody,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),1);
 
     return true;
 }
@@ -241,20 +195,18 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
     else if( xmppMsg.state() == QXmppMessage::Gone ) qDebug() << "Msg state is QXmppMessage::Gone";
     else if( xmppMsg.state() == QXmppMessage::Composing ) {
         if (bareJid_from != "") {
-            m_flTyping = true;
             emit typingChanged(m_accountId,bareJid_from, true);
             qDebug() << bareJid_from << " is composing.";
         }
     }
     else if( xmppMsg.state() == QXmppMessage::Paused ) {
         if (bareJid_from != "") {
-            m_flTyping = false;
             emit typingChanged(m_accountId,bareJid_from, false);
             qDebug() << bareJid_from << " paused.";
         }
     } else {
-        if( xmppMsg.isAttentionRequested() )
-        {
+        if (xmppMsg.isAttentionRequested()) {
+            qDebug() << "brick";
             //qDebug() << "ZZZ: attentionRequest !!! from:" <<xmppMsg.from();
             //msgWrapper->attention( bareJid_from, false );
         }

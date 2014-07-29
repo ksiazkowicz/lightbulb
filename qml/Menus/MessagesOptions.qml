@@ -50,7 +50,6 @@ Menu {
                 pageStack.pop()
                 vars.isChatInProgress = false
                 xmppConnectivity.closeChat(xmppConnectivity.chatJid )
-                statusBarText.text = "Contacts"
                 xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.chatJid )
                 xmppConnectivity.chatJid = ""
             }
