@@ -38,8 +38,7 @@ Page {
         - handle unread and read messages
         - handle copying messages to clipboard
         - handle switching between archive and chat mode
-        - handle actually getting some data
-        - handle emoticons
+        - handle notifications
         - ...
 
       ****************************************/
@@ -53,15 +52,119 @@ Page {
     property bool   isInArchiveMode: false
     property bool   isTyping:        false
 
-    Button {
-        text: "sjdklasjd"
-        onClicked: isInArchiveMode = !isInArchiveMode
+    ListView {
+        id: listViewMessages
+        interactive: true
+        anchors { left: parent.left; right: parent.right; bottom: msgInputField.top; top: parent.top }
+        clip: true
+        model: xmppConnectivity.cachedMessages
+
+        delegate: Component {
+            Item {
+                id: wrapper
+                height: triangleTop.height + bubbleTop.height/2 + message.height + bubbleBottom.height/2 + triangleBottom.height
+
+                property int marginRight: isMine == true ? platformStyle.paddingLarge*3 : platformStyle.paddingSmall
+                property int marginLeft: isMine == true ? platformStyle.paddingSmall : platformStyle.paddingLarge*3
+
+                anchors.horizontalCenter: parent.horizontalCenter
+                Image {
+                    id: triangleTop
+                    anchors { top: parent.top; right: parent.right; rightMargin: platformStyle.paddingMedium*2 }
+                    source: isMine == true ? "" : "qrc:/images/bubble_incTriangle.png"
+                    width: platformStyle.paddingLarge
+                    height: isMine == true ? 0 : platformStyle.paddingLarge
+                }
+                Rectangle {
+                    id: bubbleTop
+                    anchors { top: triangleTop.bottom;
+                              left: parent.left;
+                              right: parent.right;
+                              rightMargin: wrapper.marginRight
+                              leftMargin: wrapper.marginLeft
+                    }
+                    height: 20
+                    gradient: Gradient {
+                        GradientStop { position: 0.0; color: isMine == true ? "#6f6f74" : "#f2f1f4" }
+                        GradientStop { position: 0.5; color: isMine == true ? "#56565b" : "#eae9ed" }
+                        GradientStop { position: 1.0; color: isMine == true ? "#56565b" : "#eae9ed" }
+                    }
+
+                    radius: 8
+                }
+                Rectangle {
+                    id: bubbleBottom
+                    anchors { bottom: triangleBottom.top;
+                        left: parent.left;
+                        right: parent.right;
+                        rightMargin: wrapper.marginRight
+                        leftMargin: wrapper.marginLeft
+                    }
+                    height: 20
+                    gradient: Gradient {
+                        GradientStop { position: 0.0; color: isMine == true ? "#56565b" : "#e6e6eb" }
+                        GradientStop { position: 0.5; color: isMine == true ? "#56565b" : "#e6e6eb" }
+                        GradientStop { position: 1.0; color: isMine == true ? "#46464b" : "#b9b8bd" }
+                    }
+
+                    radius: 8
+                    smooth: true
+                }
+                Rectangle {
+                    id: bubbleCenter
+                    anchors { fill: wrapper; rightMargin: wrapper.marginRight; leftMargin: wrapper.marginLeft; topMargin: triangleTop.height+10; bottomMargin: triangleBottom.height+10 }
+                    color: isMine == true ? "#56565b" : "#e6e6eb"
+                    Text {
+                          id: message
+                          anchors { top: parent.top; left: parent.left; leftMargin: platformStyle.paddingSmall; right: parent.right; rightMargin: platformStyle.paddingSmall }
+                          property string messageText: vars.areEmoticonsDisabled ? msgText : emoticon.parseEmoticons(msgText)
+                          property string date: dateTime.substr(0,8) == Qt.formatDateTime(new Date(), "dd-MM-yy") ? dateTime.substr(9,5) : dateTime
+                          property string name: isMine == true ? qsTr("Me") : (contactName === "" ? xmppConnectivity.chatJid : contactName)
+
+                          text: "<font color='#009FEB'>" + name + ":</font> " + messageText + "<div align='right' style='color: \"#999999\"'>"+ date + "</div>"
+                          color: isMine == true ? platformStyle.colorNormalLight : platformStyle.colorNormalDark
+                          font.pixelSize: platformStyle.fontSizeSmall
+                          wrapMode: Text.WordWrap
+                          onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
+                    }
+                }
+
+                Image {
+                    id: triangleBottom
+                    anchors { bottom: parent.bottom;
+                        left: parent.left;
+                        leftMargin: platformStyle.paddingMedium*2
+                    }
+                    source: isMine == true ? "qrc:/images/bubble_outTriangle.png" : ""
+                    width: platformStyle.paddingLarge
+                    height: isMine == true ? platformStyle.paddingLarge : 0
+                }
+                width: listViewMessages.width - 10
+            }
+        } //Component
+
+        spacing: 5
+        onHeightChanged: contentY = contentHeight;
+        onContentHeightChanged: goToEnd()
+
+        function goToEnd() {
+            anim.from = contentY;
+            positionViewAtEnd();
+            var destination = contentY;
+            anim.to = destination
+            anim.running = true;
+        }
+
+        NumberAnimation { id: anim; target: listViewMessages; property: "contentY"; duration: 500 }
     }
 
     Component.onCompleted: {
         // sending a chat state if not in archive mode
         if (!isInArchiveMode)
             xmppConnectivity.sendAMessage(accountId,contactJid,contactResource,"",1);
+
+        // get messages for jid
+        xmppConnectivity.chatJid = contactJid
     }
 
     function sendMessage() {
@@ -92,7 +195,7 @@ Page {
     TextArea {
         id: msgInputField
         anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
-        placeholderText: qsTr( "Tap here to enter message..." )
+        placeholderText: qsTr( "Tap here to enter a message..." )
         visible: !isInArchiveMode
         enabled: visible
 
@@ -116,13 +219,7 @@ Page {
     }
 
     // toolbar
-    tools: isInArchiveMode ? archiveToolBar : chatToolBar
-
-    ToolBarLayout {
-        id: archiveToolBar // todo todo todo
-    }
-    ToolBarLayout {
-        id: chatToolBar
+    tools: ToolBarLayout {
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
@@ -184,6 +281,59 @@ Page {
         }
     }
 
+    /*tools: ToolBarLayout {
+            ToolButton {
+                iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
+                onClicked: {
+                    pageStack.pop("qrc:/pages/Messages")
+                    xmppConnectivity.chatJid = ""
+                    xmppConnectivity.page = 1
+                }
+            }
+            ButtonRow {
+                ToolButton {
+                    iconSource: main.platformInverted ? "toolbar-previous_inverse" : "toolbar-previous"
+                    enabled: xmppConnectivity.messagesCount - xmppConnectivity.page> 0
+                    opacity: enabled ? 1 : 0.2
+                    onClicked: xmppConnectivity.page++;
+                }
+                ToolButton {
+                    iconSource: main.platformInverted ? "toolbar-next_inverse" : "toolbar-next"
+                    enabled: xmppConnectivity.page > 1
+                    opacity: enabled ? 1 : 0.2
+                    onClicked: {
+                        xmppConnectivity.page--;
+                        flickable.contentY = flickable.contentHeight-flickable.height;
+                    }
+                }
+            }
+            ToolButton {
+                iconSource: main.platformInverted ? "qrc:/toolbar/chats_inverse" : "qrc:/toolbar/chats"
+                onClicked: dialog.create("qrc:/dialogs/Chats")
+                Image {
+                    source: main.platformInverted ? "qrc:/unread-mark_inverse" : "qrc:/unread-mark"
+                    smooth: true
+                    sourceSize.width: parent.width
+                    sourceSize.height: parent.width
+                    width: parent.width
+                    height: parent.width
+                    visible: vars.globalUnreadCount != 0
+                    anchors.centerIn: parent
+                 }
+                 Text {
+                    text: vars.globalUnreadCount
+                    font.pixelSize: 16
+                    anchors.centerIn: parent
+                    visible: vars.globalUnreadCount != 0
+                    z: 1
+                    color: main.platformInverted ? "white" : "black"
+                 }
+            }
+           }
+
+
     // Code for destroying the page after pop
     onStatusChanged: if (conversationPage.status === PageStatus.Inactive) conversationPage.destroy()
+}
+*/
 }

@@ -52,10 +52,11 @@ Item {
         CheckBox {
             id: disableEmoticons
             text: qsTr("Disable emoticons")
-            checked: settings.gBool("behavior","disableEmoticons")
+            checked: vars.areEmoticonsDisabled
             platformInverted: main.platformInverted
             onCheckedChanged: {
                 settings.sBool(checked,"behavior","disableEmoticons")
+                vars.areEmoticonsDisabled = checked
             }
         }
 

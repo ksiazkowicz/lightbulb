@@ -31,6 +31,12 @@ import lightbulb 1.0
 PageStackWindow {
     id: main
     property int splitscreenY:         0
+
+    Connections {
+        target: inputContext
+        onVisibleChanged: inputContext.visible ? (y = splitscreenY > 0 ? 0-splitscreenY : 0) : y = 0
+    }
+
     platformInverted:                  settings.gBool("ui","invertPlatform")
     platformSoftwareInputPanelEnabled: true
 
@@ -180,33 +186,9 @@ PageStackWindow {
              }
         }
         Connections {
-            target: main.pageStack
-            onCurrentPageChanged: {
-                statusBarText.text = pageStack.currentPage.pageName
-            }
+            target: pageStack
+            onCurrentPageChanged: statusBarText.text = pageStack.currentPage.pageName
         }
-    }
-
-    /***************( splitscreen input )***************/
-    Item {
-        id: splitViewInput
-        anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
-
-        Behavior on height { PropertyAnimation { duration: 100 } }
-
-        states: [
-            State {
-                name: "Visible"; when: inputContext.visible
-                PropertyChanges { target: splitViewInput; height: inputContext.height }
-                PropertyChanges { target: vars; inputInProgress: true }
-                PropertyChanges { target: main; y: splitscreenY > 0 ? 0-splitscreenY : 0 }
-            },
-            State {
-                name: "Hidden"; when: !inputContext.visible
-                PropertyChanges { target: splitViewInput; }
-                PropertyChanges { target: vars; inputInProgress: false }
-            }
-        ]
     }
     /***************(overlay)**********/
     /*Rectangle {

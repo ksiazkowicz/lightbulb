@@ -78,6 +78,7 @@ public:
             currentJid=value;
             emit chatJidChanged();
         }
+        emit sqlMessagesChanged();
     }
 
     /* --- diagnostics --- */

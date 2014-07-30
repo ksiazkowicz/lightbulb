@@ -28,7 +28,6 @@ Item {
     property string textColor:       main.platformInverted ? platformStyle.colorNormalDark : platformStyle.colorNormalLight
     property int                     globalUnreadCount: 0
     property int                     tempUnreadCount: 0
-    property bool                    inputInProgress: false
     property string                  lastStatus: settings.gBool("behavior", "lastStatusText") ? settings.gStr("behavior","lastStatusText") : ""
     signal                           statusChanged
     property int                     lastUsedStatus: 0
@@ -37,6 +36,7 @@ Item {
     property bool                    isChatInProgress: false
     property int                     blinkerSet: 0
     property string                  resourceJid: ""
+    property bool                    areEmoticonsDisabled: settings.gBool("behavior","disableEmoticons")
 
     property bool                    isRestartRequired: false
     property bool                    isBlinkingOverrideEnabled: false
