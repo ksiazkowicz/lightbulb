@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import QtQuick 1.1
 import com.nokia.symbian 1.1
 
-Menu {
+ContextMenu {
     id: contactMenu
     platformInverted: main.platformInverted
 
@@ -46,7 +46,7 @@ Menu {
     }
 
     // define the items in the menu and corresponding actions
-    content: MenuLayout {
+    MenuLayout {
         MenuItem {
             text: qsTr("Remove")
             platformInverted: main.platformInverted

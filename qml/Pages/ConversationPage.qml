@@ -36,7 +36,6 @@ Page {
         - add a menu
         - handle different types of messages
         - handle unread and read messages
-        - handle copying messages to clipboard
         - handle switching between archive and chat mode
         - handle notifications
         - ...
@@ -54,44 +53,45 @@ Page {
 
     ListView {
         id: listViewMessages
-        interactive: true
         anchors { left: parent.left; right: parent.right; bottom: msgInputField.top; top: parent.top }
-        clip: true
         model: xmppConnectivity.cachedMessages
 
-        delegate: Component {
-            Item {
-                id: wrapper
-                height: triangleTop.height + bubbleTop.height/2 + message.height + bubbleBottom.height/2 + triangleBottom.height
+        delegate: Item {
+            MouseArea {
+                anchors.fill: parent
+                onPressAndHold: dialog.createWithProperties("qrc:/menus/MessageContext", {"msg": msgText})
+            }
+            id: wrapper
+            height: triangleTop.height + bubbleTop.height/2 + message.height + bubbleBottom.height/2 + triangleBottom.height
 
-                property int marginRight: isMine == true ? platformStyle.paddingLarge*3 : platformStyle.paddingSmall
-                property int marginLeft: isMine == true ? platformStyle.paddingSmall : platformStyle.paddingLarge*3
+            property int marginRight: isMine == true ? platformStyle.paddingLarge*3 : platformStyle.paddingSmall
+            property int marginLeft: isMine == true ? platformStyle.paddingSmall : platformStyle.paddingLarge*3
 
-                anchors.horizontalCenter: parent.horizontalCenter
-                Image {
-                    id: triangleTop
-                    anchors { top: parent.top; right: parent.right; rightMargin: platformStyle.paddingMedium*2 }
-                    source: isMine == true ? "" : "qrc:/images/bubble_incTriangle.png"
-                    width: platformStyle.paddingLarge
-                    height: isMine == true ? 0 : platformStyle.paddingLarge
+            anchors.horizontalCenter: parent.horizontalCenter
+            Image {
+                id: triangleTop
+                anchors { top: parent.top; right: parent.right; rightMargin: platformStyle.paddingMedium*2 }
+                source: isMine == true ? "" : "qrc:/images/bubble_incTriangle.png"
+                width: platformStyle.paddingLarge
+                height: isMine == true ? 0 : platformStyle.paddingLarge
+            }
+            Rectangle {
+                id: bubbleTop
+                anchors { top: triangleTop.bottom;
+                    left: parent.left;
+                    right: parent.right;
+                    rightMargin: wrapper.marginRight
+                    leftMargin: wrapper.marginLeft
                 }
-                Rectangle {
-                    id: bubbleTop
-                    anchors { top: triangleTop.bottom;
-                              left: parent.left;
-                              right: parent.right;
-                              rightMargin: wrapper.marginRight
-                              leftMargin: wrapper.marginLeft
-                    }
-                    height: 20
-                    gradient: Gradient {
-                        GradientStop { position: 0.0; color: isMine == true ? "#6f6f74" : "#f2f1f4" }
-                        GradientStop { position: 0.5; color: isMine == true ? "#56565b" : "#eae9ed" }
-                        GradientStop { position: 1.0; color: isMine == true ? "#56565b" : "#eae9ed" }
-                    }
-
-                    radius: 8
+                height: 20
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: isMine == true ? "#6f6f74" : "#f2f1f4" }
+                    GradientStop { position: 0.5; color: isMine == true ? "#56565b" : "#eae9ed" }
+                    GradientStop { position: 1.0; color: isMine == true ? "#56565b" : "#eae9ed" }
                 }
+
+                radius: 8
+             }
                 Rectangle {
                     id: bubbleBottom
                     anchors { bottom: triangleBottom.top;
@@ -129,19 +129,18 @@ Page {
                     }
                 }
 
-                Image {
-                    id: triangleBottom
-                    anchors { bottom: parent.bottom;
-                        left: parent.left;
-                        leftMargin: platformStyle.paddingMedium*2
-                    }
-                    source: isMine == true ? "qrc:/images/bubble_outTriangle.png" : ""
-                    width: platformStyle.paddingLarge
-                    height: isMine == true ? platformStyle.paddingLarge : 0
+            Image {
+                id: triangleBottom
+                anchors { bottom: parent.bottom;
+                    left: parent.left;
+                    leftMargin: platformStyle.paddingMedium*2
                 }
-                width: listViewMessages.width - 10
+                source: isMine == true ? "qrc:/images/bubble_outTriangle.png" : ""
+                width: platformStyle.paddingLarge
+                height: isMine == true ? platformStyle.paddingLarge : 0
             }
-        } //Component
+            width: listViewMessages.width - 10
+        }
 
         spacing: 5
         onHeightChanged: contentY = contentHeight;
@@ -245,35 +244,8 @@ Page {
             onClicked: sendMessage()
         }
         ToolButton {
-            iconSource: main.platformInverted ? "qrc:/toolbar/chats_inverse" : "qrc:/toolbar/chats"
-            onClicked: {
-                xmppConnectivity.preserveMsg(contactJid,msgInputField.text)
-                xmppConnectivity.resetUnreadMessages(accountId,contactJid) //cleans unread count for this JID
-                dialog.create("qrc:/dialogs/Chats")
-            }
-            Image {
-                id: imgMarkUnread
-                source: main.platformInverted ? "qrc:/unread-mark_inverse" : "qrc:/unread-mark"
-                smooth: true
-                sourceSize.width: parent.width
-                sourceSize.height: parent.width
-                width: parent.width
-                height: parent.width
-                visible: vars.globalUnreadCount != 0
-                anchors.centerIn: parent
-            }
-            Text {
-                id: txtUnreadMsg
-                text: vars.globalUnreadCount
-                font.pixelSize: 16
-                anchors.centerIn: parent
-                visible: vars.globalUnreadCount != 0
-                z: 1
-                color: main.platformInverted ? "white" : "black"
-            }
-        }
-        ToolButton {
             iconSource: main.platformInverted ? "toolbar-menu_inverse" : "toolbar-menu"
+            enabled: false
             onClicked: {
                 /*xmppConnectivity.preserveMsg(xmppConnectivity.chatJid,txtMessage.text)
                 dialog.createWithProperties("qrc:/menus/Messages",{"contactName":contactName})*/
