@@ -89,11 +89,10 @@ CommonDialog {
                     id: maAccItem
                     anchors { left: parent.left; top: parent.top; bottom: parent.bottom; right: closeBtn.left }
                     onClicked: {
-                        if (xmppConnectivity.currentAccount != account) xmppConnectivity.currentAccount = account
                         if (index > -1 && xmppConnectivity.chatJid != jid) {
                             xmppConnectivity.chatJid = jid
                             vars.globalUnreadCount = vars.globalUnreadCount - parseInt(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))
-                            main.openChat()
+                            main.openChat(account,jid)
                         }
                         close()
                     }
@@ -106,7 +105,6 @@ CommonDialog {
                         xmppConnectivity.closeChat(account,jid)
                         xmppConnectivity.resetUnreadMessages(account,jid)
                         if (jid == xmppConnectivity.chatJid) {
-                            vars.isChatInProgress = false
                             xmppConnectivity.chatJid = ""
                             pageStack.pop();
                         }

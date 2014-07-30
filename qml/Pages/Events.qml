@@ -342,11 +342,10 @@ Page {
                 id: maAccItem
                 anchors { fill: parent }
                 onClicked: {
-                    if (xmppConnectivity.currentAccount != account) xmppConnectivity.currentAccount = account
                     if (index > -1 && xmppConnectivity.chatJid != jid) {
                         xmppConnectivity.chatJid = jid
                         vars.globalUnreadCount = vars.globalUnreadCount - parseInt(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))
-                        main.openChat()
+                        main.openChat(account,jid)
                     }
                 }
             }

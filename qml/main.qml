@@ -49,13 +49,14 @@ PageStackWindow {
         }
 
     }
-    function openChat() {
-        xmppConnectivity.resetUnreadMessages( xmppConnectivity.currentAccount, xmppConnectivity.chatJid )
+    function openChat(account,jid) {
+        xmppConnectivity.resetUnreadMessages(account,jid)
         notify.updateNotifiers()
 
         if (pageStack.depth > 1) {
-            if (!vars.isChatInProgress) pageStack.replace("qrc:/pages/Messages",{"contactName":xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,"name",xmppConnectivity.chatJid)}); else xmppConnectivity.emitQmlChat()
-        } else pageStack.push("qrc:/pages/Messages",{"contactName":xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,"name",xmppConnectivity.chatJid)})
+            pageStack.replace("qrc:/pages/Conversation",{"accountId":account,"contactName":xmppConnectivity.getPropertyByJid(account,"name",jid),"contactJid":jid,"isInArchiveMode":false})
+        } else
+            pageStack.push("qrc:/pages/Conversation",{"accountId":account,"contactName":xmppConnectivity.getPropertyByJid(account,"name",jid),"contactJid":jid,"isInArchiveMode":false})
     }
 
     Timer               {
@@ -78,7 +79,6 @@ PageStackWindow {
                 vars.isActive = true
                 blink.running = false
                 if (xmppConnectivity.chatJid != "") {
-                    vars.isChatInProgress = true
                     vars.globalUnreadCount = vars.globalUnreadCount - vars.tempUnreadCount
                 }
                 vars.tempUnreadCount = 0
@@ -87,7 +87,6 @@ PageStackWindow {
             } else {
                 vars.isActive = false
                 if ((vars.globalUnreadCount>0 || vars.isBlinkingOverrideEnabled) && settings.gBool("behavior", "wibblyWobblyTimeyWimeyStuff")) blink.running = true
-                vars.isChatInProgress = false
             }
         }
     }

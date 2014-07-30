@@ -31,8 +31,6 @@ Page {
                 else listModelResources.append( {resource:listResources[z], checked:false} )
            }
         }
-        vars.isChatInProgress = true
-        notify.updateNotifiers()
     }
     // Code for destroying the page after pop
     onStatusChanged: if (messagesPage.status === PageStatus.Inactive) messagesPage.destroy()
@@ -230,7 +228,6 @@ Page {
                 xmppConnectivity.preserveMsg(xmppConnectivity.chatJid,txtMessage.text)
                 if (isTyping) xmppConnectivity.client.typingStop( xmppConnectivity.chatJid, vars.resourceJid )
                 pageStack.pop()
-                vars.isChatInProgress = false
                 xmppConnectivity.resetUnreadMessages( xmppConnectivity.chatJid )
                 xmppConnectivity.chatJid = ""
             }

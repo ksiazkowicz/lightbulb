@@ -28,11 +28,12 @@ import QtMobility.feedback 1.1
 import lightbulb 1.0
 
 Item {
+    id: notify
     Connections {
         target: xmppConnectivity
         onNotifyMsgReceived: {
             // handle global unread count. I should have both global and local unread count later
-            if (!vars.isChatInProgress) {
+            if (!pageStack.currentPage.pageName.isAChatPage) {
                 vars.globalUnreadCount++
                 if (jid === xmppConnectivity.chatJid) vars.tempUnreadCount++
             } else if (jid !== xmppConnectivity.chatJid || !vars.isActive) vars.globalUnreadCount++
@@ -92,6 +93,12 @@ Item {
         }
     }
 
+    Connections {
+        target: vars
+        onGlobalUnreadCountChanged: {
+            notify.updateNotifiers()
+        }
+    }
 
     function getStatusNameByIndex(status) {
        if (status == XmppClient.Online) return "online"

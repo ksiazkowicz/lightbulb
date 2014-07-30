@@ -56,14 +56,6 @@ ContextMenu {
             }
         }
         MenuItem {
-            text: qsTr("Sliced bread")
-            platformInverted: main.platformInverted
-            onClicked: {
-                pageStack.push("qrc:/pages/Conversation",{"accountId": accountId,"contactName":contactName,"contactJid":contactJid,"isInArchiveMode":false})
-            }
-        }
-
-        MenuItem {
             text: qsTr("Rename")
             platformInverted: main.platformInverted
             onClicked: dialog.createWithProperties("qrc:/dialogs/Contact/Rename",{"accountId": accountId,"contactName": contactName, "contactJid": contactJid})
@@ -72,9 +64,8 @@ ContextMenu {
             text: "Archive"
             platformInverted: main.platformInverted
             onClicked: {
-                xmppConnectivity.chatJid = vars.selectedJid
                 xmppConnectivity.page = 1
-                pageStack.push("qrc:/pages/Archive",{"accountId": accountId,"contactName":contactName})
+                pageStack.push("qrc:/pages/Conversation",{"accountId": accountId,"contactName":contactName,"contactJid":contactJid,"isInArchiveMode":true})
             }
         }
 

@@ -37,7 +37,6 @@ Page {
         - handle different types of messages
         - handle unread and read messages
         - handle switching between archive and chat mode
-        - handle notifications
         - ...
 
       ****************************************/
@@ -49,14 +48,16 @@ Page {
     property string contactResource: ""
     property string accountId:       "/dev/null"
     property bool   isInArchiveMode: false
+    property bool   isAChatPage:     true
     property bool   isTyping:        false
 
     ListView {
         id: listViewMessages
         anchors { left: parent.left; right: parent.right; bottom: msgInputField.top; top: parent.top }
-        model: xmppConnectivity.cachedMessages
+        model: isInArchiveMode ? xmppConnectivity.messagesByPage : xmppConnectivity.cachedMessages
 
-        delegate: Item {
+        delegate: Component {
+            Item {
             MouseArea {
                 anchors.fill: parent
                 onPressAndHold: dialog.createWithProperties("qrc:/menus/MessageContext", {"msg": msgText})
@@ -141,6 +142,7 @@ Page {
             }
             width: listViewMessages.width - 10
         }
+        }
 
         spacing: 5
         onHeightChanged: contentY = contentHeight;
@@ -158,22 +160,29 @@ Page {
     }
 
     Component.onCompleted: {
-        // sending a chat state if not in archive mode
-        if (!isInArchiveMode)
-            xmppConnectivity.sendAMessage(accountId,contactJid,contactResource,"",1);
+        // sending a chat state meaning that chat is active if not in archive mode
+        if (!isInArchiveMode) {
+            xmppConnectivity.openChat( accountId,contactJid )
+        }
 
         // get messages for jid
         xmppConnectivity.chatJid = contactJid
     }
 
     function sendMessage() {
+        // disable chat states stuff
+        waitForInactivity.running = false
+        isTyping = false
+
+        // check if function should be called
         if (isInArchiveMode || msgInputField.text == "")
             return;
 
-        xmppConnectivity.sendAMessage(accountId,contactJid,contactResource,msgInputField.text,1);
-        waitForInactivity.running = false
-        isTyping = false
-        msgInputField.text = ""
+        var messageWasSent = xmppConnectivity.sendAMessage(accountId,contactJid,contactResource,msgInputField.text,1);
+        if (messageWasSent) {
+            msgInputField.text = ""
+            notify.notifySndVibr("MsgSent")
+        } else avkon.displayGlobalNote("Something went wrong while sending a message.",true);
     }
 
 
@@ -231,8 +240,8 @@ Page {
                 xmppConnectivity.preserveMsg(contactJid,msgInputField.text)
                 xmppConnectivity.resetUnreadMessages(accountId,contactJid)
 
-                /*vars.isChatInProgress = false
-                xmppConnectivity.chatJid = ""*/
+                // unload messages, deselect contact
+                xmppConnectivity.chatJid = ""
             }
             onPlatformPressAndHold: xmppConnectivity.closeChat(contactJid)
         }

@@ -143,7 +143,7 @@ Page {
                     vars.selectedJid = jid
                     vars.globalUnreadCount = vars.globalUnreadCount - unreadMsg
                     notify.updateNotifiers()
-                    main.pageStack.push("qrc:/pages/Messages",{"contactName":txtJid.contact})
+                    pageStack.push("qrc:/pages/Conversation",{"accountId": accountId,"contactName":txtJid.contact,"contactJid":jid,"isInArchiveMode":false})
                 }
 
                 onPressAndHold: {
