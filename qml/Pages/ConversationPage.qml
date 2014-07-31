@@ -113,7 +113,16 @@ Page {
                 }
                 Rectangle {
                     id: bubbleCenter
-                    anchors { fill: wrapper; rightMargin: wrapper.marginRight; leftMargin: wrapper.marginLeft; topMargin: triangleTop.height+10; bottomMargin: triangleBottom.height+10 }
+                    anchors {
+                        top: bubbleTop.top;
+                        topMargin: 10;
+                        rightMargin: wrapper.marginRight;
+                        leftMargin: wrapper.marginLeft;
+                        left: wrapper.left;
+                        right: wrapper.right;
+                        bottom: bubbleBottom.bottom;
+                        bottomMargin: 10
+                    }
                     color: isMine == true ? "#56565b" : "#e6e6eb"
                     Text {
                           id: message
@@ -146,7 +155,7 @@ Page {
 
         spacing: 5
         onHeightChanged: contentY = contentHeight;
-        onContentHeightChanged: goToEnd()
+        onCountChanged: goToEnd()
 
         function goToEnd() {
             anim.from = contentY;
@@ -156,7 +165,7 @@ Page {
             anim.running = true;
         }
 
-        NumberAnimation { id: anim; target: listViewMessages; property: "contentY"; duration: 500 }
+        NumberAnimation { id: anim; target: listViewMessages; property: "contentY"; duration: 100 }
     }
 
     Component.onCompleted: {

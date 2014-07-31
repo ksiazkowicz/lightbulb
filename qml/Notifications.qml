@@ -32,11 +32,8 @@ Item {
     Connections {
         target: xmppConnectivity
         onNotifyMsgReceived: {
-            // handle global unread count. I should have both global and local unread count later
-            if (!pageStack.currentPage.pageName.isAChatPage) {
-                vars.globalUnreadCount++
-                if (jid === xmppConnectivity.chatJid) vars.tempUnreadCount++
-            } else if (jid !== xmppConnectivity.chatJid || !vars.isActive) vars.globalUnreadCount++
+            if (!pageStack.currentPage.isAChatPage)
+                vars.globalUnreadCount++;
 
             // show discreet popup if enabled
             if (settings.gBool("notifications", "usePopupRecv") && (xmppConnectivity.chatJid !== jid || !vars.isActive)) {

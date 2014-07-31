@@ -33,7 +33,6 @@ Item {
     property int                     lastUsedStatus: 0
     signal                           statusTextChanged
     property bool                    isActive: true
-    property bool                    isChatInProgress: false
     property int                     blinkerSet: 0
     property string                  resourceJid: ""
     property bool                    areEmoticonsDisabled: settings.gBool("behavior","disableEmoticons")

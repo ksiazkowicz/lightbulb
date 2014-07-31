@@ -50,6 +50,11 @@ PageStackWindow {
 
     }
     function openChat(account,jid) {
+        console.log("updating globalUnreadCount")
+        console.log(vars.globalUnreadCount)
+        console.log(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))
+        vars.globalUnreadCount = vars.globalUnreadCount - parseInt(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))
+        console.log(vars.globalUnreadCount)
         xmppConnectivity.resetUnreadMessages(account,jid)
         notify.updateNotifiers()
 

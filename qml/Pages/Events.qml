@@ -344,7 +344,6 @@ Page {
                 onClicked: {
                     if (index > -1 && xmppConnectivity.chatJid != jid) {
                         xmppConnectivity.chatJid = jid
-                        vars.globalUnreadCount = vars.globalUnreadCount - parseInt(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))
                         main.openChat(account,jid)
                     }
                 }
