@@ -150,11 +150,11 @@ Page {
                 height: isMine == true ? platformStyle.paddingLarge : 0
             }
             width: listViewMessages.width - 10
-        }
+            }
         }
 
         spacing: 5
-        onHeightChanged: contentY = contentHeight;
+        onHeightChanged: positionViewAtEnd();
         onCountChanged: goToEnd()
 
         function goToEnd() {
