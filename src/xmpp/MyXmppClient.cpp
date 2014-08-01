@@ -176,19 +176,8 @@ bool MyXmppClient::sendMessage(QString bareJid, QString resource, QString msgBod
     if (msgType == QXmppMessage::GroupChat) {
         qDebug() << "muc message lolololo";
         // finding a room
-        QXmppMucRoom* room;
-        QList<QXmppMucRoom*> rooms = mucManager->rooms();
-        bool roomFound = false;
-        for (int i=0; i<rooms.count(); i++) {
-            room = rooms.at(i);
-            if (room->jid() == bareJid) {
-              roomFound = true;
-              break;
-            }
-          }
-
-        // room found, try to send a message
-        if (roomFound)
+        QXmppMucRoom* room = mucRooms.value(bareJid);
+        if (room != NULL)
             return room->sendMessage(msgBody);
         else
             return false;
@@ -242,7 +231,12 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         m_bareJidLastMessage = getBareJidByJid(xmppMsg.from());
         m_resourceLastMessage = getResourceByJid(xmppMsg.from());
 
-        emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.from()),xmppMsg.body(),QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0,xmppMsg.type(),getResourceByJid(xmppMsg.from()));
+        int isMine = 0;
+        if (xmppMsg.type() == QXmppMessage::GroupChat)
+            if (getMUCNick(bareJid_from) == getResourceByJid(xmppMsg.from()))
+                isMine = 1;
+
+        emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.from()),xmppMsg.body(),QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),isMine,xmppMsg.type(),getResourceByJid(xmppMsg.from()));
     }
 }
 
@@ -478,6 +472,13 @@ void MyXmppClient::joinMUCRoom(QString room, QString nick) {
   QXmppMucRoom *mucRoom = mucManager->addRoom(room);
   mucRoom->setNickName(nick);
   mucRoom->join();
+
+  mucRooms.insert(room,mucRoom);
+}
+
+QString MyXmppClient::getMUCNick(QString room) {
+  QXmppMucRoom *mucRoom = mucRooms.value(room);
+  return mucRoom->nickName();
 }
 
 // ------------------------//

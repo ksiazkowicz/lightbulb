@@ -208,7 +208,7 @@ Page {
         onTriggered: {
             if (isTyping) {
                 isTyping = false;
-                xmppConnectivity.sendAMessage(accountId,contactJid,contactResource,"",5)
+                xmppConnectivity.sendAMessage(accountId,contactJid,contactResource,"",5,2)
             }
         }
     }
@@ -225,7 +225,7 @@ Page {
             if (text.length > 0 && !isTyping) {
                 isTyping = true
                 // sending a chat state
-                xmppConnectivity.sendAMessage(accountId,contactJid,contactResource,"",4)
+                xmppConnectivity.sendAMessage(accountId,contactJid,contactResource,"",4,2)
 
                 // wait for inactivity
                 waitForInactivity.running = false

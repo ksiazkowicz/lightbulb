@@ -38,6 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <QObject>
 #include <QList>
+#include <QMap>
 #include <QVariant>
 #include <QCryptographicHash>
 #include <QFile>
@@ -169,7 +170,8 @@ public :
 
     void goOnline(QString lastStatus) { this->setMyPresence(Online,lastStatus); }
 
-    Q_INVOKABLE void joinMUCRoom(QString room, QString nick);
+    void joinMUCRoom(QString room, QString nick);
+    QString getMUCNick(QString room);
 	
 signals:
     void versionChanged();
@@ -243,6 +245,8 @@ private:
     QString getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const;
 
     int m_keepAlive;
+
+    QMap<QString,QXmppMucRoom*> mucRooms;
 };
 
 #endif

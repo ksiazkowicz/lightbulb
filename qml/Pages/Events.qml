@@ -282,10 +282,6 @@ Page {
                 model: xmppConnectivity.chats
                 delegate: wrapper
             }
-            Button {
-                text: "boom!"
-                onClicked: xmppConnectivity.client.joinMUCRoom("kpe@conference.jabbi.pl","MaybeItSortaCanIntoMUC")
-            }
         }
     }
 
