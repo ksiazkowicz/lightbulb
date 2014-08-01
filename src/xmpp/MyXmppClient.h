@@ -55,7 +55,6 @@ class MyXmppClient : public QObject
     Q_OBJECT
     Q_DISABLE_COPY( MyXmppClient )
 
-    Q_PROPERTY( QString version READ getVersion NOTIFY versionChanged )
     Q_PROPERTY( QString bareJidLastMsg READ getJidLastMsg )
     Q_PROPERTY( QString resourceLastMsg READ getResourceLastMsg )
     Q_PROPERTY( StateConnect stateConnect READ getStateConnect NOTIFY connectingChanged )
@@ -123,10 +122,6 @@ public :
     Q_INVOKABLE bool unsubscribe (const QString bareJid) { return rosterManager->unsubscribe(bareJid); }
     Q_INVOKABLE bool acceptSubscribtion (const QString bareJid) { return rosterManager->acceptSubscription(bareJid); }
     Q_INVOKABLE bool rejectSubscribtion (const QString bareJid) { return rosterManager->refuseSubscription(bareJid); }
-
-    /*--- version ---*/
-    static QString myVersion;
-    QString getVersion() const { return MyXmppClient::myVersion; }
 	
     /*--- chat options ---*/
     Q_INVOKABLE void attentionSend( QString bareJid, QString resource = "" );

@@ -87,6 +87,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
 
     EmoticonParser parser;
     viewer.rootContext()->setContextProperty("emoticon",&parser);
+    viewer.rootContext()->setContextProperty("appVersion",VERSION);
 
     viewer.setAttribute(Qt::WA_OpaquePaintEvent);
     viewer.setAttribute(Qt::WA_NoSystemBackground);

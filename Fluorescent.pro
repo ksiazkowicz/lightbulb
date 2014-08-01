@@ -23,6 +23,7 @@
 QT += declarative network sql
 
 VERSION = 0.4
+DEFINES += VERSION=\"$$VERSION\"
 
 symbian {
     TARGET.UID3 = 0xE00AC666

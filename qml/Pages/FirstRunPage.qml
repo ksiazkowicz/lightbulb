@@ -135,7 +135,7 @@ Page {
 
     function setDefaultSettings() {
         settings.sBool(true,"main","not_first_run")
-        settings.sStr(xmppConnectivity.client.version,"main","last_used_rel")
+        settings.sStr(appVersion,"main","last_used_rel")
 
         settings.sBool(true,"behavior","reconnectOnError")
         settings.sInt(60,"behavior","keepAliveInterval")

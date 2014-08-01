@@ -80,7 +80,7 @@ Item {
                         break;
                     case 1:
                         notify.notifySndVibr("NotifyConn")
-                        avkon.showPopup(xmppConnectivity.getAccountName(accountId),"Status changed to " + notify.getStatusNameByIndex(xmppConnectivity.client.status));
+                        avkon.showPopup(xmppConnectivity.getAccountName(accountId),"Status changed to " + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accountId)));
                         break;
                     case 2:
                         avkon.showPopup(xmppConnectivity.getAccountName(accountId),"Connecting...");

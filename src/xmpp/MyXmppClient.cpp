@@ -27,8 +27,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "DataPublisher.h"
 #include "QSettings.h"
 
-QString MyXmppClient::myVersion = "0.4";
-
 MyXmppClient::MyXmppClient() : QObject(0) {
     xmppClient = new QXmppClient( this );
     QObject::connect( xmppClient, SIGNAL(stateChanged(QXmppClient::State)), this, SLOT(clientStateChanged(QXmppClient::State)) );
@@ -40,7 +38,7 @@ MyXmppClient::MyXmppClient() : QObject(0) {
     m_keepAlive = 60;
 
     xmppClient->versionManager().setClientName("Lightbulb");
-    xmppClient->versionManager().setClientVersion( MyXmppClient::myVersion );
+    xmppClient->versionManager().setClientVersion( VERSION );
 
     rosterManager = 0;
     QSettings temp(QDir::currentPath() + QDir::separator() + "Settings.conf",QSettings::NativeFormat);

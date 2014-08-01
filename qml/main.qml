@@ -40,7 +40,8 @@ PageStackWindow {
     platformInverted:                  settings.gBool("ui","invertPlatform")
     platformSoftwareInputPanelEnabled: true
 
-    Globals { id: vars
+    Globals {
+        id: vars
         onAwaitingContextChanged: {
             if (!awaitingContext && dialogQmlFile != "") {
                 dialog.createWithProperties(dialogQmlFile,{"accountId": xmppConnectivity.currentAccount})
@@ -133,7 +134,7 @@ PageStackWindow {
             } else
                 pageStack.push("qrc:/pages/FirstRun")
         } else {
-            settings.sStr(xmppConnectivity.client.version,"main","last_used_rel")
+            settings.sStr(appVersion,"main","last_used_rel")
 
             if (!settings.gBool("behavior","isIAPSet"))
                 dialog.create("qrc:/dialogs/AccessPointSelector")
