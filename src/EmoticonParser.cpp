@@ -80,7 +80,7 @@ QString EmoticonParser::parseEmoticons(QString string) {
 
   output.replace(" B) ", begin + "cool" + end);
   output.replace(" B-| ", begin + "cool" + end);
-   output.replace(" B| ", begin + "cool" + end);
+  output.replace(" B| ", begin + "cool" + end);
 
   output.replace(" %) ", begin + "confused" + end);
   output.replace(" o.O ", begin + "confused" + end);
