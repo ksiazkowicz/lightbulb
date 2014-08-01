@@ -40,7 +40,7 @@ CommonDialog {
 
     // Code for dynamic load
     Component.onCompleted: {
-        colStatus.selectedIndex = vars.lastUsedStatus
+        selectionDialog.selectedIndex = vars.lastUsedStatus
         open();
         isCreated = true }
     property bool isCreated: false
@@ -52,7 +52,7 @@ CommonDialog {
 
             var ret = ""
 
-            switch (colStatus.selectedIndex) {
+            switch (selectionDialog.selectedIndex) {
                 case 0: ret = XmppClient.Online; break;
                 case 1: ret = XmppClient.Chat; break;
                 case 2: ret = XmppClient.Away; break;
@@ -70,7 +70,7 @@ CommonDialog {
 
             xmppConnectivity.client.setMyPresence( ret, wrapperTextEdit.text )
             vars.lastStatus = wrapperTextEdit.text
-            vars.lastUsedStatus = colStatus.selectedIndex
+            vars.lastUsedStatus = selectionDialog.selectedIndex
 
             if (storeStatus) settings.sStr(wrapperTextEdit.text,"behavior","lastStatusText")
             else settings.sStr("","behavior","lastStatusText")
@@ -83,37 +83,31 @@ CommonDialog {
 
             spacing: 5
 
-            TumblerColumn {
-                id: colStatus
-
-                items: ListModel {
-                           ListElement {
-                               value: "Online"
-                           }
-                           ListElement {
-                               value: "Chatty"
-                           }
-                           ListElement {
-                               value: "Away"
-                           }
-                           ListElement {
-                               value: "Extended Away"
-                           }
-                           ListElement {
-                               value: "Do not disturb"
-                           }
-                           ListElement {
-                               value: "Offline"
-                           }
-                       }
-            }
-
-            Tumbler {
+            SelectionListItem {
+                id: statusSelection
                 platformInverted: main.platformInverted
-                id: tumbler
-                height: 150
+                subTitle: selectionDialog.selectedIndex >= 0
+                          ? selectionDialog.model.get(selectionDialog.selectedIndex).name
+                          : "Online, Chatty, Away..."
                 anchors { left: parent.left; right: parent.right }
-                columns: [ colStatus ]
+                title: "Status"
+
+                onClicked: selectionDialog.open()
+
+                SelectionDialog {
+                    id: selectionDialog
+                    titleText: "Available options"
+                    selectedIndex: -1
+                    platformInverted: main.platformInverted
+                    model: ListModel {
+                        ListElement { name: "Online" }
+                        ListElement { name: "Chatty" }
+                        ListElement { name: "Away" }
+                        ListElement { name: "Extended Away" }
+                        ListElement { name: "Do not disturb" }
+                        ListElement { name: "Offline" }
+                    }
+                }
             }
 
             TextField {

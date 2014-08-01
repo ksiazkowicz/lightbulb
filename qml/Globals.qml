@@ -27,13 +27,11 @@ import QtQuick 1.1
 Item {
     property string textColor:       main.platformInverted ? platformStyle.colorNormalDark : platformStyle.colorNormalLight
     property int                     globalUnreadCount: 0
-    property int                     tempUnreadCount: 0
     property string                  lastStatus: settings.gBool("behavior", "lastStatusText") ? settings.gStr("behavior","lastStatusText") : ""
     signal                           statusChanged
     property int                     lastUsedStatus: 0
     signal                           statusTextChanged
     property bool                    isActive: true
-    property int                     blinkerSet: 0
     property string                  resourceJid: ""
     property bool                    areEmoticonsDisabled: settings.gBool("behavior","disableEmoticons")
 

@@ -64,7 +64,7 @@ PageStackWindow {
             pageStack.push("qrc:/pages/Conversation",{"accountId":account,"contactName":xmppConnectivity.getPropertyByJid(account,"name",jid),"contactJid":jid,"isInArchiveMode":false})
     }
 
-    Timer               {
+    Timer {
         id: blink
         interval: 100
         running: true
@@ -83,12 +83,6 @@ PageStackWindow {
             if (Qt.application.active) {
                 vars.isActive = true
                 blink.running = false
-                if (xmppConnectivity.chatJid != "") {
-                    vars.globalUnreadCount = vars.globalUnreadCount - vars.tempUnreadCount
-                }
-                vars.tempUnreadCount = 0
-                if (vars.globalUnreadCount<0) vars.globalUnreadCount = 0
-                notify.updateNotifiers()
             } else {
                 vars.isActive = false
                 if ((vars.globalUnreadCount>0 || vars.isBlinkingOverrideEnabled) && settings.gBool("behavior", "wibblyWobblyTimeyWimeyStuff")) blink.running = true
@@ -125,7 +119,7 @@ PageStackWindow {
     MigrationManager    { id: migration }
 
     /************************( stuff to do when running this app )*****************************/
-    Component.onCompleted:      {
+    Component.onCompleted: {
         avkon.switchToApp = settings.gBool("behavior","linkInDiscrPopup")
 		xmppConnectivity.offlineContactsVisibility = !vars.hideOffline
         avkon.setAppHiddenState(settings.gBool("behavior","hideFromTaskMgr"));
@@ -194,21 +188,4 @@ PageStackWindow {
             onCurrentPageChanged: statusBarText.text = pageStack.currentPage.pageName
         }
     }
-    /***************(overlay)**********/
-    /*Rectangle {
-        color: main.platformInverted ? "white" : "black"
-        anchors.fill: parent
-        visible: xmppConnectivity.client.stateConnect === 2
-        opacity: 0.7
-
-        Column {
-            anchors.centerIn: parent;
-            BusyIndicator { anchors.horizontalCenter: parent.horizontalCenter; running: true }
-            Text {
-                text: "Connecting..."
-                color: vars.textColor
-                font.pixelSize: platformStyle.fontSizeSmall
-            }
-        }
-    }*/
 }
