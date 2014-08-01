@@ -32,6 +32,11 @@ Menu {
     // define the items in the menu and corresponding actions
     content: MenuLayout {
         MenuItem {
+            text: qsTr("Join a MUC")
+            platformInverted: main.platformInverted
+            onClicked: dialog.createWithContext("qrc:/dialogs/MUC/Join")
+        }
+        MenuItem {
             text: qsTr("Preferences")
             platformInverted: main.platformInverted
             onClicked: main.pageStack.push( "qrc:/pages/Preferences" )

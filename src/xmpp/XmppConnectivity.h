@@ -226,6 +226,9 @@ public slots:
     // handle messages and states
     Q_INVOKABLE bool sendAMessage(QString accountId, QString recipientJid, QString recipientResource, QString body, int state, int type);
 
+    // handle MUC
+    Q_INVOKABLE bool joinMUC(QString accountId, QString jid, QString nick) { clients->value(accountId)->joinMUCRoom(jid,nick); }
+
 private:
     QString currentClient;
     QMap<QString,MyXmppClient*> *clients;
