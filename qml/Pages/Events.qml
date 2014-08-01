@@ -282,6 +282,10 @@ Page {
                 model: xmppConnectivity.chats
                 delegate: wrapper
             }
+            Button {
+                text: "boom!"
+                onClicked: xmppConnectivity.client.joinMUCRoom("kpe@conference.jabbi.pl","MaybeItSortaCanIntoMUC")
+            }
         }
     }
 
@@ -344,7 +348,7 @@ Page {
                 onClicked: {
                     if (index > -1 && xmppConnectivity.chatJid != jid) {
                         xmppConnectivity.chatJid = jid
-                        main.openChat(account,jid)
+                        main.openChat(account,jid,xmppConnectivity.getPropertyByJid(account,"type",jid))
                     }
                 }
             }

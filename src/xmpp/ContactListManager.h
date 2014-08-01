@@ -20,6 +20,7 @@ public:
    Q_INVOKABLE void resetUnreadMessages(QString accountId,QString bareJid);
 
   void clearPresenceForAccount(QString accountId);
+  void setContactAsMUC(QString acc, QString jid);
   
 signals:
   void rosterChanged();

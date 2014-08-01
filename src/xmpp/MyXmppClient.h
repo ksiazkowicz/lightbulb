@@ -31,6 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "QXmppClient.h"
 #include "QXmppRosterManager.h"
 #include "QXmppVersionManager.h"
+#include "QXmppMucManager.h"
 #include "QXmppConfiguration.h"
 #include "QXmppClient.h"
 #include "QXmppMessage.h"
@@ -71,6 +72,7 @@ class MyXmppClient : public QObject
     QXmppClient *xmppClient;
     QXmppRosterManager *rosterManager;
     QXmppVCardManager *vCardManager;
+    QXmppMucManager *mucManager;
 
     MyCache* cacheIM;
 
@@ -104,7 +106,7 @@ public :
     Q_INVOKABLE void connectToXmppServer();
 
     /*--- send msg ---*/
-    bool sendMessage(QString bareJid, QString resource, QString msgBody, int chatState);
+    bool sendMessage(QString bareJid, QString resource, QString msgBody, int chatState, int msgType);
 
     /*--- info by jid ---*/
     Q_INVOKABLE QStringList getResourcesByJid (QString bareJid) { return rosterManager->getResources(bareJid); }
@@ -166,6 +168,8 @@ public :
     void setKeepAlive(int arg) { if (m_keepAlive != arg) { m_keepAlive = arg; emit keepAliveChanged(); } }
 
     void goOnline(QString lastStatus) { this->setMyPresence(Online,lastStatus); }
+
+    Q_INVOKABLE void joinMUCRoom(QString room, QString nick);
 	
 signals:
     void versionChanged();
@@ -182,7 +186,7 @@ signals:
 
     // related to XmppConnectivity class
     void updateContact(QString m_accountId,QString bareJid,QString property,int count);
-    void insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine);
+    void insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine,int type,QString resource);
     void contactRenamed(QString jid,QString name);
 
     void connectingChanged(const QString accountId);
@@ -213,6 +217,7 @@ private slots:
     void error(QXmppClient::Error);
 
     void notifyNewSubscription(QString bareJid) { emit subscriptionReceived(m_accountId, bareJid); }
+    void notifyAboutMUCInvitation(QString roomJid,QString inviter,QString reason) { qDebug() << "received MUC for " << roomJid << " by " << &inviter << " because " << reason; }
 
 private:
     // functions

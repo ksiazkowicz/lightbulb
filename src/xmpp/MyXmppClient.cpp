@@ -50,12 +50,20 @@ MyXmppClient::MyXmppClient() : QObject(0) {
     QObject::connect( vCardManager, SIGNAL(vCardReceived(const QXmppVCardIq &)),
                       this, SLOT(initVCard(const QXmppVCardIq &)),
                       Qt::UniqueConnection  );
+
+    qDebug() << "MyXmppClient(): attaching MucManager";
+    mucManager = new QXmppMucManager();
+    xmppClient->addExtension(mucManager);
+    qDebug() << "MyXmppClient(): connecting signal from MucManager";
+    QObject::connect( mucManager, SIGNAL(invitationReceived(QString,QString,QString)), this, SLOT(notifyAboutMUCInvitation(QString,QString,QString)));
+    qDebug() << "MyXmppClient(): ready.";
 }
 
 MyXmppClient::~MyXmppClient() {
     if (cacheIM != NULL) delete cacheIM;
     if (vCardManager != NULL) delete vCardManager;
     if (xmppClient != NULL) delete xmppClient;
+    if (mucManager != NULL) delete mucManager;
 }
 
 // ---------- connection ---------------------------------------------------------------------------------------------------------
@@ -156,7 +164,7 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
 
 // ---------- handling messages (receiving/sending) ------------------------------------------------------------------------------
 
-bool MyXmppClient::sendMessage(QString bareJid, QString resource, QString msgBody, int chatState) {
+bool MyXmppClient::sendMessage(QString bareJid, QString resource, QString msgBody, int chatState, int msgType) {
     if (m_stateConnect != Connected)
       return false; // if user not connected - BREAK
 
@@ -164,6 +172,27 @@ bool MyXmppClient::sendMessage(QString bareJid, QString resource, QString msgBod
 
     if (resource == "")
       resource = "default";
+
+    if (msgType == QXmppMessage::GroupChat) {
+        qDebug() << "muc message lolololo";
+        // finding a room
+        QXmppMucRoom* room;
+        QList<QXmppMucRoom*> rooms = mucManager->rooms();
+        bool roomFound = false;
+        for (int i=0; i<rooms.count(); i++) {
+            room = rooms.at(i);
+            if (room->jid() == bareJid) {
+              roomFound = true;
+              break;
+            }
+          }
+
+        // room found, try to send a message
+        if (roomFound)
+            return room->sendMessage(msgBody);
+        else
+            return false;
+      }
 
     xmppMsg.setTo( bareJid + "/" + resource );
     xmppMsg.setFrom( m_myjid + "/" + xmppClient->configuration().resource() );
@@ -178,7 +207,7 @@ bool MyXmppClient::sendMessage(QString bareJid, QString resource, QString msgBod
     xmppClient->sendPacket( xmppMsg );
 
     if (msgBody != "")
-      emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.to()),msgBody,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),1);
+      emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.to()),msgBody,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),1,2,"");
 
     return true;
 }
@@ -186,7 +215,6 @@ bool MyXmppClient::sendMessage(QString bareJid, QString resource, QString msgBod
 void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
 {
     QString bareJid_from = MyXmppClient::getBareJidByJid( xmppMsg.from() );
-    QString bareJid_to = MyXmppClient::getBareJidByJid( xmppMsg.to() );
 
     if( xmppMsg.state() == QXmppMessage::Active ) qDebug() << "Msg state is QXmppMessage::Active";
     else if( xmppMsg.state() == QXmppMessage::Inactive ) qDebug() << "Msg state is QXmppMessage::Inactive";
@@ -214,7 +242,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         m_bareJidLastMessage = getBareJidByJid(xmppMsg.from());
         m_resourceLastMessage = getResourceByJid(xmppMsg.from());
 
-        emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.from()),xmppMsg.body(),QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0);
+        emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.from()),xmppMsg.body(),QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0,xmppMsg.type(),getResourceByJid(xmppMsg.from()));
     }
 }
 
@@ -440,6 +468,16 @@ QString MyXmppClient::getResourceByJid( const QString &jid ) {
   if (jid.indexOf('/') >= 0)
     return jid.split('/')[1];
   else return "";
+}
+
+
+// ---------- muc support --------------------------------------------------------------------------------------------------------
+
+void MyXmppClient::joinMUCRoom(QString room, QString nick) {
+  qDebug() << "MyXmppClient::joinMUCRoom(): attempting to join" << room;
+  QXmppMucRoom *mucRoom = mucManager->addRoom(room);
+  mucRoom->setNickName(nick);
+  mucRoom->join();
 }
 
 // ------------------------//

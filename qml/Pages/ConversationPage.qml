@@ -50,35 +50,50 @@ Page {
     property bool   isInArchiveMode: false
     property bool   isAChatPage:     true
     property bool   isTyping:        false
+    property int    chatType:        0
 
-    ListView {
-        id: listViewMessages
-        anchors { left: parent.left; right: parent.right; bottom: msgInputField.top; top: parent.top }
-        model: isInArchiveMode ? xmppConnectivity.messagesByPage : xmppConnectivity.cachedMessages
+    Component {
+        id: msgComponent
+        Item {
+        MouseArea {
+            anchors.fill: parent
+            onPressAndHold: dialog.createWithProperties("qrc:/menus/MessageContext", {"msg": msgText})
+        }
+        id: wrapper
+        width: listViewMessages.width - 10
+        height: triangleTop.height + bubbleTop.height/2 + message.height + bubbleBottom.height/2 + triangleBottom.height
 
-        delegate: Component {
-            Item {
-            MouseArea {
-                anchors.fill: parent
-                onPressAndHold: dialog.createWithProperties("qrc:/menus/MessageContext", {"msg": msgText})
+        property int marginRight: isMine == true ? platformStyle.paddingLarge*3 : platformStyle.paddingSmall
+        property int marginLeft: isMine == true ? platformStyle.paddingSmall : platformStyle.paddingLarge*3
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        Image {
+            id: triangleTop
+            anchors { top: parent.top; right: parent.right; rightMargin: platformStyle.paddingMedium*2 }
+            source: isMine == true ? "" : "qrc:/images/bubble_incTriangle.png"
+            width: platformStyle.paddingLarge
+            height: isMine == true ? 0 : platformStyle.paddingLarge
+        }
+        Rectangle {
+            id: bubbleTop
+            anchors { top: triangleTop.bottom;
+                left: parent.left;
+                right: parent.right;
+                rightMargin: wrapper.marginRight
+                leftMargin: wrapper.marginLeft
             }
-            id: wrapper
-            height: triangleTop.height + bubbleTop.height/2 + message.height + bubbleBottom.height/2 + triangleBottom.height
-
-            property int marginRight: isMine == true ? platformStyle.paddingLarge*3 : platformStyle.paddingSmall
-            property int marginLeft: isMine == true ? platformStyle.paddingSmall : platformStyle.paddingLarge*3
-
-            anchors.horizontalCenter: parent.horizontalCenter
-            Image {
-                id: triangleTop
-                anchors { top: parent.top; right: parent.right; rightMargin: platformStyle.paddingMedium*2 }
-                source: isMine == true ? "" : "qrc:/images/bubble_incTriangle.png"
-                width: platformStyle.paddingLarge
-                height: isMine == true ? 0 : platformStyle.paddingLarge
+            height: 20
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: isMine == true ? "#6f6f74" : "#f2f1f4" }
+                GradientStop { position: 0.5; color: isMine == true ? "#56565b" : "#eae9ed" }
+                GradientStop { position: 1.0; color: isMine == true ? "#56565b" : "#eae9ed" }
             }
+
+            radius: 8
+         }
             Rectangle {
-                id: bubbleTop
-                anchors { top: triangleTop.bottom;
+                id: bubbleBottom
+                anchors { bottom: triangleBottom.top;
                     left: parent.left;
                     right: parent.right;
                     rightMargin: wrapper.marginRight
@@ -86,58 +101,41 @@ Page {
                 }
                 height: 20
                 gradient: Gradient {
-                    GradientStop { position: 0.0; color: isMine == true ? "#6f6f74" : "#f2f1f4" }
-                    GradientStop { position: 0.5; color: isMine == true ? "#56565b" : "#eae9ed" }
-                    GradientStop { position: 1.0; color: isMine == true ? "#56565b" : "#eae9ed" }
+                    GradientStop { position: 0.0; color: isMine == true ? "#56565b" : "#e6e6eb" }
+                    GradientStop { position: 0.5; color: isMine == true ? "#56565b" : "#e6e6eb" }
+                    GradientStop { position: 1.0; color: isMine == true ? "#46464b" : "#b9b8bd" }
                 }
 
                 radius: 8
-             }
-                Rectangle {
-                    id: bubbleBottom
-                    anchors { bottom: triangleBottom.top;
-                        left: parent.left;
-                        right: parent.right;
-                        rightMargin: wrapper.marginRight
-                        leftMargin: wrapper.marginLeft
-                    }
-                    height: 20
-                    gradient: Gradient {
-                        GradientStop { position: 0.0; color: isMine == true ? "#56565b" : "#e6e6eb" }
-                        GradientStop { position: 0.5; color: isMine == true ? "#56565b" : "#e6e6eb" }
-                        GradientStop { position: 1.0; color: isMine == true ? "#46464b" : "#b9b8bd" }
-                    }
-
-                    radius: 8
-                    smooth: true
+                smooth: true
+            }
+            Rectangle {
+                id: bubbleCenter
+                anchors {
+                    top: bubbleTop.top;
+                    topMargin: 10;
+                    rightMargin: wrapper.marginRight;
+                    leftMargin: wrapper.marginLeft;
+                    left: wrapper.left;
+                    right: wrapper.right;
+                    bottom: bubbleBottom.bottom;
+                    bottomMargin: 10
                 }
-                Rectangle {
-                    id: bubbleCenter
-                    anchors {
-                        top: bubbleTop.top;
-                        topMargin: 10;
-                        rightMargin: wrapper.marginRight;
-                        leftMargin: wrapper.marginLeft;
-                        left: wrapper.left;
-                        right: wrapper.right;
-                        bottom: bubbleBottom.bottom;
-                        bottomMargin: 10
-                    }
-                    color: isMine == true ? "#56565b" : "#e6e6eb"
-                    Text {
-                          id: message
-                          anchors { top: parent.top; left: parent.left; leftMargin: platformStyle.paddingSmall; right: parent.right; rightMargin: platformStyle.paddingSmall }
-                          property string messageText: vars.areEmoticonsDisabled ? msgText : emoticon.parseEmoticons(msgText)
-                          property string date: dateTime.substr(0,8) == Qt.formatDateTime(new Date(), "dd-MM-yy") ? dateTime.substr(9,5) : dateTime
-                          property string name: isMine == true ? qsTr("Me") : (contactName === "" ? xmppConnectivity.chatJid : contactName)
+                color: isMine == true ? "#56565b" : "#e6e6eb"
+                Text {
+                      id: message
+                      anchors { top: parent.top; left: parent.left; leftMargin: platformStyle.paddingSmall; right: parent.right; rightMargin: platformStyle.paddingSmall }
+                      property string messageText: vars.areEmoticonsDisabled ? msgText : emoticon.parseEmoticons(msgText)
+                      property string date: dateTime.substr(0,8) == Qt.formatDateTime(new Date(), "dd-MM-yy") ? dateTime.substr(9,5) : dateTime
+                      property string name: isMine == true ? qsTr("Me") : msgType !== 3 ? (contactName === "" ? xmppConnectivity.chatJid : contactName) : msgResource
 
-                          text: "<font color='#009FEB'>" + name + ":</font> " + messageText + "<div align='right' style='color: \"#999999\"'>"+ date + "</div>"
-                          color: isMine == true ? platformStyle.colorNormalLight : platformStyle.colorNormalDark
-                          font.pixelSize: platformStyle.fontSizeSmall
-                          wrapMode: Text.WordWrap
-                          onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
-                    }
+                      text: "<font color='#009FEB'>" + name + ":</font> " + messageText + "<div align='right' style='color: \"#999999\"'>"+ date + "</div>"
+                      color: isMine == true ? platformStyle.colorNormalLight : platformStyle.colorNormalDark
+                      font.pixelSize: platformStyle.fontSizeSmall
+                      wrapMode: Text.WordWrap
+                      onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
                 }
+            }
 
             Image {
                 id: triangleBottom
@@ -149,9 +147,16 @@ Page {
                 width: platformStyle.paddingLarge
                 height: isMine == true ? platformStyle.paddingLarge : 0
             }
-            width: listViewMessages.width - 10
-            }
         }
+    }
+
+
+    ListView {
+        id: listViewMessages
+        anchors { left: parent.left; right: parent.right; bottom: msgInputField.top; top: parent.top }
+        model: isInArchiveMode ? xmppConnectivity.messagesByPage : xmppConnectivity.cachedMessages
+
+        delegate: msgComponent
 
         spacing: 5
         onHeightChanged: positionViewAtEnd();
@@ -187,7 +192,7 @@ Page {
         if (isInArchiveMode || msgInputField.text == "")
             return;
 
-        var messageWasSent = xmppConnectivity.sendAMessage(accountId,contactJid,contactResource,msgInputField.text,1);
+        var messageWasSent = xmppConnectivity.sendAMessage(accountId,contactJid,contactResource,msgInputField.text,1,chatType);
         if (messageWasSent) {
             msgInputField.text = ""
             notify.notifySndVibr("MsgSent")
@@ -241,7 +246,7 @@ Page {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
                 // send a chatstate
-                xmppConnectivity.sendAMessage(accountId,contactJid,contactResource,"",2)
+                xmppConnectivity.sendAMessage(accountId,contactJid,contactResource,"",2,0)
 
                 // go back to previous page
                 pageStack.pop()

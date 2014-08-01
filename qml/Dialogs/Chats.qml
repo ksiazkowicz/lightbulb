@@ -92,7 +92,7 @@ CommonDialog {
                         if (index > -1 && xmppConnectivity.chatJid != jid) {
                             xmppConnectivity.chatJid = jid
                             vars.globalUnreadCount = vars.globalUnreadCount - parseInt(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))
-                            main.openChat(account,jid)
+                            main.openChat(account,jid,xmppConnectivity.getPropertyByJid(account,"type",jid))
                         }
                         close()
                     }

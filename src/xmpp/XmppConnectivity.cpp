@@ -86,7 +86,7 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
     connect(clients->value(index),SIGNAL(iFoundYourParentsGoddamit(QString)),this,SLOT(updateMyData(QString)),Qt::UniqueConnection);
 
     connect(clients->value(index),SIGNAL(updateContact(QString,QString,QString,int)),this,SLOT(updateContact(QString,QString,QString,int)),Qt::UniqueConnection);
-    connect(clients->value(index),SIGNAL(insertMessage(QString,QString,QString,QString,int)),this,SLOT(insertMessage(QString,QString,QString,QString,int)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(insertMessage(QString,QString,QString,QString,int,int,QString)),this,SLOT(insertMessage(QString,QString,QString,QString,int,int,QString)),Qt::UniqueConnection);
     connect(clients->value(index),SIGNAL(contactStatusChanged(QString,QString)),this,SLOT(handleContactStatusChange(QString,QString)),Qt::UniqueConnection);
 
     connect(clients->value(index),SIGNAL(connectingChanged(QString)),this,SIGNAL(xmppConnectingChanged(QString)),Qt::UniqueConnection);
@@ -170,8 +170,11 @@ bool XmppConnectivity::removeDir(const QString &dirName) {
 bool XmppConnectivity::resetSettings() { return QFile::remove(lSettings->confFile); }
 
 // handling stuff from MyXmppClient
-void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine) {
+void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine, int type, QString resource) {
     if (mine == 0) emit notifyMsgReceived(this->getPropertyByJid(m_accountId,"name",bareJid),bareJid,body.left(30),m_accountId);
+
+    if (type == QXmppMessage::GroupChat)
+      contacts->setContactAsMUC(m_accountId,bareJid);
 
     body = body.replace(">", "&gt;");  //fix for > stuff
     body = body.replace("<", "&lt;");  //and < stuff too ^^
@@ -180,7 +183,7 @@ void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString
     this->openChat(m_accountId,bareJid);
 
     if (!cachedMessages->contains(bareJid)) cachedMessages->insert(bareJid,new MsgListModel());
-    MsgItemModel* message = new MsgItemModel(body,date,mine);
+    MsgItemModel* message = new MsgItemModel(body,date,mine,type,resource);
     cachedMessages->value(bareJid)->append(message);
     dbWorker->executeQuery(QStringList() << "insertMessage" << m_accountId << bareJid << body << date << QString::number(mine));
 
@@ -199,7 +202,7 @@ void XmppConnectivity::openChat(QString accountId, QString bareJid) {
   }
 
   // send "Active" chat state
-  clients->value(accountId)->sendMessage(bareJid,"","",1);
+  clients->value(accountId)->sendMessage(bareJid,"","",1,2);
 
   if (!cachedMessages->contains(bareJid))
     cachedMessages->insert(bareJid,new MsgListModel());
@@ -208,7 +211,7 @@ void XmppConnectivity::openChat(QString accountId, QString bareJid) {
 
 void XmppConnectivity::closeChat(QString accId, QString bareJid) {
   // send "Gone" chat state
-  clients->value(accId)->sendMessage(bareJid,"","",3);
+  clients->value(accId)->sendMessage(bareJid,"","",3,2);
 
   for (int i=0; i<chats->count(); i++) {
       ChatsItemModel *itemExists = (ChatsItemModel*)chats->getElementByID(i);
@@ -357,9 +360,9 @@ void XmppConnectivity::handleXmppStatusChange (const QString accountId) {
 }
 
 // handle messages and states
-bool XmppConnectivity::sendAMessage(QString accountId, QString recipientJid, QString recipientResource, QString body, int state) {
+bool XmppConnectivity::sendAMessage(QString accountId, QString recipientJid, QString recipientResource, QString body, int state, int type) {
   if (clients->value(accountId) == NULL)
     return false;
 
-  return clients->value(accountId)->sendMessage(recipientJid,recipientResource,body,state);
+  return clients->value(accountId)->sendMessage(recipientJid,recipientResource,body,state,type);
 }

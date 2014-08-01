@@ -157,7 +157,7 @@ public slots:
         dbWorker->executeQuery(QStringList() << "updateContact" << m_accountId << bareJid << property << QString::number(count));
     }
     void updateMessages() { dbWorker->updateMessages(currentClient,currentJid,page); }
-    void insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine);
+    void insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine, int type, QString resource);
 
     Q_INVOKABLE QString getAvatarByJid(QString bareJid) { return lCache->getAvatarCache(bareJid); }
 
@@ -224,7 +224,7 @@ public slots:
     Q_INVOKABLE void updateMyData(QString jid);
 
     // handle messages and states
-    Q_INVOKABLE bool sendAMessage(QString accountId, QString recipientJid, QString recipientResource, QString body, int state);
+    Q_INVOKABLE bool sendAMessage(QString accountId, QString recipientJid, QString recipientResource, QString body, int state, int type);
 
 private:
     QString currentClient;

@@ -50,7 +50,7 @@ PageStackWindow {
         }
 
     }
-    function openChat(account,jid) {
+    function openChat(account,jid,type) {
         console.log("updating globalUnreadCount")
         console.log(vars.globalUnreadCount)
         console.log(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))
@@ -62,7 +62,7 @@ PageStackWindow {
         if (pageStack.depth > 1) {
             pageStack.replace("qrc:/pages/Conversation",{"accountId":account,"contactName":xmppConnectivity.getPropertyByJid(account,"name",jid),"contactJid":jid,"isInArchiveMode":false})
         } else
-            pageStack.push("qrc:/pages/Conversation",{"accountId":account,"contactName":xmppConnectivity.getPropertyByJid(account,"name",jid),"contactJid":jid,"isInArchiveMode":false})
+            pageStack.push("qrc:/pages/Conversation",{"accountId":account,"contactName":xmppConnectivity.getPropertyByJid(account,"name",jid),"contactJid":jid,"isInArchiveMode":false,"chatType":type})
     }
 
     Timer {

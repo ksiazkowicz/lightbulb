@@ -35,7 +35,9 @@ public:
     enum Roles {
         roleMsgText = Qt::UserRole+1,
         roleDateTime,
-        roleIsMine
+        roleIsMine,
+        roleMsgType,
+        roleMsgResource
       };
 
 public:
@@ -43,14 +45,20 @@ public:
           msgText= "";
           dateTime = "";
           isMine = 0;
+          msgType = 0;
+          msgResource = "";
       }
       explicit MsgItemModel( const QString &_msgText,
                                        const QString &_dateTime,
                                        const int _isMine,
+                                       const int _msgType,
+                                       const QString &_msgResource,
                                        QObject *parent = 0 ) : ListItem(parent),
           msgText(_msgText),
           dateTime(_dateTime),
-          isMine(_isMine)
+          isMine(_isMine),
+          msgType(_msgType),
+          msgResource(_msgResource)
       {
       }
 
@@ -62,6 +70,10 @@ public:
           return gDateTime();
         case roleIsMine:
           return gIsMine();
+        case roleMsgType:
+         return gMsgType();
+        case roleMsgResource:
+         return gMsgResource();
         default:
           return QVariant();
         }
@@ -71,6 +83,8 @@ public:
           names[roleMsgText] = "msgText";
           names[roleDateTime] = "dateTime";
           names[roleIsMine] = "isMine";
+          names[roleMsgType] = "msgType";
+          names[roleMsgResource] = "msgResource";
           return names;
         }
 
@@ -96,14 +110,31 @@ public:
           }
       }
 
+      void setMsgType(const int _msgType) {
+        if(msgType != _msgType) {
+          msgType = _msgType;
+          emit dataChanged();
+        }
+      }
+
+      void setMsgResource( const QString &_msgResource) {
+        if (msgResource != _msgResource) {
+            msgResource = _msgResource; emit dataChanged();
+          }
+      }
+
       inline QString gMsgText() const { return msgText; }
       inline QString gDateTime() const { return dateTime; }
       inline int gIsMine() const { return isMine; }
+      inline int gMsgType() const { return msgType; }
+      inline QString gMsgResource() const { return msgResource; }
 
     private:
       QString msgText;
       QString dateTime;
       int isMine;
+      int msgType;
+      QString msgResource;
 };
 
 #endif // MSGITEMMODEL_H

@@ -1,5 +1,6 @@
 #include "ContactListManager.h"
 #include <QDebug>
+#include <QXmppMessage.h>
 
 ContactListManager::ContactListManager(QObject *parent) :
   QObject(parent)
@@ -8,7 +9,24 @@ ContactListManager::ContactListManager(QObject *parent) :
   rosterOffline = new RosterListModel();
 }
 
+void ContactListManager::setContactAsMUC(QString acc, QString jid) {
+  RosterItemModel *contact = (RosterItemModel*)roster->find( acc + ";" + jid );
+
+  if (contact == 0) {
+    return;
+  } else
+    contact->setType(QXmppMessage::GroupChat);
+
+  if (contact->presence() != "qrc:/presence/offline") {
+      RosterItemModel *contactOffline = (RosterItemModel*)rosterOffline->find( acc + ";" + jid);
+      if (contactOffline != 0)
+        contact->setType(QXmppMessage::GroupChat);
+    }
+}
+
 void ContactListManager::addContact(QString acc, QString jid, QString name) {
+  qDebug() << "ContactListManager::addContact() called";
+
   // first, check if contact isn't already on the contact list
   RosterItemModel *item = (RosterItemModel*)roster->find( acc + ";" + jid );
   if (item != 0) {
@@ -39,7 +57,7 @@ void ContactListManager::plusUnreadMessage(QString acc, QString jid) {
     }
 }
 void ContactListManager::changePresence(QString accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus) {
-  qDebug() << "ContactListManager::changePresence() called";
+  qDebug() << "ContactListManager::changePresence() called" << bareJid << resource << picStatus << txtStatus;
   RosterItemModel *contact = (RosterItemModel*)roster->find( accountId + ";" + bareJid );
   if (contact != 0) {
       contact->setResource(resource);
@@ -105,6 +123,7 @@ QString ContactListManager::getPropertyByJid( QString accountId, QString bareJid
       else if (property == "resource") return item->resource();
       else if (property == "statusText") return item->statusText();
       else if (property == "unreadMsg") return QString::number(item->unreadMsg());
+      else if (property == "type") return QString::number(item->getType());
       } else return "(unknown)";
 }
 QString ContactListManager::getPropertyByOrderID(int id, QString property) {
