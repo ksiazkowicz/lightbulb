@@ -43,7 +43,7 @@ PageStackWindow {
     Globals { id: vars
         onAwaitingContextChanged: {
             if (!awaitingContext && dialogQmlFile != "") {
-                dialog.create(dialogQmlFile)
+                dialog.createWithProperties(dialogQmlFile,{"accountId": xmppConnectivity.currentAccount})
                 dialogQmlFile = "";
             }
         }
@@ -158,6 +158,12 @@ PageStackWindow {
         function createWithProperties(qmlfile, properties){
             c=Qt.createComponent(qmlfile);
             c.createObject(main, properties)
+        }
+        function createWithContext(qmlFile) {
+            c=Qt.createComponent("qrc:/dialogs/AccountSwitcher")
+            c.createObject(main)
+            vars.awaitingContext = true;
+            vars.dialogQmlFile = qmlFile;
         }
     }
     StatusBar {

@@ -28,6 +28,7 @@ import com.nokia.symbian 1.1
 CommonDialog {
     id: addContact
     titleText: qsTr("Add contact")
+    property string accountId;
 
     platformInverted: main.platformInverted
     buttonTexts: [qsTr("OK"), qsTr("Cancel")]
@@ -38,7 +39,7 @@ CommonDialog {
     property bool isCreated: false
 
     onStatusChanged: if (isCreated && addContact.status === DialogStatus.Closed) addContact.destroy()
-    onButtonClicked: if (index === 0 && addName.text != "" && addJid.text != "") xmppConnectivity.addContact( xmppConnectivity.currentClient, addJid.text, addName.text, "", true )
+    onButtonClicked: if (index === 0 && addName.text != "" && addJid.text != "") xmppConnectivity.addContact( accountId, addJid.text, addName.text, "", true )
 
     content: Column {
             spacing: platformStyle.paddingSmall

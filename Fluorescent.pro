@@ -121,8 +121,7 @@ OTHER_FILES += README.md \
     qml/JavaScript/*.* \
     qml/Preflets/*.* \
     qml/Menus/*.* \
-    qml/Components/*.* \
-    qml/Pages/ConversationPage.qml
+    qml/Components/*.*
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
