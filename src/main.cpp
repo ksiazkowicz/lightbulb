@@ -29,7 +29,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QtDeclarative/qdeclarative.h>
 #include <QUrl>
 #include <QDebug>
-#include "qmlapplicationviewer.h"
 
 #include "MyXmppClient.h"
 
@@ -81,7 +80,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     qDebug() << "main(): Initializing view...";
 
     // initialize viewer and set it parameters
-    QmlApplicationViewer viewer;
+    QDeclarativeView viewer;
     QAvkonHelper avkon(&viewer);
     viewer.rootContext()->setContextProperty("avkon", &avkon);
 
