@@ -14,7 +14,7 @@ Page {
                 eventListModel.appendEvent(xmppConnectivity.getAvatarByJid(jid),true,parseInt(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))+1,body,name,true,"message")
         }
         onChatJidChanged:
-            eventListModel.findAndRemove(xmppConnectivity.getPropertyByJid(xmppConnectivity.currentAccount,"name",xmppConnectivity.chatJid),"message")
+            eventListModel.findAndRemove(xmppConnectivity.getPropertyByJid(vars.context,"name",xmppConnectivity.chatJid),"message")
         onPersonalityChanged: {
             vCardHandler.loadVCard(settings.gStr("behavior","personality"))
             avatar.source = xmppConnectivity.getAvatarByJid(settings.gStr("behavior","personality"))

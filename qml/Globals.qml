@@ -33,6 +33,7 @@ Item {
     signal                           statusTextChanged
     property bool                    isActive: true
     property string                  resourceJid: ""
+    property string                  context: ""
 
     // settings
     property bool                    areEmoticonsDisabled: settings.gBool("behavior","disableEmoticons")

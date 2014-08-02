@@ -138,16 +138,12 @@ Page {
                 anchors.fill: parent
 
                 onClicked: {
-                    if (xmppConnectivity.currentAccount != accountId) xmppConnectivity.currentAccount = accountId
-                    xmppConnectivity.chatJid = jid
-                    vars.selectedJid = jid
                     vars.globalUnreadCount = vars.globalUnreadCount - unreadMsg
                     notify.updateNotifiers()
                     pageStack.push("qrc:/pages/Conversation",{"accountId": accountId,"contactName":txtJid.contact,"contactJid":jid,"isInArchiveMode":false})
                 }
 
                 onPressAndHold: {
-                    vars.selectedJid = jid
                     dialog.createWithProperties("qrc:/menus/Roster/Contact",{"accountId": accountId,"contactName":txtJid.contact,"contactJid":jid})
                 }
             }

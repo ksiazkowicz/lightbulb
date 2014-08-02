@@ -30,8 +30,6 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
 {
     msgWrapper = new MessageWrapper(this);
 
-    selectedClient = new MyXmppClient();
-    currentClient = "";
     clients = new QMap<QString,MyXmppClient*>;
     cachedMessages = new QMap<QString,MsgListModel*>;
     lSettings = new Settings();
@@ -48,7 +46,6 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
 
     for (int i=0; i<lSettings->accountsCount(); i++) {
         initializeAccount(lSettings->getAccount(i)->grid(),lSettings->getAccount(i));
-        if (currentClient == "") this->changeAccount(lSettings->getAccount(i)->grid());
     }
 
     connect(dbWorker, SIGNAL(messagesChanged()), this, SLOT(updateMessages()), Qt::UniqueConnection);
@@ -117,22 +114,6 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
 
     delete account;
     return true;
-}
-
-void XmppConnectivity::changeAccount(QString accountId) {
-    if (accountId != currentClient && clients->contains(accountId) && clients->value(accountId) != 0) {
-        if (currentClient == "") delete selectedClient;
-        currentClient = accountId;
-        selectedClient = clients->value(accountId);
-        emit accountChanged();
-        qDebug() << "XmppConnectivity::changeAccount(): selected account is" << qPrintable(clients->value(accountId)->getMyJid());
-    }
-    if (accountId == "null") {
-        currentClient  = "";
-        selectedClient = new MyXmppClient();
-        emit accountChanged();
-        qDebug() << "XmppConnectivity::changeAccount(): no selected account";
-    }
 }
 
 void XmppConnectivity::gotoPage(int nPage) {
@@ -263,9 +244,6 @@ void XmppConnectivity::accountAdded(QString id) {
 void XmppConnectivity::accountRemoved(QString id) {
   qDebug().nospace() << "XmppConnectivity::accountRemoved(): removing account "
            << qPrintable(id)<<"::"<<qPrintable(clients->value(id)->getMyJid());
-  if (currentClient == id) {
-      changeAccount("null");
-  }
   clients->remove(id);
 
   DatabaseManager* database = new DatabaseManager();
@@ -284,7 +262,6 @@ void XmppConnectivity::accountModified(QString id) {
  qDebug().nospace() << "XmppConnectivity::accountModified(): reinitializing account "
            << qPrintable(id)<<"::"<<qPrintable(lSettings->getAccountByID(id)->jid());
   initializeAccount(id,lSettings->getAccountByID(id));
-  if (id == currentClient) emit accountChanged();
 }
 
 int XmppConnectivity::getStatusByIndex(QString accountId) {
@@ -292,12 +269,6 @@ int XmppConnectivity::getStatusByIndex(QString accountId) {
     if (clients->value(accountId) != 0)
       return clients->value(accountId)->getStatus();
   else return 0;
-}
-
-QString XmppConnectivity::getCurrentAccountName() {
-  if (selectedClient != 0) {
-      return getAccountName(currentClient);
-   } else return "No accounts available";
 }
 
 QString XmppConnectivity::getAccountName(QString grid) {

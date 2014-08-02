@@ -296,7 +296,14 @@ Page {
             iconSource: main.platformInverted ? "toolbar-menu_inverse" : "toolbar-menu"
             onClicked: {
                 xmppConnectivity.preserveMsg(contactJid,msgInputField.text)
-                dialog.createWithProperties("qrc:/menus/Messages",{"contactName":contactName,"accountId":accountId,"contactJid":contactJid})
+
+                var menuPath = "qrc:/menus/Messages";
+                if (isInArchiveMode)
+                    menuPath = "qrc:/menus/Archive";
+                if (chatType == 3) {
+                    menuPath = "qrc:/menus/MucOptions"
+                }
+                dialog.createWithProperties(menuPath,{"accountId":accountId,"contactJid":contactJid})
             }
         }
     }

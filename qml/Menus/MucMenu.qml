@@ -1,7 +1,7 @@
 /********************************************************************
 
-qml/Menus/MessagesOptions.qml
--- contains messages options menu
+qml/Menus/MucMenu.qml
+-- contains a menu with MUC-specific options
 
 Copyright (c) 2014 Maciej Janiszewski
 
@@ -26,7 +26,7 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 Menu {
-    id: msgOptions
+    id: mucOptions
     platformInverted: main.platformInverted
 
     Component.onCompleted: {
@@ -35,24 +35,39 @@ Menu {
     property bool isCreated: false
     property string contactJid
     property string accountId
+    property bool hasModPermissions
+    property bool hasOwnerPermissions
 
-    onStatusChanged: { if (isCreated && msgOptions.status === DialogStatus.Closed) { msgOptions.destroy() } }
+    onStatusChanged: { if (isCreated && mucOptions.status === DialogStatus.Closed) { mucOptions.destroy() } }
     // define the items in the menu and corresponding actions
     content: MenuLayout {
         MenuItem {
-            text: qsTr("Set resource")
+            text: qsTr("Participants")
+            enabled: false
             platformInverted: main.platformInverted
-            onClicked: dialog.create("qrc:/dialogs/Resources")
+            onClicked: dialog.create("qrc:/dialogs/MUC/Participants")
         }
         MenuItem {
-            text: "Close chat"
+            text: qsTr("Leave room")
+            enabled: false
             platformInverted: main.platformInverted
             onClicked: {
                 pageStack.pop()
                 xmppConnectivity.closeChat(accountId,contactJid)
+                xmppConnectivity.leaveMUCRoom(accountId,contactJid)
                 xmppConnectivity.resetUnreadMessages(accountId,contactJid)
                 xmppConnectivity.chatJid = ""
             }
+        }
+        MenuItem {
+            text: qsTr("Change subject")
+            enabled: hasModPermissions
+            platformInverted: main.platformInverted
+        }
+        MenuItem {
+            text: qsTr("Bookmark this room")
+            enabled: false
+            platformInverted: main.platformInverted
         }
     }
 }

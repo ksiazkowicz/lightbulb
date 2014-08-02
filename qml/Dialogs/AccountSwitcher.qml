@@ -29,7 +29,6 @@ CommonDialog {
     id: accountSwitcher
     privateCloseIcon: true
     titleText: qsTr("Select context")
-    buttonTexts: ["OK"]
     height: 320
 
     platformInverted: main.platformInverted
@@ -83,14 +82,14 @@ CommonDialog {
                 }
                 states: State {
                     name: "Current"
-                    when: xmppConnectivity.currentAccount == accGRID
+                    when: vars.context == accGRID
                     PropertyChanges { target: wrapper; gradient: gr_press }
                 }
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
                         wrapper.ListView.view.currentIndex = index
-                        main.changeAccount(accGRID)
+                        vars.context = accGRID
                         close()
                     }
                 }

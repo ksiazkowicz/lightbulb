@@ -46,7 +46,6 @@ class XmppConnectivity : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(MyXmppClient* client READ getClient NOTIFY accountChanged)
     Q_PROPERTY(RosterListModel* roster READ getRoster NOTIFY rosterChanged)
     Q_PROPERTY(ChatsListModel* chats READ getChats NOTIFY chatsChanged)
     Q_PROPERTY(int page READ getPage WRITE gotoPage NOTIFY pageChanged)
@@ -55,8 +54,6 @@ class XmppConnectivity : public QObject
     Q_PROPERTY(SqlQueryModel* messages READ getSqlMessagesByPage NOTIFY sqlMessagesChanged)
     Q_PROPERTY(MsgListModel* cachedMessages READ getMessages NOTIFY sqlMessagesChanged)
     Q_PROPERTY(QString chatJid READ getChatJid WRITE setChatJid NOTIFY chatJidChanged)
-    Q_PROPERTY(QString currentAccount READ getCurrentAccount WRITE changeAccount NOTIFY accountChanged)
-    Q_PROPERTY(QString currentAccountName READ getCurrentAccountName NOTIFY accountChanged)
     Q_PROPERTY(int messagesLimit READ getMsgLimit WRITE setMsgLimit NOTIFY msgLimitChanged )
 
     Q_PROPERTY(bool offlineContactsVisibility READ getVisibility WRITE setVisibility NOTIFY visibilityChanged)
@@ -65,8 +62,6 @@ public:
     ~XmppConnectivity();
 
     bool initializeAccount(QString index, AccountsItemModel* account);
-    Q_INVOKABLE void changeAccount(QString GRID);
-    QString getCurrentAccount() { return currentClient; }
 
     // well, this stuff is needed
     int getPage() const { return page; }
@@ -128,7 +123,6 @@ public:
 
 signals:
     void personalityChanged();
-    void accountChanged();
     void rosterChanged();
 
     void pageChanged();
@@ -238,15 +232,11 @@ public slots:
 private:
     QString currentClient;
     QMap<QString,MyXmppClient*> *clients;
-    MyXmppClient* selectedClient;
-    MyXmppClient* getClient() { return selectedClient; }
 
     QMap<QString,MsgListModel*> *cachedMessages;
 
     RosterListModel* getRoster();
     ContactListManager *contacts;
-
-    QString getCurrentAccountName();
 
     SqlQueryModel* getSqlMessagesByPage() { return dbWorker->getSqlMessages(); }
     int getMessagesCount() { return dbWorker->getPageCount(currentClient,currentJid); }

@@ -44,7 +44,7 @@ PageStackWindow {
         id: vars
         onAwaitingContextChanged: {
             if (!awaitingContext && dialogQmlFile != "") {
-                dialog.createWithProperties(dialogQmlFile,{"accountId": xmppConnectivity.currentAccount})
+                dialog.createWithProperties(dialogQmlFile,{"accountId": vars.context})
                 dialogQmlFile = "";
             }
         }
@@ -97,9 +97,9 @@ PageStackWindow {
                                 dialog.createWithProperties("qrc:/dialogs/Status/Reconnect",{"accountId": accountId})
         onXmppSubscriptionReceived: {
             if (avkon.displayAvkonQueryDialog("Subscription (" + getAccountName(accountId) + ")", qsTr("Do you want to accept subscription request from ") + bareJid + qsTr("?")))
-                acceptSubscribtion(accountId,bareJid)
+                xmppConnectivity.acceptSubscription(accountId,bareJid)
             else
-                rejectSubscribtion(accountId,bareJid)
+                xmppConnectivity.rejectSubscription(accountId,bareJid)
         }
     }
 	
@@ -140,11 +140,6 @@ PageStackWindow {
                 dialog.create("qrc:/dialogs/AccessPointSelector")
             pageStack.push("qrc:/pages/Events")
         }
-    }
-    function changeAccount(acc) {
-        xmppConnectivity.changeAccount(acc);
-        notify.updateNotifiers()
-        settings.sStr(xmppConnectivity.currentAccount,"behavior","lastAccount")
     }
     /****************************( Dialog windows, menus and stuff)****************************/
 
