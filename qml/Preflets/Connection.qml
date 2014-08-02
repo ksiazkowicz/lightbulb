@@ -57,17 +57,13 @@ Item {
             inputMethodHints: Qt.ImhFormattedNumbersOnly
             width: content.width-20
             height: 50
-            Component.onCompleted: {
-                tiKeepAlive.text = settings.gInt("behavior", "keepAliveInterval")
-            }
-            onActiveFocusChanged: {
-                main.splitscreenY = 0
-            }
+            Component.onCompleted: tiKeepAlive.text = vars.keepAliveInterval
+            onActiveFocusChanged:  main.splitscreenY = 0
 
             onTextChanged: {
-                var interval = parseInt(tiKeepAlive.text)
-                xmppConnectivity.client.keepAlive = interval
-                settings.sInt(interval,"behavior", "keepAliveInterval")
+                vars.keepAliveInterval = parseInt(tiKeepAlive.text)
+                xmppConnectivity.updateKeepAliveSetting(vars.keepAliveInterval)
+                settings.sInt(vars.keepAliveInterval,"behavior", "keepAliveInterval")
             }
         }
 

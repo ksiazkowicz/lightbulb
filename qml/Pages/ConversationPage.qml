@@ -33,7 +33,6 @@ Page {
     /******************************************
       TODO:
         - handle resources
-        - add a menu
         - handle different types of messages
         - handle unread and read messages
         - handle switching between archive and chat mode
@@ -54,10 +53,7 @@ Page {
 
     Connections {
         target: xmppConnectivity
-        onMucSubjectChanged: {
-            if (chatType == 3 && bareJid == contactJid)
-                subjectRect.setSubject(subject);
-        }
+        onMucSubjectChanged: if (chatType == 3 && bareJid == contactJid) subjectText.text = subject;
     }
 
     Component {
@@ -91,6 +87,7 @@ Page {
                 leftMargin: wrapper.marginLeft
             }
             height: 20
+            smooth: true
             gradient: Gradient {
                 GradientStop { position: 0.0; color: isMine == true ? "#6f6f74" : "#f2f1f4" }
                 GradientStop { position: 0.5; color: isMine == true ? "#56565b" : "#eae9ed" }
@@ -172,10 +169,6 @@ Page {
             font.pixelSize: platformStyle.fontSizeSmall
             visible: parent.visible
         }
-
-        function setSubject(text) {
-            subjectRect.height = subjectText.height + 2*platformStyle.paddingSmall;
-        }
     }
 
 
@@ -213,7 +206,7 @@ Page {
 
         // if MUC, get subject
         if (chatType == 3)
-            subjectRect.setSubject(xmppConnectivity.getMUCSubject(accountId,contactJid));
+            subjectText.text = xmppConnectivity.getMUCSubject(accountId,contactJid);
     }
 
     function sendMessage() {
@@ -290,7 +283,7 @@ Page {
                 // unload messages, deselect contact
                 xmppConnectivity.chatJid = ""
             }
-            onPlatformPressAndHold: xmppConnectivity.closeChat(contactJid)
+            onPlatformPressAndHold: xmppConnectivity.closeChat(accountId,contactJid)
         }
         ToolButton {
             id: toolBarButtonSend
@@ -301,10 +294,9 @@ Page {
         }
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-menu_inverse" : "toolbar-menu"
-            enabled: false
             onClicked: {
-                /*xmppConnectivity.preserveMsg(xmppConnectivity.chatJid,txtMessage.text)
-                dialog.createWithProperties("qrc:/menus/Messages",{"contactName":contactName})*/
+                xmppConnectivity.preserveMsg(contactJid,msgInputField.text)
+                dialog.createWithProperties("qrc:/menus/Messages",{"contactName":contactName,"accountId":accountId,"contactJid":contactJid})
             }
         }
     }

@@ -60,8 +60,7 @@ CommonDialog {
             if (timeLeft > 0) {
                 timeLeft--
             } else {
-                xmppConnectivity.client.keepAlive = settings.gBool("behavior","keepAliveInterval")
-                xmppConnectivity.client.setMyPresence( XmppClient.Online, main.laststatus )
+                xmppConnectivity.setPresence(accountId,XmppClient.Online,main.laststatus)
                 reconDialog.close()
                 running = false
             }

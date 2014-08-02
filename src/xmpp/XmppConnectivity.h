@@ -193,6 +193,8 @@ public slots:
     Q_INVOKABLE void resetUnreadMessages(QString accountId, QString bareJid) { contacts->resetUnreadMessages(accountId,bareJid); }
     Q_INVOKABLE void resetUnreadMessages(QString bareJid) { contacts->resetUnreadMessages(currentClient,bareJid); }
 
+    Q_INVOKABLE void setPresence(QString accountId, int status, QString textStatus) { clients->value(accountId)->setMyPresence((MyXmppClient::StatusXmpp)status,textStatus); }
+
 
     // widget
     void handleContactStatusChange(QString accountId, QString bareJid) {
@@ -208,6 +210,7 @@ public slots:
     Q_INVOKABLE bool getVisibility()           { return contacts->getOfflineContactsState(); }
 	
     Q_INVOKABLE void updateAvatarCachingSetting(bool setting);
+    Q_INVOKABLE void updateKeepAliveSetting(int keepAlive);
     Q_INVOKABLE void acceptSubscription(QString accountId,QString bareJid) { clients->value(accountId)->acceptSubscribtion(bareJid); }
     Q_INVOKABLE void rejectSubscription(QString accountId,QString bareJid) { clients->value(accountId)->rejectSubscribtion(bareJid); }
     Q_INVOKABLE int  getConnectionStatusByAccountId(QString accountId)     { return clients->value(accountId)->getStateConnect(); }

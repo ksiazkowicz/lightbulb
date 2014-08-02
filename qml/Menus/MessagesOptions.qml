@@ -33,7 +33,9 @@ Menu {
         open();
         isCreated = true }
     property bool isCreated: false
-    property string contactName: ""
+    property string contactName
+    property string contactJid
+    property string accountId
 
     onStatusChanged: { if (isCreated && msgOptions.status === DialogStatus.Closed) { msgOptions.destroy() } }
     // define the items in the menu and corresponding actions
@@ -48,15 +50,10 @@ Menu {
             platformInverted: main.platformInverted
             onClicked: {
                 pageStack.pop()
-                xmppConnectivity.closeChat(xmppConnectivity.chatJid )
-                xmppConnectivity.client.resetUnreadMessages( xmppConnectivity.chatJid )
+                xmppConnectivity.closeChat(accountId,contactJid)
+                xmppConnectivity.resetUnreadMessages(accountId,contactJid)
                 xmppConnectivity.chatJid = ""
             }
         }
-
-        /*MenuItem {
-            text: "Send attention"
-            onClicked: xmppConnectivity.client.attentionSend( xmppConnectivity.chatJid, vars.resourceJid )
-        }*/
     }
 }

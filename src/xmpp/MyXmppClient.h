@@ -68,7 +68,6 @@ class MyXmppClient : public QObject
     Q_PROPERTY( int port READ getPort WRITE setPort NOTIFY portChanged )
     Q_PROPERTY( QString resource READ getResource WRITE setResource NOTIFY resourceChanged )
     Q_PROPERTY( QString accountId READ getAccountId WRITE setAccountId NOTIFY accountIdChanged )
-    Q_PROPERTY( int keepAlive READ getKeepAlive WRITE setKeepAlive NOTIFY keepAliveChanged )
 
     QXmppClient *xmppClient;
     QXmppRosterManager *rosterManager;
@@ -165,8 +164,7 @@ public :
             emit accountIdChanged();
         }
     }
-    int getKeepAlive() const { return m_keepAlive; }
-    void setKeepAlive(int arg) { if (m_keepAlive != arg) { m_keepAlive = arg; emit keepAliveChanged(); } }
+    void setKeepAlive(int arg) { m_keepAlive = arg; }
 
     void goOnline(QString lastStatus) { this->setMyPresence(Online,lastStatus); }
 
@@ -184,7 +182,6 @@ signals:
     void resourceChanged();
     void typingChanged(QString accountId, QString bareJid, bool isTyping);
     void accountIdChanged();
-    void keepAliveChanged();
     void contactStatusChanged(QString accountId, QString bareJid);
 
     // related to XmppConnectivity class

@@ -48,8 +48,6 @@ CommonDialog {
     onStatusChanged: if (isCreated && statusDialog.status === DialogStatus.Closed) statusDialog.destroy()
 
         onButtonClicked: {
-            xmppConnectivity.client.keepAlive = settings.gBool("behavior","keepAliveInterval")
-
             var ret = ""
 
             switch (selectionDialog.selectedIndex) {
@@ -68,7 +66,7 @@ CommonDialog {
             if (accountId !== "")
                 main.changeAccount(accountId)
 
-            xmppConnectivity.client.setMyPresence( ret, wrapperTextEdit.text )
+            xmppConnectivity.setPresence(accountId,ret, wrapperTextEdit.text)
             vars.lastStatus = wrapperTextEdit.text
             vars.lastUsedStatus = selectionDialog.selectedIndex
 

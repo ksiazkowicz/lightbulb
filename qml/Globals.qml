@@ -33,7 +33,10 @@ Item {
     signal                           statusTextChanged
     property bool                    isActive: true
     property string                  resourceJid: ""
+
+    // settings
     property bool                    areEmoticonsDisabled: settings.gBool("behavior","disableEmoticons")
+    property int                     keepAliveInterval: settings.gInt("behavior","keepAliveInterval")
 
     property bool                    isRestartRequired: false
     property bool                    isBlinkingOverrideEnabled: false

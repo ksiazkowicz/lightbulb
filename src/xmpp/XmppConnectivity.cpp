@@ -83,6 +83,9 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
         clients->value(index)->setPort(5222);
     }
     clients->value(index)->setAccountId(index);
+
+    clients->value(index)->setKeepAlive(lSettings->gInt("behavior","keepAliveInterval"));
+
     connect(clients->value(index),SIGNAL(iFoundYourParentsGoddamit(QString)),this,SLOT(updateMyData(QString)),Qt::UniqueConnection);
 
     connect(clients->value(index),SIGNAL(updateContact(QString,QString,QString,int)),this,SLOT(updateContact(QString,QString,QString,int)),Qt::UniqueConnection);
@@ -336,6 +339,14 @@ void XmppConnectivity::updateAvatarCachingSetting(bool setting) {
   for (i = clients->begin(); i != clients->end(); i++) {
       if (clients->value(i.key()) != 0)
           clients->value(i.key())->disableAvatarCaching = setting;
+    }
+}
+
+void XmppConnectivity::updateKeepAliveSetting(int keepAlive) {
+  QMap<QString,MyXmppClient*>::iterator i;
+  for (i = clients->begin(); i != clients->end(); i++) {
+      if (clients->value(i.key()) != 0)
+          clients->value(i.key())->setKeepAlive(keepAlive);
     }
 }
 
