@@ -53,6 +53,13 @@ MyXmppClient::MyXmppClient() : QObject(0) {
 
     mucManager = new QXmppMucManager();
     xmppClient->addExtension(mucManager);
+
+    transferManager = new QXmppTransferManager();
+    xmppClient->addExtension(transferManager);
+    connect(transferManager,SIGNAL(fileReceived(QXmppTransferJob*)),this,SLOT(incomingTransfer(QXmppTransferJob*)));
+
+    serviceDiscovery = new QXmppDiscoveryManager();
+    xmppClient->addExtension(serviceDiscovery);
 }
 
 MyXmppClient::~MyXmppClient() {
@@ -60,6 +67,7 @@ MyXmppClient::~MyXmppClient() {
     if (vCardManager != NULL) delete vCardManager;
     if (xmppClient != NULL) delete xmppClient;
     if (mucManager != NULL) delete mucManager;
+    if (transferManager != NULL) delete transferManager;
 }
 
 // ---------- connection ---------------------------------------------------------------------------------------------------------
@@ -498,6 +506,25 @@ void MyXmppClient::mucTopicChangeSlot(QString subject) {
   QXmppMucRoom* room = (QXmppMucRoom*)sender();
   QString roomJid = room->jid();
   emit mucSubjectChanged(roomJid,subject);
+}
+
+// ---------- file transfer --------------------------------------------------------------------------------------------------------
+
+void MyXmppClient::incomingTransfer(QXmppTransferJob *job) {
+  qDebug() << "received file from" << job->jid() << "with filename" << job->fileName() << "and size" << job->fileSize();
+
+  switch (job->method()) {
+    case QXmppTransferJob::NoMethod:
+      qDebug() << "no method o.o"; break;
+    case QXmppTransferJob::InBandMethod:
+      qDebug() << "InBandMethod"; break;
+    case QXmppTransferJob::SocksMethod:
+      qDebug() << "SocksMethod"; break;
+    case QXmppTransferJob::AnyMethod:
+      qDebug() << "Any method"; break;
+  }
+
+  job->accept("F://Received files//" + job->fileName());
 }
 
 // ------------------------//

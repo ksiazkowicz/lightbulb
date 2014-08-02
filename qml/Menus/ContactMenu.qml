@@ -36,8 +36,8 @@ ContextMenu {
 
     onStatusChanged: {
         if (contactMenu.status == DialogStatus.Closed && shouldICareAnyway) {
-            vars.selectedJid = "";
             contactMenu.destroy();
+            pageStack.currentPage.selectedJid = "";
         }
     }
     Component.onCompleted: {

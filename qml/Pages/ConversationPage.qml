@@ -203,14 +203,33 @@ Page {
         // sending a chat state meaning that chat is active if not in archive mode
         if (!isInArchiveMode) {
             xmppConnectivity.openChat( accountId,contactJid )
+        } else {
+            xmppConnectivity.page = 1;
         }
 
         // get messages for jid
         xmppConnectivity.chatJid = contactJid
 
         // if MUC, get subject
-        if (chatType == 3)
+        if (chatType == 3) {
             subjectText.text = xmppConnectivity.getMUCSubject(accountId,contactJid);
+        } else {
+            // get resources
+            listModelResources.clear()
+
+            listModelResources.append({resource:qsTr("(by default)"), checked:(contactResource == "")})
+
+            if (notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accountId)) != "Offline") {
+                console.log("to dziala?")
+                var listResources = xmppConnectivity.getResourcesByJid(accountId,contactJid)
+                console.log(listResources);
+                for( var z=0; z<listResources.length; z++ ) {
+                    if (listResources[z] == "") { continue; }
+                    if (contactResource ==listResources[z]) listModelResources.append({resource:listResources[z], checked:true})
+                    else listModelResources.append({resource:listResources[z], checked:false})
+                }
+            }
+        }
     }
 
     function sendMessage() {

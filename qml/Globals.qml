@@ -32,7 +32,6 @@ Item {
     property int                     lastUsedStatus: 0
     signal                           statusTextChanged
     property bool                    isActive: true
-    property string                  resourceJid: ""
     property string                  context: ""
 
     // settings

@@ -81,8 +81,10 @@ CommonDialog {
                             onClicked: {
                                 itemResource.ListView.view.currentIndex = index
 
-                                if( index == 0 ) vars.resourceJid = ""
-                                else vars.resourceJid = resource
+                                if( index == 0 )
+                                    pageStack.currentPage.contactResource = ""
+                                else
+                                    pageStack.currentPage.contactResource = resource
 
                                 for (var i=0; i<listModelResources.count; i++) {
                                     if(index == i) listModelResources.get(index).checked = true

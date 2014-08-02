@@ -223,6 +223,8 @@ public slots:
 
     Q_INVOKABLE void updateMyData(QString jid);
 
+    Q_INVOKABLE QStringList getResourcesByJid(QString accountId, QString bareJid) { return clients->value(accountId)->getResourcesByJid(bareJid); }
+
     // handle messages and states
     Q_INVOKABLE bool sendAMessage(QString accountId, QString recipientJid, QString recipientResource, QString body, int state, int type);
 

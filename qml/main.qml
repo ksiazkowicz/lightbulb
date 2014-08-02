@@ -30,7 +30,7 @@ import lightbulb 1.0
 
 PageStackWindow {
     id: main
-    property int splitscreenY:         0
+    property int splitscreenY: 0
 
     function resetSplitscreen() {
         main.y = 0;
@@ -123,9 +123,9 @@ PageStackWindow {
         id: network
         currentIAP: settings.gInt("behavior","internetAccessPoint");
     }
+    ListModel           { id: listModelResources }
     Clipboard           { id: clipboard }
     Notifications       { id: notify }
-    ListModel           { id: listModelResources }
     MigrationManager    { id: migration }
 
     /************************( stuff to do when running this app )*****************************/

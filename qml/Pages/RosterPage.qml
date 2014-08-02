@@ -29,10 +29,7 @@ import lightbulb 1.0
 Page {
     id: rosterPage
 
-    Connections {
-        target: xmppConnectivity
-        onChatJidChanged: if (xmppConnectivity.chatJid == "") vars.selectedJid = "";
-    }
+    property string selectedJid
 
     Connections {
         target: vars
@@ -70,11 +67,11 @@ Page {
 
             states: [State {
                     name: "Current"
-                    when: vars.selectedJid == jid
+                    when: selectedJid == jid
                     PropertyChanges { target: wrapper; gradient: gr_press }
                 },State {
                     name: "Not current"
-                    when: !vars.selectedJid == jid
+                    when: !selectedJid == jid
                     PropertyChanges { target: wrapper; gradient: gr_free }
                 }]
 
@@ -138,8 +135,10 @@ Page {
                 anchors.fill: parent
 
                 onClicked: {
+                    selectedJid = jid;
                     vars.globalUnreadCount = vars.globalUnreadCount - unreadMsg
                     notify.updateNotifiers()
+                    pageStack.pop()
                     pageStack.push("qrc:/pages/Conversation",{"accountId": accountId,"contactName":txtJid.contact,"contactJid":jid,"isInArchiveMode":false})
                 }
 

@@ -32,6 +32,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "QXmppRosterManager.h"
 #include "QXmppVersionManager.h"
 #include "QXmppMucManager.h"
+#include "QXmppTransferManager.h"
+#include "QXmppDiscoveryManager.h"
 #include "QXmppConfiguration.h"
 #include "QXmppClient.h"
 #include "QXmppMessage.h"
@@ -47,8 +49,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDebug>
 
 #include "src/database/Settings.h"
-
-#include "src/models/RosterItemModel.h"
 
 #include "src/cache/MyCache.h"
 
@@ -73,6 +73,8 @@ class MyXmppClient : public QObject
     QXmppRosterManager *rosterManager;
     QXmppVCardManager *vCardManager;
     QXmppMucManager *mucManager;
+    QXmppTransferManager *transferManager;
+    QXmppDiscoveryManager *serviceDiscovery;
 
     MyCache* cacheIM;
 
@@ -224,6 +226,8 @@ private slots:
     void notifyNewSubscription(QString bareJid) { emit subscriptionReceived(m_accountId, bareJid); }
 
     void mucTopicChangeSlot(QString subject);
+
+    void incomingTransfer(QXmppTransferJob *job);
 
 private:
     // functions
