@@ -124,6 +124,10 @@ OTHER_FILES += README.md \
     qml/Menus/*.* \
     qml/Components/*.*
 
+# Please do not modify the following two lines. Required for deployment.
+include(qmlapplicationviewer/qmlapplicationviewer.pri)
+qtcAddDeployment()
+
 #qxmpp
 include(qxmpp/qxmpp.pri)
 INCLUDEPATH += qxmpp/base/ qxmpp/client
