@@ -158,17 +158,20 @@ Page {
     Rectangle {
         id: subjectRect
         anchors { left: parent.left; right: parent.right; top: parent.top }
-        visible: !isInArchiveMode && chatType == 3 && subjectText.text != ""
+        property bool shouldBeVisible: !isInArchiveMode && chatType == 3 && subjectText.text != "" && !inputContext.visible
         color: "darkred"
-        height: visible ? subjectText.height + 2*platformStyle.paddingSmall : 0
+        height: shouldBeVisible ? subjectText.paintedHeight + 2*platformStyle.paddingSmall : 0
         Text {
             id: subjectText
             anchors { top: parent.top; left: parent.left; right: parent.right; margins: platformStyle.paddingSmall }
             color: platformStyle.colorNormalLight
             wrapMode: Text.WordWrap
             font.pixelSize: platformStyle.fontSizeSmall
-            visible: parent.visible
+            clip: true
+            height: subjectRect.height - 2*platformStyle.paddingSmall
         }
+
+        Behavior on height { PropertyAnimation {} }
     }
 
 

@@ -51,12 +51,8 @@ MyXmppClient::MyXmppClient() : QObject(0) {
                       this, SLOT(initVCard(const QXmppVCardIq &)),
                       Qt::UniqueConnection  );
 
-    qDebug() << "MyXmppClient(): attaching MucManager";
     mucManager = new QXmppMucManager();
     xmppClient->addExtension(mucManager);
-    qDebug() << "MyXmppClient(): connecting signal from MucManager";
-    QObject::connect( mucManager, SIGNAL(invitationReceived(QString,QString,QString)), this, SLOT(notifyAboutMUCInvitation(QString,QString,QString)));
-    qDebug() << "MyXmppClient(): ready.";
 }
 
 MyXmppClient::~MyXmppClient() {
@@ -230,6 +226,13 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
     if ( !( xmppMsg.body().isEmpty() || xmppMsg.body().isNull() || bareJid_from == m_myjid ) ) {
         m_bareJidLastMessage = getBareJidByJid(xmppMsg.from());
         m_resourceLastMessage = getResourceByJid(xmppMsg.from());
+
+        if (xmppMsg.body().contains("http://talkgadget.google.com/talkgadget/joinpmuc") ||
+            (xmppMsg.body().contains("invited you to the room") && xmppMsg.body().contains(getBareJidByJid(xmppMsg.from()))))
+          {
+            emit mucInvitationReceived(m_accountId,getBareJidByJid(xmppMsg.from()),getBareJidByJid(xmppMsg.body().split(" ").at(0)),"");
+            return;
+          }
 
         int isMine = 0;
         if (xmppMsg.type() == QXmppMessage::GroupChat)
@@ -475,6 +478,11 @@ void MyXmppClient::joinMUCRoom(QString room, QString nick) {
   QObject::connect(mucRoom,SIGNAL(subjectChanged(QString)),this,SLOT(mucTopicChangeSlot(QString)));
 
   mucRooms.insert(room,mucRoom);
+}
+
+void MyXmppClient::leaveMUCRoom(QString room) {
+  QXmppMucRoom *mucRoom = mucRooms.value(room);
+  mucRoom->leave();
 }
 
 QString MyXmppClient::getMUCNick(QString room) {

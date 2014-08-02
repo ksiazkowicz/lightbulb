@@ -32,9 +32,14 @@ PageStackWindow {
     id: main
     property int splitscreenY:         0
 
+    function resetSplitscreen() {
+        main.y = 0;
+        main.splitscreenY = 0;
+    }
+
     Connections {
         target: inputContext
-        onVisibleChanged: inputContext.visible ? (y = splitscreenY > 0 ? 0-splitscreenY : 0) : y = 0
+        onVisibleChanged: inputContext.visible ? (main.y = main.splitscreenY > 0 ? 0-main.splitscreenY : 0) : resetSplitscreen();
     }
 
     platformInverted:                  settings.gBool("ui","invertPlatform")
@@ -100,6 +105,10 @@ PageStackWindow {
                 xmppConnectivity.acceptSubscription(accountId,bareJid)
             else
                 xmppConnectivity.rejectSubscription(accountId,bareJid)
+        }
+        onMucInvitationReceived: {
+            if (avkon.displayAvkonQueryDialog("Invitation (" + getAccountName(accountId) + ")", invSender + " invites you to chatroom " + bareJid + qsTr(". Do you want to join?")))
+                dialog.createWithProperties("qrc:/dialogs/MUC/Join",{"accountId":accountId,"mucJid":bareJid})
         }
     }
 	

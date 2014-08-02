@@ -32,6 +32,7 @@ CommonDialog {
 
     buttonTexts: [qsTr("OK"), qsTr("Cancel")]
     property string accountId;
+    property string mucJid;
 
     // Code for dynamic load
     Component.onCompleted: {
@@ -62,6 +63,7 @@ CommonDialog {
         TextField {
             id: jidField
             height: 50
+            text: mucJid
             anchors { left: parent.left; right: parent.right }
             placeholderText: qsTr("room@conference.example.com")
         }

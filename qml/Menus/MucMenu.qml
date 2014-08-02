@@ -49,12 +49,11 @@ Menu {
         }
         MenuItem {
             text: qsTr("Leave room")
-            enabled: false
             platformInverted: main.platformInverted
             onClicked: {
                 pageStack.pop()
                 xmppConnectivity.closeChat(accountId,contactJid)
-                xmppConnectivity.leaveMUCRoom(accountId,contactJid)
+                xmppConnectivity.leaveMUC(accountId,contactJid)
                 xmppConnectivity.resetUnreadMessages(accountId,contactJid)
                 xmppConnectivity.chatJid = ""
             }

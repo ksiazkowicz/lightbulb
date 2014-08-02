@@ -169,6 +169,7 @@ public :
     void goOnline(QString lastStatus) { this->setMyPresence(Online,lastStatus); }
 
     void joinMUCRoom(QString room, QString nick);
+    void leaveMUCRoom(QString room);
     QString getMUCNick(QString room);
     QString getMUCSubject(QString room);
 	
@@ -204,6 +205,7 @@ signals:
 
     // muc
     void mucSubjectChanged(QString bareJid, QString newSubject);
+    void mucInvitationReceived(QString accountId, QString bareJid, QString invSender, QString reason);
 
 public slots:
     void clientStateChanged( QXmppClient::State state );
@@ -220,7 +222,7 @@ private slots:
     void error(QXmppClient::Error);
 
     void notifyNewSubscription(QString bareJid) { emit subscriptionReceived(m_accountId, bareJid); }
-    void notifyAboutMUCInvitation(QString roomJid,QString inviter,QString reason) { qDebug() << "received MUC for " << roomJid << " by " << &inviter << " because " << reason; }
+
     void mucTopicChangeSlot(QString subject);
 
 private:
