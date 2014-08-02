@@ -172,6 +172,7 @@ public :
 
     void joinMUCRoom(QString room, QString nick);
     QString getMUCNick(QString room);
+    QString getMUCSubject(QString room);
 	
 signals:
     void versionChanged();
@@ -204,6 +205,9 @@ signals:
 
     void iFoundYourParentsGoddamit(QString jid);
 
+    // muc
+    void mucSubjectChanged(QString bareJid, QString newSubject);
+
 public slots:
     void clientStateChanged( QXmppClient::State state );
 
@@ -220,6 +224,7 @@ private slots:
 
     void notifyNewSubscription(QString bareJid) { emit subscriptionReceived(m_accountId, bareJid); }
     void notifyAboutMUCInvitation(QString roomJid,QString inviter,QString reason) { qDebug() << "received MUC for " << roomJid << " by " << &inviter << " because " << reason; }
+    void mucTopicChangeSlot(QString subject);
 
 private:
     // functions

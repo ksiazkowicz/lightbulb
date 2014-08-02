@@ -149,6 +149,8 @@ signals:
     void xmppSubscriptionReceived (const QString accountId, const QString bareJid);
     void xmppTypingChanged        (const QString accountId, QString bareJid, bool isTyping);
     void xmppPresenceChanged      (QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus);
+
+    void mucSubjectChanged        (QString bareJid, QString subject);
     
 public slots:
     void handleXmppStatusChange (const QString accountId);
@@ -228,6 +230,7 @@ public slots:
 
     // handle MUC
     Q_INVOKABLE bool joinMUC(QString accountId, QString jid, QString nick) { clients->value(accountId)->joinMUCRoom(jid,nick); }
+    Q_INVOKABLE QString getMUCSubject(QString accountId, QString jid) { return clients->value(accountId)->getMUCSubject(jid); }
 
 private:
     QString currentClient;

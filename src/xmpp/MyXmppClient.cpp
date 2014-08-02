@@ -472,6 +472,7 @@ void MyXmppClient::joinMUCRoom(QString room, QString nick) {
   QXmppMucRoom *mucRoom = mucManager->addRoom(room);
   mucRoom->setNickName(nick);
   mucRoom->join();
+  QObject::connect(mucRoom,SIGNAL(subjectChanged(QString)),this,SLOT(mucTopicChangeSlot(QString)));
 
   mucRooms.insert(room,mucRoom);
 }
@@ -479,6 +480,16 @@ void MyXmppClient::joinMUCRoom(QString room, QString nick) {
 QString MyXmppClient::getMUCNick(QString room) {
   QXmppMucRoom *mucRoom = mucRooms.value(room);
   return mucRoom->nickName();
+}
+
+QString MyXmppClient::getMUCSubject(QString room) {
+  return mucRooms.value(room)->subject();
+}
+
+void MyXmppClient::mucTopicChangeSlot(QString subject) {
+  QXmppMucRoom* room = (QXmppMucRoom*)sender();
+  QString roomJid = room->jid();
+  emit mucSubjectChanged(roomJid,subject);
 }
 
 // ------------------------//

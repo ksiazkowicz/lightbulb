@@ -51,6 +51,15 @@ Page {
     property bool   isAChatPage:     true
     property bool   isTyping:        false
     property int    chatType:        0
+    property string chatSubject:     ""
+
+    Connections {
+        target: xmppConnectivity
+        onMucSubjectChanged: {
+            if (chatType == 3 && bareJid == contactJid)
+                chatSubject = subject;
+        }
+    }
 
     Component {
         id: msgComponent
@@ -150,10 +159,43 @@ Page {
         }
     }
 
+    Rectangle {
+        id: subjectRect
+        anchors { left: parent.left; right: parent.right; top: parent.top }
+        visible: !isInArchiveMode && chatType == 3 && chatSubject != ""
+        color: "darkred"
+        height: visible ? subjectText.height + 2*platformStyle.paddingSmall : 0
+        z: 1
+        Text {
+            id: subjectText
+            anchors { top: parent.top; left: parent.left; right: parent.right; margins: platformStyle.paddingSmall }
+            color: platformStyle.colorNormalLight
+            text: chatSubject
+            wrapMode: Text.WordWrap
+            font.pixelSize: platformStyle.fontSizeSmall
+        }
+
+        onVisibleChanged: visible ? show() : hide()
+
+        function show() {
+            subjectAnimation.from = 0;
+            subjectAnimation.to = subjectText.height + 2*platformStyle.paddingSmall;
+            subjectAnimation.running = true;
+        }
+
+        function hide() {
+            subjectAnimation.to = 0;
+            subjectAnimation.from = subjectText.height + 2*platformStyle.paddingSmall;
+            subjectAnimation.running = true;
+        }
+
+        NumberAnimation { id: subjectAnimation; target: subjectRect; property: "height"; duration: 100 }
+    }
+
 
     ListView {
         id: listViewMessages
-        anchors { left: parent.left; right: parent.right; bottom: msgInputField.top; top: parent.top }
+        anchors { left: parent.left; right: parent.right; bottom: msgInputField.top; top: subjectRect.bottom }
         model: isInArchiveMode ? xmppConnectivity.messagesByPage : xmppConnectivity.cachedMessages
 
         delegate: msgComponent
@@ -161,6 +203,7 @@ Page {
         spacing: 5
         onHeightChanged: positionViewAtEnd();
         onCountChanged: goToEnd()
+        clip: true
 
         function goToEnd() {
             anim.from = contentY;
@@ -181,6 +224,10 @@ Page {
 
         // get messages for jid
         xmppConnectivity.chatJid = contactJid
+
+        // if MUC, get subject
+        if (chatType == 3)
+            chatSubject = xmppConnectivity.getMUCSubject(accountId,contactJid)
     }
 
     function sendMessage() {
