@@ -174,7 +174,6 @@ Page {
         Behavior on height { PropertyAnimation {} }
     }
 
-
     ListView {
         id: listViewMessages
         anchors { left: parent.left; right: parent.right; bottom: msgInputField.top; top: subjectRect.bottom }
@@ -183,7 +182,8 @@ Page {
         delegate: msgComponent
 
         spacing: 5
-        onHeightChanged: positionViewAtEnd();
+        Component.onCompleted: goToEnd()
+        onHeightChanged: goToEnd()
         onCountChanged: goToEnd()
         clip: true
 
@@ -192,7 +192,8 @@ Page {
             positionViewAtEnd();
             var destination = contentY;
             anim.to = destination
-            anim.running = true;
+            if ((anim.to - anim.from) - height < 0)
+                anim.running = true;
         }
 
         NumberAnimation { id: anim; target: listViewMessages; property: "contentY"; duration: 100 }
