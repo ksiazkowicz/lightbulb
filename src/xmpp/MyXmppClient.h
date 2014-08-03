@@ -174,6 +174,7 @@ public :
     void leaveMUCRoom(QString room);
     QString getMUCNick(QString room);
     QString getMUCSubject(QString room);
+    QStringList getListOfParticipants(QString room);
 	
 signals:
     void versionChanged();
@@ -226,8 +227,10 @@ private slots:
     void notifyNewSubscription(QString bareJid) { emit subscriptionReceived(m_accountId, bareJid); }
 
     void mucTopicChangeSlot(QString subject);
+    void mucJoinedSlot();
 
     void incomingTransfer(QXmppTransferJob *job);
+    void permissionsReceived(const QList<QXmppMucItem> &permissions);
 
 private:
     // functions

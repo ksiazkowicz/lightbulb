@@ -75,6 +75,7 @@
         <file alias="AccountDetails">qml/Dialogs/AccountDetails.qml</file>
         <file alias="AccessPointSelector">qml/Dialogs/AccessPointsDialog.qml</file>
         <file alias="MUC/Join">qml/Dialogs/MucJoinDialog.qml</file>
+        <file alias="MUC/Participants">qml/Dialogs/MucParticipantsDialog.qml</file>
     </qresource>
     <qresource prefix="/pages">
         <file alias="About">qml/Pages/AboutPage.qml</file>

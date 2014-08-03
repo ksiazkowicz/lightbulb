@@ -483,9 +483,17 @@ void MyXmppClient::joinMUCRoom(QString room, QString nick) {
   QXmppMucRoom *mucRoom = mucManager->addRoom(room);
   mucRoom->setNickName(nick);
   mucRoom->join();
-  QObject::connect(mucRoom,SIGNAL(subjectChanged(QString)),this,SLOT(mucTopicChangeSlot(QString)));
+  connect(mucRoom,SIGNAL(subjectChanged(QString)),this,SLOT(mucTopicChangeSlot(QString)));
+  connect(mucRoom,SIGNAL(permissionsReceived(QList<QXmppMucItem>)),this,SLOT(permissionsReceived(QList<QXmppMucItem>)));
+  connect(mucRoom,SIGNAL(joined()),this,SLOT(mucJoinedSlot()));
 
   mucRooms.insert(room,mucRoom);
+}
+
+void MyXmppClient::mucJoinedSlot() {
+  QXmppMucRoom* room = (QXmppMucRoom*)sender();
+  qDebug() << "Requesting permissions";
+  room->requestPermissions();
 }
 
 void MyXmppClient::leaveMUCRoom(QString room) {
@@ -502,10 +510,24 @@ QString MyXmppClient::getMUCSubject(QString room) {
   return mucRooms.value(room)->subject();
 }
 
+QStringList MyXmppClient::getListOfParticipants(QString room) {
+  return mucRooms.value(room)->participants();
+}
+
 void MyXmppClient::mucTopicChangeSlot(QString subject) {
   QXmppMucRoom* room = (QXmppMucRoom*)sender();
   QString roomJid = room->jid();
   emit mucSubjectChanged(roomJid,subject);
+}
+
+void MyXmppClient::permissionsReceived(const QList<QXmppMucItem> &permissions) {
+  qDebug() << "received permissions;" << permissions.count();
+  for (int i=0;i<permissions.count();i++) {
+      QString nameString = permissions.at(i).nick() + " (" + permissions.at(i).jid() + ")";
+      qDebug() << "Permissions for" << qPrintable(nameString);
+      qDebug() << "Role:" << permissions.at(i).roleToString(permissions.at(i).role());
+      qDebug() << "Affiliation:" << permissions.at(i).affiliationToString(permissions.at(i).affiliation());
+    }
 }
 
 // ---------- file transfer --------------------------------------------------------------------------------------------------------

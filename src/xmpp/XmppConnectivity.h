@@ -232,6 +232,7 @@ public slots:
     Q_INVOKABLE bool joinMUC(QString accountId, QString jid, QString nick) { clients->value(accountId)->joinMUCRoom(jid,nick); }
     Q_INVOKABLE void leaveMUC(QString accountId, QString jid) { clients->value(accountId)->leaveMUCRoom(jid); }
     Q_INVOKABLE QString getMUCSubject(QString accountId, QString jid) { return clients->value(accountId)->getMUCSubject(jid); }
+    Q_INVOKABLE QStringList getMUCParticipants(QString accountId, QString room) { return clients->value(accountId)->getListOfParticipants(room); }
 
 private:
     QString currentClient;

@@ -43,9 +43,8 @@ Menu {
     content: MenuLayout {
         MenuItem {
             text: qsTr("Participants")
-            enabled: false
             platformInverted: main.platformInverted
-            onClicked: dialog.create("qrc:/dialogs/MUC/Participants")
+            onClicked: dialog.createWithProperties("qrc:/dialogs/MUC/Participants",{"contactJid":contactJid,"accountId":accountId,"hasModPermissions":hasModPermissions,"hasOwnerPermissions":hasOwnerPermissions})
         }
         MenuItem {
             text: qsTr("Leave room")
