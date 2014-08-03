@@ -194,6 +194,10 @@ void XmppConnectivity::openChat(QString accountId, QString bareJid) {
         // change it to MUC room name one day
         message = "Joined chatroom [[name]]";
       } else {
+        // add contact if it doesn't exist on roster yet. If you receive messages before roster it would simply updates their names
+        if (!contacts->doesContactExists(accountId,bareJid))
+            contacts->addContact(accountId,bareJid,bareJid);
+
         chat = new ChatsItemModel(contacts->getPropertyByJid(accountId,bareJid,"name"),bareJid,accountId,0);
         message = "Chat started with [[name]]";
       }

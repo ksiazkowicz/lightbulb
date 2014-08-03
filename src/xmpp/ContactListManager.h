@@ -18,6 +18,8 @@ public:
    Q_INVOKABLE QString getPropertyByJid(QString accountId,QString bareJid,QString property);
 
   void clearPresenceForAccount(QString accountId);
+
+  bool doesContactExists(QString accountId, QString bareJid);
   
 signals:
   void rosterChanged();
