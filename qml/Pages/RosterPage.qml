@@ -89,18 +89,17 @@ Page {
                     sourceSize.height: imgPresence.height
                     sourceSize.width: imgPresence.height
                     smooth: true
-                    visible: vars.markUnread ? unreadMsg != 0 : false
+                    visible: vars.markUnread ? xmppConnectivity.getUnreadCount(accountId,jid) != 0 : false
                     anchors.centerIn: parent
-                    opacity: unreadMsg != 0 ? 1 : 0
                     Image {
                         id: imgUnreadCount
                         source: "qrc:/unread-count"
                         sourceSize.height: imgPresence.height
                         sourceSize.width: imgPresence.height
                         smooth: true
-                        visible: vars.showUnreadCount ? unreadMsg != 0 : false
+                        visible: vars.showUnreadCount ? xmppConnectivity.getUnreadCount(accountId,jid) != 0 : false
                         anchors.centerIn: parent
-                        opacity: unreadMsg != 0 ? 1 : 0
+                        opacity: xmppConnectivity.getUnreadCount(accountId,jid) != 0 ? 1 : 0
                     }
                     Rectangle {
                         color: "transparent"
@@ -136,7 +135,6 @@ Page {
 
                 onClicked: {
                     selectedJid = jid;
-                    vars.globalUnreadCount = vars.globalUnreadCount - unreadMsg
                     notify.updateNotifiers()
                     pageStack.pop()
                     pageStack.push("qrc:/pages/Conversation",{"accountId": accountId,"contactName":txtJid.contact,"contactJid":jid,"isInArchiveMode":false})

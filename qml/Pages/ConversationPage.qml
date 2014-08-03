@@ -32,8 +32,6 @@ Page {
 
     /******************************************
       TODO:
-        - handle resources
-        - handle different types of messages
         - handle unread and read messages
         - handle switching between archive and chat mode
         - ...
@@ -51,135 +49,22 @@ Page {
     property bool   isTyping:        false
     property int    chatType:        0
 
-    Connections {
-        target: xmppConnectivity
-        onMucSubjectChanged: if (chatType == 3 && bareJid == contactJid) subjectText.text = subject;
-    }
-
-    Component {
-        id: msgComponent
-        Item {
-        MouseArea {
-            anchors.fill: parent
-            onPressAndHold: dialog.createWithProperties("qrc:/menus/MessageContext", {"msg": msgText})
-        }
-        id: wrapper
-        width: listViewMessages.width - 10
-        height: triangleTop.height + bubbleTop.height/2 + message.height + bubbleBottom.height/2 + triangleBottom.height
-
-        property int marginRight: isMine == true ? platformStyle.paddingLarge*3 : platformStyle.paddingSmall
-        property int marginLeft: isMine == true ? platformStyle.paddingSmall : platformStyle.paddingLarge*3
-
-        anchors.horizontalCenter: parent.horizontalCenter
-        Image {
-            id: triangleTop
-            anchors { top: parent.top; right: parent.right; rightMargin: platformStyle.paddingMedium*2 }
-            source: isMine == true ? "" : "qrc:/images/bubble_incTriangle.png"
-            width: platformStyle.paddingLarge
-            height: isMine == true ? 0 : platformStyle.paddingLarge
-        }
-        Rectangle {
-            id: bubbleTop
-            anchors { top: triangleTop.bottom;
-                left: parent.left;
-                right: parent.right;
-                rightMargin: wrapper.marginRight
-                leftMargin: wrapper.marginLeft
-            }
-            height: 20
-            smooth: true
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: isMine == true ? "#6f6f74" : "#f2f1f4" }
-                GradientStop { position: 0.5; color: isMine == true ? "#56565b" : "#eae9ed" }
-                GradientStop { position: 1.0; color: isMine == true ? "#56565b" : "#eae9ed" }
-            }
-
-            radius: 8
-         }
-            Rectangle {
-                id: bubbleBottom
-                anchors { bottom: triangleBottom.top;
-                    left: parent.left;
-                    right: parent.right;
-                    rightMargin: wrapper.marginRight
-                    leftMargin: wrapper.marginLeft
-                }
-                height: 20
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: isMine == true ? "#56565b" : "#e6e6eb" }
-                    GradientStop { position: 0.5; color: isMine == true ? "#56565b" : "#e6e6eb" }
-                    GradientStop { position: 1.0; color: isMine == true ? "#46464b" : "#b9b8bd" }
-                }
-
-                radius: 8
-                smooth: true
-            }
-            Rectangle {
-                id: bubbleCenter
-                anchors {
-                    top: bubbleTop.top;
-                    topMargin: 10;
-                    rightMargin: wrapper.marginRight;
-                    leftMargin: wrapper.marginLeft;
-                    left: wrapper.left;
-                    right: wrapper.right;
-                    bottom: bubbleBottom.bottom;
-                    bottomMargin: 10
-                }
-                color: isMine == true ? "#56565b" : "#e6e6eb"
-                Text {
-                      id: message
-                      anchors { top: parent.top; left: parent.left; leftMargin: platformStyle.paddingSmall; right: parent.right; rightMargin: platformStyle.paddingSmall }
-                      property string messageText: vars.areEmoticonsDisabled ? msgText : emoticon.parseEmoticons(msgText)
-                      property string date: dateTime.substr(0,8) == Qt.formatDateTime(new Date(), "dd-MM-yy") ? dateTime.substr(9,5) : dateTime
-                      property string name: isMine == true ? qsTr("Me") : msgType !== 3 ? (contactName === "" ? xmppConnectivity.chatJid : contactName) : msgResource
-
-                      text: "<font color='#009FEB'>" + name + ":</font> " + messageText + "<div align='right' style='color: \"#999999\"'>"+ date + "</div>"
-                      color: isMine == true ? platformStyle.colorNormalLight : platformStyle.colorNormalDark
-                      font.pixelSize: platformStyle.fontSizeSmall
-                      wrapMode: Text.WordWrap
-                      onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
-                }
-            }
-
-            Image {
-                id: triangleBottom
-                anchors { bottom: parent.bottom;
-                    left: parent.left;
-                    leftMargin: platformStyle.paddingMedium*2
-                }
-                source: isMine == true ? "qrc:/images/bubble_outTriangle.png" : ""
-                width: platformStyle.paddingLarge
-                height: isMine == true ? platformStyle.paddingLarge : 0
-            }
-        }
-    }
-
-    Rectangle {
-        id: subjectRect
-        anchors { left: parent.left; right: parent.right; top: parent.top }
-        property bool shouldBeVisible: !isInArchiveMode && chatType == 3 && subjectText.text != "" && !inputContext.visible
-        color: "darkred"
-        height: shouldBeVisible ? subjectText.paintedHeight + 2*platformStyle.paddingSmall : 0
-        Text {
-            id: subjectText
-            anchors { top: parent.top; left: parent.left; right: parent.right; margins: platformStyle.paddingSmall }
-            color: platformStyle.colorNormalLight
-            wrapMode: Text.WordWrap
-            font.pixelSize: platformStyle.fontSizeSmall
-            clip: true
-            height: subjectRect.height - 2*platformStyle.paddingSmall
-        }
-
-        Behavior on height { PropertyAnimation {} }
-    }
-
     ListView {
         id: listViewMessages
-        anchors { left: parent.left; right: parent.right; bottom: msgInputField.top; top: subjectRect.bottom }
+        anchors { left: parent.left; right: parent.right; bottom: msgInputField.top; top: parent.top }
         model: isInArchiveMode ? xmppConnectivity.messagesByPage : xmppConnectivity.cachedMessages
 
-        delegate: msgComponent
+        delegate: Loader {
+            source: isInArchiveMode ? ":/Components/Convo/ArchiveDelegate.qml" : (msgType == 4 ? ":/Components/Convo/InformationDelegate" : (isMine ? ":/Components/Convo/OutcomingDelegate" : ":/Components/Convo/IncomingDelegate"))
+            property string _msgText: msgText
+            property string _msgResource: msgResource
+            property int _msgType: msgType
+            property string _contactName: contactName
+            property string _contactJid: contactJid
+            property string _dateTime: dateTime
+            height: sourceComponent.height
+            width: listViewMessages.width
+        }
 
         spacing: 5
         Component.onCompleted: goToEnd()
@@ -210,19 +95,15 @@ Page {
         // get messages for jid
         xmppConnectivity.chatJid = contactJid
 
-        // if MUC, get subject
-        if (chatType == 3) {
-            subjectText.text = xmppConnectivity.getMUCSubject(accountId,contactJid);
-        } else {
+        // if not MUC, get resources
+        if (chatType != 3) {
             // get resources
             listModelResources.clear()
 
             listModelResources.append({resource:qsTr("(by default)"), checked:(contactResource == "")})
 
             if (notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accountId)) != "Offline") {
-                console.log("to dziala?")
                 var listResources = xmppConnectivity.getResourcesByJid(accountId,contactJid)
-                console.log(listResources);
                 for( var z=0; z<listResources.length; z++ ) {
                     if (listResources[z] == "") { continue; }
                     if (contactResource ==listResources[z]) listModelResources.append({resource:listResources[z], checked:true})
@@ -300,7 +181,7 @@ Page {
                 // go back to previous page
                 pageStack.pop()
 
-                xmppConnectivity.preserveMsg(contactJid,msgInputField.text)
+                xmppConnectivity.preserveMsg(accountId,contactJid,msgInputField.text)
                 xmppConnectivity.resetUnreadMessages(accountId,contactJid)
 
                 // unload messages, deselect contact
@@ -318,7 +199,7 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-menu_inverse" : "toolbar-menu"
             onClicked: {
-                xmppConnectivity.preserveMsg(contactJid,msgInputField.text)
+                xmppConnectivity.preserveMsg(accountId,contactJid,msgInputField.text)
 
                 var menuPath = "qrc:/menus/Messages";
                 if (isInArchiveMode)

@@ -175,6 +175,9 @@ public :
     QString getMUCNick(QString room);
     QString getMUCSubject(QString room);
     QStringList getListOfParticipants(QString room);
+
+    bool isMucRoom(QString bareJid) { return mucRooms.contains(bareJid); }
+    QString getMucRoomName(QString bareJid) { return mucRooms.value(bareJid)->name(); }
 	
 signals:
     void versionChanged();
@@ -207,8 +210,8 @@ signals:
     void iFoundYourParentsGoddamit(QString jid);
 
     // muc
-    void mucSubjectChanged(QString bareJid, QString newSubject);
     void mucInvitationReceived(QString accountId, QString bareJid, QString invSender, QString reason);
+    void mucRoomJoined(QString accountId,QString bareJid);
 
 public slots:
     void clientStateChanged( QXmppClient::State state );
@@ -228,6 +231,12 @@ private slots:
 
     void mucTopicChangeSlot(QString subject);
     void mucJoinedSlot();
+    void mucErrorSlot(const QXmppStanza::Error &error);
+    void mucKickedSlot(const QString &jid, const QString &reason);
+    void mucRoomNameChangedSlot(const QString &name);
+    void mucYourNickChanged(const QString &nickName);
+    void mucParticipantAddedSlot(const QString &jid);
+    void mucParticipantRemovedSlot(const QString &jid);
 
     void incomingTransfer(QXmppTransferJob *job);
     void permissionsReceived(const QList<QXmppMucItem> &permissions);

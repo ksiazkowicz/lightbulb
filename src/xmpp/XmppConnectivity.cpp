@@ -42,6 +42,8 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
     dbThread->start();
 
     contacts = new ContactListManager();
+    connect(contacts,SIGNAL(contactNameChanged(QString,QString,QString)),this,SLOT(updateChatName(QString,QString,QString)));
+
     chats = new ChatsListModel();
 
     for (int i=0; i<lSettings->accountsCount(); i++) {
@@ -96,8 +98,8 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
     connect(clients->value(index),SIGNAL(typingChanged(QString,QString,bool)),this,SIGNAL(xmppTypingChanged(QString,QString,bool)),Qt::UniqueConnection);
 
     // connect MUC signals
-    connect(clients->value(index),SIGNAL(mucSubjectChanged(QString,QString)),this,SIGNAL(mucSubjectChanged(QString,QString)),Qt::UniqueConnection);
     connect(clients->value(index),SIGNAL(mucInvitationReceived(QString,QString,QString,QString)),this,SIGNAL(mucInvitationReceived(QString,QString,QString,QString)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(mucRoomJoined(QString,QString)),this,SLOT(openChat(QString,QString)),Qt::UniqueConnection);
 	
     // connect ContactListManager
     connect(clients->value(index),SIGNAL(contactAdded(QString,QString,QString)),contacts,SLOT(addContact(QString,QString,QString)),Qt::UniqueConnection);
@@ -159,10 +161,8 @@ bool XmppConnectivity::resetSettings() { return QFile::remove(lSettings->confFil
 
 // handling stuff from MyXmppClient
 void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine, int type, QString resource) {
-    if (mine == 0) emit notifyMsgReceived(this->getPropertyByJid(m_accountId,"name",bareJid),bareJid,body.left(30),m_accountId);
-
-    if (type == QXmppMessage::GroupChat)
-      contacts->setContactAsMUC(m_accountId,bareJid);
+    if (mine == 0 && type != 4)
+      emit notifyMsgReceived(this->getPropertyByJid(m_accountId,"name",bareJid),bareJid,body.left(30),m_accountId);
 
     body = body.replace(">", "&gt;");  //fix for > stuff
     body = body.replace("<", "&lt;");  //and < stuff too ^^
@@ -173,18 +173,33 @@ void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString
     if (!cachedMessages->contains(bareJid)) cachedMessages->insert(bareJid,new MsgListModel());
     MsgItemModel* message = new MsgItemModel(body,date,mine,type,resource);
     cachedMessages->value(bareJid)->append(message);
-    dbWorker->executeQuery(QStringList() << "insertMessage" << m_accountId << bareJid << body << date << QString::number(mine));
+
+    if (type != 4)
+      dbWorker->executeQuery(QStringList() << "insertMessage" << m_accountId << bareJid << body << date << QString::number(mine));
 
     addChat(m_accountId,bareJid);
 
-    contacts->plusUnreadMessage(m_accountId,bareJid);
+    if (type !=3 && type != 4)
+      this->plusUnreadChatMsg(m_accountId,bareJid);
 }
 
 // handling chats list
 void XmppConnectivity::openChat(QString accountId, QString bareJid) {
-  if (!chats->checkIfExists(bareJid)) {
-    ChatsItemModel* chat = new ChatsItemModel(contacts->getPropertyByJid(accountId,bareJid,"name"),bareJid,accountId);
+  if (!chats->checkIfExists(accountId + ";" + bareJid)) {
+    ChatsItemModel* chat;
+    QString message;
+    if (clients->value(accountId)->isMucRoom(bareJid)) {
+        chat = new ChatsItemModel(bareJid,bareJid,accountId,3);
+        chat->setUnreadMsg(0);
+        // change it to MUC room name one day
+        message = "Joined chatroom [[name]]";
+      } else {
+        chat = new ChatsItemModel(contacts->getPropertyByJid(accountId,bareJid,"name"),bareJid,accountId,0);
+        message = "Chat started with [[name]]";
+      }
+
     chats->append(chat);
+    emit insertMessage(accountId,bareJid,message,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0,4,"");
     qDebug() << "XmppConnectivity::openChat(): appending"<< qPrintable(bareJid) << "from account" << accountId << "to chats list.";
     emit chatsChanged();
   }
@@ -194,20 +209,47 @@ void XmppConnectivity::openChat(QString accountId, QString bareJid) {
 
   if (!cachedMessages->contains(bareJid))
     cachedMessages->insert(bareJid,new MsgListModel());
+
   addChat(accountId,bareJid);
 }
 
 void XmppConnectivity::closeChat(QString accId, QString bareJid) {
-  // send "Gone" chat state
-  clients->value(accId)->sendMessage(bareJid,"","",3,2);
+  int rowId;
+  ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(accId + ";" + bareJid,rowId);
+  int type;
+  if (itemExists != NULL)
+    type = itemExists->type();
 
-  for (int i=0; i<chats->count(); i++) {
-      ChatsItemModel *itemExists = (ChatsItemModel*)chats->getElementByID(i);
-      if (itemExists->jid() == bareJid && itemExists->accountID() == accId)
-          chats->takeRow(i);
-  }
+  // send "Gone" chat state
+  if (type != 3) // don't emit Gone if in MUC
+    clients->value(accId)->sendMessage(bareJid,"","",3,2);
+  else
+    clients->value(accId)->leaveMUCRoom(bareJid); // just leave the room
+
+  if (itemExists != NULL)
+    chats->takeRow(rowId);
+
   qDebug() << "XmppConnectivity::closeChat(): chat closed";
   removeChat(accId,bareJid);
+}
+
+void XmppConnectivity::plusUnreadChatMsg(QString accId,QString bareJid) {
+  ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(accId + ";" + bareJid);
+  if (itemExists != NULL)
+    itemExists->setUnreadMsg(itemExists->unread() + 1);
+}
+
+void XmppConnectivity::resetUnreadMessages(QString accountId, QString bareJid) {
+  ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(accountId + ";" + bareJid);
+  if (itemExists != NULL)
+    itemExists->setUnreadMsg(0);
+}
+
+int XmppConnectivity::getUnreadCount(QString accountId, QString bareJid) {
+  ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(accountId + ";" + bareJid);
+  if (itemExists != NULL)
+    return itemExists->unread();
+  else return 0;
 }
 
 QString XmppConnectivity::getPropertyByJid(QString account,QString property,QString jid) {
@@ -220,24 +262,19 @@ QString XmppConnectivity::getPreservedMsg(QString jid) {  //this poorly written 
   return "";
 }
 
-void XmppConnectivity::preserveMsg(QString jid,QString message) { //this poorly written piece of shit should take care of account id one day
-  ChatsItemModel* chat = (ChatsItemModel*)chats->find(jid);
+void XmppConnectivity::preserveMsg(QString accountId,QString jid,QString message) { //this poorly written piece of shit should take care of account id one day
+  ChatsItemModel* chat = (ChatsItemModel*)chats->find(accountId + ";" + jid);
   if (chat != 0) chat->setChatMsg(message);
   chat = 0; delete chat;
 }
 
 void XmppConnectivity::updateChatName(QString m_accountId, QString bareJid, QString name) {
   qDebug().nospace() << "XmppConnectivity::updateChatName(" +m_accountId+","+bareJid+","+name+") called";
-  for (int i=0; i<chats->count(); i++) {
-      ChatsItemModel *itemExists = (ChatsItemModel*)chats->getElementByID(i);
-      if (itemExists->jid() == bareJid && itemExists->accountID() == m_accountId) {
-          itemExists->setContactName(name);
-          qDebug() << "XmppConnectivity::updateChatName() name updated";
-      }
-  }
+  ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(m_accountId+ ";" + bareJid);
+  if (itemExists != NULL)
+    itemExists->setContactName(name);
 }
 
-// handling adding and removing accounts
 // handling adding and removing accounts
 void XmppConnectivity::accountAdded(QString id) {
   qDebug().nospace() << "XmppConnectivity::accountAdded(): initializing account "
@@ -298,7 +335,7 @@ int XmppConnectivity::getGlobalUnreadCount() {
   ChatsItemModel* currentChat;
   for (int i=0;i<chats->rowCount();i++) {
       currentChat = (ChatsItemModel*)chats->getElementByID(i);
-      count = count+ this->getPropertyByJid(currentChat->accountID(),"unreadMsg",currentChat->jid()).toInt();
+      count = count+ currentChat->unread();
     }
   currentChat = 0;
   return count;

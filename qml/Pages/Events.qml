@@ -11,7 +11,7 @@ Page {
         target: xmppConnectivity
         onNotifyMsgReceived: {
             if (xmppConnectivity.chatJid !== jid)
-                eventListModel.appendEvent(xmppConnectivity.getAvatarByJid(jid),true,parseInt(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))+1,body,name,true,"message")
+                eventListModel.appendEvent(xmppConnectivity.getAvatarByJid(jid),true,xmppConnectivity.getUnreadCount(account,jid)+1,body,name,true,"message")
         }
         onChatJidChanged:
             eventListModel.findAndRemove(xmppConnectivity.getPropertyByJid(vars.context,"name",xmppConnectivity.chatJid),"message")
@@ -344,7 +344,7 @@ Page {
                 onClicked: {
                     if (index > -1 && xmppConnectivity.chatJid != jid) {
                         xmppConnectivity.chatJid = jid
-                        main.openChat(account,jid,xmppConnectivity.getPropertyByJid(account,"type",jid))
+                        main.openChat(account,name,jid,chatType)
                     }
                 }
             }

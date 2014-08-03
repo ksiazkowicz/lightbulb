@@ -17,18 +17,14 @@ public:
    Q_INVOKABLE QString getPropertyByOrderID(int id,QString property);
    Q_INVOKABLE QString getPropertyByJid(QString accountId,QString bareJid,QString property);
 
-   Q_INVOKABLE void resetUnreadMessages(QString accountId,QString bareJid);
-
   void clearPresenceForAccount(QString accountId);
-  void setContactAsMUC(QString acc, QString jid);
   
 signals:
   void rosterChanged();
-
+  void contactNameChanged(QString accountId, QString jid, QString name);
   
 public slots:
   void addContact(QString acc,QString jid, QString name);
-  void plusUnreadMessage(QString acc,QString jid);
   void changePresence(QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus);
   void changeName(QString m_accountId,QString bareJid,QString name);
   void removeContact(QString acc,QString bareJid);

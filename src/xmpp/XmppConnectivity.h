@@ -144,7 +144,6 @@ signals:
     void xmppTypingChanged        (const QString accountId, QString bareJid, bool isTyping);
     void xmppPresenceChanged      (QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus);
 
-    void mucSubjectChanged        (QString bareJid, QString subject);
     void mucInvitationReceived    (QString accountId, QString bareJid, QString invSender, QString reason);
     
 public slots:
@@ -162,7 +161,7 @@ public slots:
 
     Q_INVOKABLE QString getPropertyByJid(QString account,QString property,QString jid);
     Q_INVOKABLE QString getPreservedMsg(QString jid);
-    Q_INVOKABLE void preserveMsg(QString jid,QString message);
+    Q_INVOKABLE void preserveMsg(QString accountId,QString jid,QString message);
     Q_INVOKABLE void openChat(QString accountId, QString bareJid);
     Q_INVOKABLE void openChat(QString bareJid) { this->openChat(currentClient,bareJid); }
     Q_INVOKABLE void closeChat(QString accountId, QString bareJid);
@@ -185,8 +184,8 @@ public slots:
     Q_INVOKABLE int getStatusByIndex(QString accountId);
 
     Q_INVOKABLE void closeChat(QString bareJid) { this->closeChat(currentClient,bareJid); }
-    Q_INVOKABLE void resetUnreadMessages(QString accountId, QString bareJid) { contacts->resetUnreadMessages(accountId,bareJid); }
-    Q_INVOKABLE void resetUnreadMessages(QString bareJid) { contacts->resetUnreadMessages(currentClient,bareJid); }
+    Q_INVOKABLE void resetUnreadMessages(QString accountId, QString bareJid);
+    Q_INVOKABLE int getUnreadCount(QString accountId, QString bareJid);
 
     Q_INVOKABLE void setPresence(QString accountId, int status, QString textStatus) { clients->value(accountId)->setMyPresence((MyXmppClient::StatusXmpp)status,textStatus); }
 
@@ -277,6 +276,8 @@ private:
 
     QStringList latestChats;
     QStringList latestStatusChanges;
+
+    void plusUnreadChatMsg(QString accId,QString bareJid);
 };
 
 #endif // XMPPCONNECTIVITY_H

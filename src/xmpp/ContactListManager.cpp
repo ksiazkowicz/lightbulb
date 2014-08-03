@@ -9,21 +9,6 @@ ContactListManager::ContactListManager(QObject *parent) :
   rosterOffline = new RosterListModel();
 }
 
-void ContactListManager::setContactAsMUC(QString acc, QString jid) {
-  RosterItemModel *contact = (RosterItemModel*)roster->find( acc + ";" + jid );
-
-  if (contact == 0) {
-    return;
-  } else
-    contact->setType(QXmppMessage::GroupChat);
-
-  if (contact->presence() != "qrc:/presence/offline") {
-      RosterItemModel *contactOffline = (RosterItemModel*)rosterOffline->find( acc + ";" + jid);
-      if (contactOffline != 0)
-        contact->setType(QXmppMessage::GroupChat);
-    }
-}
-
 void ContactListManager::addContact(QString acc, QString jid, QString name) {
   qDebug() << "ContactListManager::addContact() called";
 
@@ -31,31 +16,17 @@ void ContactListManager::addContact(QString acc, QString jid, QString name) {
   RosterItemModel *item = (RosterItemModel*)roster->find( acc + ";" + jid );
   if (item != 0) {
       // yup, it is, update the name if required, then
-      if (item->name() != name)
+      if (item->name() != name) {
         item->setContactName(name);
+        emit contactNameChanged(acc,jid,name);
+      }
       return;
   }
   // nope, append it
-  RosterItemModel* contact = new RosterItemModel(name,jid,"","qrc:/presence/offline","",0,acc);
+  RosterItemModel* contact = new RosterItemModel(name,jid,"","qrc:/presence/offline","",acc);
   roster->append(contact);
 }
 
-void ContactListManager::plusUnreadMessage(QString acc, QString jid) {
-  RosterItemModel *contact = (RosterItemModel*)roster->find( acc + ";" + jid );
-
-  if (contact == 0) {
-    this->addContact(acc,jid,jid);
-    plusUnreadMessage(acc,jid);
-    return;
-  } else
-    contact->setUnreadMsg(contact->unreadMsg()+1);
-
-  if (contact->presence() != "qrc:/presence/offline") {
-      RosterItemModel *contactOffline = (RosterItemModel*)rosterOffline->find( acc + ";" + jid);
-      if (contactOffline != 0)
-        contactOffline->setUnreadMsg(contact->unreadMsg());
-    }
-}
 void ContactListManager::changePresence(QString accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus) {
   qDebug() << "ContactListManager::changePresence() called" << bareJid << resource << picStatus << txtStatus;
   RosterItemModel *contact = (RosterItemModel*)roster->find( accountId + ";" + bareJid );
@@ -74,7 +45,7 @@ void ContactListManager::changePresence(QString accountId,QString bareJid,QStrin
           contactOffline->setStatusText(txtStatus);
         } else {
           qDebug() << "appending crap";
-          RosterItemModel *contactNew = new RosterItemModel(contact->name(),bareJid,resource,picStatus,txtStatus,contact->unreadMsg(),accountId);
+          RosterItemModel *contactNew = new RosterItemModel(contact->name(),bareJid,resource,picStatus,txtStatus,accountId);
           rosterOffline->append(contactNew);
         }
     } else if (contactOffline != 0)
@@ -89,6 +60,8 @@ void ContactListManager::changeName(QString accountId,QString bareJid,QString na
   contact = (RosterItemModel*)rosterOffline->find( accountId + ";" + bareJid );
   if (contact != 0)
     contact->setContactName(name);
+
+  emit contactNameChanged(accountId,bareJid,name);
 }
 void ContactListManager::removeContact(QString acc,QString bareJid) {
   RosterItemModel *contact;
@@ -104,17 +77,7 @@ void ContactListManager::removeContact(QString acc,QString bareJid) {
         roster->remove(i);
     }
 }
-void ContactListManager::resetUnreadMessages(QString accountId, QString bareJid) {
-  RosterItemModel *contact = (RosterItemModel*)roster->find( accountId + ";" + bareJid );
-  if (contact != 0) {
-    contact->setUnreadMsg(0);
-    if (contact->presence() != "qrc:/presence/offline") {
-        RosterItemModel *contactOffline = (RosterItemModel*)rosterOffline->find( accountId + ";" + bareJid );
-        if (contactOffline != 0)
-          contactOffline->setUnreadMsg(contact->unreadMsg());
-      }
-  }
-}
+
 QString ContactListManager::getPropertyByJid( QString accountId, QString bareJid, QString property ) {
     RosterItemModel *item = (RosterItemModel*)roster->find( accountId + ";" + bareJid );
     if (item != 0) {
@@ -122,10 +85,9 @@ QString ContactListManager::getPropertyByJid( QString accountId, QString bareJid
       else if (property == "presence") return item->presence();
       else if (property == "resource") return item->resource();
       else if (property == "statusText") return item->statusText();
-      else if (property == "unreadMsg") return QString::number(item->unreadMsg());
-      else if (property == "type") return QString::number(item->getType());
       } else return "(unknown)";
 }
+
 QString ContactListManager::getPropertyByOrderID(int id, QString property) {
   bool onlineContactFound;
   int  iterations = id;

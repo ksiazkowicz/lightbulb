@@ -35,7 +35,9 @@ public:
         roleAccount = Qt::UserRole+1,
         roleName,
         roleJid,
-        roleMsg
+        roleMsg,
+        roleType,
+        roleUnreadMsg
       };
 
 public:
@@ -44,14 +46,18 @@ public:
           contactJid = "";
           contactAccountID = "";
           chatMsg = "";
+          chatType = 0;
+          chatUnreadMsg = 0;
       }
       explicit ChatsItemModel( const QString &_contactName,
                                        const QString &_contactJid,
                                        const QString _accountID,
+                                       const int _chatType,
                                        QObject *parent = 0 ) : ListItem(parent),
           contactAccountID(_accountID),
           contactName(_contactName),
-          contactJid(_contactJid)
+          contactJid(_contactJid),
+          chatType(_chatType)
       {
       }
 
@@ -65,6 +71,10 @@ public:
           return jid();
         case roleMsg:
           return msg();
+        case roleType:
+          return type();
+        case roleUnreadMsg:
+          return unread();
         default:
           return QVariant();
         }
@@ -75,10 +85,12 @@ public:
           names[roleName] = "name";
           names[roleJid] = "jid";
           names[roleMsg] = "chatMsg";
+          names[roleType] = "chatType";
+          names[roleUnreadMsg] = "unreadMsg";
           return names;
       }
 
-      virtual QString id() const { return contactJid; }
+      virtual QString id() const { return QString(contactAccountID + ";" + contactJid); }
 
       void setAccountID(const QString &_accountID) {
         if (contactAccountID != _accountID) {
@@ -101,18 +113,30 @@ public:
           }
       }
 
+      void setUnreadMsg( const int _chatUnreadMsg ) {
+          if(chatUnreadMsg != _chatUnreadMsg) {
+            chatUnreadMsg = _chatUnreadMsg;
+            emit dataChanged();
+          }
+      }
+
       void setChatMsg(const QString &_chatMsg) { chatMsg = _chatMsg; }
+      void setChatType(const int &_chatType) { chatType = _chatType; }
 
       inline QString accountID() const { return contactAccountID; }
       inline QString name() const { return contactName; }
       inline QString jid() const { return contactJid; }
       inline QString msg() const { return chatMsg; }
+      inline int type() const { return chatType; }
+      inline int unread() const { return chatUnreadMsg; }
 
     private:
       QString contactAccountID;
       QString contactName;
       QString contactJid;
       QString chatMsg;
+      int chatType;
+      int chatUnreadMsg;
 };
 
 #endif // CHATSITEMMODEL_H

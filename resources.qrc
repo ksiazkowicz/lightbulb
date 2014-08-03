@@ -153,6 +153,10 @@
         <file alias="DetailsItem.qml">qml/Components/DetailsItem.qml</file>
         <file alias="LineItem.qml">qml/Components/LineItem.qml</file>
         <file alias="HeaderButton.qml">qml/Components/HeaderButton.qml</file>
+        <file alias="Convo/ArchiveDelegate">qml/Components/ConvoArchiveDelegate.qml</file>
+        <file alias="Convo/IncomingDelegate">qml/Components/ConvoIncomingMsgDelegate.qml</file>
+        <file alias="Convo/OutcomingDelegate">qml/Components/ConvoOutcomingMsgDelegate.qml</file>
+        <file alias="Convo/InformationDelegate">qml/Components/ConvoInformationDelegate.qml</file>
     </qresource>
     <qresource prefix="/networks">
         <file alias="2G">images/networks/2G.svg</file>

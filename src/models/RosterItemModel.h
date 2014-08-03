@@ -41,10 +41,8 @@ public:
         roleResource,
         rolePresence,
         roleStatusText,
-        roleUnreadMsg,
         roleAvatar,
-        roleAccountId,
-        roleType
+        roleAccountId
       };
 
 public:
@@ -54,17 +52,14 @@ public:
           contactResource = "";
           contactPresence = "";
           contactStatusText = "";
-          contactUnreadMsg = 0;
           contactAvatar = "qrc:/avatar";
           contactAccountID = "";
-          contactType = 0;
       }
       explicit RosterItemModel( const QString &_contactName,
                                        const QString &_contactJid,
                                        const QString &_contactResource,
                                        const QString &_contactPresence,
                                        const QString &_contactStatusText,
-                                       const int _contactUnreadMsg,
                                        const QString &_contactAccountID,
                                        QObject *parent = 0 ) : ListItem(parent),
           contactName(_contactName),
@@ -72,7 +67,6 @@ public:
           contactResource(_contactResource),
           contactStatusText(_contactStatusText),
           contactPresence(_contactPresence),
-          contactUnreadMsg(_contactUnreadMsg),
           contactAccountID(_contactAccountID)
       {
       }
@@ -89,8 +83,6 @@ public:
           return statusText();
         case rolePresence:
           return presence();
-        case roleUnreadMsg:
-          return unreadMsg();
         case roleAvatar:
           return avatar();
         case roleAccountId:
@@ -106,10 +98,8 @@ public:
           names[roleResource] = "resource";
           names[rolePresence] = "presence";
           names[roleStatusText] = "statusText";
-          names[roleUnreadMsg] = "unreadMsg";
           names[roleAvatar] = "avatar";
           names[roleAccountId] = "accountId";
-          names[roleType] = "type";
           return names;
         }
 
@@ -151,13 +141,6 @@ public:
           }
       }
 
-      void setUnreadMsg( const int _contactUnreadMsg )  {
-          if(contactUnreadMsg != _contactUnreadMsg) {
-            contactUnreadMsg = _contactUnreadMsg;
-            emit dataChanged();
-          }
-      }
-
       void setAvatar( const QString &_contactAvatar )  {
           if(contactAvatar != _contactAvatar) {
             contactAvatar = _contactAvatar;
@@ -172,22 +155,13 @@ public:
           }
       }
 
-      void setType( int _type ) {
-        if (contactType != _type) {
-            contactType = _type;
-            emit dataChanged();
-          }
-      }
-
       inline QString presence() const { return contactPresence; }
       inline QString name() const { return contactName; }
       inline QString jid() const { return contactJid; }
       inline QString resource() const { return contactResource; }
       inline QString statusText() const { return contactStatusText; }
-      inline int unreadMsg() const { return contactUnreadMsg; }
       inline QString avatar() const { return contactAvatar; }
       inline QString accountId() const { return contactAccountID; }
-      inline int getType() const { return contactType; }
 
       void copy( const RosterItemModel* item ) {
           contactName = item->name();
@@ -196,9 +170,7 @@ public:
           contactJid = item->jid();
           contactResource = item->resource();
           contactStatusText = item->statusText();
-          contactUnreadMsg = item->unreadMsg();
           contactAvatar = item->avatar();
-          contactType = item->getType();
       }
 
     private:
@@ -209,8 +181,6 @@ public:
       QString contactStatusText;
       QString contactAvatar;
       QString contactAccountID;
-      int contactUnreadMsg;
-      int contactType;
 };
 
 #endif // ROSTERITEMMODEL_H
