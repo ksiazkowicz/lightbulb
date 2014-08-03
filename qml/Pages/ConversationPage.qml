@@ -51,8 +51,10 @@ Page {
 
     ListView {
         id: listViewMessages
-        anchors { left: parent.left; right: parent.right; bottom: msgInputField.top; top: parent.top }
+        anchors { fill: parent; bottomMargin: msgInputField.height }
         model: isInArchiveMode ? xmppConnectivity.messagesByPage : xmppConnectivity.cachedMessages
+
+        property int oldHeight;
 
         delegate: Loader {
             source: isInArchiveMode ? ":/Components/Convo/ArchiveDelegate.qml" : (msgType == 4 ? ":/Components/Convo/InformationDelegate" : (isMine ? ":/Components/Convo/OutcomingDelegate" : ":/Components/Convo/IncomingDelegate"))
@@ -67,12 +69,19 @@ Page {
         }
 
         spacing: 5
-        Component.onCompleted: goToEnd()
-        onHeightChanged: goToEnd()
+        Component.onCompleted: {
+            oldHeight = height;
+            goToEnd()
+        }
+        onHeightChanged: {
+            if (oldHeight - height > 0) {
+                contentY+= (oldHeight - height)
+            }
+            oldHeight = height;
+        }
         onCountChanged: goToEnd()
-        clip: true
 
-        function goToEnd() {
+        function goToEnd(animDestination) {
             anim.from = contentY;
             positionViewAtEnd();
             var destination = contentY;

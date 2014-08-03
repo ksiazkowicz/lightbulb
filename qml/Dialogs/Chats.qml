@@ -91,7 +91,6 @@ CommonDialog {
                     onClicked: {
                         if (index > -1 && xmppConnectivity.chatJid != jid) {
                             xmppConnectivity.chatJid = jid
-                            vars.globalUnreadCount = vars.globalUnreadCount - parseInt(xmppConnectivity.getPropertyByJid(account,"unreadMsg",jid))
                             main.openChat(account,jid,chatType)
                         }
                         close()
@@ -108,7 +107,6 @@ CommonDialog {
                             xmppConnectivity.chatJid = ""
                             pageStack.pop();
                         }
-                        vars.globalUnreadCount = xmppConnectivity.getGlobalUnreadCount()
                         notify.updateNotifiers()
                     }
                     scale: 0.7

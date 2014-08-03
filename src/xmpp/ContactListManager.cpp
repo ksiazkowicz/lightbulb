@@ -25,6 +25,7 @@ void ContactListManager::addContact(QString acc, QString jid, QString name) {
   // nope, append it
   RosterItemModel* contact = new RosterItemModel(name,jid,"","qrc:/presence/offline","",acc);
   roster->append(contact);
+  emit contactNameChanged(acc,jid,name);
 }
 
 void ContactListManager::changePresence(QString accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus) {

@@ -516,11 +516,6 @@ QString MyXmppClient::getMUCNick(QString room) {
   return mucRoom->nickName();
 }
 
-QString MyXmppClient::getMUCSubject(QString room) {
-  QXmppMucRoom *mucRoom = mucRooms.value(room);
-  return mucRoom->subject();
-}
-
 QStringList MyXmppClient::getListOfParticipants(QString room) {
   return mucRooms.value(room)->participants();
 }

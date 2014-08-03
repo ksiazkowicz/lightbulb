@@ -57,7 +57,8 @@ public:
           contactAccountID(_accountID),
           contactName(_contactName),
           contactJid(_contactJid),
-          chatType(_chatType)
+          chatType(_chatType),
+          chatUnreadMsg(0)
       {
       }
 

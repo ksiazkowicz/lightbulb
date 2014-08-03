@@ -52,7 +52,6 @@ Menu {
             onClicked: {
                 pageStack.pop()
                 xmppConnectivity.closeChat(accountId,contactJid)
-                xmppConnectivity.leaveMUC(accountId,contactJid)
                 xmppConnectivity.resetUnreadMessages(accountId,contactJid)
                 xmppConnectivity.chatJid = ""
             }

@@ -173,7 +173,6 @@ public :
     void joinMUCRoom(QString room, QString nick);
     void leaveMUCRoom(QString room);
     QString getMUCNick(QString room);
-    QString getMUCSubject(QString room);
     QStringList getListOfParticipants(QString room);
 
     bool isMucRoom(QString bareJid) { return mucRooms.contains(bareJid); }

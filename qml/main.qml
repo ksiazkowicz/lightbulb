@@ -92,6 +92,7 @@ PageStackWindow {
 
     XmppConnectivity    {
         id: xmppConnectivity
+        onUnreadCountChanged: vars.globalUnreadCount = vars.globalUnreadCount+delta
         onXmppErrorHappened: if (settings.gBool("behavior", "reconnectOnError"))
                                 dialog.createWithProperties("qrc:/dialogs/Status/Reconnect",{"accountId": accountId})
         onXmppSubscriptionReceived: {

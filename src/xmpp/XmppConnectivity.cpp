@@ -237,12 +237,19 @@ void XmppConnectivity::plusUnreadChatMsg(QString accId,QString bareJid) {
   ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(accId + ";" + bareJid);
   if (itemExists != NULL)
     itemExists->setUnreadMsg(itemExists->unread() + 1);
+
+  emit unreadCountChanged(1);
 }
 
 void XmppConnectivity::resetUnreadMessages(QString accountId, QString bareJid) {
   ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(accountId + ";" + bareJid);
-  if (itemExists != NULL)
+  int delta;
+  if (itemExists != NULL) {
+    delta = itemExists->unread();
     itemExists->setUnreadMsg(0);
+  }
+
+  emit unreadCountChanged(-delta);
 }
 
 int XmppConnectivity::getUnreadCount(QString accountId, QString bareJid) {
@@ -293,9 +300,13 @@ void XmppConnectivity::accountRemoved(QString id) {
   sqlQuery->deleteLater();
 
   for (int i=0; i<chats->count(); i++) {
+      int unreadDelta = 0;
       ChatsItemModel *itemExists = (ChatsItemModel*)chats->getElementByID(i);
-      if (itemExists->accountID() == id)
+      if (itemExists->accountID() == id) {
+          unreadDelta += itemExists->unread();
           chats->takeRow(i);
+      }
+      emit unreadCountChanged(unreadDelta);
   }
 }
 void XmppConnectivity::accountModified(QString id) {

@@ -32,15 +32,12 @@ Item {
     Connections {
         target: xmppConnectivity
         onNotifyMsgReceived: {
-            if (!pageStack.currentPage.isAChatPage)
-                vars.globalUnreadCount++;
-
             // show discreet popup if enabled
             if (settings.gBool("notifications", "usePopupRecv") && (xmppConnectivity.chatJid !== jid || !vars.isActive)) {
                 if (settings.gBool("behavior","msgInDiscrPopup"))
                         avkon.showPopup(name,body)
                 else
-                    avkon.showPopup(vars.globalUnreadCount + " unread messages", "New message from "+ name + ".")
+                    avkon.showPopup(vars.globalUnreadCount+1 + " unread messages", "New message from "+ name + ".")
             }
 
             // get the blinker running if enabled and app is inactive
