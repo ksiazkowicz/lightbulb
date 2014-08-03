@@ -170,8 +170,12 @@ void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString
 
     this->openChat(m_accountId,bareJid);
 
+    bool msgUnreadState;
+    if (type != 4 && mine == 0)
+      msgUnreadState = true;
+
     if (!cachedMessages->contains(bareJid)) cachedMessages->insert(bareJid,new MsgListModel());
-    MsgItemModel* message = new MsgItemModel(body,date,mine,type,resource);
+    MsgItemModel* message = new MsgItemModel(body,date,mine,type,resource,msgUnreadState);
     cachedMessages->value(bareJid)->append(message);
 
     if (type != 4)
@@ -252,6 +256,17 @@ void XmppConnectivity::resetUnreadMessages(QString accountId, QString bareJid) {
     delta = itemExists->unread();
     itemExists->setUnreadMsg(0);
   }
+
+  if (cachedMessages->contains(bareJid)) {
+      MsgListModel* msgListModel = cachedMessages->value(bareJid);
+      for (int i=0; i<=delta;i++) {
+          qDebug() << "itereation" << i << "index" << msgListModel->count()-i << "total messages" << msgListModel->count() << "delta" << delta;
+          MsgItemModel* msgModel = (MsgItemModel*)msgListModel->getElementByID(msgListModel->count()-i);
+          if (msgModel != NULL) {
+              msgModel->setMsgUnreadState(false);
+            }
+        }
+    }
 
   emit unreadCountChanged(-delta);
 }

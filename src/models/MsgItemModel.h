@@ -37,7 +37,8 @@ public:
         roleDateTime,
         roleIsMine,
         roleMsgType,
-        roleMsgResource
+        roleMsgResource,
+        roleUnreadState
       };
 
 public:
@@ -47,18 +48,21 @@ public:
           isMine = 0;
           msgType = 0;
           msgResource = "";
+          msgUnreadState = false;
       }
       explicit MsgItemModel( const QString &_msgText,
                                        const QString &_dateTime,
                                        const int _isMine,
                                        const int _msgType,
                                        const QString &_msgResource,
+                                       bool _msgUnreadState,
                                        QObject *parent = 0 ) : ListItem(parent),
           msgText(_msgText),
           dateTime(_dateTime),
           isMine(_isMine),
           msgType(_msgType),
-          msgResource(_msgResource)
+          msgResource(_msgResource),
+        msgUnreadState(_msgUnreadState)
       {
       }
 
@@ -74,6 +78,8 @@ public:
          return gMsgType();
         case roleMsgResource:
          return gMsgResource();
+        case roleUnreadState:
+         return gMsgUnreadState();
         default:
           return QVariant();
         }
@@ -85,6 +91,7 @@ public:
           names[roleIsMine] = "isMine";
           names[roleMsgType] = "msgType";
           names[roleMsgResource] = "msgResource";
+          names[roleUnreadState] = "msgUnreadState";
           return names;
         }
 
@@ -123,11 +130,18 @@ public:
           }
       }
 
+      void setMsgUnreadState( const bool _msgUnreadState) {
+        if (msgUnreadState != _msgUnreadState) {
+            msgUnreadState = _msgUnreadState; emit dataChanged();
+          }
+      }
+
       inline QString gMsgText() const { return msgText; }
       inline QString gDateTime() const { return dateTime; }
       inline int gIsMine() const { return isMine; }
       inline int gMsgType() const { return msgType; }
       inline QString gMsgResource() const { return msgResource; }
+      inline bool gMsgUnreadState() const { return msgUnreadState; }
 
     private:
       QString msgText;
@@ -135,6 +149,7 @@ public:
       int isMine;
       int msgType;
       QString msgResource;
+      bool msgUnreadState;
 };
 
 #endif // MSGITEMMODEL_H

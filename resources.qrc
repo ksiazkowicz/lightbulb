@@ -13,6 +13,7 @@
         <file alias="splash">images/splash.png</file>
         <file alias="avatar-mask">images/avatar_mask.svg</file>
         <file alias="message">images/messaging.svg</file>
+        <file>images/symMsgUnreadIcon.png</file>
     </qresource>
     <qresource prefix="/smileys">
         <file alias="angry">images/smileys/angry.png</file>

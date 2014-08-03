@@ -32,8 +32,8 @@ Page {
 
     /******************************************
       TODO:
-        - handle unread and read messages
         - handle switching between archive and chat mode
+        - handle attachments
         - ...
 
       ****************************************/
@@ -64,6 +64,7 @@ Page {
             property string _contactName: contactName
             property string _contactJid: contactJid
             property string _dateTime: dateTime
+            property bool _msgUnreadState: msgUnreadState
             height: sourceComponent.height
             width: listViewMessages.width
         }
@@ -136,6 +137,8 @@ Page {
             msgInputField.text = ""
             notify.notifySndVibr("MsgSent")
         } else avkon.displayGlobalNote("Something went wrong while sending a message.",true);
+
+        xmppConnectivity.resetUnreadMessages(accountId,contactJid)
     }
 
 
@@ -149,6 +152,7 @@ Page {
                 isTyping = false;
                 xmppConnectivity.sendAMessage(accountId,contactJid,contactResource,"",5,2)
             }
+            xmppConnectivity.resetUnreadMessages(accountId,contactJid)
         }
     }
 
