@@ -251,7 +251,7 @@ void XmppConnectivity::plusUnreadChatMsg(QString accId,QString bareJid) {
 
 void XmppConnectivity::resetUnreadMessages(QString accountId, QString bareJid) {
   ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(accountId + ";" + bareJid);
-  int delta;
+  int delta = 0;
   if (itemExists != NULL) {
     delta = itemExists->unread();
     itemExists->setUnreadMsg(0);
@@ -260,10 +260,12 @@ void XmppConnectivity::resetUnreadMessages(QString accountId, QString bareJid) {
   if (cachedMessages->contains(bareJid)) {
       MsgListModel* msgListModel = cachedMessages->value(bareJid);
       for (int i=0; i<=delta;i++) {
-          qDebug() << "itereation" << i << "index" << msgListModel->count()-i << "total messages" << msgListModel->count() << "delta" << delta;
+          qDebug() << "iteration" << i << "index" << msgListModel->count()-i << "total messages" << msgListModel->count() << "delta" << delta;
           MsgItemModel* msgModel = (MsgItemModel*)msgListModel->getElementByID(msgListModel->count()-i);
           if (msgModel != NULL) {
-              msgModel->setMsgUnreadState(false);
+              if (msgModel->gMsgUnreadState())
+                msgModel->setMsgUnreadState(false);
+              else i--;
             }
         }
     }

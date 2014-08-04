@@ -49,8 +49,8 @@ Menu {
             platformInverted: main.platformInverted
             onClicked: {
                 pageStack.pop()
-                xmppConnectivity.closeChat(accountId,contactJid)
                 xmppConnectivity.resetUnreadMessages(accountId,contactJid)
+                xmppConnectivity.closeChat(accountId,contactJid)
                 xmppConnectivity.chatJid = ""
             }
         }
