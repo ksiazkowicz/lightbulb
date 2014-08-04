@@ -51,6 +51,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "src/database/Settings.h"
 
 #include "src/cache/MyCache.h"
+#include "src/models/ParticipantListModel.h"
+#include "src/models/ParticipantItemModel.h"
 
 class MyXmppClient : public QObject
 {
@@ -177,6 +179,7 @@ public :
 
     bool isMucRoom(QString bareJid) { return mucRooms.contains(bareJid); }
     QString getMucRoomName(QString bareJid) { return mucRooms.value(bareJid)->name(); }
+    ParticipantListModel* getParticipants(QString bareJid) { return mucParticipants.value(bareJid); }
 	
 signals:
     void versionChanged();
@@ -211,6 +214,7 @@ signals:
     // muc
     void mucInvitationReceived(QString accountId, QString bareJid, QString invSender, QString reason);
     void mucRoomJoined(QString accountId,QString bareJid);
+    void mucNameChanged(QString accountId,QString bareJid,QString name);
 
 public slots:
     void clientStateChanged( QXmppClient::State state );
@@ -266,6 +270,7 @@ private:
     int m_keepAlive;
 
     QMap<QString,QXmppMucRoom*> mucRooms;
+    QMap<QString,ParticipantListModel*> mucParticipants;
 };
 
 #endif

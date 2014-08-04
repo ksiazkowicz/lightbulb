@@ -31,7 +31,7 @@ CommonDialog {
     privateCloseIcon: true
     platformInverted: main.platformInverted
 
-    height: (listModelParticipants.count+1)*48
+    height: (listView.model.count+1)*48
 
     property string contactJid
     property string accountId
@@ -42,22 +42,15 @@ CommonDialog {
     Component.onCompleted: {
         open();
         isCreated = true
-
-        var listParticipants = xmppConnectivity.getMUCParticipants(accountId,contactJid)
-        for( var z=0; z<listParticipants.length; z++ ) {
-            if (listParticipants[z] == "") { continue; }
-            listModelParticipants.append({"participant":listParticipants[z]})
-        }
     }
     property bool isCreated: false
 
     onStatusChanged: { if (isCreated && dlgParticipants.status === DialogStatus.Closed) { dlgParticipants.destroy() } }
 
-    ListModel { id: listModelParticipants }
-
     content: ListView {
+                id: listView
                 anchors.fill: parent
-                model: listModelParticipants
+                model: xmppConnectivity.getMUCParticipants(accountId,contactJid)
                 clip: true
                 delegate: Component {
                     Rectangle {
@@ -76,7 +69,7 @@ CommonDialog {
                             GradientStop { position: 1; color: "#51A8FB" }
                         }
                         Text {
-                            text: participant.substring(contactJid.length+1, participant.length)
+                            text: "[" + xmppConnectivity.getMUCParticipantAffiliationName(affiliation) + "] " + name
                             font.pixelSize: itemParticipant.height/2
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.verticalCenter: parent.verticalCenter

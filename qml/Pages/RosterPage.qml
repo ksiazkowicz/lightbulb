@@ -45,9 +45,9 @@ Page {
 
     Component {
         id: componentRosterItem
-
         Rectangle {
             id: wrapper
+            property string unreadMsg: xmppConnectivity.getUnreadCount(accountId,jid)
             width: rosterView.width
             color: "transparent"
             visible: rosterSearch.text !== "" ? (txtJid.contact.toLowerCase().indexOf(rosterSearch.text.toLowerCase()) != -1 ? true : false ) : true
@@ -89,7 +89,7 @@ Page {
                     sourceSize.height: imgPresence.height
                     sourceSize.width: imgPresence.height
                     smooth: true
-                    visible: vars.markUnread ? xmppConnectivity.getUnreadCount(accountId,jid) != 0 : false
+                    visible: vars.markUnread ? wrapper.unreadMsg != 0 : false
                     anchors.centerIn: parent
                     Image {
                         id: imgUnreadCount
@@ -106,9 +106,9 @@ Page {
                         width: imgPresence.width * 0.30
                         height: width
                         anchors { right: parent.right; bottom: parent.bottom }
-                        visible: vars.showUnreadCount ? unreadMsg != 0 : false
+                        visible: vars.showUnreadCount ? wrapper.unreadMsg != 0 : false
                         Text {
-                            text: unreadMsg
+                            text: wrapper.unreadMsg
                             font.pixelSize: 0.72*parent.width
                             anchors.centerIn: parent
                             z: 1
@@ -136,13 +136,10 @@ Page {
                 onClicked: {
                     selectedJid = jid;
                     notify.updateNotifiers()
-                    pageStack.pop()
-                    pageStack.push("qrc:/pages/Conversation",{"accountId": accountId,"contactName":txtJid.contact,"contactJid":jid,"isInArchiveMode":false})
+                    pageStack.replace("qrc:/pages/Conversation",{"accountId": accountId,"contactName":txtJid.contact,"contactJid":jid,"isInArchiveMode":false})
                 }
 
-                onPressAndHold: {
-                    dialog.createWithProperties("qrc:/menus/Roster/Contact",{"accountId": accountId,"contactName":txtJid.contact,"contactJid":jid})
-                }
+                onPressAndHold: dialog.createWithProperties("qrc:/menus/Roster/Contact",{"accountId": accountId,"contactName":txtJid.contact,"contactJid":jid})
             }
             Image {
                 id: imgPresenceR

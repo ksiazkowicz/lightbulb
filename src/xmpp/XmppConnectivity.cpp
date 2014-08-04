@@ -100,6 +100,7 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
     // connect MUC signals
     connect(clients->value(index),SIGNAL(mucInvitationReceived(QString,QString,QString,QString)),this,SIGNAL(mucInvitationReceived(QString,QString,QString,QString)),Qt::UniqueConnection);
     connect(clients->value(index),SIGNAL(mucRoomJoined(QString,QString)),this,SLOT(openChat(QString,QString)),Qt::UniqueConnection);
+    connect(clients->value(index),SIGNAL(mucNameChanged(QString,QString,QString)),this,SLOT(updateChatName(QString,QString,QString)),Qt::UniqueConnection);
 	
     // connect ContactListManager
     connect(clients->value(index),SIGNAL(contactAdded(QString,QString,QString)),contacts,SLOT(addContact(QString,QString,QString)),Qt::UniqueConnection);
@@ -181,9 +182,7 @@ void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString
     if (type != 4)
       dbWorker->executeQuery(QStringList() << "insertMessage" << m_accountId << bareJid << body << date << QString::number(mine));
 
-    addChat(m_accountId,bareJid);
-
-    if (type !=3 && type != 4)
+    if (type != 4)
       this->plusUnreadChatMsg(m_accountId,bareJid);
 }
 
@@ -196,14 +195,14 @@ void XmppConnectivity::openChat(QString accountId, QString bareJid) {
         chat = new ChatsItemModel(bareJid,bareJid,accountId,3);
         chat->setUnreadMsg(0);
         // change it to MUC room name one day
-        message = "Joined chatroom [[name]]";
+        message = "[[INFO]] Joined chatroom\n[[bold]][[name]][[/bold]] @[[date]]";
       } else {
         // add contact if it doesn't exist on roster yet. If you receive messages before roster it would simply updates their names
         if (!contacts->doesContactExists(accountId,bareJid))
             contacts->addContact(accountId,bareJid,bareJid);
 
         chat = new ChatsItemModel(contacts->getPropertyByJid(accountId,bareJid,"name"),bareJid,accountId,0);
-        message = "Chat started with [[name]]";
+        message = "[[INFO]] Chat started with [[bold]][[name]][[/bold]] @[[date]]";
       }
 
     chats->append(chat);
@@ -217,16 +216,23 @@ void XmppConnectivity::openChat(QString accountId, QString bareJid) {
 
   if (!cachedMessages->contains(bareJid))
     cachedMessages->insert(bareJid,new MsgListModel());
-
-  addChat(accountId,bareJid);
 }
 
 void XmppConnectivity::closeChat(QString accId, QString bareJid) {
   int rowId;
   ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(accId + ";" + bareJid,rowId);
   int type;
-  if (itemExists != NULL)
+  if (itemExists != NULL) {
     type = itemExists->type();
+    // ok, so the item exists and stuff, so I can actually run resetUnreadMessages before the object is removed
+    this->resetUnreadMessages(accId, bareJid);
+
+    if (!cachedMessages->contains(bareJid))
+      cachedMessages->insert(bareJid,new MsgListModel());
+
+    MsgItemModel* message = new MsgItemModel("[[INFO]] Chat closed @[[date]]",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0,4,"",false);
+    cachedMessages->value(bareJid)->append(message);
+  } else return;
 
   // send "Gone" chat state
   if (type != 3) // don't emit Gone if in MUC
@@ -238,7 +244,6 @@ void XmppConnectivity::closeChat(QString accId, QString bareJid) {
     chats->takeRow(rowId);
 
   qDebug() << "XmppConnectivity::closeChat(): chat closed";
-  removeChat(accId,bareJid);
 }
 
 void XmppConnectivity::plusUnreadChatMsg(QString accId,QString bareJid) {
@@ -250,6 +255,8 @@ void XmppConnectivity::plusUnreadChatMsg(QString accId,QString bareJid) {
 }
 
 void XmppConnectivity::resetUnreadMessages(QString accountId, QString bareJid) {
+  qDebug() << "XmppConnectivity::resetUnreadMessages() for"<<accountId<<bareJid<<
+              "called";
   ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(accountId + ";" + bareJid);
   int delta = 0;
   if (itemExists != NULL) {
@@ -259,13 +266,13 @@ void XmppConnectivity::resetUnreadMessages(QString accountId, QString bareJid) {
 
   if (cachedMessages->contains(bareJid)) {
       MsgListModel* msgListModel = cachedMessages->value(bareJid);
-      for (int i=0; i<=delta;i++) {
+      for (int i=0; i<=delta+1;i++) {
           qDebug() << "iteration" << i << "index" << msgListModel->count()-i << "total messages" << msgListModel->count() << "delta" << delta;
           MsgItemModel* msgModel = (MsgItemModel*)msgListModel->getElementByID(msgListModel->count()-i);
           if (msgModel != NULL) {
               if (msgModel->gMsgUnreadState())
                 msgModel->setMsgUnreadState(false);
-              else i--;
+              else delta++;
             }
         }
     }

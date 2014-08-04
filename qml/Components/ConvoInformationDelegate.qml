@@ -29,6 +29,8 @@ Item {
     id: wrapper
     height: platformStyle.paddingLarge + message.paintedHeight
 
+    property string date: _dateTime.substr(0,8) == Qt.formatDateTime(new Date(), "dd-MM-yy") ? _dateTime.substr(9,5) : _dateTime
+
     anchors { left: parent.left; right: parent.right }
 
     function parseCE(text) {
@@ -39,6 +41,9 @@ Item {
         temp = temp.replace("[[name]]",contactName);
         temp = temp.replace("[[mucName]]",msgResource);
         temp = temp.replace("[[bareJid]]",contactJid);
+        temp = temp.replace("[[bold]]","<b>");
+        temp = temp.replace("[[/bold]]","</b>")
+        temp = temp.replace("[[date]]",wrapper.date)
 
         return temp;
     }

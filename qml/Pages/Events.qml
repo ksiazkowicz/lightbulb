@@ -319,11 +319,11 @@ Page {
             }
             Image {
                 id: imgPresence
-                source: xmppConnectivity.getPropertyByJid(account,"presence",jid)
+                source: chatType !== 3 ? xmppConnectivity.getPropertyByJid(account,"presence",jid) : ""
                 sourceSize { height: 16; width: 16 }
                 anchors { verticalCenter: parent.verticalCenter; right: parent.right; rightMargin: 5 }
-                height: 16
-                width: 16
+                height: chatType !== 3 ? 16 : 0
+                width: chatType !== 3 ? 16 : 0
             }
             Text {
                 anchors { verticalCenter: parent.verticalCenter; left: avatarIcon.right; right: parent.right; leftMargin: 10 }

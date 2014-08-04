@@ -39,6 +39,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "src/models/ChatsListModel.h"
 #include "src/models/MsgListModel.h"
+#include "src/models/ParticipantListModel.h"
 #include "src/models/MsgItemModel.h"
 #include "src/xmpp/ContactListManager.h"
 
@@ -86,39 +87,6 @@ public:
     Q_INVOKABLE QString generateAccountName(QString host,QString jid);
     Q_INVOKABLE QString getAccountName(QString grid);
     Q_INVOKABLE QString getAccountIcon(QString grid);
-
-    // widget
-    void addChat(QString account, QString bareJid) {
-      removeChat(account,bareJid,true);
-      latestChats.append(account+";"+bareJid);
-      if (latestChats.count()>10) latestChats.removeFirst();
-    }
-
-    void removeChat(QString account, QString bareJid,bool silent=false) {
-      if (latestChats.contains(account+";"+bareJid))
-        latestChats.removeAt(latestChats.indexOf(account+";"+bareJid));
-    }
-
-    Q_INVOKABLE QString getChatProperty(int index, QString property) {
-      if (latestChats.count() >= latestChats.count()-index && latestChats.count()-index >= 0) {          
-        QString presenceJid = latestChats.at(latestChats.count()-index);
-        if (property == "accountId")
-          return presenceJid.split(';').at(0);
-        //return contacts->getPropertyByJid(presenceJid.split(';').at(1),property);
-        } else if (property == "presence") return "-2";
-      return "";
-    }
-
-    Q_INVOKABLE QString getChangeProperty(int index, QString property) {
-      if (latestStatusChanges.count() >= latestStatusChanges.count()-index && latestStatusChanges.count()-index >= 0) {
-        QString presenceJid = latestStatusChanges.at(latestStatusChanges.count()-index);
-        if (property == "accountId")
-          return presenceJid.split(';').at(0);
-        //return contacts->getPropertyByJid(presenceJid.split(';').at(1),property);
-        } else if (property == "presence") return "-2";
-      return "";
-    }
-
     Q_INVOKABLE int getGlobalUnreadCount();
 
 signals:
@@ -191,17 +159,6 @@ public slots:
 
     Q_INVOKABLE void setPresence(QString accountId, int status, QString textStatus) { clients->value(accountId)->setMyPresence((MyXmppClient::StatusXmpp)status,textStatus); }
 
-
-    // widget
-    void handleContactStatusChange(QString accountId, QString bareJid) {
-      if (this->getPropertyByJid(accountId,bareJid,"presence") == "qrc:/presence/offline") return;
-      if (latestStatusChanges.contains(accountId+";"+bareJid))
-            latestStatusChanges.removeAt(latestStatusChanges.indexOf(accountId+";"+bareJid));
-      latestStatusChanges.append(accountId+";"+bareJid);
-      if (latestStatusChanges.count()>4) latestStatusChanges.removeFirst();
-      emit widgetDataChanged();
-    }
-
     Q_INVOKABLE void setVisibility(bool state)   { contacts->setOfflineContactsState(state); emit rosterChanged(); }
     Q_INVOKABLE bool getVisibility()           { return contacts->getOfflineContactsState(); }
 	
@@ -231,7 +188,9 @@ public slots:
 
     // handle MUC
     Q_INVOKABLE bool joinMUC(QString accountId, QString jid, QString nick) { clients->value(accountId)->joinMUCRoom(jid,nick); }
-    Q_INVOKABLE QStringList getMUCParticipants(QString accountId, QString room) { return clients->value(accountId)->getListOfParticipants(room); }
+    Q_INVOKABLE ParticipantListModel* getMUCParticipants(QString accountId, QString room) { return clients->value(accountId)->getParticipants(room); }
+    QString getMUCParticipantRoleName(int role) { return QXmppMucItem::roleToString((QXmppMucItem::Role)role); }
+    QString getMUCParticipantAffiliationName(int aff) { return QXmppMucItem::affiliationToString((QXmppMucItem::Affiliation)aff); }
 
 private:
     QString currentClient;
@@ -273,9 +232,6 @@ private:
     int msgLimit;
 
     MessageWrapper *msgWrapper;
-
-    QStringList latestChats;
-    QStringList latestStatusChanges;
 
     void plusUnreadChatMsg(QString accId,QString bareJid);
 };
