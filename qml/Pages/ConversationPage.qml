@@ -257,28 +257,6 @@ Page {
                     }
                 }
             }
-            ToolButton {
-                iconSource: main.platformInverted ? "qrc:/toolbar/chats_inverse" : "qrc:/toolbar/chats"
-                onClicked: dialog.create("qrc:/dialogs/Chats")
-                Image {
-                    source: main.platformInverted ? "qrc:/unread-mark_inverse" : "qrc:/unread-mark"
-                    smooth: true
-                    sourceSize.width: parent.width
-                    sourceSize.height: parent.width
-                    width: parent.width
-                    height: parent.width
-                    visible: vars.globalUnreadCount != 0
-                    anchors.centerIn: parent
-                 }
-                 Text {
-                    text: vars.globalUnreadCount
-                    font.pixelSize: 16
-                    anchors.centerIn: parent
-                    visible: vars.globalUnreadCount != 0
-                    z: 1
-                    color: main.platformInverted ? "white" : "black"
-                 }
-            }
            }
 
 

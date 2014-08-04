@@ -31,8 +31,6 @@ CommonDialog {
     privateCloseIcon: true
     platformInverted: main.platformInverted
 
-    height: (listView.model.count+1)*48
-
     property string contactJid
     property string accountId
     property bool hasModPermissions
@@ -45,6 +43,8 @@ CommonDialog {
     }
     property bool isCreated: false
 
+    height: (listView.model.count()+1)*48
+
     onStatusChanged: { if (isCreated && dlgParticipants.status === DialogStatus.Closed) { dlgParticipants.destroy() } }
 
     content: ListView {
@@ -53,35 +53,59 @@ CommonDialog {
                 model: xmppConnectivity.getMUCParticipants(accountId,contactJid)
                 clip: true
                 delegate: Component {
-                    Rectangle {
-                        id: itemParticipant
-                        height: 48
-                        width: parent.width
-                        gradient: gr_normal
-                        Gradient {
-                            id: gr_normal
-                            GradientStop { position: 0; color: "transparent" }
-                            GradientStop { position: 1; color: "transparent" }
-                        }
-                        Gradient {
-                            id: gr_press
-                            GradientStop { position: 0; color: "#1C87DD" }
-                            GradientStop { position: 1; color: "#51A8FB" }
-                        }
-                        Text {
-                            text: "[" + xmppConnectivity.getMUCParticipantAffiliationName(affiliation) + "] " + name
-                            font.pixelSize: itemParticipant.height/2
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            anchors.verticalCenter: parent.verticalCenter
-                            color: vars.textColor
-                        }
-                        states: State {
-                            name: "Current"
-                            when: itemParticipant.ListView.isCurrentItem
-                            PropertyChanges { target: itemParticipant; gradient: gr_press }
-                            PropertyChanges { target: itemParticipant; color: platformStyle.colorNormalLight }
-                        }
-                    }
-                } //Component
+                              Rectangle {
+                                  id: wrapper
+                                  width: parent.width
+                                  height: 48
+                                  gradient: gr_free
+                                  Gradient {
+                                      id: gr_free
+                                      GradientStop { id: gr1; position: 0; color: "transparent" }
+                                      GradientStop { id: gr3; position: 1; color: "transparent" }
+                                  }
+                                  Gradient {
+                                      id: gr_press
+                                      GradientStop { position: 0; color: "#1C87DD" }
+                                      GradientStop { position: 1; color: "#51A8FB" }
+                                  }
+                                  Image {
+                                      id: imgPresence
+                                      source: presence
+                                      sourceSize.height: 24
+                                      sourceSize.width: 24
+                                      anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
+                                      height: 24
+                                      width: 24
+                                  }
+                                  /*Image {
+                                      id: imgRole
+                                      source:
+                                      sourceSize.height: 24
+                                      sourceSize.width: 24
+                                      anchors { verticalCenter: parent.verticalCenter; right: closeBtn.left; rightMargin: 10 }
+                                      height: 24
+                                      width: 24
+                                  }*/
+                                  Text {
+                                      id: partName
+                                      anchors { verticalCenter: parent.verticalCenter; left: imgPresence.right; right: parent.right; rightMargin: 5; leftMargin: 10 }
+                                      text: name
+                                      font.pixelSize: 18
+                                      clip: true
+                                      color: vars.textColor
+                                      elide: Text.ElideRight
+                                  }
+                                  states: [ State {
+                                      when: itemResource.ListView.isCurrentItem
+                                      PropertyChanges { target: wrapper; gradient: gr_press }
+                                      PropertyChanges { target: partName; color: platformStyle.colorNormalLight }
+                                  },
+                                  State {
+                                    when: !itemResource.ListView.isCurrentItem
+                                    PropertyChanges { target: wrapper; gradient: gr_free }
+                                    PropertyChanges { target: partName; color: vars.textColor }
+                                  }]
+                              }
+                           }
             }
 }
