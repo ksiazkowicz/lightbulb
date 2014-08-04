@@ -282,6 +282,12 @@ void MyXmppClient::presenceReceived( const QXmppPresence & presence ) {
 
     // muc participants list management
     if (mucRooms.contains(bareJid)) {
+        if (presence.type() == QXmppPresence::Unavailable) {
+            int rowId = -1;
+            mucParticipants.value(bareJid)->find(presence.from(),rowId);
+            mucParticipants.value(bareJid)->takeRow(rowId);
+            return;
+          }
         QXmppMucItem mucItem = presence.mucItem();
         ParticipantItemModel* participantPresence = (ParticipantItemModel*)mucParticipants.value(bareJid)->find(presence.from());
         if (participantPresence == NULL) {

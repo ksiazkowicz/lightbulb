@@ -264,6 +264,8 @@ void XmppConnectivity::resetUnreadMessages(QString accountId, QString bareJid) {
     itemExists->setUnreadMsg(0);
   }
 
+  emit unreadCountChanged(-delta);
+
   if (cachedMessages->contains(bareJid)) {
       MsgListModel* msgListModel = cachedMessages->value(bareJid);
       for (int i=0; i<=delta+1;i++) {
@@ -276,8 +278,6 @@ void XmppConnectivity::resetUnreadMessages(QString accountId, QString bareJid) {
             }
         }
     }
-
-  emit unreadCountChanged(-delta);
 }
 
 int XmppConnectivity::getUnreadCount(QString accountId, QString bareJid) {
