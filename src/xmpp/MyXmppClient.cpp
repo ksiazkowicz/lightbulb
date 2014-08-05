@@ -112,7 +112,7 @@ void MyXmppClient::clientStateChanged(QXmppClient::State state) {
     }
     else if( state == QXmppClient::DisconnectedState ) {
         m_stateConnect = Disconnect;
-        this->setMyPresence( Offline, m_statusText );
+        this->setPresence( Offline, m_statusText );
     }
     if (m_stateConnect != before)
       emit connectingChanged(m_accountId); //check if stateConnect changed
@@ -398,8 +398,8 @@ void MyXmppClient::setStatus( StatusXmpp __status) {
     }
 }
 
-void MyXmppClient::setMyPresence( StatusXmpp status, QString textStatus ) { //Q_INVOKABLE
-    qDebug() << "MyXmppClient:: setMyPresence() called";
+void MyXmppClient::setPresence( StatusXmpp status, QString textStatus ) { //Q_INVOKABLE
+    qDebug() << "MyXmppClient:: setPresence() called";
     if( textStatus != m_statusText ) {
         m_statusText =textStatus;
         emit statusTextChanged();

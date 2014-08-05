@@ -112,7 +112,6 @@ public slots:
     Q_INVOKABLE QString getPreservedMsg(QString jid);
     Q_INVOKABLE void preserveMsg(QString accountId,QString jid,QString message);
     Q_INVOKABLE void openChat(QString accountId, QString bareJid);
-    Q_INVOKABLE void openChat(QString bareJid) { this->openChat(currentClient,bareJid); }
     Q_INVOKABLE void closeChat(QString accountId, QString bareJid);
     void updateChatName(QString m_accountId,QString bareJid,QString name);
 
@@ -132,35 +131,16 @@ public slots:
 
     Q_INVOKABLE int getStatusByIndex(QString accountId);
 
-    Q_INVOKABLE void closeChat(QString bareJid) { this->closeChat(currentClient,bareJid); }
     Q_INVOKABLE void resetUnreadMessages(QString accountId, QString bareJid);
     Q_INVOKABLE int getUnreadCount(QString accountId, QString bareJid);
-
-    Q_INVOKABLE void setPresence(QString accountId, int status, QString textStatus) { clients->value(accountId)->setMyPresence((MyXmppClient::StatusXmpp)status,textStatus); }
 
     Q_INVOKABLE void setVisibility(bool state)   { contacts->setOfflineContactsState(state); emit rosterChanged(); }
     Q_INVOKABLE bool getVisibility()           { return contacts->getOfflineContactsState(); }
 	
     Q_INVOKABLE void updateAvatarCachingSetting(bool setting);
     Q_INVOKABLE void updateKeepAliveSetting(int keepAlive);
-    Q_INVOKABLE void acceptSubscription(QString accountId,QString bareJid) { clients->value(accountId)->acceptSubscribtion(bareJid); }
-    Q_INVOKABLE void rejectSubscription(QString accountId,QString bareJid) { clients->value(accountId)->rejectSubscribtion(bareJid); }
-    Q_INVOKABLE int  getConnectionStatusByAccountId(QString accountId)     { return clients->value(accountId)->getStateConnect(); }
-    Q_INVOKABLE int  getStatusByAccountId(QString accountId)               { return clients->value(accountId)->getStatus(); }
-	
-    Q_INVOKABLE void addContact(QString accountId, QString bareJid, QString nick) {
-      clients->value(accountId)->addContact(bareJid,nick,"",true);
-    }
-    Q_INVOKABLE void renameContact(QString accountId, QString bareJid, QString newName) {
-      clients->value(accountId)->renameContact(bareJid,newName);
-    }
-    Q_INVOKABLE void removeContact(QString accountId,QString bareJid) { clients->value(accountId)->removeContact(bareJid); }
-    Q_INVOKABLE void subscribe(QString accountId,QString bareJid)     { clients->value(accountId)->subscribe(bareJid); }
-    Q_INVOKABLE void unsubscribe(QString accountId,QString bareJid)   { clients->value(accountId)->unsubscribe(bareJid); }
 
     Q_INVOKABLE void updateMyData(QString jid);
-
-    Q_INVOKABLE QStringList getResourcesByJid(QString accountId, QString bareJid) { return clients->value(accountId)->getResourcesByJid(bareJid); }
 
     // handle messages and states
     Q_INVOKABLE bool sendAMessage(QString accountId, QString recipientJid, QString recipientResource, QString body, int state, int type);
@@ -169,10 +149,11 @@ public slots:
     Q_INVOKABLE int getPagesCount(QString accountId, QString bareJid) { return dbWorker->getPageCount(accountId,bareJid); }
 
     // handle MUC
-    Q_INVOKABLE bool joinMUC(QString accountId, QString jid, QString nick, QString password="") { clients->value(accountId)->joinMUCRoom(jid,nick,password); }
-    Q_INVOKABLE ParticipantListModel* getMUCParticipants(QString accountId, QString room) { return clients->value(accountId)->getParticipants(room); }
     QString getMUCParticipantRoleName(int role) { return QXmppMucItem::roleToString((QXmppMucItem::Role)role); }
     QString getMUCParticipantAffiliationName(int aff) { return QXmppMucItem::affiliationToString((QXmppMucItem::Affiliation)aff); }
+
+    // a clever idea to unclutter this shit
+    Q_INVOKABLE MyXmppClient* useClient(QString accountId) { return clients->value(accountId); }
 
 private:
     QString currentClient;

@@ -119,7 +119,7 @@ Page {
             listModelResources.append({resource:qsTr("(by default)"), checked:(contactResource == "")})
 
             if (notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accountId)) != "Offline") {
-                var listResources = xmppConnectivity.getResourcesByJid(accountId,contactJid)
+                var listResources = xmppConnectivity.useClient(accountId).getResourcesByJid(contactJid)
                 for( var z=0; z<listResources.length; z++ ) {
                     if (listResources[z] == "") { continue; }
                     if (contactResource ==listResources[z]) listModelResources.append({resource:listResources[z], checked:true})
@@ -237,6 +237,9 @@ Page {
         id: archiveButtons
         enabled: isInArchiveMode
         anchors { top: parent.top; horizontalCenter: parent.horizontalCenter }
+        z: isInArchiveMode ? 1 : -1
+        visible: isInArchiveMode
+
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-previous_inverse" : "toolbar-previous"
             enabled: totalArchivePages - archivePage > 0

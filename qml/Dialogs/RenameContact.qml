@@ -46,7 +46,7 @@ CommonDialog {
 
     onButtonClicked: {
         if ((index === 0) && ( newNameText.text != "" )) {
-           xmppConnectivity.renameContact( accountId, contactJid, newNameText.text )
+           xmppConnectivity.useClient(accountId).renameContact(contactJid, newNameText.text)
         }
     }
 

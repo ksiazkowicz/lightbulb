@@ -63,7 +63,7 @@ CommonDialog {
             if (!network.connectionStatus)
                 network.openConnection()
 
-            xmppConnectivity.setPresence(accountId,ret, wrapperTextEdit.text)
+            xmppConnectivity.useClient(accountId).setPresence(ret, wrapperTextEdit.text)
             vars.lastStatus = wrapperTextEdit.text
             vars.lastUsedStatus = selectionDialog.selectedIndex
 

@@ -59,7 +59,7 @@ Item {
             }
         }
         onXmppStatusChanged: {
-            console.log( "XmppClient::onStatusChanged (" + accountId + ")" + xmppConnectivity.getStatusByAccountId(accountId) )
+            console.log( "XmppClient::onStatusChanged (" + accountId + ")" + xmppConnectivity.useClient(accountId).getStatus() )
             notify.updateNotifiers()
         }
         onXmppSubscriptionReceived: {
@@ -71,7 +71,7 @@ Item {
         }
         onXmppConnectingChanged: {
             if (settings.gBool("notifications", "notifyConnection")) {
-                switch (xmppConnectivity.getConnectionStatusByAccountId(accountId)) {
+                switch (xmppConnectivity.useClient(accountId).getStateConnect()) {
                     case 0:
                         avkon.showPopup(xmppConnectivity.getAccountName(accountId),"Disconnected. :c");
                         break;

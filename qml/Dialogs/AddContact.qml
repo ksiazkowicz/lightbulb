@@ -39,7 +39,7 @@ CommonDialog {
     property bool isCreated: false
 
     onStatusChanged: if (isCreated && addContact.status === DialogStatus.Closed) addContact.destroy()
-    onButtonClicked: if (index === 0 && addName.text != "" && addJid.text != "") xmppConnectivity.addContact( accountId, addJid.text, addName.text, "", true )
+    onButtonClicked: if (index === 0 && addName.text != "" && addJid.text != "") xmppConnectivity.useClient(accountId).addContact(addJid.text, addName.text, "", true)
 
     content: Column {
             spacing: platformStyle.paddingSmall

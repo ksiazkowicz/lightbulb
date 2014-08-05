@@ -104,7 +104,7 @@ public :
     ~MyXmppClient();
 
     /* --- presence --- */
-    Q_INVOKABLE void setMyPresence( StatusXmpp status, QString textStatus );
+    Q_INVOKABLE void setPresence( StatusXmpp status, QString textStatus );
 
     /*--- connect/disconnect ---*/
     Q_INVOKABLE void connectToXmppServer();
@@ -138,12 +138,12 @@ public :
     QString getJidLastMsg() const { return m_bareJidLastMessage; }
     QString getResourceLastMsg() const { return m_resourceLastMessage; }
 
-    StateConnect getStateConnect() const { return m_stateConnect; }
+    Q_INVOKABLE StateConnect getStateConnect() const { return m_stateConnect; }
 
     QString getStatusText() const { return m_statusText; }
     void setStatusText( const QString& );
 
-    StatusXmpp getStatus() const { return m_status; }
+    Q_INVOKABLE StatusXmpp getStatus() const { return m_status; }
     void setStatus( StatusXmpp __status );
 
     QString getMyJid() const { return m_myjid; }
@@ -170,16 +170,15 @@ public :
     }
     void setKeepAlive(int arg) { m_keepAlive = arg; }
 
-    void goOnline(QString lastStatus) { this->setMyPresence(Online,lastStatus); }
+    void goOnline(QString lastStatus) { this->setPresence(Online,lastStatus); }
 
-    void joinMUCRoom(QString room, QString nick, QString password="");
+    Q_INVOKABLE void joinMUCRoom(QString room, QString nick, QString password="");
     void leaveMUCRoom(QString room);
     QString getMUCNick(QString room);
     QStringList getListOfParticipants(QString room);
 
     bool isMucRoom(QString bareJid) { return mucRooms.contains(bareJid); }
-    QString getMucRoomName(QString bareJid) { return mucRooms.value(bareJid)->name(); }
-    ParticipantListModel* getParticipants(QString bareJid) { return mucParticipants.value(bareJid); }
+    Q_INVOKABLE ParticipantListModel* getParticipants(QString bareJid) { return mucParticipants.value(bareJid); }
 	
 signals:
     void versionChanged();

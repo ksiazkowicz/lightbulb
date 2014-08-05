@@ -50,7 +50,7 @@ CommonDialog {
     content: ListView {
                 id: listView
                 anchors.fill: parent
-                model: xmppConnectivity.getMUCParticipants(accountId,contactJid)
+                model: xmppConnectivity.useClient(accountId).getParticipants(contactJid)
                 clip: true
                 delegate: Component {
                               Rectangle {

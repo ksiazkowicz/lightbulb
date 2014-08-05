@@ -53,7 +53,7 @@ ContextMenu {
             platformInverted: main.platformInverted
             onClicked: {
                 if (avkon.displayAvkonQueryDialog("Remove", qsTr("Are you sure you want to remove ") + contactName + qsTr(" from your contact list?")))
-                    xmppConnectivity.removeContact(accountId,contactJid);
+                    xmppConnectivity.useClient(accountId).removeContact(contactJid);
             }
         }
         MenuItem {
@@ -79,7 +79,7 @@ ContextMenu {
             text: qsTr("Subscribe")
             platformInverted: main.platformInverted
             onClicked: {
-                xmppConnectivity.subscribe(accountId,contactJid)
+                xmppConnectivity.useClient(accountId).subscribe(contactJid)
                 notify.postGlobalNote(qsTr("Sent request to ")+contactName)
             }
         }
@@ -88,7 +88,7 @@ ContextMenu {
             platformInverted: main.platformInverted
             onClicked: {
                 contactMenu.close()
-                xmppConnectivity.unsubscribe(accountId,contactJid)
+                xmppConnectivity.useClient(accountId).unsubscribe(contactJid)
                 notify.postGlobalNote(qsTr("Unsuscribed ")+contactName)
             }
         }

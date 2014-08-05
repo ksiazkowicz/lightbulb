@@ -45,7 +45,7 @@ CommonDialog {
 
     onButtonClicked: {
         if ((index === 0) && ( jidField.text != "" ) && ( nickField.text != "" )) {
-           xmppConnectivity.joinMUC(accountId,jidField.text,nickField.text,passField.text)
+           xmppConnectivity.useClient(accountId).joinMUCRoom(jidField.text,nickField.text,passField.text)
         }
     }
 

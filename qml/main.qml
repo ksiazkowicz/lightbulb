@@ -97,9 +97,9 @@ PageStackWindow {
                                 dialog.createWithProperties("qrc:/dialogs/Status/Reconnect",{"accountId": accountId})
         onXmppSubscriptionReceived: {
             if (avkon.displayAvkonQueryDialog("Subscription (" + getAccountName(accountId) + ")", qsTr("Do you want to accept subscription request from ") + bareJid + qsTr("?")))
-                xmppConnectivity.acceptSubscription(accountId,bareJid)
+                xmppConnectivity.useClient(accountId).acceptSubscription(bareJid)
             else
-                xmppConnectivity.rejectSubscription(accountId,bareJid)
+                xmppConnectivity.useClient(accountId).rejectSubscription(bareJid)
         }
         onMucInvitationReceived: {
             if (avkon.displayAvkonQueryDialog("Invitation (" + getAccountName(accountId) + ")", invSender + " invites you to chatroom " + bareJid + qsTr(". Do you want to join?")))
