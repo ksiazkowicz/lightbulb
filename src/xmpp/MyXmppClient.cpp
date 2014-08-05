@@ -609,6 +609,19 @@ void MyXmppClient::mucParticipantRemovedSlot(const QString &jid) {
   emit insertMessage(m_accountId,room->jid(),"[[INFO]] [[bold]][[mucName]][[/bold]] has left this room.",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0,4,getResourceByJid(jid));
 }
 
+bool MyXmppClient::isActionPossible(int permissionLevel, int action) {
+  // checks if QXmppMucRoom::Action is possible on our permission level
+  // solution by @invidian, ported to C++ by me (ksiazkowicz)
+
+  QList<int> availableActions = QList<int>() << 8 << 4 << 2 << 1 << 0;
+
+  foreach (int value,availableActions){
+    if (permissionLevel>=value) {
+      if(action == value) return true; else permissionLevel -=value;
+    }
+  }
+}
+
 // ---------- file transfer --------------------------------------------------------------------------------------------------------
 
 void MyXmppClient::incomingTransfer(QXmppTransferJob *job) {

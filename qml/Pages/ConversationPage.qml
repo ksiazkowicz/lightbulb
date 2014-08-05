@@ -51,6 +51,8 @@ Page {
     property int    archivePage
     property int    totalArchivePages
 
+    property int availableActions
+
     onArchivePageChanged: {
         // update list model when page changes
         listViewMessages.model = xmppConnectivity.getSqlMessagesByPage(accountId,contactJid,archivePage)
@@ -126,13 +128,7 @@ Page {
                     else listModelResources.append({resource:listResources[z], checked:false})
                 }
             }
-        } else {
-            console.log("--Current permission level--")
-            console.log("Subject changing: " + xmppConnectivity.canIChangeMucSubject(accountId,contactJid))
-            console.log("Room configuration changing: " + xmppConnectivity.canIChangeMucConfiguration(accountId,contactJid))
-            console.log("Enumerating permissions: " + xmppConnectivity.canIRequestPermissions(accountId,contactJid))
-            console.log("Kicking users: " + xmppConnectivity.canIKickSomeone(accountId,contactJid))
-        }
+        } else availableActions = xmppConnectivity.useClient(accountId).getPermissionLevel(contactJid);
     }
 
     function sendMessage() {

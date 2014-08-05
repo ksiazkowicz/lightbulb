@@ -176,7 +176,8 @@ public :
     void leaveMUCRoom(QString room);
     QString getMUCNick(QString room);
     QStringList getListOfParticipants(QString room);
-
+    Q_INVOKABLE int getPermissionLevel(QString room) { return (int)mucRooms.value(room)->allowedActions(); }
+    Q_INVOKABLE bool isActionPossible(int permissionLevel, int action);
     bool isMucRoom(QString bareJid) { return mucRooms.contains(bareJid); }
     Q_INVOKABLE ParticipantListModel* getParticipants(QString bareJid) { return mucParticipants.value(bareJid); }
 	

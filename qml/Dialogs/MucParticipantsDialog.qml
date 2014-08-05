@@ -33,8 +33,8 @@ CommonDialog {
 
     property string contactJid
     property string accountId
-    property bool hasModPermissions
-    property bool hasOwnerPermissions
+    property bool kick
+    property bool permission
 
     // Code for dynamic load
     Component.onCompleted: {

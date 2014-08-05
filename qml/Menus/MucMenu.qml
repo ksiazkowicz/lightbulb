@@ -29,14 +29,24 @@ Menu {
     id: mucOptions
     platformInverted: main.platformInverted
 
-    Component.onCompleted: {
-        open();
-        isCreated = true }
     property bool isCreated: false
     property string contactJid
     property string accountId
-    property bool hasModPermissions
-    property bool hasOwnerPermissions
+    property int availableActions: pageStack.currentPage.availableActions
+    property bool subject: xmppConnectivity.useClient(accountId).isActionPossible(availableActions,1)
+    property bool config: xmppConnectivity.useClient(accountId).isActionPossible(availableActions,2)
+    property bool permission: xmppConnectivity.useClient(accountId).isActionPossible(availableActions,4)
+    property bool kick: xmppConnectivity.useClient(accountId).isActionPossible(availableActions,8)
+
+    Component.onCompleted: {
+        open();
+        isCreated = true;
+        console.log(availableActions)
+        console.log(subject)
+        console.log(config)
+        console.log(permission)
+        console.log(kick)
+    }
 
     onStatusChanged: { if (isCreated && mucOptions.status === DialogStatus.Closed) { mucOptions.destroy() } }
     // define the items in the menu and corresponding actions
@@ -44,7 +54,7 @@ Menu {
         MenuItem {
             text: qsTr("Participants")
             platformInverted: main.platformInverted
-            onClicked: dialog.createWithProperties("qrc:/dialogs/MUC/Participants",{"contactJid":contactJid,"accountId":accountId,"hasModPermissions":hasModPermissions,"hasOwnerPermissions":hasOwnerPermissions})
+            onClicked: dialog.createWithProperties("qrc:/dialogs/MUC/Participants",{"contactJid":contactJid,"accountId":accountId,"kick":kick,"permission":permission})
         }
         MenuItem {
             text: qsTr("Leave room")
@@ -58,13 +68,20 @@ Menu {
         }
         MenuItem {
             text: qsTr("Change subject")
-            enabled: hasModPermissions
+            enabled: subject
             platformInverted: main.platformInverted
+        }
+        MenuItem {
+            text: qsTr("Change room settings")
+            enabled: config
+            platformInverted: main.platformInverted
+            // not implemented
         }
         MenuItem {
             text: qsTr("Bookmark this room")
             enabled: false
             platformInverted: main.platformInverted
+            // not implemented
         }
     }
 }
