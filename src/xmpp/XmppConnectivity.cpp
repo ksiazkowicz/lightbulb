@@ -49,9 +49,6 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
     for (int i=0; i<lSettings->accountsCount(); i++) {
         initializeAccount(lSettings->getAccount(i)->grid(),lSettings->getAccount(i));
     }
-
-    connect(dbWorker, SIGNAL(messagesChanged()), this, SLOT(updateMessages()), Qt::UniqueConnection);
-    connect(dbWorker, SIGNAL(sqlMessagesUpdated()), this, SIGNAL(sqlMessagesChanged()), Qt::UniqueConnection);
 }
 
 XmppConnectivity::~XmppConnectivity() {
@@ -121,12 +118,6 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
     return true;
 }
 
-void XmppConnectivity::gotoPage(int nPage) {
-    page = nPage;
-    updateMessages();
-    emit pageChanged();
-}
-
 /* --- diagnostics --- */
 bool XmppConnectivity::dbRemoveDb() {
     bool ret = false;
@@ -183,6 +174,21 @@ void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString
 
     if (type != 4)
       this->plusUnreadChatMsg(m_accountId,bareJid);
+}
+
+MsgListModel* XmppConnectivity::getMessages(QString jid) {
+  MsgListModel* messages = cachedMessages->value(jid);
+  if (msgLimit > 0) {
+     while (messages->count() > msgLimit) {
+         messages->remove(0);
+       }
+    }
+  return messages;
+}
+
+SqlQueryModel* XmppConnectivity::getSqlMessagesByPage(QString accountId, QString bareJid, int page) {
+  dbWorker->updateMessages(accountId,bareJid,page);
+  return dbWorker->getSqlMessages();
 }
 
 // handling chats list

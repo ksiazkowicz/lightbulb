@@ -49,12 +49,6 @@ class XmppConnectivity : public QObject
 
     Q_PROPERTY(RosterListModel* roster READ getRoster NOTIFY rosterChanged)
     Q_PROPERTY(ChatsListModel* chats READ getChats NOTIFY chatsChanged)
-    Q_PROPERTY(int page READ getPage WRITE gotoPage NOTIFY pageChanged)
-    Q_PROPERTY(int messagesCount READ getMessagesCount NOTIFY pageChanged)
-    Q_PROPERTY(SqlQueryModel* messagesByPage READ getSqlMessagesByPage NOTIFY pageChanged)
-    Q_PROPERTY(SqlQueryModel* messages READ getSqlMessagesByPage NOTIFY sqlMessagesChanged)
-    Q_PROPERTY(MsgListModel* cachedMessages READ getMessages NOTIFY sqlMessagesChanged)
-    Q_PROPERTY(QString chatJid READ getChatJid WRITE setChatJid NOTIFY chatJidChanged)
     Q_PROPERTY(int messagesLimit READ getMsgLimit WRITE setMsgLimit NOTIFY msgLimitChanged )
 
     Q_PROPERTY(bool offlineContactsVisibility READ getVisibility WRITE setVisibility NOTIFY visibilityChanged)
@@ -63,19 +57,6 @@ public:
     ~XmppConnectivity();
 
     bool initializeAccount(QString index, AccountsItemModel* account);
-
-    // well, this stuff is needed
-    int getPage() const { return page; }
-    void gotoPage(int nPage);
-
-    QString getChatJid() const { return currentJid; }
-    void setChatJid( const QString & value ) {
-        if(value!=currentJid) {
-            currentJid=value;
-            emit chatJidChanged();
-        }
-        emit sqlMessagesChanged();
-    }
 
     /* --- diagnostics --- */
     Q_INVOKABLE bool dbRemoveDb();
@@ -95,7 +76,6 @@ signals:
 
     void pageChanged();
     void sqlMessagesChanged();
-    void chatJidChanged();
     void chatsChanged();
     void notifyMsgReceived(QString name,QString jid,QString body,QString account);
 	
@@ -122,7 +102,6 @@ public slots:
     void updateContact(QString m_accountId,QString bareJid,QString property,int count) {
         dbWorker->executeQuery(QStringList() << "updateContact" << m_accountId << bareJid << property << QString::number(count));
     }
-    void updateMessages() { dbWorker->updateMessages(currentClient,currentJid,page); }
     void insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine, int type, QString resource);
 
     Q_INVOKABLE QString getAvatarByJid(QString bareJid) { return lCache->getAvatarCache(bareJid); }
@@ -185,9 +164,12 @@ public slots:
 
     // handle messages and states
     Q_INVOKABLE bool sendAMessage(QString accountId, QString recipientJid, QString recipientResource, QString body, int state, int type);
+    Q_INVOKABLE MsgListModel* getMessages(QString jid);
+    Q_INVOKABLE SqlQueryModel* getSqlMessagesByPage(QString accountId, QString bareJid, int page);
+    Q_INVOKABLE int getPagesCount(QString accountId, QString bareJid) { return dbWorker->getPageCount(accountId,bareJid); }
 
     // handle MUC
-    Q_INVOKABLE bool joinMUC(QString accountId, QString jid, QString nick) { clients->value(accountId)->joinMUCRoom(jid,nick); }
+    Q_INVOKABLE bool joinMUC(QString accountId, QString jid, QString nick, QString password="") { clients->value(accountId)->joinMUCRoom(jid,nick,password); }
     Q_INVOKABLE ParticipantListModel* getMUCParticipants(QString accountId, QString room) { return clients->value(accountId)->getParticipants(room); }
     QString getMUCParticipantRoleName(int role) { return QXmppMucItem::roleToString((QXmppMucItem::Role)role); }
     QString getMUCParticipantAffiliationName(int aff) { return QXmppMucItem::affiliationToString((QXmppMucItem::Affiliation)aff); }
@@ -201,18 +183,6 @@ private:
     RosterListModel* getRoster();
     ContactListManager *contacts;
 
-    SqlQueryModel* getSqlMessagesByPage() { return dbWorker->getSqlMessages(); }
-    int getMessagesCount() { return dbWorker->getPageCount(currentClient,currentJid); }
-    MsgListModel* getMessages() {
-      MsgListModel* messages = cachedMessages->value(currentJid);
-      if (msgLimit > 0) {
-         while (messages->count() > msgLimit) {
-             messages->remove(0);
-           }
-        }
-      return messages;
-    }
-
     ChatsListModel* chats;
     ChatsListModel* getChats() { return chats; }
 
@@ -221,9 +191,6 @@ private:
 
     DatabaseWorker *dbWorker;
     QThread *dbThread;
-
-    int page; //required for archive view
-    QString currentJid;
 
     static bool removeDir(const QString &dirName); //workaround for qt not able to remove directory recursively
     // http://john.nachtimwald.com/2010/06/08/qt-remove-directory-and-its-contents/

@@ -47,24 +47,31 @@ Page {
     property bool   isInArchiveMode: false
     property bool   isAChatPage:     true
     property bool   isTyping:        false
-    property int    chatType:        0
+    property int    chatType
+    property int    archivePage
+    property int    totalArchivePages
+
+    onArchivePageChanged: {
+        // update list model when page changes
+        listViewMessages.model = xmppConnectivity.getSqlMessagesByPage(accountId,contactJid,archivePage)
+    }
 
     ListView {
         id: listViewMessages
-        anchors { fill: parent; bottomMargin: msgInputField.height }
-        model: isInArchiveMode ? xmppConnectivity.messagesByPage : xmppConnectivity.cachedMessages
+        anchors { fill: parent; bottomMargin: isInArchiveMode ? 0 : msgInputField.height }
 
         property int oldHeight;
 
         delegate: Loader {
-            source: isInArchiveMode ? ":/Components/Convo/ArchiveDelegate.qml" : (msgType == 4 ? ":/Components/Convo/InformationDelegate" : (isMine ? ":/Components/Convo/OutcomingDelegate" : ":/Components/Convo/IncomingDelegate"))
+            source: isInArchiveMode ? ":/Components/Convo/ArchiveDelegate" : (msgType == 4 ? ":/Components/Convo/InformationDelegate" : (isMine ? ":/Components/Convo/OutcomingDelegate" : ":/Components/Convo/IncomingDelegate"))
             property string _msgText: msgText
-            property string _msgResource: msgResource
-            property int _msgType: msgType
+            property string _msgResource: !isInArchiveMode ? msgResource : ""
+            property int _msgType: !isInArchiveMode ? msgType : 0
             property string _contactName: contactName
             property string _contactJid: contactJid
             property string _dateTime: dateTime
-            property bool _msgUnreadState: msgUnreadState
+            property bool _msgUnreadState: !isInArchiveMode ? msgUnreadState : false
+            property bool _isMine: isMine
             height: sourceComponent.height
             width: listViewMessages.width
         }
@@ -98,12 +105,11 @@ Page {
         // sending a chat state meaning that chat is active if not in archive mode
         if (!isInArchiveMode) {
             xmppConnectivity.openChat( accountId,contactJid )
+            listViewMessages.model = xmppConnectivity.getMessages(contactJid)
         } else {
-            xmppConnectivity.page = 1;
+            archivePage = 1
+            totalArchivePages = xmppConnectivity.getPagesCount(accountId,contactJid)
         }
-
-        // get messages for jid
-        xmppConnectivity.chatJid = contactJid
 
         // if not MUC, get resources
         if (chatType != 3) {
@@ -146,7 +152,6 @@ Page {
 
         xmppConnectivity.resetUnreadMessages(accountId,contactJid)
     }
-
 
     // timer for handling "stopped" notifications
     Timer {
@@ -202,9 +207,6 @@ Page {
 
                 xmppConnectivity.preserveMsg(accountId,contactJid,msgInputField.text)
                 xmppConnectivity.resetUnreadMessages(accountId,contactJid)
-
-                // unload messages, deselect contact
-                xmppConnectivity.chatJid = ""
             }
             onPlatformPressAndHold: xmppConnectivity.closeChat(accountId,contactJid)
         }
@@ -231,37 +233,24 @@ Page {
         }
     }
 
-    /*tools: ToolBarLayout {
-            ToolButton {
-                iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
-                onClicked: {
-                    pageStack.pop("qrc:/pages/Messages")
-                    xmppConnectivity.chatJid = ""
-                    xmppConnectivity.page = 1
-                }
-            }
-            ButtonRow {
-                ToolButton {
-                    iconSource: main.platformInverted ? "toolbar-previous_inverse" : "toolbar-previous"
-                    enabled: xmppConnectivity.messagesCount - xmppConnectivity.page> 0
-                    opacity: enabled ? 1 : 0.2
-                    onClicked: xmppConnectivity.page++;
-                }
-                ToolButton {
-                    iconSource: main.platformInverted ? "toolbar-next_inverse" : "toolbar-next"
-                    enabled: xmppConnectivity.page > 1
-                    opacity: enabled ? 1 : 0.2
-                    onClicked: {
-                        xmppConnectivity.page--;
-                        flickable.contentY = flickable.contentHeight-flickable.height;
-                    }
-                }
-            }
-           }
-
+    ButtonRow {
+        id: archiveButtons
+        enabled: isInArchiveMode
+        anchors { top: parent.top; horizontalCenter: parent.horizontalCenter }
+        ToolButton {
+            iconSource: main.platformInverted ? "toolbar-previous_inverse" : "toolbar-previous"
+            enabled: totalArchivePages - archivePage > 0
+            opacity: enabled ? 1 : 0.2
+            onClicked: archivePage++
+        }
+        ToolButton {
+            iconSource: main.platformInverted ? "toolbar-next_inverse" : "toolbar-next"
+            enabled: archivePage > 1
+            opacity: enabled ? 1 : 0.2
+            onClicked: archivePage--
+        }
+    }
 
     // Code for destroying the page after pop
     onStatusChanged: if (conversationPage.status === PageStatus.Inactive) conversationPage.destroy()
-}
-*/
 }

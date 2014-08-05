@@ -45,7 +45,7 @@ CommonDialog {
 
     onButtonClicked: {
         if ((index === 0) && ( jidField.text != "" ) && ( nickField.text != "" )) {
-           xmppConnectivity.joinMUC(accountId,jidField.text,nickField.text)
+           xmppConnectivity.joinMUC(accountId,jidField.text,nickField.text,passField.text)
         }
     }
 
@@ -58,7 +58,7 @@ CommonDialog {
             id: jidLabel;
             color: vars.textColor
             anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10 }
-            text: qsTr("Room JID:");
+            text: qsTr("Room JID");
         }
         TextField {
             id: jidField
@@ -71,13 +71,26 @@ CommonDialog {
             id: nickLabel
             color: vars.textColor
             anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10 }
-            text: qsTr("Your nick:");
+            text: qsTr("Your nick");
         }
         TextField {
             id: nickField
             height: 50
             anchors { left: parent.left; right: parent.right }
             placeholderText: qsTr("Nick")
+            text: vars.defaultMUCNick != "false" ? vars.defaultMUCNick : ""
+        }
+        Text {
+            id: passLabel
+            color: vars.textColor
+            anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10 }
+            text: qsTr("Room password (optional)");
+        }
+        TextField {
+            id: passField
+            height: 50
+            anchors { left: parent.left; right: parent.right }
+            echoMode: TextInput.Password
         }
     }
 }

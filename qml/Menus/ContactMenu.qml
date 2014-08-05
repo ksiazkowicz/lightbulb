@@ -37,7 +37,8 @@ ContextMenu {
     onStatusChanged: {
         if (contactMenu.status == DialogStatus.Closed && shouldICareAnyway) {
             contactMenu.destroy();
-            pageStack.currentPage.selectedJid = "";
+            if (pageStack.currentPage.pageName == "Contacts")
+                pageStack.currentPage.selectedJid = "";
         }
     }
     Component.onCompleted: {
@@ -63,16 +64,16 @@ ContextMenu {
         MenuItem {
             text: "Archive"
             platformInverted: main.platformInverted
-            onClicked: {
-                xmppConnectivity.page = 1
-                pageStack.push("qrc:/pages/Conversation",{"accountId": accountId,"contactName":contactName,"contactJid":contactJid,"isInArchiveMode":true})
-            }
+            onClicked: pageStack.replace("qrc:/pages/Conversation",{"accountId": accountId,"contactName":contactName,"contactJid":contactJid,"isInArchiveMode":true})
         }
 
         MenuItem {
             text: qsTr("vCard")
             platformInverted: main.platformInverted
-            onClicked: main.pageStack.push("qrc:/pages/VCard",{"accountId": accountId,"contactJid":contactJid,"contactName":contactName})
+            onClicked: {
+                pageStack.currentPage.selectedJid = "";
+                main.pageStack.push("qrc:/pages/VCard",{"accountId": accountId,"contactJid":contactJid,"contactName":contactName})
+            }
         }
         MenuItem {
             text: qsTr("Subscribe")

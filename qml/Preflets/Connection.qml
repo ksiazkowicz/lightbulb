@@ -67,6 +67,27 @@ Item {
             }
         }
 
+        Text {
+            text: qsTr("Default group chat nick")
+            font.pixelSize: 20
+            font.bold: true
+            color: vars.textColor
+            anchors { left: parent.left; leftMargin: 10; }
+        }
+        TextField {
+            id: tiDefaultMUCNick
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: content.width-20
+            height: 50
+            Component.onCompleted: tiDefaultMUCNick.text = vars.defaultMUCNick
+            onActiveFocusChanged:  main.splitscreenY = 0
+
+            onTextChanged: {
+                vars.defaultMUCNick = tiDefaultMUCNick.text
+                settings.sStr(vars.defaultMUCNick,"behavior", "defaultMUCNick")
+            }
+        }
+
         SelectionListItem {
             id: iapSelection
             platformInverted: main.platformInverted

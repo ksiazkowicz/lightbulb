@@ -172,7 +172,7 @@ public :
 
     void goOnline(QString lastStatus) { this->setMyPresence(Online,lastStatus); }
 
-    void joinMUCRoom(QString room, QString nick);
+    void joinMUCRoom(QString room, QString nick, QString password="");
     void leaveMUCRoom(QString room);
     QString getMUCNick(QString room);
     QStringList getListOfParticipants(QString room);

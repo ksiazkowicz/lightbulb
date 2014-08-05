@@ -67,11 +67,11 @@ Page {
 
             states: [State {
                     name: "Current"
-                    when: selectedJid == jid
+                    when: rosterPage.selectedJid == jid
                     PropertyChanges { target: wrapper; gradient: gr_press }
                 },State {
                     name: "Not current"
-                    when: !selectedJid == jid
+                    when: !(rosterPage.selectedJid == jid)
                     PropertyChanges { target: wrapper; gradient: gr_free }
                 }]
 
@@ -134,12 +134,15 @@ Page {
                 anchors.fill: parent
 
                 onClicked: {
-                    selectedJid = jid;
+                    rosterPage.selectedJid = jid;
                     notify.updateNotifiers()
                     pageStack.replace("qrc:/pages/Conversation",{"accountId": accountId,"contactName":txtJid.contact,"contactJid":jid,"isInArchiveMode":false})
                 }
 
-                onPressAndHold: dialog.createWithProperties("qrc:/menus/Roster/Contact",{"accountId": accountId,"contactName":txtJid.contact,"contactJid":jid})
+                onPressAndHold: {
+                    rosterPage.selectedJid = jid
+                    dialog.createWithProperties("qrc:/menus/Roster/Contact",{"accountId": accountId,"contactName":txtJid.contact,"contactJid":jid})
+                }
             }
             Image {
                 id: imgPresenceR

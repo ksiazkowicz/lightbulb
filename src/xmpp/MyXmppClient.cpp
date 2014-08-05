@@ -507,7 +507,7 @@ QString MyXmppClient::getResourceByJid( const QString &jid ) {
 
 // ---------- muc support --------------------------------------------------------------------------------------------------------
 
-void MyXmppClient::joinMUCRoom(QString room, QString nick) {
+void MyXmppClient::joinMUCRoom(QString room, QString nick, QString password) {
   qDebug() << "MyXmppClient::joinMUCRoom(): attempting to join" << room;
   QXmppMucRoom *mucRoom;
 
@@ -531,6 +531,7 @@ void MyXmppClient::joinMUCRoom(QString room, QString nick) {
       mucParticipants.insert(room,participants);
     }
 
+  mucRoom->setPassword(password);
   mucRoom->setNickName(nick);
   mucRoom->join();
 }
