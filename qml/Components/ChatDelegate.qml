@@ -28,11 +28,12 @@ Item {
         height: 48
         smooth: true
         source: xmppConnectivity.getAvatarByJid(jid)
+        Rectangle { anchors.fill: parent; color: "black"; z: -1 }
         Image {
             anchors.fill: parent
             sourceSize { width: 48; height: 48 }
             smooth: true
-            source: "qrc:/avatar-mask"
+            source: main.platformInverted ? "qrc:/avatar-mask_inverse" : "qrc:/avatar-mask"
         }
     }
     Image {

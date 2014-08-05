@@ -73,6 +73,8 @@ Page {
                      }
                  }
 
+            Item { height: 5; width: 1}
+
             Item {
                 id: account
                 anchors { left: parent.left; right: parent.right }
@@ -86,10 +88,13 @@ Page {
                     smooth: true
                     source: xmppConnectivity.getAvatarByJid(settings.gStr("behavior","personality"))
 
+                    Rectangle { anchors.fill: parent; color: "black"; z: -1 }
+
                     Image {
                         anchors.fill: parent
                         smooth: true
-                        source: "qrc:/avatar-mask"
+                        sourceSize: { width: 64; height: 64 }
+                        source: main.platformInverted ? "qrc:/avatar-mask_inverse" : "qrc:/avatar-mask"
                     }
                 }
 
@@ -99,7 +104,7 @@ Page {
                     height: 31
                     text: qsTr("Me")
                     anchors { left: avatar.right; leftMargin: 24; top: parent.top}
-                    color: platformStyle.colorNormalLight
+                    color: vars.textColor
                     font.pixelSize: 24
                 }
 
@@ -108,6 +113,7 @@ Page {
                     width: 50
                     height: 50
                     iconSource: "toolbar-menu"
+                    platformInverted: main.platformInverted
                     onClicked: main.pageStack.push( "qrc:/pages/Accounts" )
                 }
 
@@ -158,7 +164,7 @@ Page {
                 Text {
                     height: parent.height
                     width: parent.width - clearBtn.width
-                    color: "#ffffff"
+                    color: vars.textColor
                     text: qsTr("Events")
                     font { pixelSize: 22; bold: true }
                     opacity: 0.7
@@ -171,6 +177,7 @@ Page {
                     onClicked: {
                         eventListModel.clear()
                     }
+                    platformInverted: main.platformInverted
                 }
             }
             Repeater {
@@ -196,7 +203,7 @@ Page {
                             Image {
                                 anchors.fill: parent
                                 smooth: true
-                                source: "qrc:/avatar-mask"
+                                source: main.platformInverted ? "qrc:/avatar-mask_inverse" : "qrc:/avatar-mask"
                                 visible: avatarMask
                             }
                             Image {
@@ -221,7 +228,7 @@ Page {
                     Column {
                             anchors { left: icon.right; leftMargin: 10; verticalCenter: notification.verticalCenter }
                             Text {
-                                color: "#ffffff"
+                                color: vars.textColor
                                 textFormat: Text.PlainText
                                 width: mainPage.width - 25 - 90
                                 maximumLineCount: 1
@@ -246,7 +253,7 @@ Page {
                 height: eventListModel.count > 0 ? 0 : 64
                 anchors { left: parent.left; right: parent.right }
                 Text {
-                    color: "#ffffff"
+                    color: vars.textColor
                     text: "No unread events ^^"
                     anchors { horizontalCenter: parent.horizontalCenter; verticalCenter: parent.verticalCenter }
                     verticalAlignment: Text.AlignVCenter
@@ -263,7 +270,7 @@ Page {
                 Text {
                     height: parent.height
                     width: parent.width - chatBtn.width
-                    color: "#ffffff"
+                    color: vars.textColor
                     text: qsTr("Chats")
                     font { pixelSize: 22; bold: true }
                     opacity: 0.7
@@ -275,6 +282,7 @@ Page {
                     width: height
                     text: ""
                     iconSource: "toolbar-add"
+                    platformInverted: main.platformInverted
                     onClicked: main.pageStack.push( "qrc:/pages/Roster" )
                 }
             }
