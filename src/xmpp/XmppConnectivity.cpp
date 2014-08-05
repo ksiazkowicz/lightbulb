@@ -274,7 +274,9 @@ void XmppConnectivity::resetUnreadMessages(QString accountId, QString bareJid) {
   if (cachedMessages->contains(bareJid)) {
       MsgListModel* msgListModel = cachedMessages->value(bareJid);
       for (int i=0; i<=delta+1;i++) {
-          qDebug() << "iteration" << i << "index" << msgListModel->count()-i << "total messages" << msgListModel->count() << "delta" << delta;
+          if (msgListModel->count()-i <= 0)
+            return;
+
           MsgItemModel* msgModel = (MsgItemModel*)msgListModel->getElementByID(msgListModel->count()-i);
           if (msgModel != NULL) {
               if (msgModel->gMsgUnreadState())
