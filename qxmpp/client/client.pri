@@ -1,5 +1,7 @@
 # Header files
 HEADERS += \
+    qxmpp/client/QXmppArchiveManager.h \
+    qxmpp/client/QXmppBookmarkManager.h \
     qxmpp/client/QXmppCallManager.h \
     qxmpp/client/QXmppClient.h \
     qxmpp/client/QXmppClientExtension.h \
@@ -21,6 +23,8 @@ HEADERS += \
 # Source files
 SOURCES += \
     qxmpp/client/QXmppDiscoveryManager.cpp \
+    qxmpp/client/QXmppArchiveManager.cpp \
+    qxmpp/client/QXmppBookmarkManager.cpp \
     qxmpp/client/QXmppCallManager.cpp \
     qxmpp/client/QXmppClient.cpp \
     qxmpp/client/QXmppClientExtension.cpp \
