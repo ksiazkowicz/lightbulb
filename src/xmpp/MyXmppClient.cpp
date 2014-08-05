@@ -27,6 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "DataPublisher.h"
 #include "QSettings.h"
 
+const bool xmppDebugEnabled = false;
+
 MyXmppClient::MyXmppClient() : QObject(0) {
     xmppClient = new QXmppClient( this );
     QObject::connect( xmppClient, SIGNAL(stateChanged(QXmppClient::State)), this, SLOT(clientStateChanged(QXmppClient::State)) );
@@ -60,6 +62,9 @@ MyXmppClient::MyXmppClient() : QObject(0) {
 
     serviceDiscovery = new QXmppDiscoveryManager();
     xmppClient->addExtension(serviceDiscovery);
+
+    if (xmppDebugEnabled)
+      connect(xmppClient,SIGNAL(logMessage(QXmppLogger::MessageType,QString)),this,SLOT(logMessageReceived(QXmppLogger::MessageType,QString)));
 }
 
 MyXmppClient::~MyXmppClient() {
@@ -81,7 +86,7 @@ void MyXmppClient::connectToXmppServer() {
     xmppConfig.setAutoAcceptSubscriptions(false);
     xmppConfig.setSaslAuthMechanism("DIGEST-MD5");
     xmppConfig.setUseSASLAuthentication(true);
-    xmppConfig.setStreamSecurityMode(QXmppConfiguration::TLSEnabled);
+    xmppConfig.setStreamSecurityMode(QXmppConfiguration::TLSRequired);
 
     /*******************/
 
@@ -115,7 +120,7 @@ void MyXmppClient::clientStateChanged(QXmppClient::State state) {
 
 void MyXmppClient::error(QXmppClient::Error e) {
     QString errString;
-    if( e == QXmppClient::SocketError ) errString = "SOCKET_ERROR";
+    if( e == QXmppClient::SocketError ) errString = "SOCKET_ERROR: " + xmppClient->socketErrorString();
     else if( e == QXmppClient::KeepAliveError ) errString = "KEEP_ALIVE_ERROR";
     else if( e == QXmppClient::XmppStreamError ) errString = "XMPP_STREAM_ERROR";
 
@@ -400,8 +405,8 @@ void MyXmppClient::setMyPresence( StatusXmpp status, QString textStatus ) { //Q_
         emit statusTextChanged();
     }
 
-    setStatus( status );
     setStatusText( textStatus );
+    setStatus( status );
 }
 
 // ---------- roster management --------------------------------------------------------------------------------------------------

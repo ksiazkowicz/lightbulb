@@ -156,7 +156,7 @@ void Settings::setAccount(
 
     bool ok = false;
     int p = _port.toInt(&ok);
-    if( ok ) { set( QVariant(p), _jid, "port" ); }
+    if( ok ) { set( QVariant(p), _grid, "port" ); }
 
     AccountsItemModel* account;
 

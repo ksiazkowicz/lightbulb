@@ -244,6 +244,20 @@ private slots:
     void incomingTransfer(QXmppTransferJob *job);
     void permissionsReceived(const QList<QXmppMucItem> &permissions);
 
+    void logMessageReceived(QXmppLogger::MessageType type, const QString &text) {
+      QString typeStr;
+
+      switch (type) {
+        case QXmppLogger::DebugMessage: typeStr = "DEBUG"; break;
+        case QXmppLogger::InformationMessage: typeStr = "INFO"; break;
+        case QXmppLogger::WarningMessage: typeStr = "WARN"; break;
+        case QXmppLogger::ReceivedMessage: typeStr = "RECV"; break;
+        case QXmppLogger::SentMessage: typeStr = "SENT"; break;
+        }
+
+      qDebug().nospace() << "MyXmppClient(): [" << qPrintable(typeStr) << "] " << text;
+    }
+
 private:
     // functions
     void initRosterManager();

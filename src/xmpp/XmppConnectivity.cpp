@@ -89,7 +89,6 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
 
     connect(clients->value(index),SIGNAL(updateContact(QString,QString,QString,int)),this,SLOT(updateContact(QString,QString,QString,int)),Qt::UniqueConnection);
     connect(clients->value(index),SIGNAL(insertMessage(QString,QString,QString,QString,int,int,QString)),this,SLOT(insertMessage(QString,QString,QString,QString,int,int,QString)),Qt::UniqueConnection);
-    connect(clients->value(index),SIGNAL(contactStatusChanged(QString,QString)),this,SLOT(handleContactStatusChange(QString,QString)),Qt::UniqueConnection);
 
     connect(clients->value(index),SIGNAL(connectingChanged(QString)),this,SIGNAL(xmppConnectingChanged(QString)),Qt::UniqueConnection);
     connect(clients->value(index),SIGNAL(statusChanged(QString)),this,SLOT(handleXmppStatusChange(QString)),Qt::UniqueConnection);

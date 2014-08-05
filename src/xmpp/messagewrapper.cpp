@@ -62,8 +62,6 @@ QString MessageWrapper::parseMsgOnLink( const QString &inString ) const
             nLink = "a href=\"" + link + "\">" + link + "</a";
         }
 
-        //qDebug() << "pos="<<pos<<" pos_space="<<pos_space<<" ["<<link<<"]";
-
         outString += nLink;
 
         pos = pos_space;
@@ -76,7 +74,5 @@ QString MessageWrapper::parseMsgOnLink( const QString &inString ) const
     }
 
     outString.replace("\n","<br />");
-
-    //qDebug() << outString;
     return outString;
 }
