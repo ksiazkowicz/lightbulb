@@ -84,7 +84,8 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
 
     // initialize viewer and set it parameters
     QmlApplicationViewer viewer;
-    QAvkonHelper avkon(&viewer);
+    CAknAppUi* appUi = dynamic_cast<CAknAppUi*> (CEikonEnv::Static()->AppUi());
+    QAvkonHelper avkon(&viewer,appUi);
     viewer.rootContext()->setContextProperty("avkon", &avkon);
 
     EmoticonParser parser;

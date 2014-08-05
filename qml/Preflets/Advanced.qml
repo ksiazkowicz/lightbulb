@@ -71,7 +71,7 @@ Item {
             }
         }
 
-        /*CheckBox {
+        CheckBox {
             id: hideFromTaskMgr
             text: qsTr("Hide app from task manager")
             checked: settings.gBool("behavior","hideFromTaskMgr")
@@ -80,8 +80,7 @@ Item {
                 settings.sBool(checked,"behavior","hideFromTaskMgr")
                 avkon.setAppHiddenState(checked);
             }
-        }*/
-
+        }
         Text {
             text: qsTr("Visible messages limit")
             font.pixelSize: 20

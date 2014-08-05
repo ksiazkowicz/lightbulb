@@ -99,11 +99,7 @@ signals:
 public slots:
     void handleXmppStatusChange (const QString accountId);
 
-    void updateContact(QString m_accountId,QString bareJid,QString property,int count) {
-        dbWorker->executeQuery(QStringList() << "updateContact" << m_accountId << bareJid << property << QString::number(count));
-    }
     void insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine, int type, QString resource);
-
     Q_INVOKABLE QString getAvatarByJid(QString bareJid) { return lCache->getAvatarCache(bareJid); }
 
     // handling chats list

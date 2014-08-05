@@ -93,7 +93,7 @@ Page {
                     Image {
                         anchors.fill: parent
                         smooth: true
-                        sourceSize: { width: 64; height: 64 }
+                        sourceSize { width: 64; height: 64 }
                         source: main.platformInverted ? "qrc:/avatar-mask_inverse" : "qrc:/avatar-mask"
                     }
                 }
@@ -200,10 +200,13 @@ Page {
                             sourceSize { height: height; width: width }
                             smooth: true
                             source: iconPath
+
+                            Rectangle { anchors.fill: parent; color: avatarMask ? "black" : "transparent"; z: -1 }
                             Image {
                                 anchors.fill: parent
                                 smooth: true
                                 source: main.platformInverted ? "qrc:/avatar-mask_inverse" : "qrc:/avatar-mask"
+                                sourceSize { width: 64; height: 64 }
                                 visible: avatarMask
                             }
                             Image {

@@ -32,6 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <aknglobalnote.h>
 #include <hwrmlight.h>
 #include <QUrl>
+#include <aknappui.h>
 
 #include "AvkonMedia.h"
 
@@ -47,7 +48,7 @@ class QAvkonHelper : public QObject
     Q_OBJECT
     Q_PROPERTY(bool switchToApp READ getSwitchToAppProperty WRITE setSwitchToAppProperty)
 public:
-    explicit QAvkonHelper(QDeclarativeView *view, QObject *parent = 0);
+    explicit QAvkonHelper(QDeclarativeView *view, CAknAppUi *app, QObject *parent = 0);
     Q_INVOKABLE void showPopup(QString title,QString message);
     Q_INVOKABLE void notificationBlink(int device);
     Q_INVOKABLE void displayGlobalNote(QString message, bool isError);
@@ -71,6 +72,7 @@ private:
     void ShowNoteL(const TDesC& aMessage);
     void ShowErrorL(const TDesC& aMessage);
     QDeclarativeView *m_view;
+    CAknAppUi *m_app;
     QString lastPopup;
 
     bool chatIconStatus;

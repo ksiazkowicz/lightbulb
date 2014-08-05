@@ -63,8 +63,8 @@ public:
 
 static const TUid KUidBrowser = { 0x10008D39 };
 
-QAvkonHelper::QAvkonHelper(QDeclarativeView *view, QObject *parent) :
-    QObject(parent), m_view(view)
+QAvkonHelper::QAvkonHelper(QDeclarativeView *view, CAknAppUi *app, QObject *parent) :
+  QObject(parent), m_view(view), m_app(app)
 {
     notifyLight = CHWRMLight::NewL();
     chatIconStatus = true;
@@ -215,7 +215,7 @@ void QAvkonHelper::minimize() const {
 }
 
 void QAvkonHelper::setAppHiddenState(bool state) {
-  //m_view->setHidden(state);
+  m_app->HideApplicationFromFSW(state);
 }
 
 void QAvkonHelper::restartApp() {
