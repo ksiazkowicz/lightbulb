@@ -615,11 +615,15 @@ bool MyXmppClient::isActionPossible(int permissionLevel, int action) {
 
   QList<int> availableActions = QList<int>() << 8 << 4 << 2 << 1 << 0;
 
+  qDebug() << availableActions;
+
   foreach (int value,availableActions){
     if (permissionLevel>=value) {
       if(action == value) return true; else permissionLevel -=value;
     }
   }
+
+  return false;
 }
 
 // ---------- file transfer --------------------------------------------------------------------------------------------------------

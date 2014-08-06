@@ -180,6 +180,13 @@ public :
     Q_INVOKABLE bool isActionPossible(int permissionLevel, int action);
     bool isMucRoom(QString bareJid) { return mucRooms.contains(bareJid); }
     Q_INVOKABLE ParticipantListModel* getParticipants(QString bareJid) { return mucParticipants.value(bareJid); }
+    Q_INVOKABLE QString getMUCSubject(QString room) { return mucRooms.value(room)->subject(); }
+    Q_INVOKABLE void setMUCSubject(QString room, QString subject) { mucRooms.value(room)->setSubject(subject); }
+    Q_INVOKABLE void kickMUCUser(QString room, QString userJid, QString reason) { mucRooms.value(room)->kick(userJid,reason); }
+    Q_INVOKABLE void banMUCUser(QString room, QString userJid, QString reason) {
+      QString userBareJid = getBareJidByJid(mucRooms.value(room)->participantFullJid(userJid));
+      mucRooms.value(room)->ban(userBareJid,reason);
+    }
 	
 signals:
     void versionChanged();

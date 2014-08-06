@@ -52,60 +52,65 @@ CommonDialog {
                 anchors.fill: parent
                 model: xmppConnectivity.useClient(accountId).getParticipants(contactJid)
                 clip: true
-                delegate: Component {
-                              Rectangle {
-                                  id: wrapper
-                                  width: parent.width
-                                  height: 48
-                                  gradient: gr_free
-                                  Gradient {
-                                      id: gr_free
-                                      GradientStop { id: gr1; position: 0; color: "transparent" }
-                                      GradientStop { id: gr3; position: 1; color: "transparent" }
-                                  }
-                                  Gradient {
-                                      id: gr_press
-                                      GradientStop { position: 0; color: "#1C87DD" }
-                                      GradientStop { position: 1; color: "#51A8FB" }
-                                  }
-                                  Image {
-                                      id: imgPresence
-                                      source: presence
-                                      sourceSize.height: 24
-                                      sourceSize.width: 24
-                                      anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
-                                      height: 24
-                                      width: 24
-                                  }
-                                  /*Image {
-                                      id: imgRole
-                                      source:
-                                      sourceSize.height: 24
-                                      sourceSize.width: 24
-                                      anchors { verticalCenter: parent.verticalCenter; right: closeBtn.left; rightMargin: 10 }
-                                      height: 24
-                                      width: 24
-                                  }*/
-                                  Text {
-                                      id: partName
-                                      anchors { verticalCenter: parent.verticalCenter; left: imgPresence.right; right: parent.right; rightMargin: 5; leftMargin: 10 }
-                                      text: name
-                                      font.pixelSize: 18
-                                      clip: true
-                                      color: vars.textColor
-                                      elide: Text.ElideRight
-                                  }
-                                  states: [ State {
-                                      when: itemResource.ListView.isCurrentItem
-                                      PropertyChanges { target: wrapper; gradient: gr_press }
-                                      PropertyChanges { target: partName; color: platformStyle.colorNormalLight }
-                                  },
-                                  State {
-                                    when: !itemResource.ListView.isCurrentItem
-                                    PropertyChanges { target: wrapper; gradient: gr_free }
-                                    PropertyChanges { target: partName; color: vars.textColor }
-                                  }]
-                              }
-                           }
+                delegate: Item {
+                    id: mucPartDelegate
+                    height: 48
+                    width: listView.width
+                    Image {
+                        id: imgPresence
+                        source: presence
+                        sourceSize.height: 24
+                        sourceSize.width: 24
+                        anchors { verticalCenter: mucPartDelegate.verticalCenter; left: parent.left; leftMargin: 10; }
+                        height: 24
+                        width: 24
+                    }
+                    Flickable {
+                        flickableDirection: Flickable.HorizontalFlick
+                        interactive: (kick || permission)
+                        //boundsBehavior: Flickable.DragOverBounds
+                        height: 48
+                        width: listView.width
+                        contentWidth: wrapper.width + buttonRow.width
+                        Item {
+                            id: wrapper
+                            width: listView.width
+                            anchors.left: parent.left
+                            height: 48
+                            /*Image {
+                                id: imgRole
+                                source:
+                                sourceSize.height: 24
+                                sourceSize.width: 24
+                                anchors { verticalCenter: parent.verticalCenter; right: closeBtn.left; rightMargin: 10 }
+                                height: 24
+                                width: 24
+                            }*/
+                            Text {
+                                id: partName
+                                anchors { verticalCenter: parent.verticalCenter; left: parent.left; right: parent.right; rightMargin: 5; leftMargin: 44 }
+                                text: name
+                                font.pixelSize: 18
+                                clip: true
+                                color: vars.textColor
+                                elide: Text.ElideRight
+                            }
+                        }
+                        ButtonRow {
+                            id: buttonRow
+                            anchors.left: wrapper.right;
+                            ToolButton {
+                                text: "Kick"
+                                enabled: kick
+                                onClicked: dialog.createWithProperties("qrc:/dialogs/MUC/Query",{"contactJid":contactJid,"accountId":accountId,"userJid":bareJid,"titleText":qsTr("Kick reason (optional)"),"actionType":1})
+                            }
+                            ToolButton {
+                                text: "Ban"
+                                enabled: permission
+                                onClicked: dialog.createWithProperties("qrc:/dialogs/MUC/Query",{"contactJid":contactJid,"accountId":accountId,"userJid":bareJid,"titleText":qsTr("Ban reason (optional)"),"actionType":2})
+                            }
+                        }
+                    }
+                }
             }
 }

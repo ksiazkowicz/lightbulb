@@ -41,11 +41,6 @@ Menu {
     Component.onCompleted: {
         open();
         isCreated = true;
-        console.log(availableActions)
-        console.log(subject)
-        console.log(config)
-        console.log(permission)
-        console.log(kick)
     }
 
     onStatusChanged: { if (isCreated && mucOptions.status === DialogStatus.Closed) { mucOptions.destroy() } }
@@ -70,6 +65,7 @@ Menu {
             text: qsTr("Change subject")
             enabled: subject
             platformInverted: main.platformInverted
+            onClicked: dialog.createWithProperties("qrc:/dialogs/MUC/Query",{"contactJid":contactJid,"accountId":accountId,"titleText":qsTr("Change subject"),"actionType":0})
         }
         MenuItem {
             text: qsTr("Change room settings")

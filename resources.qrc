@@ -77,6 +77,7 @@
         <file alias="AccessPointSelector">qml/Dialogs/AccessPointsDialog.qml</file>
         <file alias="MUC/Join">qml/Dialogs/MucJoinDialog.qml</file>
         <file alias="MUC/Participants">qml/Dialogs/MucParticipantsDialog.qml</file>
+        <file alias="MUC/Query">qml/Dialogs/MucQueryDialog.qml</file>
     </qresource>
     <qresource prefix="/pages">
         <file alias="About">qml/Pages/AboutPage.qml</file>
@@ -159,6 +160,7 @@
         <file alias="Convo/OutcomingDelegate">qml/Components/ConvoOutcomingMsgDelegate.qml</file>
         <file alias="Convo/InformationDelegate">qml/Components/ConvoInformationDelegate.qml</file>
         <file alias="ChatDelegate.qml">qml/Components/ChatDelegate.qml</file>
+        <file alias="MucParticipantDelegate.qml">qml/Components/MucParticipantDelegate.qml</file>
     </qresource>
     <qresource prefix="/networks">
         <file alias="2G">images/networks/2G.svg</file>
