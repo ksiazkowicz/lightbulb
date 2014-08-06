@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import QtQuick 1.1
 import com.nokia.symbian 1.1
+import "../../Components"
 
 CommonDialog {
     id: dlgParticipants
@@ -43,74 +44,32 @@ CommonDialog {
     }
     property bool isCreated: false
 
-    height: (listView.model.count()+1)*48
-
+    height: (repeater.model.count()+1)*48
     onStatusChanged: { if (isCreated && dlgParticipants.status === DialogStatus.Closed) { dlgParticipants.destroy() } }
 
-    content: ListView {
-                id: listView
-                anchors.fill: parent
+    content: Flickable {
+        id: listView
+        anchors.fill: parent
+        contentHeight: columnContent.height
+        contentWidth: columnContent.width
+        clip: true
+
+        flickableDirection: Flickable.VerticalFlick
+        Column {
+            id: columnContent
+            spacing: 0
+
+            Repeater {
+                id: repeater
                 model: xmppConnectivity.useClient(accountId).getParticipants(contactJid)
-                clip: true
-                delegate: Item {
-                    id: mucPartDelegate
-                    height: 48
+                delegate: MucParticipantDelegate {
                     width: listView.width
-                    Image {
-                        id: imgPresence
-                        source: presence
-                        sourceSize.height: 24
-                        sourceSize.width: 24
-                        anchors { verticalCenter: mucPartDelegate.verticalCenter; left: parent.left; leftMargin: 10; }
-                        height: 24
-                        width: 24
-                    }
-                    Flickable {
-                        flickableDirection: Flickable.HorizontalFlick
-                        interactive: (kick || permission)
-                        //boundsBehavior: Flickable.DragOverBounds
-                        height: 48
-                        width: listView.width
-                        contentWidth: wrapper.width + buttonRow.width
-                        Item {
-                            id: wrapper
-                            width: listView.width
-                            anchors.left: parent.left
-                            height: 48
-                            /*Image {
-                                id: imgRole
-                                source:
-                                sourceSize.height: 24
-                                sourceSize.width: 24
-                                anchors { verticalCenter: parent.verticalCenter; right: closeBtn.left; rightMargin: 10 }
-                                height: 24
-                                width: 24
-                            }*/
-                            Text {
-                                id: partName
-                                anchors { verticalCenter: parent.verticalCenter; left: parent.left; right: parent.right; rightMargin: 5; leftMargin: 44 }
-                                text: name
-                                font.pixelSize: 18
-                                clip: true
-                                color: vars.textColor
-                                elide: Text.ElideRight
-                            }
-                        }
-                        ButtonRow {
-                            id: buttonRow
-                            anchors.left: wrapper.right;
-                            ToolButton {
-                                text: "Kick"
-                                enabled: kick
-                                onClicked: dialog.createWithProperties("qrc:/dialogs/MUC/Query",{"contactJid":contactJid,"accountId":accountId,"userJid":bareJid,"titleText":qsTr("Kick reason (optional)"),"actionType":1})
-                            }
-                            ToolButton {
-                                text: "Ban"
-                                enabled: permission
-                                onClicked: dialog.createWithProperties("qrc:/dialogs/MUC/Query",{"contactJid":contactJid,"accountId":accountId,"userJid":bareJid,"titleText":qsTr("Ban reason (optional)"),"actionType":2})
-                            }
-                        }
-                    }
+                    kick: dlgParticipants.kick;
+                    permission: dlgParticipants.permission;
+                    accountId: dlgParticipants.accountId;
+                    contactJid: dlgParticipants.contactJid
                 }
             }
+        }
+    }
 }

@@ -15,6 +15,7 @@
         <file alias="message">images/messaging.svg</file>
         <file>images/symMsgUnreadIcon.png</file>
         <file alias="avatar-mask_inverse">images/avatar_mask_inverse.svg</file>
+        <file alias="muc_modOverlay">images/muc_moderator.svg</file>
     </qresource>
     <qresource prefix="/smileys">
         <file alias="angry">images/smileys/angry.png</file>
