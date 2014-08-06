@@ -1,7 +1,7 @@
 /********************************************************************
 
-qml/Menus/MessagesOptions.qml
--- contains messages options menu
+qml/Menus/ArchiveMenu.qml
+-- contains archive view options
 
 Copyright (c) 2014 Maciej Janiszewski
 
@@ -26,7 +26,7 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 
 Menu {
-    id: msgOptions
+    id: archiveOptions
     platformInverted: main.platformInverted
 
     Component.onCompleted: {
@@ -36,21 +36,14 @@ Menu {
     property string contactJid
     property string accountId
 
-    onStatusChanged: { if (isCreated && msgOptions.status === DialogStatus.Closed) { msgOptions.destroy() } }
+    onStatusChanged: { if (isCreated && archiveOptions.status === DialogStatus.Closed) { archiveOptions.destroy() } }
     // define the items in the menu and corresponding actions
     content: MenuLayout {
         MenuItem {
-            text: qsTr("Set resource")
+            text: qsTr("Generate a log")
+            enabled: !pageStack.currentPage.logGenerationMode
             platformInverted: main.platformInverted
-            onClicked: dialog.create("qrc:/dialogs/Resources")
-        }
-        MenuItem {
-            text: "Close chat"
-            platformInverted: main.platformInverted
-            onClicked: {
-                pageStack.pop()
-                xmppConnectivity.closeChat(accountId,contactJid)
-            }
+            onClicked: pageStack.currentPage.logGenerationMode = true
         }
     }
 }

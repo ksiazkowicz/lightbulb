@@ -30,9 +30,54 @@ Item {
     height: time.height + message.paintedHeight + 10
     anchors.horizontalCenter: parent.horizontalCenter
 
+    property bool isLogBeginning: pageStack.currentPage.beginID == _id
+    property bool isLogEnd: pageStack.currentPage.endID == _id
+
     MouseArea {
         anchors.fill: parent
         onPressAndHold: dialog.createWithProperties("qrc:/menus/MessageContext", {"msg": _msgText})
+        onClicked: {
+            if (pageStack.currentPage.logGenerationMode) {
+                // set beginning to current ID if not set
+                if (pageStack.currentPage.beginID == -1) {
+                    pageStack.currentPage.beginID = _id
+                    return;
+                }
+                // set end to current ID if not set and bigger than beginID
+                if (pageStack.currentPage.endID == -1 && _id > pageStack.currentPage.beginID) {
+                    pageStack.currentPage.endID = _id
+                    return;
+                }
+                // set begin to current ID if smaller than beginID
+                if (_id < pageStack.currentPage.beginID) {
+                    pageStack.currentPage.beginID = _id
+                    return;
+                }
+                // set end to current ID if bigger than endID
+                if (_id > pageStack.currentPage.endID) {
+                    pageStack.currentPage.endID = _id
+                    return;
+                }
+                if (avkon.displayAvkonQueryDialog("Archive view","Shall I mark it as end of log? (if 'no' replied, it will be treated as beginning)")) {
+                      pageStack.currentPage.endID = _id
+                } else pageStack.currentPage.beginID = _id;
+            }
+        }
+    }
+
+    Image {
+        id: logOverlayBegin
+        source: isLogBeginning ? "qrc:/convo/defaultSkin/logBeginOverlay" : ""
+        sourceSize { height: 32; width: 320 }
+        anchors { top: parent.top; left: parent.left }
+        z: 1
+    }
+    Image {
+        id: logOverlayEnd
+        source: isLogEnd ? "qrc:/convo/defaultSkin/logEndOverlay" : ""
+        sourceSize { height: 32; width: 320 }
+        anchors { bottom: parent.bottom; right: parent.right }
+        z: 1
     }
 
     Text {

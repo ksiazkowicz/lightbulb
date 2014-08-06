@@ -96,7 +96,7 @@ Page {
                 }
                 default: break;
             }
-            if (selectedIndex == 4) {
+            if (selectedIndex == 3) {
                 blink.running = true;
                 vars.isBlinkingOverrideEnabled = true;
             } else {

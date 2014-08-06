@@ -168,7 +168,7 @@ void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString
     MsgItemModel* message = new MsgItemModel(body,date,mine,type,resource,msgUnreadState);
     cachedMessages->value(bareJid)->append(message);
 
-    if (type != 4)
+    if (type != 4 && type != 3)
       dbWorker->executeQuery(QStringList() << "insertMessage" << m_accountId << bareJid << body << date << QString::number(mine));
 
     if (type != 4)

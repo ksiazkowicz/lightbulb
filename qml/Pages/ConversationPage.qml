@@ -47,11 +47,17 @@ Page {
     property bool   isInArchiveMode: false
     property bool   isAChatPage:     true
     property bool   isTyping:        false
+
+    // muc
     property int    chatType
+    property int availableActions
+
+    // archive
     property int    archivePage
     property int    totalArchivePages
-
-    property int availableActions
+    property int    beginID:           -1
+    property int    endID:             -1
+    property bool   logGenerationMode: false
 
     onArchivePageChanged: {
         // update list model when page changes
@@ -74,6 +80,7 @@ Page {
             property string _dateTime: dateTime
             property bool _msgUnreadState: !isInArchiveMode ? msgUnreadState : false
             property bool _isMine: isMine
+            property int _id: isInArchiveMode ? id : 0
             height: sourceComponent.height
             width: listViewMessages.width
         }
@@ -237,16 +244,50 @@ Page {
         visible: isInArchiveMode
 
         ToolButton {
-            iconSource: main.platformInverted ? "toolbar-previous_inverse" : "toolbar-previous"
+            iconSource: "toolbar-previous"
             enabled: totalArchivePages - archivePage > 0
             opacity: enabled ? 1 : 0.2
             onClicked: archivePage++
+            platformInverted: main.platformInverted
         }
         ToolButton {
-            iconSource: main.platformInverted ? "toolbar-next_inverse" : "toolbar-next"
+            iconSource: "toolbar-next"
             enabled: archivePage > 1
             opacity: enabled ? 1 : 0.2
             onClicked: archivePage--
+            platformInverted: main.platformInverted
+        }
+    }
+
+    ButtonRow {
+        id: logButtons
+        enabled: logGenerationMode
+        anchors { bottom: parent.bottom; horizontalCenter: parent.horizontalCenter }
+        z: logGenerationMode ? 1 : -1
+        visible: logGenerationMode
+
+        ToolButton {
+            iconSource: main.platformInverted ? "qrc:/toolbar/ok_inverse" : "qrc:/toolbar/ok"
+            text: "Done"
+            platformInverted: main.platformInverted
+            enabled: logGenerationMode
+            onClicked: {
+                pageStack.replace("qrc:/pages/LogView",{"logText":xmppConnectivity.generateLog(accountId,contactJid,contactName,beginID,endID)});
+                logGenerationMode = false;
+                beginID = -1;
+                endID = -1;
+            }
+        }
+        ToolButton {
+            iconSource: main.platformInverted ? "qrc:/toolbar/close_inverse" : "qrc:/toolbar/close"
+            text: "Cancel"
+            platformInverted: main.platformInverted
+            enabled: logGenerationMode
+            onClicked: {
+                logGenerationMode = false;
+                beginID = -1;
+                endID = -1;
+            }
         }
     }
 

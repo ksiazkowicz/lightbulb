@@ -51,6 +51,7 @@ signals:
 public slots:
     void executeQuery(QStringList &query);
     void updateMessages (QString m_accountId, QString bareJid, int page);
+    QString generateLog(QString m_accountId, QString bareJid, QString contactName, int beginID, int endID);
 
 private:
     DatabaseManager* database;

@@ -41,7 +41,7 @@ Item {
     anchors { left: parent.left; right: parent.right; rightMargin: marginRight; leftMargin: marginLeft }
     Image {
         anchors { right: wrapper.left; verticalCenter: wrapper.verticalCenter }
-        source: ":/images/symMsgUnreadIcon.png"
+        source: "qrc:/convo/defaultSkin/unreadIcon"
         width: 24
         height: 24
         visible: _msgUnreadState
@@ -50,7 +50,7 @@ Item {
     Image {
         id: triangleTop
         anchors { top: parent.top; right: parent.right; rightMargin: platformStyle.paddingMedium*2 }
-        source: "qrc:/images/bubble_incTriangle.png"
+        source: "qrc:/convo/defaultSkin/incoming"
         width: platformStyle.paddingLarge
         height: platformStyle.paddingLarge
     }

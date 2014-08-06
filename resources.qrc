@@ -3,8 +3,6 @@
         <file alias="Lightbulb.svg">Fluorescent.svg</file>
         <file>qml/Notifications.qml</file>
         <file alias="avatar">images/avatar.png</file>
-        <file>images/bubble_incTriangle.png</file>
-        <file>images/bubble_outTriangle.png</file>
         <file>qml/main.qml</file>
         <file alias="unread-count">images/unread-count.svg</file>
         <file alias="unread-mark">images/unread-mark.svg</file>
@@ -13,7 +11,6 @@
         <file alias="splash">images/splash.png</file>
         <file alias="avatar-mask">images/avatar_mask.svg</file>
         <file alias="message">images/messaging.svg</file>
-        <file>images/symMsgUnreadIcon.png</file>
         <file alias="avatar-mask_inverse">images/avatar_mask_inverse.svg</file>
         <file alias="muc_modOverlay">images/muc_moderator.svg</file>
     </qresource>
@@ -91,6 +88,7 @@
         <file alias="Events">qml/Pages/Events.qml</file>
         <file alias="Migration">qml/Pages/MigrationPage.qml</file>
         <file alias="Conversation">qml/Pages/ConversationPage.qml</file>
+        <file alias="LogView">qml/Pages/LogPage.qml</file>
     </qresource>
     <qresource prefix="/toolbar">
         <file alias="close">images/toolbar/toolbar-close.svg</file>
@@ -150,6 +148,7 @@
         <file alias="Messages">qml/Menus/MessagesOptions.qml</file>
         <file alias="MessageContext">qml/Menus/MessageContextMenu.qml</file>
         <file alias="MucOptions">qml/Menus/MucMenu.qml</file>
+        <file alias="Archive">qml/Menus/ArchiveMenu.qml</file>
     </qresource>
     <qresource prefix="/Components">
         <file alias="AccountItem.qml">qml/Components/AccountItem.qml</file>
@@ -172,5 +171,12 @@
         <file alias="Bluetooth_inverse">images/networks/Bluetooth_inverse.svg</file>
         <file alias="Default_inverse">images/networks/Internet_inverse.svg</file>
         <file alias="WLAN_inverse">images/networks/wlan_inverse.svg</file>
+    </qresource>
+    <qresource prefix="/convo">
+        <file alias="defaultSkin/logBeginOverlay">images/convo/logBeginOverlay.svg</file>
+        <file alias="defaultSkin/logEndOverlay">images/convo/logEndOverlay.svg</file>
+        <file alias="defaultSkin/incoming">images/convo/bubble_incTriangle.png</file>
+        <file alias="defaultSkin/outcoming">images/convo/bubble_outTriangle.png</file>
+        <file alias="defaultSkin/unreadIcon">images/convo/symMsgUnreadIcon.png</file>
     </qresource>
 </RCC>

@@ -143,6 +143,9 @@ public slots:
     Q_INVOKABLE MsgListModel* getMessages(QString jid);
     Q_INVOKABLE SqlQueryModel* getSqlMessagesByPage(QString accountId, QString bareJid, int page);
     Q_INVOKABLE int getPagesCount(QString accountId, QString bareJid) { return dbWorker->getPageCount(accountId,bareJid); }
+    Q_INVOKABLE QString generateLog(QString accountId, QString bareJid, QString contactName, int beginID, int endID) {
+      return dbWorker->generateLog(accountId,bareJid,contactName,beginID,endID);
+    }
 
     // handle MUC
     QString getMUCParticipantRoleName(int role) { return QXmppMucItem::roleToString((QXmppMucItem::Role)role); }

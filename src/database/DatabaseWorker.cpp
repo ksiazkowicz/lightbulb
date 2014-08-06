@@ -102,3 +102,31 @@ int DatabaseWorker::getPageCount(QString m_accountId, QString bareJid) {
   double pagesCount = getMeSomeNumbersCauseNumbersAreAwesome.rowCount()/20;
   return qCeil(pagesCount);
 }
+
+QString DatabaseWorker::generateLog(QString m_accountId, QString bareJid, QString contactName, int beginID, int endID) {
+  qDebug() << "DatabaseWorker::generateLog("<<m_accountId<<","<<bareJid<<","<<beginID<<","<<endID<<") called";
+  sqlMessages = new SqlQueryModel( 0 );
+  if (bareJid != "")
+    sqlMessages->setQuery("SELECT * FROM messages WHERE bareJid='"
+                          + bareJid + "' and id_account='"+m_accountId
+                          + "' and id>=" + QString::number(beginID) +" and id<="+ QString::number(endID)
+                          + " ORDER BY id ASC",database->db);
+
+  int rowCount = sqlMessages->rowCount();
+
+  QString log;
+
+  for (int i=0; i<rowCount; i++) {
+      QString tempStr;
+      if (sqlMessages->data(sqlMessages->index(i,5),Qt::DisplayRole).toInt() == 0)
+        tempStr = contactName;
+      else tempStr = "Me";
+
+      tempStr += " " + sqlMessages->data(sqlMessages->index(i,4),Qt::DisplayRole).toString();
+      tempStr += ": " + sqlMessages->data(sqlMessages->index(i,3),Qt::DisplayRole).toString() + "\n";
+
+      log += tempStr;
+    }
+
+  return log;
+}

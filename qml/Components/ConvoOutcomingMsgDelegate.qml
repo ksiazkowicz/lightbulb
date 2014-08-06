@@ -102,7 +102,7 @@ Item {
             left: parent.left;
             leftMargin: platformStyle.paddingMedium*2
         }
-        source: "qrc:/images/bubble_outTriangle.png"
+        source: "qrc:/convo/defaultSkin/outcoming"
         width: platformStyle.paddingLarge
         height: platformStyle.paddingLarge
     }

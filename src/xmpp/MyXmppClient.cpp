@@ -136,8 +136,7 @@ void MyXmppClient::error(QXmppClient::Error e) {
 
 // ---------- VCards -------------------------------------------------------------------------------------------------------------
 
-void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
-{
+void MyXmppClient::initVCard(const QXmppVCardIq &vCard) {
     QString bareJid = vCard.from();
     vCardData dataVCard;
 
@@ -152,9 +151,8 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
     // avatar
     bool isAvatarCreated = true;
     QString avatarFile = cacheIM->getAvatarCache( bareJid );
-    if( (avatarFile.isEmpty() || avatarFile == "qrc:/avatar") && vCard.photo() != "" && !disableAvatarCaching) {
+    if ((avatarFile.isEmpty() || avatarFile == "qrc:/avatar") && vCard.photo() != "" && !disableAvatarCaching)
         isAvatarCreated =  cacheIM->setAvatarCache( bareJid, vCard.photo() );
-    }
 
     dataVCard.nickName = nickName;
     dataVCard.firstName = vCard.firstName();
@@ -166,16 +164,15 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard)
 
     cacheIM->setVCard( bareJid, dataVCard );
 
-    if (bareJid == m_myjid) {
+    if (bareJid == m_myjid)
         emit iFoundYourParentsGoddamit(m_myjid);
-      }
 }
 
 // ---------- handling messages (receiving/sending) ------------------------------------------------------------------------------
 
 bool MyXmppClient::sendMessage(QString bareJid, QString resource, QString msgBody, int chatState, int msgType) {
     if (m_stateConnect != Connected)
-      return false; // if user not connected - BREAK
+      return false;
 
     QXmppMessage xmppMsg;
 
@@ -183,8 +180,6 @@ bool MyXmppClient::sendMessage(QString bareJid, QString resource, QString msgBod
       resource = "default";
 
     if (msgType == QXmppMessage::GroupChat) {
-        qDebug() << "muc message lolololo";
-        // finding a room
         QXmppMucRoom* room = mucRooms.value(bareJid);
         if (room != NULL)
             return room->sendMessage(msgBody);
@@ -261,8 +256,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
 
 // ---------- presence -----------------------------------------------------------------------------------------------------------
 
-void MyXmppClient::initPresence(const QString& bareJid, const QString& resource)
-{
+void MyXmppClient::initPresence(const QString& bareJid, const QString& resource) {
     QXmppPresence xmppPresence = rosterManager->getPresence( bareJid, resource );
     QXmppPresence::Type statusJid = xmppPresence.type();
 
@@ -274,7 +268,7 @@ void MyXmppClient::initPresence(const QString& bareJid, const QString& resource)
     }
 
     QString picStatus = this->getPicPresence( xmppPresence );
-    QString txtStatus = this->getTextStatus( xmppPresence.statusText(), xmppPresence );
+    QString txtStatus = xmppPresence.statusText();
 
     emit presenceChanged(m_accountId,bareJid,resource,picStatus,txtStatus);
 }
@@ -338,23 +332,12 @@ QString MyXmppClient::getPicPresence( const QXmppPresence &presence ) const {
     return picPresenceName;
 }
 
-QString MyXmppClient::getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const {
-  if (!textStatus.isEmpty() && !textStatus.isNull())
-    return textStatus;
-  else return "";
-}
+void MyXmppClient::setStatusText( const QString &__statusText ) {
+    QXmppPresence myPresence = xmppClient->clientPresence();
+    myPresence.setStatusText( __statusText );
+    xmppClient->setClientPresence( myPresence );
 
-void MyXmppClient::setStatusText( const QString &__statusText )
-{
-    if( __statusText != m_statusText ) {
-        m_statusText=__statusText;
-
-        QXmppPresence myPresence = xmppClient->clientPresence();
-        myPresence.setStatusText( __statusText );
-        xmppClient->setClientPresence( myPresence );
-
-        emit statusTextChanged();
-    }
+    emit statusTextChanged();
 }
 
 void MyXmppClient::setStatus( StatusXmpp __status) {
@@ -373,24 +356,12 @@ void MyXmppClient::setStatus( StatusXmpp __status) {
           }
 
         switch (__status) {
-          case Online:
-            myPresence.setAvailableStatusType( QXmppPresence::Online );
-            break;
-          case Chat:
-            myPresence.setAvailableStatusType( QXmppPresence::Chat );
-            break;
-          case Away:
-            myPresence.setAvailableStatusType( QXmppPresence::Away );
-            break;
-          case XA:
-            myPresence.setAvailableStatusType( QXmppPresence::XA );
-            break;
-          case DND:
-            myPresence.setAvailableStatusType( QXmppPresence::DND );
-            break;
-          case Offline:
-            m_status = __status;
-            break;
+          case Online: myPresence.setAvailableStatusType( QXmppPresence::Online ); break;
+          case Chat: myPresence.setAvailableStatusType( QXmppPresence::Chat ); break;
+          case Away: myPresence.setAvailableStatusType( QXmppPresence::Away ); break;
+          case XA: myPresence.setAvailableStatusType( QXmppPresence::XA ); break;
+          case DND: myPresence.setAvailableStatusType( QXmppPresence::DND ); break;
+          case Offline: m_status = __status; break;
           default: break;
         }
         xmppClient->setClientPresence( myPresence );
@@ -400,13 +371,9 @@ void MyXmppClient::setStatus( StatusXmpp __status) {
 
 void MyXmppClient::setPresence( StatusXmpp status, QString textStatus ) { //Q_INVOKABLE
     qDebug() << "MyXmppClient:: setPresence() called";
-    if( textStatus != m_statusText ) {
-        m_statusText =textStatus;
-        emit statusTextChanged();
-    }
 
-    setStatusText( textStatus );
     setStatus( status );
+    setStatusText( textStatus );
 }
 
 // ---------- roster management --------------------------------------------------------------------------------------------------
