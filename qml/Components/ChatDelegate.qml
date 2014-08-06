@@ -51,6 +51,11 @@ Flickable {
                 source: main.platformInverted ? "qrc:/avatar-mask_inverse" : "qrc:/avatar-mask"
             }
             opacity: wrapper.opacity
+
+            Connections {
+                target: xmppConnectivity
+                onAvatarUpdatedForJid: if (bareJid == jid) avatarIcon.source = xmppConnectivity.getAvatarByJid(jid)
+            }
         }
         Image {
             id: imgPresence

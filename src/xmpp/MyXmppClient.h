@@ -210,6 +210,8 @@ signals:
     void subscriptionReceived(const QString accountId,const QString bareJid);
     void statusChanged(const QString accountId);
 
+    void avatarUpdatedForJid(QString bareJid);
+
     // contact list manager
     void contactAdded(QString acc,QString jid, QString name);
     void presenceChanged(QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus);

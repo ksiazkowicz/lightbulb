@@ -95,6 +95,7 @@ signals:
     void xmppPresenceChanged      (QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus);
 
     void mucInvitationReceived    (QString accountId, QString bareJid, QString invSender, QString reason);
+    void avatarUpdatedForJid(QString bareJid);
     
 public slots:
     void handleXmppStatusChange (const QString accountId);
