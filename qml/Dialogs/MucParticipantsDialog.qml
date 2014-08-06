@@ -59,6 +59,9 @@ CommonDialog {
             id: columnContent
             spacing: 0
 
+            add: Transition { NumberAnimation { properties: "y,opacity"; easing.type: Easing.InOutBounce } }
+            move: Transition { NumberAnimation { properties: "y,opacity"; easing.type: Easing.InOutBounce } }
+
             Repeater {
                 id: repeater
                 model: xmppConnectivity.useClient(accountId).getParticipants(contactJid)
