@@ -51,7 +51,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Q_DECL_EXPORT int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
-    qDebug() << "Fluorescent 0.4 build 0004";
+    qDebug() << "Fluorescent 0.4 build 0005";
     qDebug() << "Maciej Janiszewski";
     qDebug() << "------------------";
 

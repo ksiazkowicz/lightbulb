@@ -140,7 +140,6 @@ public slots:
     Q_INVOKABLE void updateMyData(QString jid);
 
     // handle messages and states
-    Q_INVOKABLE bool sendAMessage(QString accountId, QString recipientJid, QString recipientResource, QString body, int state, int type);
     Q_INVOKABLE MsgListModel* getMessages(QString jid);
     Q_INVOKABLE SqlQueryModel* getSqlMessagesByPage(QString accountId, QString bareJid, int page);
     Q_INVOKABLE int getPagesCount(QString accountId, QString bareJid) { return dbWorker->getPageCount(accountId,bareJid); }

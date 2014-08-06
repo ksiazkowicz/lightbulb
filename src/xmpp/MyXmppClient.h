@@ -59,18 +59,6 @@ class MyXmppClient : public QObject
     Q_OBJECT
     Q_DISABLE_COPY( MyXmppClient )
 
-    Q_PROPERTY( QString bareJidLastMsg READ getJidLastMsg )
-    Q_PROPERTY( QString resourceLastMsg READ getResourceLastMsg )
-    Q_PROPERTY( StateConnect stateConnect READ getStateConnect NOTIFY connectingChanged )
-    Q_PROPERTY( StatusXmpp status READ getStatus WRITE setStatus NOTIFY statusChanged )
-    Q_PROPERTY( QString statusText READ getStatusText WRITE setStatusText  NOTIFY statusTextChanged )
-    Q_PROPERTY( QString myBareJid READ getMyJid WRITE setMyJid NOTIFY myJidChanged )
-    Q_PROPERTY( QString myPassword READ getPassword() WRITE setPassword  NOTIFY myPasswordChanged )
-    Q_PROPERTY( QString host READ getHost WRITE setHost NOTIFY hostChanged )
-    Q_PROPERTY( int port READ getPort WRITE setPort NOTIFY portChanged )
-    Q_PROPERTY( QString resource READ getResource WRITE setResource NOTIFY resourceChanged )
-    Q_PROPERTY( QString accountId READ getAccountId WRITE setAccountId NOTIFY accountIdChanged )
-
     QXmppClient *xmppClient;
     QXmppRosterManager *rosterManager;
     QXmppVCardManager *vCardManager;
@@ -110,7 +98,7 @@ public :
     Q_INVOKABLE void connectToXmppServer();
 
     /*--- send msg ---*/
-    bool sendMessage(QString bareJid, QString resource, QString msgBody, int chatState, int msgType);
+    Q_INVOKABLE bool sendMessage(QString bareJid, QString resource, QString msgBody, int chatState, int msgType);
 
     /*--- info by jid ---*/
     Q_INVOKABLE QStringList getResourcesByJid (QString bareJid) { return rosterManager->getResources(bareJid); }
@@ -147,27 +135,22 @@ public :
     void setStatus( StatusXmpp __status );
 
     QString getMyJid() const { return m_myjid; }
-    void setMyJid( const QString& myjid ) { if(myjid!=m_myjid) {m_myjid=myjid; emit myJidChanged(); } }
+    void setMyJid( const QString& myjid ) { m_myjid=myjid; }
 
     QString getPassword() const { return m_password; }
-    void setPassword( const QString& value ) { if(value!=m_password) {m_password=value; emit myPasswordChanged(); } }
+    void setPassword( const QString& value ) { m_password=value; }
 
     QString getHost() const { return m_host; }
-    void setHost( const QString & value ) { if(value!=m_host) {m_host=value; emit hostChanged(); } }
+    void setHost( const QString & value ) { m_host=value; }
 
     int getPort() const { return m_port; }
-    void setPort( const int& value ) { if(value!=m_port) {m_port=value; emit portChanged(); } }
+    void setPort( const int& value ) { m_port=value; }
 
     QString getResource() const { return m_resource; }
-    void setResource( const QString & value ) { if(value!=m_resource) {m_resource=value; emit resourceChanged(); } }
+    void setResource( const QString & value ) { m_resource=value; }
 
     QString getAccountId() const { return m_accountId; }
-    void setAccountId( const QString & value ) {
-        if (value!=m_accountId) {
-            m_accountId = value;
-            emit accountIdChanged();
-        }
-    }
+    void setAccountId( const QString & value ) { m_accountId = value; }
     void setKeepAlive(int arg) { m_keepAlive = arg; }
 
     void goOnline(QString lastStatus) { this->setPresence(Online,lastStatus); }
@@ -189,15 +172,8 @@ public :
     }
 	
 signals:
-    void versionChanged();
     void statusTextChanged();
-    void myJidChanged();
-    void myPasswordChanged();
-    void hostChanged();
-    void portChanged();
-    void resourceChanged();
     void typingChanged(QString accountId, QString bareJid, bool isTyping);
-    void accountIdChanged();
     void contactStatusChanged(QString accountId, QString bareJid);
 
     // related to XmppConnectivity class

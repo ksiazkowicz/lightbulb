@@ -150,7 +150,7 @@ Page {
         if (isInArchiveMode || msgInputField.text == "")
             return;
 
-        var messageWasSent = xmppConnectivity.sendAMessage(accountId,contactJid,contactResource,msgInputField.text,1,chatType);
+        var messageWasSent = xmppConnectivity.useClient(accountId).sendMessage(contactJid,contactResource,msgInputField.text,1,chatType);
         if (messageWasSent) {
             msgInputField.text = ""
             notify.notifySndVibr("MsgSent")
@@ -167,7 +167,7 @@ Page {
         onTriggered: {
             if (isTyping) {
                 isTyping = false;
-                xmppConnectivity.sendAMessage(accountId,contactJid,contactResource,"",5,2)
+                xmppConnectivity.useClient(accountId).sendMessage(contactJid,contactResource,"",5,2)
             }
             xmppConnectivity.resetUnreadMessages(accountId,contactJid)
         }
@@ -185,7 +185,7 @@ Page {
             if (text.length > 0 && !isTyping) {
                 isTyping = true
                 // sending a chat state
-                xmppConnectivity.sendAMessage(accountId,contactJid,contactResource,"",4,2)
+                xmppConnectivity.useClient(accountId).sendMessage(contactJid,contactResource,"",4,2)
 
                 // wait for inactivity
                 waitForInactivity.running = false
@@ -206,7 +206,7 @@ Page {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
                 // send a chatstate
-                xmppConnectivity.sendAMessage(accountId,contactJid,contactResource,"",2,0)
+                xmppConnectivity.useClient(accountId).sendMessage(contactJid,contactResource,"",2,0)
 
                 // go back to previous page
                 pageStack.pop()

@@ -428,11 +428,3 @@ void XmppConnectivity::handleXmppStatusChange (const QString accountId) {
 
   emit xmppStatusChanged(accountId);
 }
-
-// handle messages and states
-bool XmppConnectivity::sendAMessage(QString accountId, QString recipientJid, QString recipientResource, QString body, int state, int type) {
-  if (clients->value(accountId) == NULL)
-    return false;
-
-  return clients->value(accountId)->sendMessage(recipientJid,recipientResource,body,state,type);
-}
