@@ -77,7 +77,7 @@ Page {
 
             Image {
                 id: imgPresence
-                source: vars.rosterLayoutAvatar ? avatar : presence
+                source: vars.rosterLayoutAvatar ? xmppConnectivity.getAvatarByJid(jid) : presence
                 sourceSize.height: vars.rosterItemHeight-4
                 sourceSize.width: vars.rosterItemHeight-4
                 anchors { top: parent.top; topMargin: (vars.rosterItemHeight-sourceSize.height)/2; left: parent.left; leftMargin: 10 }
