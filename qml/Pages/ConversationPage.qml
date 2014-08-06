@@ -58,6 +58,9 @@ Page {
     property int    beginID:           -1
     property int    endID:             -1
     property bool   logGenerationMode: false
+    onLogGenerationModeChanged: {
+        showToolBar = !logGenerationMode
+    }
 
     onArchivePageChanged: {
         // update list model when page changes
@@ -66,7 +69,7 @@ Page {
 
     ListView {
         id: listViewMessages
-        anchors { fill: parent; bottomMargin: isInArchiveMode ? 0 : msgInputField.height }
+        anchors { fill: parent; bottomMargin: isInArchiveMode ? logButtons.height : msgInputField.height }
 
         property int oldHeight;
 
@@ -259,16 +262,19 @@ Page {
         }
     }
 
-    ButtonRow {
+    ToolBar {
         id: logButtons
         enabled: logGenerationMode
-        anchors { bottom: parent.bottom; horizontalCenter: parent.horizontalCenter }
+        anchors.bottom: parent.bottom
         z: logGenerationMode ? 1 : -1
         visible: logGenerationMode
+        height: visible ? 60 : 0
 
         ToolButton {
             iconSource: main.platformInverted ? "qrc:/toolbar/ok_inverse" : "qrc:/toolbar/ok"
+            anchors { left: parent.left; leftMargin: platformStyle.paddingSmall; verticalCenter: parent.verticalCenter }
             text: "Done"
+            width: parent.width/2 - 2*platformStyle.paddingSmall
             platformInverted: main.platformInverted
             enabled: logGenerationMode
             onClicked: {
@@ -281,6 +287,8 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "qrc:/toolbar/close_inverse" : "qrc:/toolbar/close"
             text: "Cancel"
+            width: parent.width/2 - 2*platformStyle.paddingSmall
+            anchors { right: parent.right; rightMargin: platformStyle.paddingSmall; verticalCenter: parent.verticalCenter }
             platformInverted: main.platformInverted
             enabled: logGenerationMode
             onClicked: {
