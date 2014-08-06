@@ -6,6 +6,7 @@ import "../Components"
 Page {
     id: mainPage
     property string pageName: "Events"
+    orientationLock: 1
 
     Connections {
         target: xmppConnectivity
@@ -78,7 +79,7 @@ Page {
             Item {
                 id: account
                 anchors { left: parent.left; right: parent.right }
-                height: 64
+                height: 64 + (accounts.height-48)
 
                 Image {
                     id: avatar
@@ -122,6 +123,8 @@ Page {
                     interactive: false
                     anchors { right: name.right; left: name.left; top: name.bottom }
                     cellWidth: 48
+                    cellHeight: 48
+                    height: contentHeight
                     delegate: MouseArea {
                         height: 32
                         width: 48
