@@ -17,6 +17,8 @@ signals:
   
 public slots:
   void appendUnreadMessage(QString bareJid, QString accountId, QString name, QString description);
+  void appendStatusChange(QString accountId, QString name, QString description);
+
   Q_INVOKABLE void removeEvent(int id);
   Q_INVOKABLE void removeEvent(QString bareJid, QString accountId,int type);
   Q_INVOKABLE void clearList();

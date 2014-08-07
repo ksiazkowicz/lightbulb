@@ -58,10 +58,7 @@ Item {
                     avkon.showPopup(xmppConnectivity.getPropertyByJid(accountId,"name",bareJid),"stopped typing.")
             }
         }
-        onXmppStatusChanged: {
-            console.log( "XmppClient::onStatusChanged (" + accountId + ")" + xmppConnectivity.useClient(accountId).getStatus() )
-            notify.updateNotifiers()
-        }
+        onXmppStatusChanged: notify.updateNotifiers()
         onXmppSubscriptionReceived: {
             console.log( "XmppConnectivity::onXmppSubscriptionReceived(" + accountId + "," + bareJid + ")" )
             if (settings.gBool("notifications","notifySubscription") == true)

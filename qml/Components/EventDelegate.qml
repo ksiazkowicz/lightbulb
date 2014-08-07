@@ -41,6 +41,19 @@ Flickable {
         }
     }
 
+    function getIcon() {
+        switch (type) {
+        case 32: return xmppConnectivity.getAvatarByJid(bareJid); // unread message
+        case 33: // connection state change
+        case 34: // subscription request
+        case 35: // muc invite
+        case 36: // attention request
+        case 37: // fav user status change
+        case 38: // app update
+        default: return "";
+        }
+    }
+
     onContentXChanged: {
         wrapper.opacity = 1-(contentX/(wrapper.width))
         if (wrapper.opacity <= 0)
@@ -63,7 +76,7 @@ Flickable {
                 height: parent.height
                 sourceSize { height: height; width: width }
                 smooth: true
-                source: type == 32 ? xmppConnectivity.getAvatarByJid(bareJid) : ""
+                source: getIcon()
 
                 Rectangle { anchors.fill: parent; color: (type == 32) ? "black" : "transparent"; z: -1 }
                 Image {
@@ -74,6 +87,7 @@ Flickable {
                     visible: (type == 32)
                 }
                 Image {
+                    id: mark
                     z: 1
                     anchors.fill: parent
                     sourceSize { height: height; width: width }
@@ -84,7 +98,7 @@ Flickable {
                         visible: parent.visible
                         width: 20; height: width
                         color: "#ffffff"
-                        text: xmppConnectivity.getUnreadCount(accountID,bareJid)+1
+                        text: parent.visible ? xmppConnectivity.getUnreadCount(accountID,bareJid)+1 : ""
                         verticalAlignment: Text.AlignVCenter
                         horizontalAlignment: Text.AlignHCenter
                         anchors { right: parent.right; bottom: parent.bottom }

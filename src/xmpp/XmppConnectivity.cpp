@@ -433,8 +433,22 @@ void XmppConnectivity::handleXmppStatusChange (const QString accountId) {
   if (clients->value(accountId) == 0)
     return;
 
-  if (clients->value(accountId)->getStatus() == MyXmppClient::Offline)
+  QString status;
+
+  if (clients->value(accountId)->getStatus() == MyXmppClient::Offline) {
     contacts->clearPresenceForAccount(accountId);
+    status = "offline";
+  }
+
+  switch (clients->value(accountId)->getStatus()) {
+     case MyXmppClient::Online: status = "online"; break;
+     case MyXmppClient::Chat: status = "chatty"; break;
+     case MyXmppClient::Away: status = "away"; break;
+     case MyXmppClient::XA: status = "xa"; break;
+     case MyXmppClient::DND: status = "busy"; break;
+  }
+
+  events->appendStatusChange(accountId,getAccountName(accountId),"Status changed to " + status);
 
   emit xmppStatusChanged(accountId);
 }

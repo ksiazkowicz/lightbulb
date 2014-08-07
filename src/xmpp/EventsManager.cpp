@@ -8,7 +8,6 @@ EventsManager::EventsManager(QObject *parent) :
   events = new EventListModel();
 }
 
-
 void EventsManager::appendUnreadMessage(QString bareJid, QString accountId, QString name, QString description) {
   // appends or updates an information about unread message
   int rowId; // holds the row ID, might be used for moving items to the top of the list
@@ -26,6 +25,28 @@ void EventsManager::appendUnreadMessage(QString bareJid, QString accountId, QStr
   item->setData(QVariant(name),EventItemModel::Name);
   item->setData(QVariant(description),EventItemModel::Description);
   item->setData(QVariant((int)EventItemModel::UnreadMessage),EventItemModel::Type);
+
+  // and append it at the top of the list
+  events->insertRow(0,item);
+  events->countWasChanged();
+}
+
+void EventsManager::appendStatusChange(QString accountId, QString name, QString description) {
+  // appends or updates an information about unread message
+  int rowId; // holds the row ID, might be used for moving items to the top of the list
+  EventItemModel *item = (EventItemModel*)events->find(";" +accountId + ";" + QString::number((int)EventItemModel::ConnectionState),rowId);
+
+  // check if item exists, if yes, remove it
+  if (item != NULL) {
+      events->takeRow(rowId);
+  }
+
+  // create a new EventItemModel
+  item = new EventItemModel();
+  item->setData(QVariant(accountId),EventItemModel::Account);
+  item->setData(QVariant(name),EventItemModel::Name);
+  item->setData(QVariant(description),EventItemModel::Description);
+  item->setData(QVariant((int)EventItemModel::ConnectionState),EventItemModel::Type);
 
   // and append it at the top of the list
   events->insertRow(0,item);
