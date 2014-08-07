@@ -56,12 +56,10 @@ PageStackWindow {
 
     }
     function openChat(account,name,jid,type) {
-        notify.updateNotifiers()
+        pageStack.push("qrc:/pages/Conversation",{"accountId":account,"contactName":name,"contactJid":jid,"isInArchiveMode":false,"chatType":type})
 
-        if (pageStack.depth > 1) {
-            pageStack.replace("qrc:/pages/Conversation",{"accountId":account,"contactName":name,"contactJid":jid,"isInArchiveMode":false})
-        } else
-            pageStack.push("qrc:/pages/Conversation",{"accountId":account,"contactName":name,"contactJid":jid,"isInArchiveMode":false,"chatType":type})
+        // remove event notiifcation
+        xmppConnectivity.events.removeEvent(jid,account,32)
     }
 
     Timer {

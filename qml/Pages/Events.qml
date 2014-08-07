@@ -10,12 +10,6 @@ Page {
 
     Connections {
         target: xmppConnectivity
-        onNotifyMsgReceived: {
-            if (xmppConnectivity.chatJid !== jid)
-                eventListModel.appendEvent(xmppConnectivity.getAvatarByJid(jid),true,xmppConnectivity.getUnreadCount(account,jid)+1,body,name,true,"message")
-        }
-        onChatJidChanged:
-            eventListModel.findAndRemove(xmppConnectivity.getPropertyByJid(vars.context,"name",xmppConnectivity.chatJid),"message")
         onPersonalityChanged: {
             vCardHandler.loadVCard(settings.gStr("behavior","personality"))
             avatar.source = xmppConnectivity.getAvatarByJid(settings.gStr("behavior","personality"))
@@ -28,31 +22,6 @@ Page {
         onVCardChanged: {
             if (fullname !== "")
                 name.text = fullname
-        }
-    }
-
-    ListModel {
-        id: eventListModel
-        function appendEvent(icon,mark,markCount,text,description,mask,type) {
-            var found = find(description,type)
-            if (found > -1) {
-                set(found,{"eventText": text, "markCount":markCount})
-                move(found,0,1)
-            } else {
-                append({"iconPath": icon, "mark": mark, "markCount": markCount, "eventText": text,"descriptionText": description,"avatarMask":mask,"type":type})
-                move(count-1,0,1)
-            }
-        }
-        function find(description,type) {
-            for (var i=0;i<count;i++)
-                if (get(i).descriptionText === description && get(i).type === type)
-                    return i
-            return -1;
-        }
-        function findAndRemove(description,type) {
-            var found = find(description,type);
-            if (found > -1)
-                remove(found);
         }
     }
 
@@ -177,86 +146,18 @@ Page {
                     id: clearBtn
                     height: parent.height
                     text: "Clear"
-                    onClicked: {
-                        eventListModel.clear()
-                    }
+                    onClicked: xmppConnectivity.events.clearList();
                     platformInverted: main.platformInverted
                 }
             }
             Repeater {
-                model: eventListModel
+                id: eventsList
+                model: xmppConnectivity.events.list
                 anchors { left: parent.left; right: parent.right }
-                delegate: MouseArea {
-                    id: notification
-                    width: mainView.width
-                    height: 64
-
-                    onClicked: {
-                        if (type == "message")
-                            console.log("Message lol")
-                    }
-
-                    Image {
-                            id: icon
-                            width: parent.height
-                            height: parent.height
-                            sourceSize { height: height; width: width }
-                            smooth: true
-                            source: iconPath
-
-                            Rectangle { anchors.fill: parent; color: avatarMask ? "black" : "transparent"; z: -1 }
-                            Image {
-                                anchors.fill: parent
-                                smooth: true
-                                source: main.platformInverted ? "qrc:/avatar-mask_inverse" : "qrc:/avatar-mask"
-                                sourceSize { width: 64; height: 64 }
-                                visible: avatarMask
-                            }
-                            Image {
-                                z: 1
-                                anchors.fill: parent
-                                sourceSize { height: height; width: width }
-                                source: "qrc:/unread-count"
-                                visible: mark
-
-                                Text {
-                                    visible: parent.visible
-                                    width: 20; height: width
-                                    color: "#ffffff"
-                                    text: markCount
-                                    verticalAlignment: Text.AlignVCenter
-                                    horizontalAlignment: Text.AlignHCenter
-                                    anchors { right: parent.right; bottom: parent.bottom }
-                                    font.pixelSize: width*0.72
-                                }
-                            }
-                        }
-                    Column {
-                            anchors { left: icon.right; leftMargin: 10; verticalCenter: notification.verticalCenter }
-                            Text {
-                                color: vars.textColor
-                                textFormat: Text.PlainText
-                                width: mainPage.width - 25 - 90
-                                maximumLineCount: 1
-                                font.pixelSize: 20
-                                text: eventText
-                                wrapMode: Text.WrapAnywhere
-                                elide: Text.ElideRight
-                            }
-                            Text {
-                                color: "#b9b9b9"
-                                text: descriptionText
-                                anchors { left: parent.left; right: parent.right }
-                                horizontalAlignment: Text.AlignJustify
-                                font.pixelSize: 20
-                                elide: Text.ElideRight
-                                maximumLineCount: 1
-                            }
-                        }
-                }
+                delegate: EventDelegate { width: mainView.width }
             }
             Item {
-                height: eventListModel.count > 0 ? 0 : 64
+                height: eventsList.model.count > 0 ? 0 : 64
                 anchors { left: parent.left; right: parent.right }
                 Text {
                     color: vars.textColor

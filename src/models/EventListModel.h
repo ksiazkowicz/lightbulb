@@ -1,7 +1,7 @@
 /********************************************************************
 
-src/ParticipantListModel.h
--- implements list model for MUC participants
+src/EventsListModel.h
+-- implements list model for events
 
 Copyright (c) 2014 Maciej Janiszewski
 
@@ -22,25 +22,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 *********************************************************************/
 
-#ifndef PARTICIPANTLISTMODEL_H
-#define PARTICIPANTLISTMODEL_H
+#ifndef EVENTLISTMODEL_H
+#define EVENTLISTMODEL_H
 
-#include "ListModel.h"
-#include "ParticipantItemModel.h"
+#include "listmodel.h"
+#include "EventItemModel.h"
 
-class ParticipantListModel : public ListModel
+class EventListModel : public ListModel
 {
     Q_OBJECT
+    Q_PROPERTY(int count READ getCount NOTIFY countChanged)
 
 public:
-    explicit ParticipantListModel( QObject *parent = 0) :ListModel( new ParticipantItemModel, parent ) {}
+    explicit EventListModel( QObject *parent = 0) :ListModel( new EventItemModel, parent ) { }
 
-    Q_INVOKABLE void append( ParticipantItemModel *item ) { this->appendRow( item ); }
-    Q_INVOKABLE void remove( int index ) { this->removeRow( index ); }
-    Q_INVOKABLE int count() { return this->rowCount(); }
+    void append(EventItemModel *item) { this->appendRow(item); }
+    void countWasChanged() { emit countChanged(); }
+
+    Q_INVOKABLE int getCount() { return this->rowCount(); }
 
 signals:
-    void participantsChanged();
+    void countChanged();
 };
 
-#endif // PARTICIPANTLISTMODEL_H
+#endif // EVENTLISTMODEL_H

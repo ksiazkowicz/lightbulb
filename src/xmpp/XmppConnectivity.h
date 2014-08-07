@@ -42,6 +42,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "src/models/ParticipantListModel.h"
 #include "src/models/MsgItemModel.h"
 #include "src/xmpp/ContactListManager.h"
+#include "src/xmpp/EventsManager.h"
 
 class XmppConnectivity : public QObject
 {
@@ -49,6 +50,7 @@ class XmppConnectivity : public QObject
 
     Q_PROPERTY(RosterListModel* roster READ getRoster NOTIFY rosterChanged)
     Q_PROPERTY(ChatsListModel* chats READ getChats NOTIFY chatsChanged)
+    Q_PROPERTY(EventsManager* events READ getEvents)
     Q_PROPERTY(int messagesLimit READ getMsgLimit WRITE setMsgLimit NOTIFY msgLimitChanged )
 
     Q_PROPERTY(bool offlineContactsVisibility READ getVisibility WRITE setVisibility NOTIFY visibilityChanged)
@@ -130,6 +132,7 @@ public slots:
 
     Q_INVOKABLE void resetUnreadMessages(QString accountId, QString bareJid);
     Q_INVOKABLE int getUnreadCount(QString accountId, QString bareJid);
+    Q_INVOKABLE int getChatType(QString accountId, QString bareJid);
 
     Q_INVOKABLE void setVisibility(bool state)   { contacts->setOfflineContactsState(state); emit rosterChanged(); }
     Q_INVOKABLE bool getVisibility()           { return contacts->getOfflineContactsState(); }
@@ -179,6 +182,8 @@ private:
     int msgLimit;
 
     MessageWrapper *msgWrapper;
+    EventsManager *events;
+    EventsManager* getEvents() { return events; }
 
     void plusUnreadChatMsg(QString accId,QString bareJid);
 };

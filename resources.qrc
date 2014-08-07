@@ -161,6 +161,7 @@
         <file alias="Convo/InformationDelegate">qml/Components/ConvoInformationDelegate.qml</file>
         <file alias="ChatDelegate.qml">qml/Components/ChatDelegate.qml</file>
         <file alias="MucParticipantDelegate.qml">qml/Components/MucParticipantDelegate.qml</file>
+        <file alias="EventDelegate.qml">qml/Components/EventDelegate.qml</file>
     </qresource>
     <qresource prefix="/networks">
         <file alias="2G">images/networks/2G.svg</file>

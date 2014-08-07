@@ -36,7 +36,8 @@ void ContactListManager::changePresence(QString accountId,QString bareJid,QStrin
       contact->setStatusText(txtStatus);
     } else return;
 
-  RosterItemModel *contactOffline = (RosterItemModel*)rosterOffline->find(accountId+";"+bareJid);
+  int rowId;
+  RosterItemModel *contactOffline = (RosterItemModel*)rosterOffline->find(accountId+";"+bareJid,rowId);
   if (picStatus != "qrc:/presence/offline") {
       qDebug() << "isn't offline should do stuff";
       if (contactOffline!=0) {
@@ -49,7 +50,8 @@ void ContactListManager::changePresence(QString accountId,QString bareJid,QStrin
           rosterOffline->append(contactNew);
         }
     } else if (contactOffline != 0)
-        rosterOffline->removeId(accountId+";"+bareJid);
+      rosterOffline->takeRow(rowId);
+
   qDebug() << "presence changed";
 }
 void ContactListManager::changeName(QString accountId,QString bareJid,QString name) {
@@ -68,13 +70,13 @@ void ContactListManager::removeContact(QString acc,QString bareJid) {
   for (int i=0;i<roster->count();i++) {
       contact = (RosterItemModel*)roster->getElementByID(i);
       if (contact->id() == acc+";"+bareJid)
-        roster->remove(i);
+        roster->takeRow(i);
     }
 
   for (int i=0;i<rosterOffline->count();i++) {
       contact = (RosterItemModel*)rosterOffline->getElementByID(i);
       if (contact->id() == acc+";"+bareJid)
-        roster->remove(i);
+        roster->takeRow(i);
     }
 }
 
@@ -115,7 +117,7 @@ void ContactListManager::clearPresenceForAccount(QString accountId) {
   for (int i=0;i<rosterOffline->count();i++) {
       element = (RosterItemModel*)rosterOffline->getElementByID(i);
       if (element != 0 && element->accountId() == accountId)
-        rosterOffline->remove(i);
+        rosterOffline->takeRow(i);
     }
 }
 

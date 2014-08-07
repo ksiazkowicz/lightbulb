@@ -37,18 +37,7 @@ public:
     explicit RosterListModel( QObject *parent = 0) :ListModel( new RosterItemModel, parent ) {}
 
     Q_INVOKABLE void append( RosterItemModel *item ) { this->appendRow( item ); }
-    Q_INVOKABLE void remove( int index ) { this->removeRow( index ); }
-    Q_INVOKABLE void removeId ( QString id ) {
-      RosterItemModel *contact;
-      for (int i=0;i<this->count();i++) {
-        contact = (RosterItemModel*)this->getElementByID(i);
-        if (contact != 0 && contact->id() == id)
-          this->remove(i);
-      }
-    }
     Q_INVOKABLE int count() { return this->rowCount(); }
-
-    Q_INVOKABLE void clearList() { this->clear(); }
 
 signals:
     void rosterChanged();

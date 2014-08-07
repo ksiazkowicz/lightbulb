@@ -45,6 +45,7 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
     connect(contacts,SIGNAL(contactNameChanged(QString,QString,QString)),this,SLOT(updateChatName(QString,QString,QString)));
 
     chats = new ChatsListModel();
+    events = new EventsManager();
 
     for (int i=0; i<lSettings->accountsCount(); i++) {
         initializeAccount(lSettings->getAccount(i)->grid(),lSettings->getAccount(i));
@@ -153,8 +154,10 @@ bool XmppConnectivity::resetSettings() { return QFile::remove(lSettings->confFil
 
 // handling stuff from MyXmppClient
 void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine, int type, QString resource) {
-    if (mine == 0 && type != 4)
+    if (mine == 0 && type != 4) {
       emit notifyMsgReceived(this->getPropertyByJid(m_accountId,"name",bareJid),bareJid,body.left(30),m_accountId);
+      events->appendUnreadMessage(bareJid,m_accountId,getPropertyByJid(m_accountId,"name",bareJid),body.left(30));
+    }
 
     body = body.replace(">", "&gt;");  //fix for > stuff
     body = body.replace("<", "&lt;");  //and < stuff too ^^
@@ -292,6 +295,13 @@ int XmppConnectivity::getUnreadCount(QString accountId, QString bareJid) {
   ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(accountId + ";" + bareJid);
   if (itemExists != NULL)
     return itemExists->unread();
+  else return 0;
+}
+
+int XmppConnectivity::getChatType(QString accountId, QString bareJid) {
+  ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(accountId + ";" + bareJid);
+  if (itemExists != NULL)
+    return itemExists->type();
   else return 0;
 }
 

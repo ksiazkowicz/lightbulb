@@ -84,7 +84,8 @@ SOURCES += src/main.cpp \
     src/xmpp/ContactListManager.cpp \
     src/avkon/DataPublisher.cpp \
     src/avkon/NetworkManager.cpp \
-    src/database/MigrationManager.cpp
+    src/database/MigrationManager.cpp \
+    src/xmpp/EventsManager.cpp
 
 HEADERS += src/xmpp/MyXmppClient.h \
     src/cache/MyCache.h \
@@ -114,7 +115,10 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/models/NetworkCfgItemModel.h \
     src/models/NetworkCfgListModel.h \
     src/models/ParticipantListModel.h \
-    src/models/ParticipantItemModel.h
+    src/models/ParticipantItemModel.h \
+    src/models/EventListModel.h \
+    src/models/EventItemModel.h \
+    src/xmpp/EventsManager.h
 
 OTHER_FILES += README.md \
     qml/Dialogs/*.* \
@@ -124,9 +128,7 @@ OTHER_FILES += README.md \
     qml/JavaScript/*.* \
     qml/Preflets/*.* \
     qml/Menus/*.* \
-    qml/Components/*.* \
-    qml/Pages/LogPage.qml \
-    qml/Menus/ArchiveMenu.qml
+    qml/Components/*.*
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)

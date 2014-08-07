@@ -38,6 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "MsgListModel.h"
 #include "NetworkCfgListModel.h"
 #include "ParticipantListModel.h"
+#include "EventListModel.h"
 
 #include "QMLVCard.h"
 #include "Settings.h"
@@ -47,11 +48,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "EmoticonParser.h"
 #include "NetworkManager.h"
 #include "MigrationManager.h"
+#include "EventsManager.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
-    qDebug() << "Fluorescent 0.4 build 0005";
+    qDebug() << "Fluorescent 0.4 build 0006";
     qDebug() << "Maciej Janiszewski";
     qDebug() << "------------------";
 
@@ -77,7 +79,9 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     qmlRegisterUncreatableType<ParticipantListModel>("lightbulb",1,0,"ParticipantListModel","just use NetworkManager.connections");
     qmlRegisterUncreatableType<ChatsListModel>("lightbulb",1,0,"ChatsModel","because I say so, who cares?");
     qmlRegisterUncreatableType<MsgListModel>("lightbulb", 1, 0, "MsgModel", "because sliced bread is awesome");
-    qmlRegisterUncreatableType<MyXmppClient>("lightbulb", 1, 0, "XmppClient", "Use XmppConnectivity.client instead" );
+    qmlRegisterUncreatableType<EventListModel>("lightbulb",1,0,"EventModel","anyone actually reads that stuff?");
+    qmlRegisterUncreatableType<MyXmppClient>("lightbulb", 1, 0, "XmppClient", "Use XmppConnectivity.useClient(accountId) instead" );
+    qmlRegisterUncreatableType<EventsManager>("lightbulb", 1, 0, "EventsManager", "Use XmppConnectivity.events" );
 
     qDebug() << "main(): Classes registered";
     qDebug() << "main(): Initializing view...";

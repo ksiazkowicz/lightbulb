@@ -39,8 +39,6 @@ public:
     Q_INVOKABLE void remove( int index ) { this->removeRow( index ); }
     Q_INVOKABLE int count() { return this->rowCount(); }
 
-    Q_INVOKABLE void clearList() { this->clear(); }
-
 signals:
     void chatsChanged();
 };
