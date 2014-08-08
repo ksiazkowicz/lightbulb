@@ -185,7 +185,7 @@ private:
     EventsManager *events;
     EventsManager* getEvents() { return events; }
 
-    void plusUnreadChatMsg(QString accId,QString bareJid);
+    void plusUnreadChatMsg(QString accountId,QString bareJid);
 };
 
 #endif // XMPPCONNECTIVITY_H

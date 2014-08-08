@@ -367,8 +367,7 @@ void MyXmppClient::setStatus( StatusXmpp __status) {
           default: break;
         }
         xmppClient->setClientPresence( myPresence );
-        if (getStateConnect() != QXmppClient::ConnectingState)
-          this->presenceReceived( myPresence );
+        this->presenceReceived( myPresence );
     }
 }
 

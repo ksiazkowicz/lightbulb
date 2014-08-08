@@ -57,9 +57,6 @@ PageStackWindow {
     }
     function openChat(account,name,jid,type) {
         pageStack.push("qrc:/pages/Conversation",{"accountId":account,"contactName":name,"contactJid":jid,"isInArchiveMode":false,"chatType":type})
-
-        // remove event notiifcation
-        xmppConnectivity.events.removeEvent(jid,account,32)
     }
 
     Timer {

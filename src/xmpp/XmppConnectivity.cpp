@@ -227,14 +227,14 @@ void XmppConnectivity::openChat(QString accountId, QString bareJid) {
     cachedMessages->insert(bareJid,new MsgListModel());
 }
 
-void XmppConnectivity::closeChat(QString accId, QString bareJid) {
+void XmppConnectivity::closeChat(QString accountId, QString bareJid) {
   int rowId;
-  ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(accId + ";" + bareJid,rowId);
+  ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(accountId + ";" + bareJid,rowId);
   int type;
   if (itemExists != NULL) {
     type = itemExists->type();
     // ok, so the item exists and stuff, so I can actually run resetUnreadMessages before the object is removed
-    this->resetUnreadMessages(accId, bareJid);
+    this->resetUnreadMessages(accountId, bareJid);
 
     if (!cachedMessages->contains(bareJid))
       cachedMessages->insert(bareJid,new MsgListModel());
@@ -245,9 +245,9 @@ void XmppConnectivity::closeChat(QString accId, QString bareJid) {
 
   // send "Gone" chat state
   if (type != 3) // don't emit Gone if in MUC
-    clients->value(accId)->sendMessage(bareJid,"","",3,2);
+    clients->value(accountId)->sendMessage(bareJid,"","",3,2);
   else
-    clients->value(accId)->leaveMUCRoom(bareJid); // just leave the room
+    clients->value(accountId)->leaveMUCRoom(bareJid); // just leave the room
 
   if (itemExists != NULL)
     chats->takeRow(rowId);
@@ -255,8 +255,8 @@ void XmppConnectivity::closeChat(QString accId, QString bareJid) {
   qDebug() << "XmppConnectivity::closeChat(): chat closed";
 }
 
-void XmppConnectivity::plusUnreadChatMsg(QString accId,QString bareJid) {
-  ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(accId + ";" + bareJid);
+void XmppConnectivity::plusUnreadChatMsg(QString accountId,QString bareJid) {
+  ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(accountId + ";" + bareJid);
   if (itemExists != NULL)
     itemExists->setUnreadMsg(itemExists->unread() + 1);
 
@@ -273,6 +273,10 @@ void XmppConnectivity::resetUnreadMessages(QString accountId, QString bareJid) {
     itemExists->setUnreadMsg(0);
   }
 
+  // dismiss Event
+  events->removeEvent(bareJid,accountId,32);
+
+  // update unread count
   emit unreadCountChanged(-delta);
 
   if (cachedMessages->contains(bareJid)) {
