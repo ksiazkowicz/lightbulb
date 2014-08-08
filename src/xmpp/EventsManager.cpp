@@ -75,7 +75,8 @@ void EventsManager::clearList() {
   // clear the list
   qDebug() << "EventsManager::clearList() called";
 
-  for (int i=0;i<events->getCount();i++)
-      events->takeRow(i);
+  while (events->getCount() > 0)
+    events->takeRow(0);
+
   events->countWasChanged();
 }
