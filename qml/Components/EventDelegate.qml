@@ -44,7 +44,7 @@ Flickable {
     function getIcon() {
         switch (type) {
         case 32: return xmppConnectivity.getAvatarByJid(bareJid); // unread message
-        case 33: // connection state change
+        case 33: return "qrc:/accounts/" + xmppConnectivity.getAccountIcon(accountID); // connection state change
         case 34: // subscription request
         case 35: // muc invite
         case 36: // attention request
@@ -89,16 +89,18 @@ Flickable {
                 Image {
                     id: mark
                     z: 1
-                    anchors.fill: parent
+                    anchors { bottom: parent.bottom; right: parent.right }
+                    width: type == 24 ? 64 : 24
+                    height: width
                     sourceSize { height: height; width: width }
-                    source: "qrc:/unread-count"
-                    visible: (type == 32)
+                    source: type == 32 ? "qrc:/unread-count" : type == 33 ? ("qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accountID))) : ""
+                    visible: (type == 32) || (type == 33)
 
                     Text {
-                        visible: parent.visible
+                        visible: type == 32
                         width: 20; height: width
                         color: "#ffffff"
-                        text: parent.visible ? xmppConnectivity.getUnreadCount(accountID,bareJid)+1 : ""
+                        text: type == 32 ? xmppConnectivity.getUnreadCount(accountID,bareJid)+1 : ""
                         verticalAlignment: Text.AlignVCenter
                         horizontalAlignment: Text.AlignHCenter
                         anchors { right: parent.right; bottom: parent.bottom }

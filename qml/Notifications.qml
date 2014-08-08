@@ -92,12 +92,12 @@ Item {
     }
 
     function getStatusNameByIndex(status) {
-       if (status == XmppClient.Online) return "online"
-       else if (status == XmppClient.Chat) return "chatty"
-       else if (status == XmppClient.Away) return "away"
-       else if (status == XmppClient.XA) return "xa"
-       else if (status == XmppClient.DND) return "busy"
-       else if (status == XmppClient.Offline) return "offline"
+       if (status == 1) return "online"
+       else if (status == 2) return "chatty"
+       else if (status == 3) return "away"
+       else if (status == 4) return "xa"
+       else if (status == 5) return "busy"
+       else if (status == 0) return "offline"
     }
 
     function updateNotifiers() {
