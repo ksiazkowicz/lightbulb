@@ -452,7 +452,11 @@ void XmppConnectivity::handleXmppStatusChange (const QString accountId) {
      case MyXmppClient::DND: status = "busy"; break;
   }
 
-  events->appendStatusChange(accountId,getAccountName(accountId),"Status changed to " + status);
+  switch (clients->value(accountId)->getStateConnect()) {
+    case MyXmppClient::Connecting: events->appendStatusChange(accountId,getAccountName(accountId),"Connecting..."); break;
+    case MyXmppClient::Connected: events->appendStatusChange(accountId,getAccountName(accountId),"Current status is "+status); break;
+    case MyXmppClient::Disconnect: events->appendStatusChange(accountId,getAccountName(accountId),"Disconected :c"); break;
+    }
 
   emit xmppStatusChanged(accountId);
 }

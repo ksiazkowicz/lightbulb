@@ -54,6 +54,12 @@ Flickable {
         }
     }
 
+    function getMiniIcon() {
+        // used if type == 33 to determine which icon should be displayed
+        if (description.substring(0,7) == "Current") return ("qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accountID)));
+        return "";
+    }
+
     onContentXChanged: {
         wrapper.opacity = 1-(contentX/(wrapper.width))
         if (wrapper.opacity <= 0)
@@ -90,10 +96,10 @@ Flickable {
                     id: mark
                     z: 1
                     anchors { bottom: parent.bottom; right: parent.right }
-                    width: type == 24 ? 64 : 24
+                    width: type == 32 ? 64 : 24
                     height: width
                     sourceSize { height: height; width: width }
-                    source: type == 32 ? "qrc:/unread-count" : type == 33 ? ("qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accountID))) : ""
+                    source: type == 32 ? "qrc:/unread-count" : type == 33 ? getMiniIcon() : ""
                     visible: (type == 32) || (type == 33)
 
                     Text {
@@ -133,13 +139,7 @@ Flickable {
         MouseArea {
             id: maAccItem
             anchors { fill: parent }
-            onClicked: {
-                switch (type) {
-                    case 32:
-                        main.openChat(accountID,name,bareJid,xmppConnectivity.getChatType(accountID,bareJid));
-                        break;
-                }
-            }
+            onClicked: if (isActionPossible()) dialog.createWithProperties("qrc:/menus/EventContext", {"accountId": accountID,"bareJid": bareJid,"name":name,"type":type})
         }
     }
     Item { height: 1; width: wrapper.width; anchors.right: parent.right; }
