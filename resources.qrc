@@ -149,7 +149,6 @@
         <file alias="MessageContext">qml/Menus/MessageContextMenu.qml</file>
         <file alias="MucOptions">qml/Menus/MucMenu.qml</file>
         <file alias="Archive">qml/Menus/ArchiveMenu.qml</file>
-        <file alias="EventContext">qml/Menus/EventContextMenu.qml</file>
     </qresource>
     <qresource prefix="/Components">
         <file alias="AccountItem.qml">qml/Components/AccountItem.qml</file>

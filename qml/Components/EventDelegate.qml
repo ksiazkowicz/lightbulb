@@ -29,17 +29,9 @@ Flickable {
     id: flick
     height: 64
     flickableDirection: Flickable.HorizontalFlick
+    flickDeceleration: 10
     boundsBehavior: Flickable.DragOverBounds
     contentWidth: wrapper.width *2
-
-    function isActionPossible() {
-        switch (type) {
-        case 32: return true;
-        case 34: return true;
-        case 35: return true;
-        default: return false;
-        }
-    }
 
     function getIcon() {
         switch (type) {
@@ -51,6 +43,15 @@ Flickable {
         case 37: // fav user status change
         case 38: // app update
         default: return "";
+        }
+    }
+
+    function makeAction() {
+        switch (type) {
+        case 32: main.openChat(accountID,name,bareJid,xmppConnectivity.getChatType(accountID,bareJid)); break;
+        case 34: return true;
+        case 35: return true;
+        default: return false;
         }
     }
 
@@ -139,7 +140,7 @@ Flickable {
         MouseArea {
             id: maAccItem
             anchors { fill: parent }
-            onClicked: if (isActionPossible()) dialog.createWithProperties("qrc:/menus/EventContext", {"accountId": accountID,"bareJid": bareJid,"name":name,"type":type})
+            onClicked: makeAction()
         }
     }
     Item { height: 1; width: wrapper.width; anchors.right: parent.right; }
