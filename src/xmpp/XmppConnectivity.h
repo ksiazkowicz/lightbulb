@@ -29,20 +29,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QObject>
 #include <QThread>
 #include <QMap>
-#include "src/models/AccountsItemModel.h"
+#include "../models/AccountsItemModel.h"
 #include "MyXmppClient.h"
-#include "src/database/DatabaseWorker.h"
-#include "src/cache/MyCache.h"
-#include "src/database/Settings.h"
+#include "../database/DatabaseWorker.h"
+#include "../cache/MyCache.h"
+#include "../database/Settings.h"
 
 #include "MessageWrapper.h"
 
-#include "src/models/ChatsListModel.h"
-#include "src/models/MsgListModel.h"
-#include "src/models/ParticipantListModel.h"
-#include "src/models/MsgItemModel.h"
-#include "src/xmpp/ContactListManager.h"
-#include "src/xmpp/EventsManager.h"
+#include "../models/ChatsListModel.h"
+#include "../models/MsgListModel.h"
+#include "../models/ParticipantListModel.h"
+#include "../models/MsgItemModel.h"
+#include "ContactListManager.h"
+#include "EventsManager.h"
 
 class XmppConnectivity : public QObject
 {

@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDir>
 #include <QDebug>
 #include <QUuid>
-#include "src/models/AccountsListModel.h"
+#include "../models/AccountsListModel.h"
 
 class Settings : public QSettings
 {

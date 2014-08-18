@@ -131,8 +131,10 @@ void SqlQueryModel::setQuery(const QSqlQuery & query) {
 
 void SqlQueryModel::generateRoleNames() {
     QHash<int, QByteArray> roleNames;
+    #if QT_VERSION < 0x050000
     for( int i = 0; i < record().count(); i++) roleNames[Qt::UserRole + i + 1] = record().fieldName(i).toAscii();
     setRoleNames(roleNames);
+    #endif
 }
 
 QVariant SqlQueryModel::data(const QModelIndex &index, int role) const {

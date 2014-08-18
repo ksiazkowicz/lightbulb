@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Settings.h"
 
 #include <QDir>
-#include "src/models/AccountsListModel.h"
+#include "../models/AccountsListModel.h"
 #include <QDebug>
 
 QString Settings::cacheFolder;

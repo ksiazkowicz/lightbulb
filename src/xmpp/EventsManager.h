@@ -2,8 +2,8 @@
 #define EVENTSMANAGER_H
 
 #include <QObject>
-#include "EventListModel.h"
-#include "EventItemModel.h"
+#include "../models/EventListModel.h"
+#include "../models/EventItemModel.h"
 
 class EventsManager : public QObject
 {

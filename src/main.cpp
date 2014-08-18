@@ -21,52 +21,57 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 *********************************************************************/
 
-#include <QtGui/QApplication>
-#include <QtGui/QSplashScreen>
+#include <QApplication>
 #include <QtGui/QPixmap>
+#include <QUrl>
+#include <QDebug>
+
+// import different QML stuff for Qt 5 and Qt 4
+#if QT_VERSION < 0x050000
 #include <QtDeclarative/QDeclarativeContext>
 #include <QtDeclarative/QDeclarativeView>
 #include <QtDeclarative/qdeclarative.h>
-#include <QUrl>
-#include <QDebug>
-#include "qmlapplicationviewer.h"
+#include <qmlapplicationviewer.h>
+#else
+#include <QQmlApplicationEngine>
+#include <QtQml>
+#endif
 
-#include "MyXmppClient.h"
+#include "xmpp/MyXmppClient.h"
 
-#include "AccountsListModel.h"
-#include "RosterListModel.h"
-#include "MsgListModel.h"
-#include "NetworkCfgListModel.h"
-#include "ParticipantListModel.h"
-#include "EventListModel.h"
+#include "models/AccountsListModel.h"
+#include "models/RosterListModel.h"
+#include "models/MsgListModel.h"
+#include "models/NetworkCfgListModel.h"
+#include "models/ParticipantListModel.h"
+#include "models/EventListModel.h"
 
-#include "QMLVCard.h"
-#include "Settings.h"
+#include "cache/QMLVCard.h"
+#include "database/Settings.h"
+
+#ifdef Q_OS_SYMBIAN
 #include "QAvkonHelper.h"
-#include "DatabaseManager.h"
-#include "XmppConnectivity.h"
+#include <QSplashScreen>
+#endif
+
+#include "database/DatabaseManager.h"
+#include "xmpp/XmppConnectivity.h"
 #include "EmoticonParser.h"
-#include "NetworkManager.h"
-#include "MigrationManager.h"
-#include "EventsManager.h"
+#include "avkon/NetworkManager.h"
+#include "database/MigrationManager.h"
+#include "xmpp/EventsManager.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
-    qDebug() << "Fluorescent 0.4 build 0007";
-    qDebug() << "Maciej Janiszewski";
-    qDebug() << "------------------";
-
-    qDebug() << "main(): Initializing splashscreen";
+    #ifdef Q_OS_SYMBIAN
     QSplashScreen *splash = new QSplashScreen(QPixmap(":/splash"));
     splash->show();
-
-    qDebug() << "main(): Registering classes...";
+    #endif
 
     // expose C++ classes to QML
     qmlRegisterType<Settings>("lightbulb", 1, 0, "Settings" );
     qmlRegisterType<QMLVCard>("lightbulb", 1, 0, "XmppVCard" );
-    qmlRegisterType<ClipboardAdapter>("lightbulb", 1, 0, "Clipboard" );
     qmlRegisterType<XmppConnectivity>("lightbulb",1,0,"XmppConnectivity");
 
     qmlRegisterType<NetworkManager>("lightbulb",1,0,"NetworkManager");
@@ -83,35 +88,74 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     qmlRegisterUncreatableType<MyXmppClient>("lightbulb", 1, 0, "XmppClient", "Use XmppConnectivity.useClient(accountId) instead" );
     qmlRegisterUncreatableType<EventsManager>("lightbulb", 1, 0, "EventsManager", "Use XmppConnectivity.events" );
 
-    qDebug() << "main(): Classes registered";
-    qDebug() << "main(): Initializing view...";
-
-    // initialize viewer and set it parameters
+    #if QT_VERSION < 0x050000
     QmlApplicationViewer viewer;
+    #ifdef Q_OS_SYMBIAN
     CAknAppUi* appUi = dynamic_cast<CAknAppUi*> (CEikonEnv::Static()->AppUi());
     QAvkonHelper avkon(&viewer,appUi);
     viewer.rootContext()->setContextProperty("avkon", &avkon);
 
+    qmlRegisterType<ClipboardAdapter>("lightbulb", 1, 0, "Clipboard" );
+    #endif
+    #endif
+
     EmoticonParser parser;
+
+    #if QT_VERSION < 0x050000
     viewer.rootContext()->setContextProperty("emoticon",&parser);
     viewer.rootContext()->setContextProperty("appVersion",VERSION);
-
     viewer.setAttribute(Qt::WA_OpaquePaintEvent);
     viewer.setAttribute(Qt::WA_NoSystemBackground);
     viewer.viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
     viewer.viewport()->setAttribute(Qt::WA_NoSystemBackground);
     viewer.setProperty("orientationMethod", 1);
-
-    qDebug() << "main(): Done. Loading QML file";
-
     viewer.setSource( QUrl(QLatin1String("qrc:/qml/main.qml")) );
     viewer.showFullScreen();
-
     splash->finish(&viewer);
     splash->deleteLater();
-
-    qDebug() << "main(): App is ready";
-
+    #else
+    // Qt5 cool stuff
+    QQmlApplicationEngine engine;
+    /*engine.setProperty("emoticon",&parser);
+    engine.setProperty("appVersion",VERSION);*/
+    engine.load(QUrl(QStringLiteral("qrc:///qml/Desktop.qml")));
+    #endif
     return app.exec();
 }
 
+/*#include <QApplication>
+
+#include "DatabaseManager.h"
+#include "QAvkonHelper.h"
+
+// import different QML stuff for Qt 5 and Qt 4
+#if QT_VERSION < 0x050000
+#include <qdeclarative.h>
+#include <qmlapplicationviewer.h>
+#else
+#include <QQmlApplicationEngine>
+#include <QtQml>
+#endif
+
+Q_DECL_EXPORT int main(int argc, char *argv[]) {
+    QApplication app(argc, argv);
+
+    // register types
+    qmlRegisterType<DatabaseManager>("tessera", 1, 0, "Database" );
+    qmlRegisterType<ClipboardAdapter>("tessera", 1, 0, "Clipboard" );
+    qmlRegisterUncreatableType<SqlQueryModel>("tessera", 1, 0, "SqlQuery", "");
+
+    // do my cool qt4 stuff
+    #if QT_VERSION < 0x050000
+    QmlApplicationViewer viewer;
+    viewer.setSource( QUrl(QLatin1String("qrc:/qml/Symbian.qml")) );
+    viewer.showFullScreen();
+    #else
+    // Qt5 cool stuff
+    QQmlApplicationEngine engine;
+    engine.load(QUrl(QStringLiteral("qrc:///qml/Desktop.qml")));
+    #endif
+    return app.exec();
+}
+
+*/

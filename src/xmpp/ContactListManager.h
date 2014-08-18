@@ -3,8 +3,8 @@
 
 #include <QObject>
 
-#include "src/models/RosterListModel.h"
-#include "src/models/RosterItemModel.h"
+#include "../models/RosterListModel.h"
+#include "../models/RosterItemModel.h"
 
 class ContactListManager : public QObject
 {

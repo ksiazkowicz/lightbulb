@@ -54,7 +54,9 @@ class ListModel : public QAbstractListModel
 public:
   explicit ListModel(ListItem* prototype, QObject *parent) : QAbstractListModel(parent), m_prototype(prototype)
     {
+      #if QT_VERSION < 0x050000
       setRoleNames(m_prototype->roleNames());
+      #endif
     }
   ~ListModel() {
         delete m_prototype;

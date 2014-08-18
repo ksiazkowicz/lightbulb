@@ -48,11 +48,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QStringList>
 #include <QDebug>
 
-#include "src/database/Settings.h"
+#include "../database/Settings.h"
 
-#include "src/cache/MyCache.h"
-#include "src/models/ParticipantListModel.h"
-#include "src/models/ParticipantItemModel.h"
+#include "../cache/MyCache.h"
+#include "../models/ParticipantListModel.h"
+#include "../models/ParticipantItemModel.h"
 
 class MyXmppClient : public QObject
 {

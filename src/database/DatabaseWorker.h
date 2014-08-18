@@ -29,8 +29,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QStringList>
 #include "DatabaseManager.h"
 
-#include "src/models/RosterListModel.h"
-#include "src/models/RosterItemModel.h"
+#include "../models/RosterListModel.h"
+#include "../models/RosterItemModel.h"
 
 class DatabaseWorker : public QObject
 {

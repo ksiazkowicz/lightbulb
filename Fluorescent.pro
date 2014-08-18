@@ -21,6 +21,7 @@
 #######################################################################
 
 QT += declarative network sql
+TEMPLATE = app
 
 VERSION = 0.4
 DEFINES += VERSION=\"$$VERSION\"
@@ -36,7 +37,22 @@ symbian {
     DEPLOYMENT += my_deployment
     DEPLOYMENT.display_name = Fluorescent
 
+    SOURCES += src/avkon/AvkonMedia.cpp \
+               src/avkon/QAvkonHelper.cpp \
+               src/avkon/DataPublisher.cpp
+    HEADERS += src/avkon/QAvkonHelper.h \
+               src/avkon/AvkonMedia.h \
+               src/avkon/DataPublisher.h
+
     DEFINES += APP_VERSION=\"$$VERSION\"
+
+    #qxmpp
+    include(qxmpp/qxmpp.pri)
+    INCLUDEPATH += qxmpp/base/ qxmpp/client
+
+    # Please do not modify the following two lines. Required for deployment.
+    include(qmlapplicationviewer/qmlapplicationviewer.pri)
+    qtcAddDeployment()
 
     LIBS += -lavkon \
             -laknnotify \
@@ -57,6 +73,13 @@ symbian {
             -lmediaclientaudio \
             -lprofileengine \
             -lcntmodel
+} else {
+    QT += qml quick widgets
+    include(deployment.pri)
+    include(../qxmpp/qxmpp.pri)
+    QMAKE_LIBDIR += ../qxmpp/src
+    INCLUDEPATH += $$QXMPP_INCLUDEPATH
+    LIBS += $$QXMPP_LIBS
 }
 
 # If your application uses the Qt Mobility libraries, uncomment the following
@@ -75,14 +98,11 @@ SOURCES += src/main.cpp \
     src/xmpp/MessageWrapper.cpp \
     src/cache/QMLVCard.cpp \
     src/database/DatabaseManager.cpp \
-    src/avkon/QAvkonHelper.cpp \
     src/xmpp/XmppConnectivity.cpp \
     src/database/DatabaseWorker.cpp \
     src/database/Settings.cpp \
-    src/avkon/AvkonMedia.cpp \
     src/EmoticonParser.cpp \
     src/xmpp/ContactListManager.cpp \
-    src/avkon/DataPublisher.cpp \
     src/avkon/NetworkManager.cpp \
     src/database/MigrationManager.cpp \
     src/xmpp/EventsManager.cpp
@@ -93,7 +113,6 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/xmpp/MessageWrapper.h \
     src/cache/QMLVCard.h \
     src/database/DatabaseManager.h \
-    src/avkon/QAvkonHelper.h \
     src/xmpp/XmppConnectivity.h \
     src/database/DatabaseWorker.h \
     src/database/Settings.h \
@@ -106,10 +125,8 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/models/ChatsItemModel.h \
     src/models/MsgListModel.h \
     src/models/MsgItemModel.h \
-    src/avkon/AvkonMedia.h \
     src/EmoticonParser.h \
     src/xmpp/ContactListManager.h \
-    src/avkon/DataPublisher.h \
     src/avkon/NetworkManager.h \
     src/database/MigrationManager.h \
     src/models/NetworkCfgItemModel.h \
@@ -129,14 +146,6 @@ OTHER_FILES += README.md \
     qml/Preflets/*.* \
     qml/Menus/*.* \
     qml/Components/*.*
-
-# Please do not modify the following two lines. Required for deployment.
-include(qmlapplicationviewer/qmlapplicationviewer.pri)
-qtcAddDeployment()
-
-#qxmpp
-include(qxmpp/qxmpp.pri)
-INCLUDEPATH += qxmpp/base/ qxmpp/client
 
 DEPLOYMENT += addFiles
 
