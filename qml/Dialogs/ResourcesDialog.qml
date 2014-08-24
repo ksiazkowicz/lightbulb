@@ -66,7 +66,7 @@ CommonDialog {
                             font.pixelSize: itemResource.height/2
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.verticalCenter: parent.verticalCenter
-                            color: vars.textColor
+                            color: main.textColor
                             font.bold: false
                         }
                         states: State {

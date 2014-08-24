@@ -56,7 +56,7 @@ Page {
         }
         Text {
             id: programName
-            color: vars.textColor
+            color: main.textColor
             text: "Fluorescent IM " + appVersion + " α"
             anchors { top: logo.bottom; topMargin: 5; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
             horizontalAlignment: Text.AlignHCenter
@@ -66,7 +66,7 @@ Page {
         Text {
             id: names
             anchors { top: programName.bottom; leftMargin: 10; rightMargin: 10; left: parent.left; right: parent.right }
-            color: vars.textColor
+            color: main.textColor
             wrapMode: Text.Wrap
             text: "coded with ♥ and coffee"
             font.pixelSize: platformStyle.fontSizeSmall
@@ -87,7 +87,7 @@ Page {
 
         Text {
             id: niceInfo
-            color: vars.textColor
+            color: main.textColor
             text: qsTr("Made possible thanks to AWESOME Symbian community")
             width: parent.width
             anchors { top: names.bottom; topMargin: 24; horizontalCenter: parent.horizontalCenter }

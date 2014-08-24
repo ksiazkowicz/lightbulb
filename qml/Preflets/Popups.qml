@@ -83,7 +83,7 @@ Item {
                 id: switchDescription
                 property string color2: main.platformInverted ? "#333333" : "#888888"
                 anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: switch1.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
-                color: vars.textColor
+                color: main.textColor
                 text: qsTr("Switch to app on interaction") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("Tapping on popup would instantly switch you to this app.")  + "</font>"
                 font.pixelSize: 20
                 wrapMode: Text.WordWrap

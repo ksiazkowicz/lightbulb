@@ -1,4 +1,4 @@
-// import QtQuick 1.0 // to target S60 5th Edition or Maemo 5
+// import QtQuick 1.1 // to target S60 5th Edition or Maemo 5
 import QtQuick 1.1
 import lightbulb 1.0
 import com.nokia.symbian 1.1
@@ -46,7 +46,7 @@ Item {
                 text: name
                 font.pixelSize: 18
                 clip: true
-                color: vars.textColor
+                color: main.textColor
                 elide: Text.ElideRight
             }
         }

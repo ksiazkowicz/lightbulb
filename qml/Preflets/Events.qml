@@ -40,7 +40,7 @@ Item {
             height: msgRecvSettings.height * 2
             Text {
                 anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: msgRecvSettings.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
-                color: vars.textColor
+                color: main.textColor
                 property string color2: main.platformInverted ? "#333333" : "#888888"
                 text: qsTr("Incoming message") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("Haptics feedback, sound notification or popup will happen when receiving an incoming message if enabled.") + "</font>"
                 font.pixelSize: 20
@@ -111,7 +111,7 @@ Item {
         Rectangle {
             height: 1
             anchors { left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
-            color: vars.textColor
+            color: main.textColor
             opacity: 0.2
         }
 
@@ -121,7 +121,7 @@ Item {
 
             Text {
                 anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: msgSentSettings.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
-                color: vars.textColor
+                color: main.textColor
                 property string color2: main.platformInverted ? "#333333" : "#888888"
                 text: qsTr("Outgoing message") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("Haptics feedback or sound notification will happen when your message is sent.") + "</font>"
                 font.pixelSize: 20
@@ -176,7 +176,7 @@ Item {
         Rectangle {
             height: 1
             anchors { left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
-            color: vars.textColor
+            color: main.textColor
             opacity: 0.2
         }
 
@@ -186,7 +186,7 @@ Item {
 
             Text {
                 anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: notifyConnectionSettings.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
-                color: vars.textColor
+                color: main.textColor
                 property string color2: main.platformInverted ? "#333333" : "#888888"
                 text: qsTr("Connection") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("Sound notification will be played or popup will appear when connection state changes, if enabled.") + "</font>"
                 font.pixelSize: 20
@@ -241,7 +241,7 @@ Item {
         Rectangle {
             height: 1
             anchors { left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
-            color: vars.textColor
+            color: main.textColor
             opacity: 0.2
         }
 
@@ -251,7 +251,7 @@ Item {
 
             Text {
                 anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: msgSubSettings.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
-                color: vars.textColor
+                color: main.textColor
                 property string color2: main.platformInverted ? "#333333" : "#888888"
                 text: qsTr("Subscription") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("Haptics feedback, sound notification or popup will happen when receiving a subscription request, if enabled.") + "</font>"
                 font.pixelSize: 20
@@ -323,7 +323,7 @@ Item {
         Rectangle {
             height: 1
             anchors { left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
-            color: vars.textColor
+            color: main.textColor
             opacity: 0.2
         }
 
@@ -334,7 +334,7 @@ Item {
             Text {
                 id: text
                 anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: notifyTyping.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
-                color: vars.textColor
+                color: main.textColor
                 property string color2: main.platformInverted ? "#333333" : "#888888"
                 text: qsTr("Typing notifications") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("If enabled, popup will appear when contact started/stopped typing.") + "</font>"
                 font.pixelSize: 20

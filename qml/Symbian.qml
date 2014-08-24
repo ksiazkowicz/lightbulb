@@ -31,6 +31,7 @@ import lightbulb 1.0
 PageStackWindow {
     id: main
     property int splitscreenY: 0
+    property string textColor:       main.platformInverted ? platformStyle.colorNormalDark : platformStyle.colorNormalLight
 
     function resetSplitscreen() {
         main.y = 0;

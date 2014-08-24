@@ -171,7 +171,7 @@ Page {
             spacing: 5
 
             Text {
-                color: vars.textColor
+                color: main.textColor
                 anchors { left: parent.left; right: parent.right; leftMargin: 10; rightMargin: 10 }
                 font.pixelSize: 32
                 text: "Welcome back!"
@@ -181,7 +181,7 @@ Page {
 
             Text {
                 id: text
-                color: vars.textColor
+                color: main.textColor
                 anchors { left: parent.left; right: parent.right; leftMargin: 10; rightMargin: 10 }
                 wrapMode: Text.WordWrap
 

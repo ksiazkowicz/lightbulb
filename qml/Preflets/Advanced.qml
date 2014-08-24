@@ -85,7 +85,7 @@ Item {
             text: qsTr("Visible messages limit")
             font.pixelSize: 20
             font.bold: true
-            color: vars.textColor
+            color: main.textColor
         }
         TextField {
             id: tiVisibleMsgLimit
@@ -124,7 +124,7 @@ Item {
             id: rmvDbText
             width: parent.width
             anchors { left: parent.left; right: parent.right }
-            color: vars.textColor
+            color: main.textColor
             text: "This option will remove all the archived messages."
             font.pixelSize: platformStyle.fontSizeSmall
             wrapMode: Text.WordWrap
@@ -147,7 +147,7 @@ Item {
         Text {
             id: cleanAvCacheText
             width: parent.width
-            color: vars.textColor
+            color: main.textColor
             anchors { left: parent.left; right: parent.right }
             font.pixelSize: platformStyle.fontSizeSmall
             text: "Useful option if avatars are not displayed properly, or cache is filled with useless files."
@@ -170,7 +170,7 @@ Item {
         Text {
             id: reSettingsText
             width: parent.width
-            color: vars.textColor
+            color: main.textColor
             font.pixelSize: platformStyle.fontSizeSmall
             anchors { left: parent.left; right: parent.right }
             text: "Have you updated your app and something went wrong? Want to remove your accounts details? Do you miss first run wizard? This is an option for you."

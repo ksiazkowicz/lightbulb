@@ -74,7 +74,7 @@ CommonDialog {
                             text: name
                             font.pixelSize: platformStyle.fontSizeSmall
                             anchors { left: parent.left; leftMargin: 64; verticalCenter: parent.verticalCenter; }
-                            color: vars.textColor
+                            color: main.textColor
                             font.bold: false
                         }
                         states: State {

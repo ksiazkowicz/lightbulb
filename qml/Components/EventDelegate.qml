@@ -118,7 +118,7 @@ Flickable {
         Column {
             anchors { left: icon.right; leftMargin: 10; verticalCenter: notification.verticalCenter }
                 Text {
-                    color: vars.textColor
+                    color: main.textColor
                     textFormat: Text.PlainText
                     width: mainPage.width - 25 - 90
                     maximumLineCount: 1

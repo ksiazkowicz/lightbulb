@@ -74,7 +74,7 @@ Page {
                     height: 31
                     text: qsTr("Me")
                     anchors { left: avatar.right; leftMargin: 24; top: parent.top}
-                    color: vars.textColor
+                    color: main.textColor
                     font.pixelSize: 24
                 }
 
@@ -136,7 +136,7 @@ Page {
                 Text {
                     height: parent.height
                     width: parent.width - clearBtn.width
-                    color: vars.textColor
+                    color: main.textColor
                     text: qsTr("Events")
                     font { pixelSize: 22; bold: true }
                     opacity: 0.7
@@ -160,7 +160,7 @@ Page {
                 height: eventsList.model.count > 0 ? 0 : 64
                 anchors { left: parent.left; right: parent.right }
                 Text {
-                    color: vars.textColor
+                    color: main.textColor
                     text: "No unread events ^^"
                     anchors { horizontalCenter: parent.horizontalCenter; verticalCenter: parent.verticalCenter }
                     verticalAlignment: Text.AlignVCenter
@@ -177,7 +177,7 @@ Page {
                 Text {
                     height: parent.height
                     width: parent.width - chatBtn.width
-                    color: vars.textColor
+                    color: main.textColor
                     text: qsTr("Chats")
                     font { pixelSize: 22; bold: true }
                     opacity: 0.7

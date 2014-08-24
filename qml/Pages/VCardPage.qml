@@ -93,7 +93,7 @@ Page {
                         width: container.width
                         text: contactName
                         wrapMode: Text.Wrap
-                        color: vars.textColor
+                        color: main.textColor
                     }
                     Row {
                         spacing: 5

@@ -53,7 +53,7 @@ CommonDialog {
 
             Text {
                 text: qsTr("Intensity") + " (" + intensitySlider.value + "%)"
-                color: vars.textColor
+                color: main.textColor
             }
             Slider {
                 id: intensitySlider
@@ -68,7 +68,7 @@ CommonDialog {
             }
             Text {
                 text: qsTr("Duration") + " (" + durationSlider.value + " ms)"
-                color: vars.textColor
+                color: main.textColor
             }
             Slider {
                 id: durationSlider

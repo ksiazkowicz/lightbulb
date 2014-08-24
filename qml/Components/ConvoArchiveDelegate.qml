@@ -85,7 +85,7 @@ Item {
           anchors { top: parent.top; left: parent.left; right: parent.right }
           property string messageText: vars.areEmoticonsDisabled ? _msgText : emoticon.parseEmoticons(_msgText)
           text: "<font color='#009FEB'>" + ( _isMine == true ? qsTr("Me") : (_contactName === "" ? _contactJid : _contactName) ) + ":</font> " + messageText
-          color: vars.textColor
+          color: main.textColor
           font.pixelSize: 16
           wrapMode: Text.Wrap
           onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})

@@ -115,7 +115,7 @@ Page {
 
             Text {
                 text: "Name (optional)"
-                color: vars.textColor
+                color: main.textColor
             }
             TextField {
                 id: tiName
@@ -128,7 +128,7 @@ Page {
 
             Text {
                 text: "Login"
-                color: vars.textColor
+                color: main.textColor
             }
             TextField {
                 id: tiJid
@@ -147,7 +147,7 @@ Page {
 
             Text {
                 text: "Password"
-                color: vars.textColor
+                color: main.textColor
             }
 
             TextField {
@@ -170,7 +170,7 @@ Page {
 
             Text {
                 text: "Resource (optional)"
-                color: vars.textColor
+                color: main.textColor
             }
 
             TextField {
@@ -204,7 +204,7 @@ Page {
 
             Text {
                 text: "Server details"
-                color: vars.textColor
+                color: main.textColor
                 visible: selectionDialog.selectedIndex == 2
             }
 

@@ -31,7 +31,7 @@ Item {
         y: platformStyle.paddingSmall
         id: text
         anchors { top: parent.top; topMargin: platformStyle.paddingSmall; horizontalCenter: parent.horizontalCenter }
-        color: vars.textColor
+        color: main.textColor
         text: qsTr("Choose one of the following themes")
         font.pixelSize: 20
         wrapMode: Text.WordWrap
@@ -70,7 +70,7 @@ Item {
             if (checked) dark.checked = false;
             settings.sBool(checked,"ui", "invertPlatform")
             main.platformInverted = checked
-            vars.textColor = checked ? platformStyle.colorNormalDark : platformStyle.colorNormalLight
+            main.textColor = checked ? platformStyle.colorNormalDark : platformStyle.colorNormalLight
         }
     }
 

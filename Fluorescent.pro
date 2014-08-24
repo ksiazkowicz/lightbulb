@@ -26,6 +26,8 @@ TEMPLATE = app
 VERSION = 0.4
 DEFINES += VERSION=\"$$VERSION\"
 
+include(qmlpp.pri)
+
 symbian {
     TARGET.UID3 = 0xE00AC666
     TARGET.CAPABILITY += NetworkServices WriteDeviceData ReadDeviceData ReadUserData WriteUserData LocalServices
@@ -54,6 +56,18 @@ symbian {
     include(qmlapplicationviewer/qmlapplicationviewer.pri)
     qtcAddDeployment()
 
+    qmlPreprocessFolder(qml, @QtQuick1, 1.1)
+
+    OTHER_FILES += README.md \
+        qml/Dialogs/*.* \
+        qml/*.* \
+        qml/Pages/*.* \
+        qml/FirstRun/*.* \
+        qml/JavaScript/*.* \
+        qml/Preflets/*.* \
+        qml/Menus/*.* \
+        qml/Components/*.*
+
     LIBS += -lavkon \
             -laknnotify \
             -lhwrmlightclient \
@@ -80,6 +94,7 @@ symbian {
     QMAKE_LIBDIR += ../qxmpp/src
     INCLUDEPATH += $$QXMPP_INCLUDEPATH
     LIBS += $$QXMPP_LIBS
+    qmlPreprocessFolder(qml, @QtQuick2, 2.0)
 }
 
 # If your application uses the Qt Mobility libraries, uncomment the following
@@ -136,16 +151,6 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/models/EventListModel.h \
     src/models/EventItemModel.h \
     src/xmpp/EventsManager.h
-
-OTHER_FILES += README.md \
-    qml/Dialogs/*.* \
-    qml/*.* \
-    qml/Pages/*.* \
-    qml/FirstRun/*.* \
-    qml/JavaScript/*.* \
-    qml/Preflets/*.* \
-    qml/Menus/*.* \
-    qml/Components/*.*
 
 DEPLOYMENT += addFiles
 

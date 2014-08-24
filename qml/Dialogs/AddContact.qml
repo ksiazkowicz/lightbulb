@@ -45,13 +45,13 @@ CommonDialog {
             spacing: platformStyle.paddingSmall
             anchors { left: parent.left; right: parent.right; margins: platformStyle.paddingSmall }
 
-            Label { anchors.horizontalCenter: parent.horizontalCenter; text: qsTr("Contact name:"); color: vars.textColor }
+            Label { anchors.horizontalCenter: parent.horizontalCenter; text: qsTr("Contact name:"); color: main.textColor }
             TextField {
                 id: addName
                 anchors { left: parent.left; right: parent.right }
                 placeholderText: qsTr("Name")
             }
-            Label { anchors.horizontalCenter: parent.horizontalCenter; text: "JID:"; color: vars.textColor}
+            Label { anchors.horizontalCenter: parent.horizontalCenter; text: "JID:"; color: main.textColor}
             TextField {
                 id: addJid
                 anchors { left: parent.left; right: parent.right }

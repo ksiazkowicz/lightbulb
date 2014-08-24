@@ -4,7 +4,7 @@ import com.nokia.symbian 1.1
 Item {
     Text {
         id: text
-        color: vars.textColor
+        color: main.textColor
         anchors { top: parent.top; topMargin: 24; left: parent.left; right: parent.right; leftMargin: 10; rightMargin: 10 }
         wrapMode: Text.WordWrap
         font.pixelSize: 20

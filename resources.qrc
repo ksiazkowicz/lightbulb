@@ -3,7 +3,7 @@
         <file alias="Lightbulb.svg">Fluorescent.svg</file>
         <file>qml/Notifications.qml</file>
         <file alias="avatar">images/avatar.png</file>
-        <file>qml/main.qml</file>
+        <file>qml/Symbian.qml</file>
         <file alias="unread-count">images/unread-count.svg</file>
         <file alias="unread-mark">images/unread-mark.svg</file>
         <file alias="unread-mark_inverse">images/unread-mark_inverse.svg</file>
@@ -13,6 +13,7 @@
         <file alias="message">images/messaging.svg</file>
         <file alias="avatar-mask_inverse">images/avatar_mask_inverse.svg</file>
         <file alias="muc_modOverlay">images/muc_moderator.svg</file>
+        <file>qml/Desktop.qml</file>
     </qresource>
     <qresource prefix="/smileys">
         <file alias="angry">images/smileys/angry.png</file>

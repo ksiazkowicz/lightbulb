@@ -69,7 +69,7 @@ CommonDialog {
                     text: xmppConnectivity.getAccountName(accGRID)
                     font.pixelSize: 18
                     clip: true
-                    color: vars.textColor
+                    color: main.textColor
                 }
                 Image {
                     id: imgAccount

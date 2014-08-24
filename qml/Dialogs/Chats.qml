@@ -78,7 +78,7 @@ CommonDialog {
                     text: unreadMsg > 0 ? "[" + unreadMsg + "] " + name : name
                     font.pixelSize: 18
                     clip: true
-                    color: vars.textColor
+                    color: main.textColor
                 }
                 states: State {
                     name: "Current"

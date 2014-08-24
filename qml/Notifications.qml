@@ -109,7 +109,7 @@ Item {
     function postInfo(messageString) { avkon.displayGlobalNote(messageString,false) }
     function postError(messageString) { avkon.displayGlobalNote(messageString,true) }
 
-    HapticsEffect { id: hapticsEffect }
+    //HapticsEffect { id: hapticsEffect }
 
     function notifySndVibr(how) {
         if( settings.gBool("notifications","vibra"+how && !avkon.isInSilentMode())) {

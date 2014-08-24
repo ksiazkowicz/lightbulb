@@ -94,7 +94,7 @@ Flickable {
             text: name
             font.pixelSize: 22
             clip: true
-            color: vars.textColor
+            color: main.textColor
             elide: Text.ElideRight
             opacity: wrapper.opacity
         }

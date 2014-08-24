@@ -37,7 +37,7 @@ Item {
         Item { height: 32 }
         Text {
             id: text
-            color: vars.textColor
+            color: main.textColor
             anchors {left: parent.left; right: parent.right; leftMargin: 10; rightMargin: 10 }
             wrapMode: Text.WordWrap
             font.pixelSize: 20

@@ -48,7 +48,7 @@ Item {
             text: qsTr("Keep alive interval (secs)")
             font.pixelSize: 20
             font.bold: true
-            color: vars.textColor
+            color: main.textColor
             anchors { left: parent.left; leftMargin: 10; }
         }
         TextField {
@@ -71,7 +71,7 @@ Item {
             text: qsTr("Default group chat nick")
             font.pixelSize: 20
             font.bold: true
-            color: vars.textColor
+            color: main.textColor
             anchors { left: parent.left; leftMargin: 10; }
         }
         TextField {

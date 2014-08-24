@@ -89,7 +89,7 @@ Item {
         Text {
             id: rosterItemHeightText
             text: "Roster item height (" + rosterItemHeight.value + " px)"
-            color: vars.textColor
+            color: main.textColor
         }
         Slider {
                 id: rosterItemHeight

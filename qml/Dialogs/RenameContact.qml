@@ -58,7 +58,7 @@ CommonDialog {
 
         Text {
             id: queryLabel;
-            color: vars.textColor
+            color: main.textColor
             anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10; top: parent.top; topMargin: 10 }
             text: qsTr("Choose new name:");
         }

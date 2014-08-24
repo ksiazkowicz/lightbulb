@@ -6,7 +6,7 @@ Item {
 
     Text {
         id: text
-        color: vars.textColor
+        color: main.textColor
         anchors { top: parent.top; left: parent.left; right: parent.right; leftMargin: 10; rightMargin: 10 }
         wrapMode: Text.WordWrap
         font.pixelSize: 20
@@ -65,7 +65,7 @@ Item {
         spacing: 5
         Text {
             text: "Login"
-            color: vars.textColor
+            color: main.textColor
         }
         TextField {
             id: tiJid
@@ -87,7 +87,7 @@ Item {
 
         Text {
             text: "Password"
-            color: vars.textColor
+            color: main.textColor
         }
 
         TextField {
@@ -110,7 +110,7 @@ Item {
 
         Text {
             text: "Server"
-            color: vars.textColor
+            color: main.textColor
             visible: selectionDialog.selectedIndex == 2
         }
 

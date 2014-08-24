@@ -56,7 +56,7 @@ CommonDialog {
 
         Text {
             id: jidLabel;
-            color: vars.textColor
+            color: main.textColor
             anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10 }
             text: qsTr("Room JID");
         }
@@ -69,7 +69,7 @@ CommonDialog {
         }
         Text {
             id: nickLabel
-            color: vars.textColor
+            color: main.textColor
             anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10 }
             text: qsTr("Your nick");
         }
@@ -82,7 +82,7 @@ CommonDialog {
         }
         Text {
             id: passLabel
-            color: vars.textColor
+            color: main.textColor
             anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10 }
             text: qsTr("Room password (optional)");
         }

@@ -54,7 +54,7 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         text: parseCE(_msgText)
         width: parent.width
-        color: vars.textColor
+        color: main.textColor
         font.pixelSize: platformStyle.fontSizeSmall
         font.italic: true
         textFormat: Text.RichText

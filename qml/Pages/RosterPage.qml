@@ -127,7 +127,7 @@ Page {
                 onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
                 wrapMode: Text.WordWrap
                 font.pixelSize: (vars.showContactStatusText ? 16 : 0)
-                color: vars.textColor
+                color: main.textColor
             }
             MouseArea {
                 id: mouseAreaItem;
@@ -156,7 +156,7 @@ Page {
             Rectangle {
                 height: 1
                 anchors { top: parent.bottom; left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
-                color: vars.textColor
+                color: main.textColor
                 opacity: 0.2
             }
         } //Rectangle
