@@ -114,8 +114,8 @@ public :
     /*--- subscribe ---*/
     Q_INVOKABLE bool subscribe (const QString bareJid) { return rosterManager->subscribe(bareJid); }
     Q_INVOKABLE bool unsubscribe (const QString bareJid) { return rosterManager->unsubscribe(bareJid); }
-    Q_INVOKABLE bool acceptSubscribtion (const QString bareJid) { return rosterManager->acceptSubscription(bareJid); }
-    Q_INVOKABLE bool rejectSubscribtion (const QString bareJid) { return rosterManager->refuseSubscription(bareJid); }
+    Q_INVOKABLE bool acceptSubscription (const QString bareJid) { return rosterManager->acceptSubscription(bareJid); }
+    Q_INVOKABLE bool rejectSubscription (const QString bareJid) { return rosterManager->refuseSubscription(bareJid); }
 	
     /*--- chat options ---*/
     Q_INVOKABLE void attentionSend( QString bareJid, QString resource = "" );
