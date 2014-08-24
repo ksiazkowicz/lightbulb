@@ -189,7 +189,7 @@ bool MyXmppClient::sendMessage(QString bareJid, QString resource, QString msgBod
 
     if (msgType == QXmppMessage::GroupChat) {
         QXmppMucRoom* room = mucRooms.value(bareJid);
-        if (room != NULL && !room->isJoined())
+        if (room != NULL && room->isJoined())
             return room->sendMessage(msgBody);
         else
             return false;

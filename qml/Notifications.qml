@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *********************************************************************/
 
 import QtQuick 1.1
-import QtMobility.feedback 1.1
+import QtMobility.feedback 1.1 //@QtQuick1
 import lightbulb 1.0
 
 Item {
@@ -109,7 +109,7 @@ Item {
     function postInfo(messageString) { avkon.displayGlobalNote(messageString,false) }
     function postError(messageString) { avkon.displayGlobalNote(messageString,true) }
 
-    //HapticsEffect { id: hapticsEffect }
+    HapticsEffect { id: hapticsEffect } //@QtQuick1
 
     function notifySndVibr(how) {
         if( settings.gBool("notifications","vibra"+how && !avkon.isInSilentMode())) {

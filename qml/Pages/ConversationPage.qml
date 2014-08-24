@@ -167,7 +167,8 @@ Page {
         onTriggered: {
             if (isTyping) {
                 isTyping = false;
-                xmppConnectivity.useClient(accountId).sendMessage(contactJid,contactResource,"",5,2)
+                if (chatType != 3)
+                    xmppConnectivity.useClient(accountId).sendMessage(contactJid,contactResource,"",5,2)
             }
             xmppConnectivity.resetUnreadMessages(accountId,contactJid)
         }
@@ -185,7 +186,8 @@ Page {
             if (text.length > 0 && !isTyping) {
                 isTyping = true
                 // sending a chat state
-                xmppConnectivity.useClient(accountId).sendMessage(contactJid,contactResource,"",4,2)
+                if (chatType != 3)
+                    xmppConnectivity.useClient(accountId).sendMessage(contactJid,contactResource,"",4,2)
 
                 // wait for inactivity
                 waitForInactivity.running = false
@@ -206,7 +208,8 @@ Page {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
             onClicked: {
                 // send a chatstate
-                xmppConnectivity.useClient(accountId).sendMessage(contactJid,contactResource,"",2,0)
+                if (chatType != 3)
+                    xmppConnectivity.useClient(accountId).sendMessage(contactJid,contactResource,"",2,0)
 
                 // go back to previous page
                 pageStack.pop()
