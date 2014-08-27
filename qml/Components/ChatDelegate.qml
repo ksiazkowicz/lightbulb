@@ -91,7 +91,7 @@ Flickable {
         }
         Text {
             anchors { verticalCenter: parent.verticalCenter; left: avatarIcon.right; right: wrapper.right; leftMargin: 10 }
-            text: name
+            text: (name === "" ? jid : name)
             font.pixelSize: 22
             clip: true
             color: main.textColor
