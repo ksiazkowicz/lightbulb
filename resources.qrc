@@ -181,5 +181,7 @@
         <file alias="defaultSkin/incoming">images/convo/bubble_incTriangle.png</file>
         <file alias="defaultSkin/outcoming">images/convo/bubble_outTriangle.png</file>
         <file alias="defaultSkin/unreadIcon">images/convo/symMsgUnreadIcon.png</file>
+        <file alias="defaultSkin/infoIcon">images/convo/infoIcon.svg</file>
+        <file alias="defaultSkin/errorIcon">images/convo/errorIcon.svg</file>
     </qresource>
 </RCC>

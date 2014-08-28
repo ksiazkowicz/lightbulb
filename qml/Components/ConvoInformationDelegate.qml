@@ -31,7 +31,7 @@ Item {
 
     property string date: _dateTime.substr(0,8) == Qt.formatDateTime(new Date(), "dd-MM-yy") ? _dateTime.substr(9,5) : _dateTime
 
-    anchors { left: parent.left; right: parent.right }
+    anchors { left: parent.left; right: parent.right; margins: platformStyle.paddignSmall }
 
     function parseCE(text) {
         // replaces CE with actual values
@@ -45,6 +45,9 @@ Item {
         temp = temp.replace("[[/bold]]","</b>")
         temp = temp.replace("[[date]]",wrapper.date)
 
+        temp = temp.replace("[[INFO]]","<img src='qrc:/convo/defaultSkin/infoIcon' />");
+        temp = temp.replace("[[ERR]]","<img src='qrc:/convo/defaultSkin/errorIcon' />");
+
         return temp;
     }
 
@@ -54,12 +57,11 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         text: parseCE(_msgText)
         width: parent.width
-        color: main.textColor
+        color: "#888888"
         font.pixelSize: platformStyle.fontSizeSmall
         font.italic: true
         textFormat: Text.RichText
         wrapMode: Text.WordWrap
-        opacity: 0.5
         onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
     }
 }
