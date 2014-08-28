@@ -76,7 +76,7 @@ void ContactListManager::removeContact(QString acc,QString bareJid) {
   for (int i=0;i<rosterOffline->count();i++) {
       contact = (RosterItemModel*)rosterOffline->getElementByID(i);
       if (contact->id() == acc+";"+bareJid)
-        roster->takeRow(i);
+        rosterOffline->takeRow(i);
     }
 }
 
