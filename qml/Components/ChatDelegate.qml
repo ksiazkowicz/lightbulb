@@ -65,7 +65,7 @@ Flickable {
             width: 48
             height: 48
             smooth: true
-            source: xmppConnectivity.getAvatarByJid(jid)
+            source: chatType == 3 ? "qrc:/muc" : xmppConnectivity.getAvatarByJid(jid)
             Rectangle { anchors.fill: parent; color: "black"; z: -1 }
             Image {
                 anchors.fill: parent

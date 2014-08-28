@@ -35,7 +35,7 @@ Flickable {
 
     function getIcon() {
         switch (type) {
-        case 32: return xmppConnectivity.getAvatarByJid(bareJid); // unread message
+        case 32: { if (xmppConnectivity.getChatType(accountID,bareJid) == 3) return "qrc:/muc"; else return xmppConnectivity.getAvatarByJid(bareJid); } // unread message
         case 33: return "qrc:/accounts/" + xmppConnectivity.getAccountIcon(accountID); // connection state change
         case 34: // subscription request
         case 35: // muc invite
