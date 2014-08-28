@@ -126,9 +126,9 @@ void MyXmppClient::clientStateChanged(QXmppClient::State state) {
 
 void MyXmppClient::error(QXmppClient::Error e) {
     QString errString;
-    if( e == QXmppClient::SocketError ) errString = "SOCKET_ERROR: " + xmppClient->socketErrorString();
-    else if( e == QXmppClient::KeepAliveError ) errString = "KEEP_ALIVE_ERROR";
-    else if( e == QXmppClient::XmppStreamError ) errString = "XMPP_STREAM_ERROR";
+    if( e == QXmppClient::SocketError ) errString = "Socket error. " + xmppClient->socketErrorString();
+    else if( e == QXmppClient::KeepAliveError ) errString = "Keep alive failure";
+    else if( e == QXmppClient::XmppStreamError ) errString = "Stream error. Check account settings";
 
     if( !errString.isNull() ) {
         QXmppPresence pr = xmppClient->clientPresence();

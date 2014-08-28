@@ -53,6 +53,19 @@ void EventsManager::appendStatusChange(QString accountId, QString name, QString 
   events->countWasChanged();
 }
 
+void EventsManager::appendError(QString accountId, QString name, QString errorString) {
+  // create a new EventItemModel
+  EventItemModel* item = new EventItemModel();
+  item->setData(QVariant(accountId),EventItemModel::Account);
+  item->setData(QVariant(name),EventItemModel::Name);
+  item->setData(QVariant(errorString),EventItemModel::Description);
+  item->setData(QVariant((int)EventItemModel::ConnectionError),EventItemModel::Type);
+
+  // and append it at the top of the list
+  events->insertRow(0,item);
+  events->countWasChanged();
+}
+
 void EventsManager::removeEvent(int id) {
   // assume that id is a row ID and remove it
   events->takeRow(id);

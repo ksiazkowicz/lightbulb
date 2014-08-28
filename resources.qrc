@@ -14,6 +14,7 @@
         <file alias="avatar-mask_inverse">images/avatar_mask_inverse.svg</file>
         <file alias="muc_modOverlay">images/muc_moderator.svg</file>
         <file>qml/Desktop.qml</file>
+        <file alias="errorIcon">images/errorIcon.svg</file>
     </qresource>
     <qresource prefix="/smileys">
         <file alias="angry">images/smileys/angry.png</file>

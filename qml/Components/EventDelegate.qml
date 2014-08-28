@@ -42,6 +42,7 @@ Flickable {
         case 36: // attention request
         case 37: // fav user status change
         case 38: // app update
+        case 39: return "qrc:/errorIcon"; // connection error
         default: return "";
         }
     }

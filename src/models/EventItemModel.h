@@ -51,7 +51,8 @@ public:
       MUCinvite,
       AttentionRequest,
       FavUserStatusChange,
-      AppUpdate
+      AppUpdate,
+      ConnectionError
     };
 
 public:
