@@ -128,16 +128,27 @@ Flickable {
                     wrapMode: Text.WrapAnywhere
                     elide: Text.ElideRight
                 }
-                Text {
-                    color: "#b9b9b9"
-                    text: name
+                Row {
                     anchors { left: parent.left; right: parent.right }
-                    horizontalAlignment: Text.AlignJustify
-                    font.pixelSize: 20
-                    elide: Text.ElideRight
-                    maximumLineCount: 1
+                    Text {
+                        color: "#b9b9b9"
+                        text: name
+                        width: parent.width-platformStyle.paddingSmall-dateText.paintedWidth
+                        horizontalAlignment: Text.AlignJustify
+                        font.pixelSize: 20
+                        elide: Text.ElideRight
+                        maximumLineCount: 1
+                    }
+                    Text {
+                        id: dateText
+                        text: Qt.formatDateTime(date, "~hh:mm")
+                        color: "#a9a9a9"
+                        font.pixelSize: 20
+                        horizontalAlignment: Text.AlignRight
+                        font.italic: true
+                    }
                 }
-            }
+        }
         MouseArea {
             id: maAccItem
             anchors { fill: parent }

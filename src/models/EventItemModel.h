@@ -41,7 +41,8 @@ public:
       Name,
       Type,
       Description,
-      Account
+      Account,
+      Date
     };
 
     enum EventTypes {
@@ -58,7 +59,7 @@ public:
 public:
       EventItemModel(QObject *parent = 0): ListItem(parent) {
         itemData = new QList<QVariant>();
-        for (int i=0; i<6;i++)
+        for (int i=0; i<7;i++)
           itemData->append(QVariant());
       }
 
@@ -71,6 +72,7 @@ public:
           names[Type] = "type";
           names[Description] = "description";
           names[Account] = "accountID";
+          names[Date] = "date";
           return names;
         }
 

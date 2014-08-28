@@ -1,5 +1,6 @@
 #include "EventsManager.h"
 #include <QDebug>
+#include <QDateTime>
 
 EventsManager::EventsManager(QObject *parent) :
   QObject(parent)
@@ -25,6 +26,7 @@ void EventsManager::appendUnreadMessage(QString bareJid, QString accountId, QStr
   item->setData(QVariant(name),EventItemModel::Name);
   item->setData(QVariant(description),EventItemModel::Description);
   item->setData(QVariant((int)EventItemModel::UnreadMessage),EventItemModel::Type);
+  item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
 
   // and append it at the top of the list
   events->insertRow(0,item);
@@ -47,6 +49,7 @@ void EventsManager::appendStatusChange(QString accountId, QString name, QString 
   item->setData(QVariant(name),EventItemModel::Name);
   item->setData(QVariant(description),EventItemModel::Description);
   item->setData(QVariant((int)EventItemModel::ConnectionState),EventItemModel::Type);
+  item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
 
   // and append it at the top of the list
   events->insertRow(0,item);
@@ -60,6 +63,7 @@ void EventsManager::appendError(QString accountId, QString name, QString errorSt
   item->setData(QVariant(name),EventItemModel::Name);
   item->setData(QVariant(errorString),EventItemModel::Description);
   item->setData(QVariant((int)EventItemModel::ConnectionError),EventItemModel::Type);
+  item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
 
   // and append it at the top of the list
   events->insertRow(0,item);
