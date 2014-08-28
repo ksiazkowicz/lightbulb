@@ -29,6 +29,7 @@ CommonDialog {
     id: addContact
     titleText: qsTr("Add contact")
     property string accountId;
+    property string bareJid
 
     platformInverted: main.platformInverted
     buttonTexts: [qsTr("OK"), qsTr("Cancel")]
@@ -54,6 +55,7 @@ CommonDialog {
             Label { anchors.horizontalCenter: parent.horizontalCenter; text: "JID:"; color: main.textColor}
             TextField {
                 id: addJid
+                text: bareJid
                 anchors { left: parent.left; right: parent.right }
                 placeholderText: qsTr("example@server.com")
             }

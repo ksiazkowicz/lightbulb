@@ -80,7 +80,7 @@ ContextMenu {
             platformInverted: main.platformInverted
             onClicked: {
                 xmppConnectivity.useClient(accountId).subscribe(contactJid)
-                notify.postGlobalNote(qsTr("Sent request to ")+contactName)
+                //notify.postGlobalNote(qsTr("Sent request to ")+contactName)
             }
         }
         MenuItem {
@@ -89,7 +89,7 @@ ContextMenu {
             onClicked: {
                 contactMenu.close()
                 xmppConnectivity.useClient(accountId).unsubscribe(contactJid)
-                notify.postGlobalNote(qsTr("Unsuscribed ")+contactName)
+                //notify.postGlobalNote(qsTr("Unsuscribed ")+contactName)
             }
         }
     }

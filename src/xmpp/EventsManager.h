@@ -17,6 +17,7 @@ signals:
   
 public slots:
   void appendUnreadMessage(QString bareJid, QString accountId, QString name, QString description);
+  void appendSubscription(QString accountId, QString bareJid);
   void appendStatusChange(QString accountId, QString name, QString description);
   void appendError(QString accountId, QString name, QString errorString);
 

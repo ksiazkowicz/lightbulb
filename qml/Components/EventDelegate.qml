@@ -50,7 +50,16 @@ Flickable {
     function makeAction() {
         switch (type) {
         case 32: main.openChat(accountID,name,bareJid,xmppConnectivity.getChatType(accountID,bareJid)); break;
-        case 34: return true;
+        case 34: { xmppConnectivity.useClient(accountID).acceptSubscription(bareJid); dialog.createWithProperties("qrc:/dialogs/Contact/Add",{"accountId": accountID, "bareJid": bareJid}); xmppConnectivity.events.removeEvent(bareJid,accountID,type); break; }
+        case 35: return true;
+        default: return false;
+        }
+    }
+
+    function makeAltAction() {
+        switch (type) {
+        case 32: xmppConnectivity.resetUnreadMessages(accountID,bareJid); break;
+        case 34: xmppConnectivity.useClient(accountID).rejectSubscription(bareJid); return true;
         case 35: return true;
         default: return false;
         }
@@ -64,8 +73,10 @@ Flickable {
 
     onContentXChanged: {
         wrapper.opacity = 1-(contentX/(wrapper.width))
-        if (wrapper.opacity <= 0)
+        if (wrapper.opacity <= 0) {
             xmppConnectivity.events.removeEvent(bareJid,accountID,type)
+            makeAltAction()
+        }
     }
 
     Item {
