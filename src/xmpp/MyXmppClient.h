@@ -117,9 +117,6 @@ public :
     Q_INVOKABLE bool unsubscribe (const QString bareJid) { return rosterManager->unsubscribe(bareJid); }
     Q_INVOKABLE bool acceptSubscription (const QString bareJid) { return rosterManager->acceptSubscription(bareJid); }
     Q_INVOKABLE bool rejectSubscription (const QString bareJid) { return rosterManager->refuseSubscription(bareJid); }
-	
-    /*--- chat options ---*/
-    Q_INVOKABLE void attentionSend( QString bareJid, QString resource = "" );
 
     /*----------------------------------*/
     /*--- getter/setter ---*/
@@ -180,6 +177,7 @@ signals:
     // related to XmppConnectivity class
     void updateContact(QString m_accountId,QString bareJid,QString property,int count);
     void insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine,int type,QString resource);
+    void attentionRequested(QString m_accountId, QString bareJid);
     void contactRenamed(QString jid,QString name);
 
     void connectingChanged(const QString accountId);

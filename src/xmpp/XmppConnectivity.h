@@ -104,6 +104,7 @@ public slots:
 
     void insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine, int type, QString resource);
     void pushError(QString m_accountId, QString errorString) { events->appendError(m_accountId,this->getAccountName(m_accountId),errorString); }
+    void pushAttention(QString m_accountId, QString bareJid) { events->appendAttention(m_accountId,bareJid,contacts->getPropertyByJid(m_accountId,bareJid,"name")); }
     Q_INVOKABLE QString getAvatarByJid(QString bareJid) { return lCache->getAvatarCache(bareJid); }
 
     // handling chats list

@@ -47,6 +47,7 @@ Item {
 
         temp = temp.replace("[[INFO]]","<img src='qrc:/convo/defaultSkin/infoIcon' />");
         temp = temp.replace("[[ERR]]","<img src='qrc:/convo/defaultSkin/errorIcon' />");
+        temp = temp.replace("[[ALERT]]","<img src='qrc:/convo/defaultSkin/alertIcon' />");
 
         return temp;
     }

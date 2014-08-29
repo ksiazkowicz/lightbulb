@@ -257,7 +257,8 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
         }
     }
     if (xmppMsg.isAttentionRequested()) {
-        emit insertMessage(m_accountId,bareJid_from,"[[ALERT]] [[bold]][[name]][[/bold]] requested your attention!",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss"),0,4,getResourceByJid(xmppMsg.from()));
+      emit insertMessage(m_accountId,bareJid_from,"[[ALERT]] [[bold]][[name]][[/bold]] requested your attention!",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss"),0,4,getResourceByJid(xmppMsg.from()));
+      emit attentionRequested(m_accountId,bareJid_from);
     }
     if ( !( xmppMsg.body().isEmpty() || xmppMsg.body().isNull() || bareJid_from == m_myjid ) ) {
         m_bareJidLastMessage = getBareJidByJid(xmppMsg.from());
@@ -284,6 +285,8 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
 void MyXmppClient::initPresence(const QString& bareJid, const QString& resource) {
     QXmppPresence xmppPresence = rosterManager->getPresence( bareJid, resource );
     QXmppPresence::Type statusJid = xmppPresence.type();
+
+
 
     QStringList _listResources = this->getResourcesByJid( bareJid );
     if( (_listResources.count() > 0) && (!_listResources.contains(resource)) ) {
@@ -635,30 +638,4 @@ void MyXmppClient::incomingTransfer(QXmppTransferJob *job) {
   }
 
   job->accept("F://Received files//" + job->fileName());
-}
-
-// ------------------------//
-
-void MyXmppClient::attentionSend( QString bareJid, QString resource ) {
-    qDebug() << "MyXmppClient::attentionSend(" << bareJid << ";" << resource << ")";
-    QXmppMessage xmppMsg;
-
-    QString jid_to = bareJid;
-    if( resource == "" ) {
-        jid_to += "/resource";
-    } else {
-        jid_to += "/" + resource;
-    }
-    xmppMsg.setTo( jid_to );
-
-    QString jid_from = m_myjid + "/" + xmppClient->configuration().resource();
-    xmppMsg.setFrom( jid_from );
-
-    xmppMsg.setReceiptRequested( false );
-
-    xmppMsg.setState( QXmppMessage::None );
-    xmppMsg.setType( QXmppMessage::Headline );
-    xmppMsg.setAttentionRequested( true );
-
-    xmppClient->sendPacket( xmppMsg );
 }

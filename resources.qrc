@@ -16,6 +16,7 @@
         <file>qml/Desktop.qml</file>
         <file alias="errorIcon">images/errorIcon.svg</file>
         <file alias="muc">images/muc.png</file>
+        <file alias="attention">images/attention.svg</file>
     </qresource>
     <qresource prefix="/smileys">
         <file alias="angry">images/smileys/angry.png</file>
@@ -185,5 +186,6 @@
         <file alias="defaultSkin/unreadIcon">images/convo/symMsgUnreadIcon.png</file>
         <file alias="defaultSkin/infoIcon">images/convo/infoIcon.svg</file>
         <file alias="defaultSkin/errorIcon">images/convo/errorIcon.svg</file>
+        <file alias="defaultSkin/alertIcon">images/convo/alertIcon.svg</file>
     </qresource>
 </RCC>
