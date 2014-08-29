@@ -28,6 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "listmodel.h"
 #include "msgitemmodel.h"
+#include <QDateTime>
 
 class MsgListModel : public ListModel
 {
@@ -39,6 +40,18 @@ public:
     Q_INVOKABLE void append( MsgItemModel *item ) { this->appendRow( item ); }
     Q_INVOKABLE void remove( int index ) { this->removeRow( index ); }
     Q_INVOKABLE int count() { return this->rowCount(); }
+
+    int whereShouldIPutThisCrapAnyway(QString date) {
+      MsgItemModel* message;
+      for (int i=0; i < this->rowCount(); i++) {
+          message = (MsgItemModel*)this->getElementByID(i);
+          if (message != NULL) {
+              if (QDateTime::fromString(message->gDateTime(),"dd-MM-yy hh:mm:ss") > QDateTime::fromString(date,"dd-MM-yy hh:mm:ss"))
+                return i;
+            }
+        }
+      return this->rowCount();
+    }
 
 signals:
     void messagesChanged();

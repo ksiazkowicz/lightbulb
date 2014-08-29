@@ -31,7 +31,7 @@ Item {
 
     property string date: _dateTime.substr(0,8) == Qt.formatDateTime(new Date(), "dd-MM-yy") ? _dateTime.substr(9,5) : _dateTime
 
-    anchors { left: parent.left; right: parent.right; margins: platformStyle.paddignSmall }
+    anchors { left: parent.left; right: parent.right; margins: platformStyle.paddingSmall }
 
     function parseCE(text) {
         // replaces CE with actual values

@@ -205,22 +205,43 @@ bool MyXmppClient::sendMessage(QString bareJid, QString resource, QString msgBod
       xmppMsg.setBody(msgBody);
 
     xmppMsg.setState((QXmppMessage::State)chatState);
-    xmppClient->sendPacket( xmppMsg );
 
     if (msgBody != "")
-      emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.to()),msgBody,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),1,2,"");
+      emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.to()),msgBody,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss"),1,2,"");
 
-    return true;
+    return xmppClient->sendPacket( xmppMsg );
 }
+
+bool MyXmppClient::requestAttention(QString bareJid, QString resource) {
+    if (m_stateConnect != Connected)
+      return false;
+
+    QXmppMessage xmppMsg;
+
+    if (resource == "")
+      resource = "default";
+
+    xmppMsg.setTo( bareJid + "/" + resource );
+    xmppMsg.setFrom( m_myjid + "/" + xmppClient->configuration().resource() );
+
+    xmppMsg.setAttentionRequested(true);
+
+    emit insertMessage(m_accountId,bareJid,"[[ALERT]] You requested attention from [[bold]][[name]][[/bold]] @[[date]]",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss"),0,4,resource);
+
+    return xmppClient->sendPacket( xmppMsg );
+}
+
 
 void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
 {
     QString bareJid_from = MyXmppClient::getBareJidByJid( xmppMsg.from() );
 
+    QString messageDate = xmppMsg.stamp().isNull() ? QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss") : xmppMsg.stamp().toString("dd-MM-yy hh:mm:ss");
+
     if( xmppMsg.state() == QXmppMessage::Active ) qDebug() << "Msg state is QXmppMessage::Active";
     else if( xmppMsg.state() == QXmppMessage::Inactive ) qDebug() << "Msg state is QXmppMessage::Inactive";
     else if( xmppMsg.state() == QXmppMessage::Gone ) {
-        emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.from()),"has left the conversation.",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0,4,getResourceByJid(xmppMsg.from()));
+        emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.from()),"has left the conversation.",messageDate,0,4,getResourceByJid(xmppMsg.from()));
         qDebug() << "Msg state is QXmppMessage::Gone";
     }
     else if( xmppMsg.state() == QXmppMessage::Composing ) {
@@ -234,13 +255,9 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
             emit typingChanged(m_accountId,bareJid_from, false);
             qDebug() << bareJid_from << " paused.";
         }
-    } else {
-        if (xmppMsg.isAttentionRequested()) {
-            qDebug() << "brick";
-            //qDebug() << "ZZZ: attentionRequest !!! from:" <<xmppMsg.from();
-            //msgWrapper->attention( bareJid_from, false );
-        }
-        qDebug() << "MessageWrapper::messageReceived(): xmppMsg.state():" << xmppMsg.state();
+    }
+    if (xmppMsg.isAttentionRequested()) {
+        emit insertMessage(m_accountId,bareJid_from,"[[ALERT]] [[bold]][[name]][[/bold]] requested your attention!",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss"),0,4,getResourceByJid(xmppMsg.from()));
     }
     if ( !( xmppMsg.body().isEmpty() || xmppMsg.body().isNull() || bareJid_from == m_myjid ) ) {
         m_bareJidLastMessage = getBareJidByJid(xmppMsg.from());
@@ -258,7 +275,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
             if (getMUCNick(bareJid_from) == getResourceByJid(xmppMsg.from()))
                 isMine = 1;
 
-        emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.from()),xmppMsg.body(),QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),isMine,xmppMsg.type(),getResourceByJid(xmppMsg.from()));
+        emit insertMessage(m_accountId,this->getBareJidByJid(xmppMsg.from()),xmppMsg.body(),messageDate,isMine,xmppMsg.type(),getResourceByJid(xmppMsg.from()));
     }
 }
 
@@ -538,7 +555,7 @@ QStringList MyXmppClient::getListOfParticipants(QString room) {
 
 void MyXmppClient::mucTopicChangeSlot(QString subject) {
   QXmppMucRoom* room = (QXmppMucRoom*)sender();
-  emit insertMessage(m_accountId,room->jid(),"Chatroom subject is \n" + subject,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0,4,"");
+  emit insertMessage(m_accountId,room->jid(),"Chatroom subject is \n" + subject,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss"),0,4,"");
 }
 
 void MyXmppClient::permissionsReceived(const QList<QXmppMucItem> &permissions) {
@@ -553,35 +570,35 @@ void MyXmppClient::permissionsReceived(const QList<QXmppMucItem> &permissions) {
 
 void MyXmppClient::mucErrorSlot(const QXmppStanza::Error &error) {
   QXmppMucRoom* room = (QXmppMucRoom*)sender();
-  emit insertMessage(m_accountId,room->jid(),"[[ERR]] Error " + QString::number(error.code()) + " occured",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0,4,"");
+  emit insertMessage(m_accountId,room->jid(),"[[ERR]] Error " + QString::number(error.code()) + " occured",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss"),0,4,"");
 }
 void MyXmppClient::mucKickedSlot(const QString &jid, const QString &reason) {
   QXmppMucRoom* room = (QXmppMucRoom*)sender();
   QString body = "[[ERR]] You've been [[bold]]kicked out[[/bold]] of the room";
   if (reason != "")
     body += ". Reason: [[bold]]" + reason + "[[/bold]]";
-  emit insertMessage(m_accountId,room->jid(),body,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0,4,getResourceByJid(jid));
+  emit insertMessage(m_accountId,room->jid(),body,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss"),0,4,getResourceByJid(jid));
 }
 void MyXmppClient::mucRoomNameChangedSlot(const QString &name) {
   QXmppMucRoom* room = (QXmppMucRoom*)sender();
-  emit insertMessage(m_accountId,room->jid(),"[[INFO]] Room name is \n[[bold]]" + name + "[[/bold]]",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0,4,"");
+  emit insertMessage(m_accountId,room->jid(),"[[INFO]] Room name is \n[[bold]]" + name + "[[/bold]]",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss"),0,4,"");
   emit mucNameChanged(m_accountId,room->jid(),name);
 }
 void MyXmppClient::mucYourNickChanged(const QString &nickName) {
   QXmppMucRoom* room = (QXmppMucRoom*)sender();
-  emit insertMessage(m_accountId,room->jid(),"[[INFO]] Your nickname was changed to \"" + nickName + "\"",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0,4,"");
+  emit insertMessage(m_accountId,room->jid(),"[[INFO]] Your nickname was changed to \"" + nickName + "\"",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss"),0,4,"");
 }
 void MyXmppClient::mucParticipantAddedSlot(const QString &jid) {
   QXmppMucRoom* room = (QXmppMucRoom*)sender();
   if (room->nickName() == getResourceByJid(jid) || !room->isJoined())
     return;
-  emit insertMessage(m_accountId,room->jid(),"[[INFO]] [[bold]][[mucName]][[/bold]] has joined this room.",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0,4,getResourceByJid(jid));
+  emit insertMessage(m_accountId,room->jid(),"[[INFO]] [[bold]][[mucName]][[/bold]] has joined this room.",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss"),0,4,getResourceByJid(jid));
 }
 void MyXmppClient::mucParticipantRemovedSlot(const QString &jid) {
   QXmppMucRoom* room = (QXmppMucRoom*)sender();
   if (room->nickName() == getResourceByJid(jid) || !room->isJoined())
     return;
-  emit insertMessage(m_accountId,room->jid(),"[[INFO]] [[bold]][[mucName]][[/bold]] has left this room.",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0,4,getResourceByJid(jid));
+  emit insertMessage(m_accountId,room->jid(),"[[INFO]] [[bold]][[mucName]][[/bold]] has left this room.",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss"),0,4,getResourceByJid(jid));
 }
 
 bool MyXmppClient::isActionPossible(int permissionLevel, int action) {

@@ -32,6 +32,7 @@ Menu {
     property bool isCreated: false
     property string contactJid
     property string accountId
+    property string contactResource
     property int availableActions: pageStack.currentPage.availableActions
     property bool subject: xmppConnectivity.useClient(accountId).isActionPossible(availableActions,1)
     property bool config: xmppConnectivity.useClient(accountId).isActionPossible(availableActions,2)

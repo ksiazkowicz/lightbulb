@@ -81,7 +81,7 @@ Flickable {
 
     Item {
         id: wrapper
-        height: 56
+        height: 60
         width: flick.width
         anchors.left: parent.left;
         Rectangle {
@@ -128,33 +128,39 @@ Flickable {
                 }
             }
         Column {
-            anchors { left: icon.right; leftMargin: 10; verticalCenter: notification.verticalCenter }
+            anchors { left: icon.right; leftMargin: platformStyle.paddingSmall; right: wrapper.right; rightMargin: platformStyle.paddingSmall; verticalCenter: wrapper.verticalCenter }
+            height: text.height + platformStyle.paddingSmall + descriptionRow.height
                 Text {
+                    id: text
                     color: main.textColor
                     textFormat: Text.PlainText
                     width: mainPage.width - 25 - 90
-                    maximumLineCount: 1
-                    font.pixelSize: 20
+                    maximumLineCount: 2
+                    font.pixelSize: 18
                     text: description
-                    wrapMode: Text.WrapAnywhere
+                    wrapMode: Text.Wrap
                     elide: Text.ElideRight
                 }
                 Row {
+                    id: descriptionRow
                     anchors { left: parent.left; right: parent.right }
+                    spacing: platformStyle.paddingSmall
+                    height: text.font.pixelSize
                     Text {
                         color: "#b9b9b9"
                         text: name
-                        width: parent.width-platformStyle.paddingSmall-dateText.paintedWidth
+                        width: parent.width-parent.spacing-dateText.paintedWidth
                         horizontalAlignment: Text.AlignJustify
-                        font.pixelSize: 20
+                        font.pixelSize: parent.height
                         elide: Text.ElideRight
                         maximumLineCount: 1
+                        clip: true
                     }
                     Text {
                         id: dateText
                         text: Qt.formatDateTime(date, "~hh:mm")
                         color: "#a9a9a9"
-                        font.pixelSize: 20
+                        font.pixelSize: parent.height
                         horizontalAlignment: Text.AlignRight
                         font.italic: true
                     }

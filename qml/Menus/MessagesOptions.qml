@@ -34,6 +34,7 @@ Menu {
         isCreated = true }
     property bool isCreated: false
     property string contactJid
+    property string contactResource
     property string accountId
 
     onStatusChanged: { if (isCreated && msgOptions.status === DialogStatus.Closed) { msgOptions.destroy() } }
@@ -44,6 +45,12 @@ Menu {
             platformInverted: main.platformInverted
             onClicked: dialog.create("qrc:/dialogs/Resources")
         }
+        MenuItem {
+            text: qsTr("Request attention")
+            platformInverted: main.platformInverted
+            onClicked: xmppConnectivity.useClient(accountId).requestAttention(contactJid,contactResource)
+        }
+
         MenuItem {
             text: "Close chat"
             platformInverted: main.platformInverted

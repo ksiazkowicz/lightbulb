@@ -82,9 +82,11 @@ void ContactListManager::removeContact(QString acc,QString bareJid) {
 
 QString ContactListManager::getPropertyByJid( QString accountId, QString bareJid, QString property ) {
     RosterItemModel *item = (RosterItemModel*)roster->find( accountId + ";" + bareJid );
+    if (item == 0 && property== "name") return bareJid;
     if (item != 0) {
-      if (property == "name") return item->name();
-      else if (property == "presence") return item->presence();
+      if (property == "name") {
+          return item->name() == "" ? bareJid : item->name();
+      } else if (property == "presence") return item->presence();
       else if (property == "resource") return item->resource();
       else if (property == "statusText") return item->statusText();
       } else return "(unknown)";

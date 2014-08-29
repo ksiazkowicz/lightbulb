@@ -99,6 +99,7 @@ public :
 
     /*--- send msg ---*/
     Q_INVOKABLE bool sendMessage(QString bareJid, QString resource, QString msgBody, int chatState, int msgType);
+    Q_INVOKABLE bool requestAttention(QString bareJid, QString resource = "");
 
     /*--- info by jid ---*/
     Q_INVOKABLE QStringList getResourcesByJid (QString bareJid) { return rosterManager->getResources(bareJid); }

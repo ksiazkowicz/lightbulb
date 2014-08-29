@@ -237,7 +237,7 @@ Page {
                 if (chatType == 3) {
                     menuPath = "qrc:/menus/MucOptions"
                 }
-                dialog.createWithProperties(menuPath,{"accountId":accountId,"contactJid":contactJid})
+                dialog.createWithProperties(menuPath,{"accountId":accountId,"contactJid":contactJid,"contactResource":contactResource})
             }
         }
     }

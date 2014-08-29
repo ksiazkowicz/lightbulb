@@ -156,9 +156,18 @@ bool XmppConnectivity::resetSettings() { return QFile::remove(lSettings->confFil
 
 // handling stuff from MyXmppClient
 void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine, int type, QString resource) {
+    QString name;
+    if (type != 3)
+      name = this->getPropertyByJid(m_accountId,"name",bareJid);
+    else
+      name = resource + "@" + bareJid.split('@')[0];
+
     if (mine == 0 && type != 4) {
-      emit notifyMsgReceived(this->getPropertyByJid(m_accountId,"name",bareJid),bareJid,body.left(30),m_accountId);
-      events->appendUnreadMessage(bareJid,m_accountId,getPropertyByJid(m_accountId,"name",bareJid),body.left(30));
+      emit notifyMsgReceived(name,bareJid,body.left(30),m_accountId);
+      if (body.length() > 30)
+        events->appendUnreadMessage(bareJid,m_accountId,name,body.left(30) + "...");
+      else
+        events->appendUnreadMessage(bareJid,m_accountId,name,body);
     }
 
     body = body.replace(">", "&gt;");  //fix for > stuff
@@ -173,7 +182,9 @@ void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString
 
     if (!cachedMessages->contains(bareJid)) cachedMessages->insert(bareJid,new MsgListModel());
     MsgItemModel* message = new MsgItemModel(body,date,mine,type,resource,msgUnreadState);
-    cachedMessages->value(bareJid)->append(message);
+    cachedMessages->value(bareJid)->insertRow(cachedMessages->value(bareJid)->whereShouldIPutThisCrapAnyway(date),message);
+
+    qDebug() << date;
 
     if (type != 4 && type != 3)
       dbWorker->executeQuery(QStringList() << "insertMessage" << m_accountId << bareJid << body << date << QString::number(mine));
@@ -217,7 +228,7 @@ void XmppConnectivity::openChat(QString accountId, QString bareJid) {
       }
 
     chats->append(chat);
-    emit insertMessage(accountId,bareJid,message,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0,4,"");
+    emit insertMessage(accountId,bareJid,message,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss"),0,4,"");
     qDebug() << "XmppConnectivity::openChat(): appending"<< qPrintable(bareJid) << "from account" << accountId << "to chats list.";
     emit chatsChanged();
   }
@@ -241,7 +252,7 @@ void XmppConnectivity::closeChat(QString accountId, QString bareJid) {
     if (!cachedMessages->contains(bareJid))
       cachedMessages->insert(bareJid,new MsgListModel());
 
-    MsgItemModel* message = new MsgItemModel("[[INFO]] Chat closed @[[date]]",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm"),0,4,"",false);
+    MsgItemModel* message = new MsgItemModel("[[INFO]] Chat closed @[[date]]",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss"),0,4,"",false);
     cachedMessages->value(bareJid)->append(message);
   } else return;
 

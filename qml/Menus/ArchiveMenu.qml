@@ -34,6 +34,7 @@ Menu {
         isCreated = true }
     property bool isCreated: false
     property string contactJid
+    property string contactResource
     property string accountId
 
     onStatusChanged: { if (isCreated && archiveOptions.status === DialogStatus.Closed) { archiveOptions.destroy() } }
