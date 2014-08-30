@@ -28,10 +28,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 UpdateManager::UpdateManager(QObject *parent) :
   QObject(parent)
 {
-  httpStuff = new QNetworkAccessManager(this);
+  httpStuff = new QNetworkAccessManager(new QThread(this));
   connect(httpStuff,SIGNAL(finished(QNetworkReply*)),this,SLOT(dataReceived(QNetworkReply*)));
 
-  httpStuff->moveToThread(new QThread());
   updateAvailable = false;
 }
 

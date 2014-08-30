@@ -39,14 +39,7 @@ MyXmppClient::MyXmppClient() : QObject(0) {
     m_keepAlive = 60;
 
     xmppClient->versionManager().setClientName("Lightbulb");
-
-    // so here is an interesting thing. Qt 4.8 handles my define as const char[4] while
-    // Qt 5 thinks it's double. Here is a quick workaround for this stupid issue.
-    #if QT_VERSION < 0x050000
     xmppClient->versionManager().setClientVersion(VERSION);
-    #else
-    xmppClient->versionManager().setClientVersion(QString::number(VERSION));
-    #endif
 
     rosterManager = 0;
     QSettings temp(QDir::currentPath() + QDir::separator() + "Settings.conf",QSettings::NativeFormat);
@@ -494,9 +487,9 @@ QString MyXmppClient::getBareJidByJid( const QString &jid ) {
 }
 
 QString MyXmppClient::getResourceByJid( const QString &jid ) {
-  if (jid.indexOf('/') >= 0)
-    return jid.split('/')[1];
-  else return "";
+  if (jid.indexOf('/') >= 0) {
+      return jid.right(jid.length()-(jid.split('/')[0].length()+1));
+  } else return "";
 }
 
 

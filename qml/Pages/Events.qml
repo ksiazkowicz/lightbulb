@@ -1,4 +1,4 @@
-import QtQuick 1.1
+import QtQuick 2.0
 import com.nokia.symbian 1.1
 import lightbulb 1.0
 import "../Components"
@@ -6,7 +6,6 @@ import "../Components"
 Page {
     id: mainPage
     property string pageName: "Events"
-    orientationLock: 1
 
     Connections {
         target: xmppConnectivity

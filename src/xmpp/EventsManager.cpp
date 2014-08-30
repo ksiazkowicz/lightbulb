@@ -142,10 +142,9 @@ void EventsManager::appendUpdate(bool updateAvailable, QString version, QString 
   item->setData(QVariant("System"),EventItemModel::Name);
 
   if (updateAvailable) {
-      qDebug() << "update available";
     item->setData(QVariant("Update to <b>"+version+"</b> is available (" + date + "). <b>Tap to open</b>."),EventItemModel::Description);
   } else {
-    item->setData(QVariant("Version is up to date. ^^"),EventItemModel::Description);
+    item->setData(QVariant("Lightbulb is up to date. ^^"),EventItemModel::Description);
   }
 
   item->setData(QVariant((int)EventItemModel::AppUpdate),EventItemModel::Type);
