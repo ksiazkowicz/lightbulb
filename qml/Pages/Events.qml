@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 1.1
 import com.nokia.symbian 1.1
 import lightbulb 1.0
 import "../Components"

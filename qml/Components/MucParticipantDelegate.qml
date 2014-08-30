@@ -26,12 +26,37 @@ Item {
         visible: xmppConnectivity.getMUCParticipantAffiliationName(affiliation) == "admin"
     }
     Flickable {
+        id: flick
         flickableDirection: Flickable.HorizontalFlick
         interactive: (kick || permission)
         boundsBehavior: Flickable.DragOverBounds
         height: 48
         width: mucPartDelegate.width
         contentWidth: wrapper.width + buttonRow.width+10
+
+        NumberAnimation {
+            id: animation
+            target: flick
+            property: "contentX"
+            to: 1.0
+            duration: 250
+            easing.type: Easing.Linear
+            running: false
+        }
+
+        onMovingChanged: {
+            if (!flicking && !moving) {
+                if ((contentX/buttonRow.width)) >= 0.5) {
+                    animation.to = wrapper.width;
+                    animation.from = contentX;
+                    animation.running = true;
+                } else {
+                    animation.to = 0;
+                    animation.from = contentX;
+                    animation.running = true;
+                }
+            }
+        }
 
         onContentXChanged: partName.opacity = 1-(contentX/buttonRow.width)
 

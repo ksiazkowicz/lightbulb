@@ -123,8 +123,12 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     #else
     // Qt5 cool stuff
     QQmlApplicationEngine engine;
-    /*engine.setProperty("emoticon",&parser);
-    engine.setProperty("appVersion",VERSION);*/
+    engine.rootContext()->setContextProperty("emoticon",&parser);
+    engine.rootContext()->setContextProperty("appVersion",VERSION);
+    engine.rootContext()->setContextProperty("migration",&migration);
+    engine.rootContext()->setContextProperty("updater",&updater);
+    engine.rootContext()->setContextProperty("settings",&settings);
+    engine.rootContext()->setContextProperty("xmppConnectivity",&xmpp);
     engine.load(QUrl(QStringLiteral("qrc:///qml/Desktop.qml")));
     #endif
     return app.exec();

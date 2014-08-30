@@ -38,6 +38,30 @@ Flickable {
             xmppConnectivity.closeChat(account,jid)
     }
 
+    NumberAnimation {
+        id: animation
+        target: flick
+        property: "contentX"
+        to: 1.0
+        duration: 250
+        easing.type: Easing.Linear
+        running: false
+    }
+
+    onMovingChanged: {
+        if (!flicking && !moving) {
+            if ((contentX/(wrapper.width)) >= 0.5) {
+                animation.to = wrapper.width;
+                animation.from = contentX;
+                animation.running = true;
+            } else {
+                animation.to = 0;
+                animation.from = contentX;
+                animation.running = true;
+            }
+        }
+    }
+
     Item {
         id: wrapper
         height: 56

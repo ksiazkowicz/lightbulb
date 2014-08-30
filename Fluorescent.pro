@@ -24,7 +24,7 @@ QT += declarative network sql
 TEMPLATE = app
 
 VERSION = 0.4.0
-DEFINES += VERSION=\"$$VERSION\"
+DEFINES += VERSION=\"\\\"$$VERSION\\\"\"
 
 include(qmlpp.pri)
 

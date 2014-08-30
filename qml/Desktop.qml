@@ -76,8 +76,8 @@ ApplicationWindow {
         }
     }
 
-    XmppConnectivity    {
-        id: xmppConnectivity
+    Connections {
+        target: xmppConnectivity
         onUnreadCountChanged: vars.globalUnreadCount = vars.globalUnreadCount+delta
         onXmppErrorHappened: if (settings.gBool("behavior", "reconnectOnError"))
                                 dialog.createWithProperties("qrc:/dialogs/Status/Reconnect",{"accountId": accountId})
@@ -92,21 +92,28 @@ ApplicationWindow {
                 dialog.createWithProperties("qrc:/dialogs/MUC/Join",{"accountId":accountId,"mucJid":bareJid})
         }
     }
-	
-    Settings {
-        id: settings
+
+    Connections {
+        target: settings
         onAccountAdded: xmppConnectivity.accountAdded(accId)
         onAccountRemoved: xmppConnectivity.accountRemoved(accId)
         onAccountEdited: xmppConnectivity.accountModified(accId)
+    }
+
+    Connections {
+        target: updater
+        onUpdateFound: xmppConnectivity.pushUpdate(version, date)
+        onVersionUpToDate: xmppConnectivity.pushNoUpdate()
+        onErrorOccured: xmppConnectivity.pushSystemError("Update check failed. "+errorString)
     }
 
     NetworkManager  {
         id: network
         currentIAP: settings.gInt("behavior","internetAccessPoint");
     }
+
     ListModel           { id: listModelResources }
     Notifications       { id: notify }
-    MigrationManager    { id: migration }
 
     /************************( stuff to do when running this app )*****************************/
     Component.onCompleted: {

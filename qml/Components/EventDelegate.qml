@@ -29,7 +29,6 @@ Flickable {
     id: flick
     height: 64
     flickableDirection: Flickable.HorizontalFlick
-    flickDeceleration: 10
     boundsBehavior: Flickable.DragOverBounds
     contentWidth: wrapper.width *2
 
@@ -77,6 +76,30 @@ Flickable {
         if (wrapper.opacity <= 0) {
             xmppConnectivity.events.removeEvent(bareJid,accountID,type)
             makeAltAction()
+        }
+    }
+
+    NumberAnimation {
+        id: animation
+        target: flick
+        property: "contentX"
+        to: 1.0
+        duration: 250
+        easing.type: Easing.Linear
+        running: false
+    }
+
+    onMovingChanged: {
+        if (!flicking && !moving) {
+            if ((contentX/(wrapper.width)) >= 0.5) {
+                animation.to = wrapper.width;
+                animation.from = contentX;
+                animation.running = true;
+            } else {
+                animation.to = 0;
+                animation.from = contentX;
+                animation.running = true;
+            }
         }
     }
 
