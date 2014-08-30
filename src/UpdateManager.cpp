@@ -63,33 +63,20 @@ void UpdateManager::dataReceived(QNetworkReply *reply) {
 
 void UpdateManager::compareVersions() {
   // get versions to compare
-  QString clientVersion = VERSION;
-  QString latestVersion = getLatestVersion();
+  QStringList clientVersion = QString(VERSION).split('.');
+  QStringList latestVersion = getLatestVersion().split('.');
   QString releaseDate = getUpdateDate().toString("dd-MM-yy");
 
-  // compare major version
-  if (clientVersion.split('.')[0].toInt() < latestVersion.split('.')[0].toInt())
-      updateAvailable = true;
+  // iterate through version number
+  for (int i=0; i < clientVersion.count(); i++) {
+      // check if version is lower than current one
+      if (clientVersion[i].toInt() < latestVersion[i].toInt())
+        updateAvailable = true;
 
-  // if version on the server is older, return
-  if (clientVersion.split('.')[0].toInt() > latestVersion.split('.')[0].toInt())
-    return;
-
-  // compare minor version
-  if (clientVersion.split('.')[1].toInt() < latestVersion.split('.')[1].toInt())
-      updateAvailable = true;
-
-  // if version on the server is older, return
-  if (clientVersion.split('.')[1].toInt() > latestVersion.split('.')[1].toInt())
-    return;
-
-  // compare maintenance version
-  if (clientVersion.split('.')[2].toInt() < latestVersion.split('.')[2].toInt())
-      updateAvailable = true;
-
-  // if version on the server is older, return
-  if (clientVersion.split('.')[2].toInt() > latestVersion.split('.')[2].toInt())
-    return;
+      // version on the server is older, return
+      if (clientVersion[i].toInt() > latestVersion[i].toInt())
+        return;
+  }
 
   // compare release date (remember to update this every build)
   if (getUpdateDate() > QDateTime::fromString("30-08-2014","dd-MM-yyyy"))
@@ -97,7 +84,7 @@ void UpdateManager::compareVersions() {
 
   // emit signal
   if (updateAvailable == true)
-    emit updateFound(latestVersion,releaseDate);
+    emit updateFound(latestVersion.join("."),releaseDate);
   else
     emit versionUpToDate();
 }
