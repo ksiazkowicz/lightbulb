@@ -50,6 +50,14 @@ Item {
         }
 
         CheckBox {
+            id: disableUpdateChecker
+            text: qsTr("Disable update checker")
+            checked: settings.gBool("behavior","disableUpdateChecker")
+            platformInverted: main.platformInverted
+            onCheckedChanged: settings.sBool(checked,"behavior","disableUpdateChecker")
+        }
+
+        CheckBox {
             id: disableEmoticons
             text: qsTr("Disable emoticons")
             checked: vars.areEmoticonsDisabled

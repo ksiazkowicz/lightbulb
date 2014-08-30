@@ -21,6 +21,7 @@ public slots:
   void appendSubscription(QString accountId, QString bareJid);
   void appendStatusChange(QString accountId, QString name, QString description);
   void appendError(QString accountId, QString name, QString errorString);
+  void appendUpdate(bool updateAvailable = true, QString version = "", QString date = "");
 
   Q_INVOKABLE void removeEvent(int id);
   Q_INVOKABLE void removeEvent(QString bareJid, QString accountId,int type);

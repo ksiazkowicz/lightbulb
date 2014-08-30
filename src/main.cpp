@@ -57,6 +57,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "database/DatabaseManager.h"
 #include "xmpp/XmppConnectivity.h"
 #include "EmoticonParser.h"
+#include "UpdateManager.h"
 #include "avkon/NetworkManager.h"
 #include "database/MigrationManager.h"
 #include "xmpp/EventsManager.h"
@@ -72,10 +73,12 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     // expose C++ classes to QML
     qmlRegisterType<Settings>("lightbulb", 1, 0, "Settings" );
     qmlRegisterType<QMLVCard>("lightbulb", 1, 0, "XmppVCard" );
-    qmlRegisterType<XmppConnectivity>("lightbulb",1,0,"XmppConnectivity");
+    qmlRegisterType<NetworkManager>("lightbulb", 1, 0, "NetworkManager" );
 
-    qmlRegisterType<NetworkManager>("lightbulb",1,0,"NetworkManager");
-    qmlRegisterType<MigrationManager>("lightbulb",1,0,"MigrationManager");
+    Settings settings;
+    XmppConnectivity xmpp;
+    MigrationManager migration;
+    UpdateManager updater;
 
     qmlRegisterUncreatableType<SqlQueryModel>("lightbulb", 1, 0, "SqlQuery", "");
     qmlRegisterUncreatableType<AccountsListModel>("lightbulb", 1, 0, "AccountsList", "Use settings.accounts instead");
@@ -104,6 +107,10 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     #if QT_VERSION < 0x050000
     viewer.rootContext()->setContextProperty("emoticon",&parser);
     viewer.rootContext()->setContextProperty("appVersion",VERSION);
+    viewer.rootContext()->setContextProperty("migration",&migration);
+    viewer.rootContext()->setContextProperty("updater",&updater);
+    viewer.rootContext()->setContextProperty("settings",&settings);
+    viewer.rootContext()->setContextProperty("xmppConnectivity",&xmpp);
     viewer.setAttribute(Qt::WA_OpaquePaintEvent);
     viewer.setAttribute(Qt::WA_NoSystemBackground);
     viewer.viewport()->setAttribute(Qt::WA_OpaquePaintEvent);

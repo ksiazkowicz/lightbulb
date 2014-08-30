@@ -60,9 +60,9 @@ void NetworkManager::openConnection() {
 }
 
 bool NetworkManager::getConnectionStatus() {
-  if (m_session)
+  if (m_session != NULL) {
     return m_session->isOpen();
-  else return false;
+  } else return false;
 }
 
 void NetworkManager::connectionStatusChanged() {

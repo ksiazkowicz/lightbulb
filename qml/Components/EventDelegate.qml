@@ -41,7 +41,7 @@ Flickable {
         case 35: // muc invite
         case 36: return "qrc:/attention"; // attention request
         case 37: // fav user status change
-        case 38: // app update
+        case 38: return "qrc:/updateIcon"; // app update
         case 39: return "qrc:/errorIcon"; // connection error
         default: return "";
         }
@@ -52,6 +52,7 @@ Flickable {
         case 32: main.openChat(accountID,name,bareJid,xmppConnectivity.getChatType(accountID,bareJid)); break;
         case 34: { xmppConnectivity.useClient(accountID).acceptSubscription(bareJid); dialog.createWithProperties("qrc:/dialogs/Contact/Add",{"accountId": accountID, "bareJid": bareJid}); xmppConnectivity.events.removeEvent(bareJid,accountID,type); break; }
         case 35: return true;
+        case 38: if (updater.isUpdateAvailable) dialog.createWithProperties("qrc:/menus/UrlContext", {"url": updater.updateUrl}); break;
         default: return false;
         }
     }
@@ -133,7 +134,6 @@ Flickable {
                 Text {
                     id: text
                     color: main.textColor
-                    textFormat: Text.PlainText
                     width: mainPage.width - 25 - 90
                     maximumLineCount: 2
                     font.pixelSize: 18

@@ -47,70 +47,71 @@ CommonDialog {
 
     onStatusChanged: if (isCreated && statusDialog.status === DialogStatus.Closed) statusDialog.destroy()
 
-        onButtonClicked: {
-            var ret = ""
+    onButtonClicked: {
+        var ret = ""
 
-            switch (selectionDialog.selectedIndex) {
-                case 0: ret = XmppClient.Online; break;
-                case 1: ret = XmppClient.Chat; break;
-                case 2: ret = XmppClient.Away; break;
-                case 3: ret = XmppClient.XA; break;
-                case 4: ret = XmppClient.DND; break;
-                case 5: ret = XmppClient.Offline; break;
-                default: ret = XmppClient.Unknown; break;
-            }
-
-            if (!network.connectionStatus)
-                network.openConnection()
-
-            xmppConnectivity.useClient(accountId).setPresence(ret, wrapperTextEdit.text)
-            vars.lastStatus = wrapperTextEdit.text
-            vars.lastUsedStatus = selectionDialog.selectedIndex
-
-            if (storeStatus) settings.sStr(wrapperTextEdit.text,"behavior","lastStatusText")
-            else settings.sStr("","behavior","lastStatusText")
+        switch (selectionDialog.selectedIndex) {
+            case 0: ret = XmppClient.Online; break;
+            case 1: ret = XmppClient.Chat; break;
+            case 2: ret = XmppClient.Away; break;
+            case 3: ret = XmppClient.XA; break;
+            case 4: ret = XmppClient.DND; break;
+            case 5: ret = XmppClient.Offline; break;
+            default: ret = XmppClient.Unknown; break;
         }
 
-        content: Column {
-            width: parent.width-20
-            height: content.height
-            anchors.horizontalCenter: parent.horizontalCenter
+        if (!network.connectionStatus)
+            network.openConnection()
 
-            spacing: 5
+        xmppConnectivity.useClient(accountId).setPresence(ret, wrapperTextEdit.text)
 
-            SelectionListItem {
-                id: statusSelection
+        vars.lastStatus = wrapperTextEdit.text
+        vars.lastUsedStatus = selectionDialog.selectedIndex
+
+        if (storeStatus) settings.sStr(wrapperTextEdit.text,"behavior","lastStatusText")
+        else settings.sStr("","behavior","lastStatusText")
+    }
+
+    content: Column {
+        width: parent.width-20
+        height: content.height
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        spacing: 5
+
+        SelectionListItem {
+            id: statusSelection
+            platformInverted: main.platformInverted
+            subTitle: selectionDialog.selectedIndex >= 0
+                      ? selectionDialog.model.get(selectionDialog.selectedIndex).name
+                      : "Online, Chatty, Away..."
+            anchors { left: parent.left; right: parent.right }
+            title: "Status"
+
+            onClicked: selectionDialog.open()
+
+            SelectionDialog {
+                id: selectionDialog
+                titleText: "Available options"
+                selectedIndex: -1
                 platformInverted: main.platformInverted
-                subTitle: selectionDialog.selectedIndex >= 0
-                          ? selectionDialog.model.get(selectionDialog.selectedIndex).name
-                          : "Online, Chatty, Away..."
-                anchors { left: parent.left; right: parent.right }
-                title: "Status"
-
-                onClicked: selectionDialog.open()
-
-                SelectionDialog {
-                    id: selectionDialog
-                    titleText: "Available options"
-                    selectedIndex: -1
-                    platformInverted: main.platformInverted
-                    model: ListModel {
-                        ListElement { name: "Online" }
-                        ListElement { name: "Chatty" }
-                        ListElement { name: "Away" }
-                        ListElement { name: "Extended Away" }
-                        ListElement { name: "Do not disturb" }
-                        ListElement { name: "Offline" }
-                    }
+                model: ListModel {
+                    ListElement { name: "Online" }
+                    ListElement { name: "Chatty" }
+                    ListElement { name: "Away" }
+                    ListElement { name: "Extended Away" }
+                    ListElement { name: "Do not disturb" }
+                    ListElement { name: "Offline" }
                 }
             }
+        }
 
-            TextField {
-                id: wrapperTextEdit
-                height: 50
-                anchors {left: parent.left; right: parent.right }
-                placeholderText: qsTr("Status text")
-                text: vars.lastStatus
-            }
+        TextField {
+            id: wrapperTextEdit
+            height: 50
+            anchors {left: parent.left; right: parent.right }
+            placeholderText: qsTr("Status text")
+            text: vars.lastStatus
         }
     }
+}

@@ -23,7 +23,7 @@
 QT += declarative network sql
 TEMPLATE = app
 
-VERSION = 0.4
+VERSION = 0.4.0
 DEFINES += VERSION=\"$$VERSION\"
 
 include(qmlpp.pri)
@@ -120,7 +120,8 @@ SOURCES += src/main.cpp \
     src/xmpp/ContactListManager.cpp \
     src/avkon/NetworkManager.cpp \
     src/database/MigrationManager.cpp \
-    src/xmpp/EventsManager.cpp
+    src/xmpp/EventsManager.cpp \
+    src/UpdateManager.cpp
 
 HEADERS += src/xmpp/MyXmppClient.h \
     src/cache/MyCache.h \
@@ -150,7 +151,8 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/models/ParticipantItemModel.h \
     src/models/EventListModel.h \
     src/models/EventItemModel.h \
-    src/xmpp/EventsManager.h
+    src/xmpp/EventsManager.h \
+    src/UpdateManager.h
 
 DEPLOYMENT += addFiles
 

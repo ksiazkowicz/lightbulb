@@ -86,38 +86,48 @@ PageStackWindow {
         }
     }
 
-    XmppConnectivity    {
-        id: xmppConnectivity
+    Connections    {
+        target: xmppConnectivity
         onUnreadCountChanged: vars.globalUnreadCount = vars.globalUnreadCount+delta
         onXmppErrorHappened: if (settings.gBool("behavior", "reconnectOnError"))
-                                dialog.createWithProperties("qrc:/dialogs/Status/Reconnect",{"accountId": accountId})
+                                 dialog.createWithProperties("qrc:/dialogs/Status/Reconnect",{"accountId": accountId})
         onMucInvitationReceived: {
             if (avkon.displayAvkonQueryDialog("Invitation (" + getAccountName(accountId) + ")", invSender + " invites you to chatroom " + bareJid + qsTr(". Do you want to join?")))
                 dialog.createWithProperties("qrc:/dialogs/MUC/Join",{"accountId":accountId,"mucJid":bareJid})
         }
     }
-	
-    Settings {
-        id: settings
+
+    Connections {
+        target: settings
         onAccountAdded: xmppConnectivity.accountAdded(accId)
         onAccountRemoved: xmppConnectivity.accountRemoved(accId)
         onAccountEdited: xmppConnectivity.accountModified(accId)
+    }
+
+    Connections {
+        target: updater
+        onUpdateFound: xmppConnectivity.pushUpdate(version, date)
+        onVersionUpToDate: xmppConnectivity.pushNoUpdate()
+        onErrorOccured: xmppConnectivity.pushSystemError("Update check failed. "+errorString)
     }
 
     NetworkManager  {
         id: network
         currentIAP: settings.gInt("behavior","internetAccessPoint");
     }
+
     ListModel           { id: listModelResources }
     Clipboard           { id: clipboard }
     Notifications       { id: notify }
-    MigrationManager    { id: migration }
 
     /************************( stuff to do when running this app )*****************************/
     Component.onCompleted: {
         avkon.switchToApp = settings.gBool("behavior","linkInDiscrPopup")
-		xmppConnectivity.offlineContactsVisibility = !vars.hideOffline
+        xmppConnectivity.offlineContactsVisibility = !vars.hideOffline
         avkon.setAppHiddenState(settings.gBool("behavior","hideFromTaskMgr"));
+
+        if (!settings.gBool("behavior","disableUpdateChecker"))
+            updater.checkForUpdate();
 
         if (!settings.gBool("main","not_first_run")) {
             if (migration.isMigrationPossible()) {
@@ -168,16 +178,16 @@ PageStackWindow {
                 maximumLineCount: 1
                 color: "white"
                 font.pointSize: 6
-             }
-             Rectangle {
+            }
+            Rectangle {
                 width: 25
                 anchors { top: parent.top; bottom: parent.bottom; right: parent.right }
                 rotation: -90
                 gradient: Gradient {
-                            GradientStop { position: 0.0; color: "#00000000" }
-                            GradientStop { position: 1.0; color: "#ff000000" }
-                        }
-             }
+                    GradientStop { position: 0.0; color: "#00000000" }
+                    GradientStop { position: 1.0; color: "#ff000000" }
+                }
+            }
         }
         Connections {
             target: pageStack
