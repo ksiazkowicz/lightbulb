@@ -46,7 +46,7 @@ Item {
 
         onMovingChanged: {
             if (!flicking && !moving) {
-                if ((contentX/buttonRow.width)) >= 0.5) {
+                if ((contentX/buttonRow.width) >= 0.5) {
                     animation.to = wrapper.width;
                     animation.from = contentX;
                     animation.running = true;
@@ -82,11 +82,13 @@ Item {
             ToolButton {
                 text: "Kick"
                 enabled: kick
+                platformInverted: main.platformInverted
                 onClicked: dialog.createWithProperties("qrc:/dialogs/MUC/Query",{"contactJid":contactJid,"accountId":accountId,"userJid":bareJid,"titleText":qsTr("Kick reason (optional)"),"actionType":1})
             }
             ToolButton {
                 text: "Ban"
                 enabled: permission
+                platformInverted: main.platformInverted
                 onClicked: dialog.createWithProperties("qrc:/dialogs/MUC/Query",{"contactJid":contactJid,"accountId":accountId,"userJid":bareJid,"titleText":qsTr("Ban reason (optional)"),"actionType":2})
             }
         }
