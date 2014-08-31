@@ -50,7 +50,7 @@ public:
     this->setRoleNames(names);
   }
 
-  Q_INVOKABLE void append( RosterItemModel *item ) { qDebug() << this->columnCount(); this->appendRow((QStandardItem*)item); }
+  Q_INVOKABLE void append( RosterItemModel *item ) { this->appendRow((QStandardItem*)item); }
   Q_INVOKABLE int count() { return this->rowCount(); }
 
   RosterItemModel* find(const QString &id) const {

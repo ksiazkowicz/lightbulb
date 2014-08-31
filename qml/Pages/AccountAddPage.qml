@@ -258,6 +258,7 @@ Page {
 
         ToolButton {
             iconSource: main.platformInverted ? "qrc:/toolbar/ok_inverse" : "qrc:/toolbar/ok"
+            enabled: tiJid.text !== "" && tiPass.text !== "" && selectionDialog.selectedIndex != -1
             onClicked: {
                 var grid,name,icon,jid,pass,goonline,resource,host,port;
                 if (accGRID != "") grid = accGRID;
@@ -283,7 +284,6 @@ Page {
                 resource = tiResource.text
                 host = tiHost.text
                 port = tiPort.text
-                if( jid=="" || pass=="" ) return
 
                 settings.setAccount( grid, name, icon, jid, pass, goonline, resource, host, port,  true )
                 pageStack.pop()

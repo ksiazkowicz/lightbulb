@@ -46,15 +46,12 @@ bool RosterItemFilter::filterAcceptsRow(int source_row, const QModelIndex& sourc
       return name.contains(filterRegExp().pattern(),Qt::CaseInsensitive);
     }
 
-  if(m_showOfflineContacts)
+  if(m_showOfflineContacts || sourceModel()->data(index, RosterItemModel::IsFavorite).toBool())
     return true;
 
   QString presenceType = sourceModel()->data(index, RosterItemModel::Presence).toString();
 
-  if(presenceType != "qrc:/presence/offline")
-    return true;
-  else
-    return false;
+  return presenceType != "qrc:/presence/offline";
 }
 
 void RosterItemFilter::setShowOfflineContacts(bool showOfflineContacts)

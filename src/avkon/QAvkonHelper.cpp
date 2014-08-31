@@ -39,6 +39,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QUrl>
 #include <QProcess>
 #include <QTimer>
+#include <QFileDialog>
 
 #include <coreapplicationuisdomainpskeys.h> //keys for RProperty
 #include <e32property.h> //http://katastrophos.net/symbian-dev/GUID-C6E5F800-0637-419E-8FE5-1EBB40E725AA/GUID-C4776034-D190-3FC4-AF45-C7F195093AC3.html
@@ -155,6 +156,12 @@ QString QAvkonHelper::openFileSelectionDlg() {
     }
 }
 
+QString QAvkonHelper::openFolderSelectionDlg(QString lastDir) {
+  // Show system dialog for folder selection
+  QString dirname = QFileDialog::getExistingDirectory(0,"Change folder", lastDir,
+      QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+  return dirname;
+}
 
 void QAvkonHelper::openDefaultBrowser(const QUrl &url) const {
     _LIT(KBrowserPrefix, "4 " );

@@ -129,7 +129,6 @@ Item {
         }
 
         Text {
-            id: rmvDbText
             width: parent.width
             anchors { left: parent.left; right: parent.right }
             color: main.textColor
@@ -140,7 +139,6 @@ Item {
         }
 
         Button {
-            id: cleanAvCacheBtn
             text: "Clean avatar cache"
             platformInverted: main.platformInverted
             anchors { left: parent.left; right: parent.right }
@@ -153,12 +151,38 @@ Item {
         }
 
         Text {
-            id: cleanAvCacheText
             width: parent.width
             color: main.textColor
             anchors { left: parent.left; right: parent.right }
             font.pixelSize: platformStyle.fontSizeSmall
             text: "Useful option if avatars are not displayed properly, or cache is filled with useless files."
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignJustify
+        }
+
+        Button {
+            id: moveFolderSelectionDlg
+            text: "Change cache directory"
+            platformInverted: main.platformInverted
+            anchors { left: parent.left; right: parent.right }
+            onClicked: {
+                var cacheFolder = avkon.openFolderSelectionDlg(settings.gStr("paths","cache"));
+
+                settings.sStr(cacheFolder,"paths","cache")
+                if (cacheFolder != "")
+                    cacheDirText.text = "Currently used cache folder is " + settings.gStr("paths","cache")
+                else
+                    cacheDirText.text = "Not using custom cache folder.";
+            }
+        }
+
+        Text {
+            id: cacheDirText
+            width: parent.width
+            color: main.textColor
+            anchors { left: parent.left; right: parent.right }
+            font.pixelSize: platformStyle.fontSizeSmall
+            text: settings.gStr("paths","cache") != "" ? "Currently used cache folder is " + settings.gStr("paths","cache") : "Not using custom cache folder."
             wrapMode: Text.WordWrap
             horizontalAlignment: Text.AlignJustify
         }

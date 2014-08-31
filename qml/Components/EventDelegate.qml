@@ -51,9 +51,11 @@ Flickable {
     function makeAction() {
         switch (type) {
         case 32: main.openChat(accountID,name,bareJid,xmppConnectivity.getChatType(accountID,bareJid)); break;
-        case 34: { xmppConnectivity.useClient(accountID).acceptSubscription(bareJid); dialog.createWithProperties("qrc:/dialogs/Contact/Add",{"accountId": accountID, "bareJid": bareJid}); xmppConnectivity.events.removeEvent(bareJid,accountID,type); break; }
+        case 34: { xmppConnectivity.useClient(accountID).acceptSubscription(bareJid); dialog.createWithProperties("qrc:/dialogs/Contact/Add",{"accountId": accountID, "bareJid": bareJid}); xmppConnectivity.events.removeEvent(index); break; }
         case 35: return true;
         case 38: if (updater.isUpdateAvailable) dialog.createWithProperties("qrc:/menus/UrlContext", {"url": updater.updateUrl}); break;
+        case 40:
+        case 41: xmppConnectivity.useClient(accountID).acceptTransfer(transferJob); break;
         default: return false;
         }
     }
@@ -63,6 +65,8 @@ Flickable {
         case 32: xmppConnectivity.resetUnreadMessages(accountID,bareJid); break;
         case 34: xmppConnectivity.useClient(accountID).rejectSubscription(bareJid); return true;
         case 35: return true;
+        case 40:
+        case 41: xmppConnectivity.useClient(accountID).abortTransfer(transferJob); break;
         default: return false;
         }
     }
@@ -76,8 +80,8 @@ Flickable {
     onContentXChanged: {
         wrapper.opacity = 1-(contentX/(wrapper.width))
         if (wrapper.opacity <= 0) {
-            xmppConnectivity.events.removeEvent(bareJid,accountID,type)
             makeAltAction()
+            xmppConnectivity.events.removeEvent(index)
         }
     }
 

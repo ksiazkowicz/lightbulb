@@ -171,6 +171,10 @@ public :
       QString userBareJid = QXmppUtils::jidToBareJid(mucRooms.value(room)->participantFullJid(userJid));
       mucRooms.value(room)->ban(userBareJid,reason);
     }
+
+    // File transfer
+    Q_INVOKABLE void acceptTransfer(int jobId);
+    Q_INVOKABLE void abortTransfer(int jobId);
 	
 signals:
     void statusTextChanged();
@@ -280,6 +284,8 @@ private:
 
     QMap<QString,QXmppMucRoom*> mucRooms;
     QMap<QString,ParticipantListModel*> mucParticipants;
+
+    QMap<int,QXmppTransferJob*> transferJobs;
 };
 
 #endif

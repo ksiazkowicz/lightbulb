@@ -53,6 +53,7 @@ public:
     Q_INVOKABLE void notificationBlink(int device);
     Q_INVOKABLE void displayGlobalNote(QString message, bool isError);
     Q_INVOKABLE QString openFileSelectionDlg();
+    Q_INVOKABLE QString openFolderSelectionDlg(QString lastDir);
     Q_INVOKABLE void openDefaultBrowser(const QUrl &url) const;
 
     Q_INVOKABLE void showChatIcon();

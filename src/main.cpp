@@ -39,7 +39,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "xmpp/MyXmppClient.h"
 
 #include "models/AccountsListModel.h"
-#include "models/RosterListModel.h"
 #include "models/RosterItemFilter.h"
 #include "models/MsgListModel.h"
 #include "models/NetworkCfgListModel.h"

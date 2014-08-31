@@ -625,6 +625,9 @@ bool MyXmppClient::isActionPossible(int permissionLevel, int action) {
 // ---------- file transfer --------------------------------------------------------------------------------------------------------
 
 void MyXmppClient::incomingTransfer(QXmppTransferJob *job) {
+  int jobId = transferJobs.count();
+  transferJobs.insert(jobId,job);
+
   switch (job->method()) {
     case QXmppTransferJob::NoMethod:
       qDebug() << "no method o.o"; break;
@@ -636,8 +639,24 @@ void MyXmppClient::incomingTransfer(QXmppTransferJob *job) {
       qDebug() << "Any method"; break;
   }
 
-  QString description = "Incoming transfer. <b>" + job->fileName() + "</b> (" + QString::number(job->fileSize()) + ") <b>Tap to accept</b>.";
-  emit incomingTransferReceived(m_accountId,job->jid(),"lol nope",description,0/*lol,placeholder*/,true);
+  // TODO: try to recognize file type
+  // TODO: show name/jid instead of "lol nope"
+  QString description = "Incoming transfer. File with size " + QString::number(job->fileSize()) + ". <b>Tap to accept</b>.";
+  emit incomingTransferReceived(m_accountId,job->jid(),"lol nope",description,jobId,true);
+}
 
-  job->accept("F://Received files//" + job->fileName());
+void MyXmppClient::acceptTransfer(int jobId) {
+  QXmppTransferJob* job = transferJobs.value(jobId);
+  if (job != NULL) {
+      job->accept("F://Received files//" + job->fileName());
+      qDebug() << "Transfer job accepted";
+    }
+}
+
+void MyXmppClient::abortTransfer(int jobId) {
+  QXmppTransferJob* job = transferJobs.value(jobId);
+  if (job != NULL) {
+      job->abort();
+      qDebug() << "Transfer job aborted";
+    }
 }
