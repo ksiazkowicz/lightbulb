@@ -22,8 +22,7 @@ Item {
             verticalCenter: parent.verticalCenter
         }
 
-        sourceSize.width: platformStyle.graphicSizeMedium
-        sourceSize.height: platformStyle.graphicSizeMedium
+        sourceSize { width: platformStyle.graphicSizeMedium; height: platformStyle.graphicSizeMedium }
     }
 
     ListItemText {

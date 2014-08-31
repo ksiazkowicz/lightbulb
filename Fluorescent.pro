@@ -121,7 +121,8 @@ SOURCES += src/main.cpp \
     src/avkon/NetworkManager.cpp \
     src/database/MigrationManager.cpp \
     src/xmpp/EventsManager.cpp \
-    src/UpdateManager.cpp
+    src/UpdateManager.cpp \
+    src/models/RosterItemFilter.cpp
 
 HEADERS += src/xmpp/MyXmppClient.h \
     src/cache/MyCache.h \
@@ -152,8 +153,12 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/models/EventListModel.h \
     src/models/EventItemModel.h \
     src/xmpp/EventsManager.h \
-    src/UpdateManager.h
+    src/UpdateManager.h \
+    src/models/RosterItemFilter.h
 
 DEPLOYMENT += addFiles
 
 RESOURCES += resources.qrc
+
+OTHER_FILES += \
+    qml/Components/AccountDelegate.qml

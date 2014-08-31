@@ -64,6 +64,7 @@ Item {
            onCheckedChanged: {
               settings.sBool(checked,"ui", "hideOffline")
                vars.hideOffline = checked;
+              xmppConnectivity.offlineContactsVisibility = !checked;
            }
         }
         CheckBox {

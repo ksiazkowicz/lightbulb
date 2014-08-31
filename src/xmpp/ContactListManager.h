@@ -5,6 +5,7 @@
 
 #include "../models/RosterListModel.h"
 #include "../models/RosterItemModel.h"
+#include "../models/RosterItemFilter.h"
 
 class ContactListManager : public QObject
 {
@@ -12,10 +13,9 @@ class ContactListManager : public QObject
 
 public:
   explicit ContactListManager(QObject *parent = 0);
-  RosterListModel* getRoster();
+  RosterItemFilter* getRoster();
 
-   Q_INVOKABLE QString getPropertyByOrderID(int id,QString property);
-   Q_INVOKABLE QString getPropertyByJid(QString accountId,QString bareJid,QString property);
+  Q_INVOKABLE QString getPropertyByJid(QString accountId,QString bareJid,QString property);
 
   void clearPresenceForAccount(QString accountId);
 
@@ -31,12 +31,14 @@ public slots:
   void changeName(QString m_accountId,QString bareJid,QString name);
   void removeContact(QString acc,QString bareJid);
 
-  void setOfflineContactsState(bool state) { showOfflineContacts = state; }
+  void changeFilter(QString regexp) { filter->setFilterRegExp(regexp); }
+
+  void setOfflineContactsState(bool state) { filter->setShowOfflineContacts(state); showOfflineContacts = state; }
   bool getOfflineContactsState()           { return showOfflineContacts;  }
 
 private:
   RosterListModel* roster;
-  RosterListModel* rosterOffline;
+  RosterItemFilter* filter;
 
   bool showOfflineContacts;
   

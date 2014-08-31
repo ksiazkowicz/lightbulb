@@ -32,8 +32,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDateTime>
 #include <QStringList>
 #include <QUrl>
-#include <QDebug>
-#include <QThread>
 
 class UpdateManager : public QObject
 {

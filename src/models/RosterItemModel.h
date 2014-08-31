@@ -25,162 +25,82 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef ROSTERITEMMODEL_H
 #define ROSTERITEMMODEL_H
 
-#include "listmodel.h"
+#include "QStandardItem"
+#include <QDebug>
 
-#define ROSTER_ITEM_CONTACT 0
-#define ROSTER_ITEM_MUC 1
-
-class RosterItemModel : public ListItem
+class RosterItemModel : public QStandardItem
 {
-    Q_OBJECT
 
 public:
-    enum Roles {
-        roleName = Qt::UserRole+1,
-        roleJid,
-        roleResource,
-        rolePresence,
-        roleStatusText,
-        roleAvatar,
-        roleAccountId
+    enum userRoles {
+        Name = Qt::UserRole+1,
+        Jid,
+        Resource,
+        Presence,
+        StatusText,
+        Avatar,
+        AccountId,
+        ItemId,
+        SortData,
+        IsFavorite
       };
 
 public:
-      RosterItemModel(QObject *parent = 0): ListItem(parent) {
-          contactName = "";
-          contactJid = "";
-          contactResource = "";
-          contactPresence = "";
-          contactStatusText = "";
-          contactAvatar = "qrc:/avatar";
-          contactAccountID = "";
-      }
+      RosterItemModel();
+
       explicit RosterItemModel( const QString &_contactName,
-                                       const QString &_contactJid,
-                                       const QString &_contactResource,
-                                       const QString &_contactPresence,
-                                       const QString &_contactStatusText,
-                                       const QString &_contactAccountID,
-                                       QObject *parent = 0 ) : ListItem(parent),
-          contactName(_contactName),
-          contactJid(_contactJid),
-          contactResource(_contactResource),
-          contactStatusText(_contactStatusText),
-          contactPresence(_contactPresence),
-          contactAccountID(_contactAccountID)
-      {
+                                             const QString &_contactJid,
+                                             const QString &_contactResource,
+                                             const QString &_contactPresence,
+                                             const QString &_contactStatusText,
+                                             const QString &_contactAccountID,
+                                             QObject *parent = 0 ) {
+        setData(QVariant(_contactName),Name);
+        setData(QVariant(_contactJid),Jid);
+        setData(QVariant(_contactResource),Resource);
+        setData(QVariant(_contactPresence),Presence);
+        setData(QVariant(_contactStatusText),StatusText);
+        setData(QVariant(_contactAccountID),AccountId);
+        setData(QVariant(QString(_contactAccountID + ";" + _contactJid)),ItemId);
+        updateSortData();
       }
 
-      virtual QVariant data(int role) const {
-        switch(role) {
-        case roleName:
-          return name();
-        case roleJid:
-          return jid();
-        case roleResource:
-          return resource();
-        case roleStatusText:
-          return statusText();
-        case rolePresence:
-          return presence();
-        case roleAvatar:
-          return avatar();
-        case roleAccountId:
-          return accountId();
-        default:
-          return QVariant();
-        }
-      }
-      virtual QHash<int, QByteArray> roleNames() const {
-          QHash<int, QByteArray> names;
-          names[roleName] = "name";
-          names[roleJid] = "jid";
-          names[roleResource] = "resource";
-          names[rolePresence] = "presence";
-          names[roleStatusText] = "statusText";
-          names[roleAvatar] = "avatar";
-          names[roleAccountId] = "accountId";
-          return names;
-        }
+      void set(const QString &data,userRoles role) {
+        // if data is different, set it
+        if (this->data(role).toString() != data)
+          setData(QVariant(data),role);
+        else return;
 
-
-      virtual QString id() const { return contactAccountID + ";" + contactJid; }
-
-      void setPresence( const QString &_contactPresence ) {
-          if(contactPresence != _contactPresence) {
-            contactPresence = _contactPresence;
-            emit dataChanged();
-          }
+        // if changed data which affects sort data
+        if (role == Name || role == Jid || role == Presence || role == IsFavorite)
+          updateSortData();
       }
 
-      void setContactName( const QString &_contactName ) {
-          if(contactName != _contactName) {
-            contactName = _contactName;
-            emit dataChanged();
-          }
+      void updateSortData() {
+        QString newSortData;
+
+        // append 0 if contact is favorite
+        if (data(IsFavorite).toBool() == true)
+          newSortData += "0";
+        else newSortData += "1";
+
+        // append presence priority, name and jid
+        newSortData += QString::number(presencePriority(data(Presence).toString()));
+        newSortData += data(Name).toString();
+        newSortData += data(Jid).toString();
+
+        setData(QVariant(newSortData),SortData);
       }
 
-      void setJid( const QString &_contactJid ) {
-          if(contactJid != _contactJid) {
-            contactJid = _contactJid;
-            emit dataChanged();
-          }
+      int presencePriority(QString presence) const {
+        if (presence == "qrc:/presence/chatty") return 0;
+        if (presence == "qrc:/presence/online") return 1;
+        if (presence == "qrc:/presence/away") return 2;
+        if (presence == "qrc:/presence/xa") return 3;
+        if (presence == "qrc:/presence/busy") return 4;
+        if (presence == "qrc:/presence/offline") return 5;
+        defult: return 9;
       }
-
-      void setResource( const QString &_contactResource ) {
-          if(contactResource != _contactResource) {
-            contactResource = _contactResource;
-            emit dataChanged();
-          }
-      }
-
-      void setStatusText( const QString &_contactStatusText )  {
-          if(contactStatusText != _contactStatusText) {
-            contactStatusText = _contactStatusText;
-            emit dataChanged();
-          }
-      }
-
-      void setAvatar( const QString &_contactAvatar )  {
-          if(contactAvatar != _contactAvatar) {
-            contactAvatar = _contactAvatar;
-            emit dataChanged();
-          }
-      }
-
-      void setAccountID( const QString &_accountId ) {
-        if (contactAccountID != _accountId) {
-            contactAccountID = _accountId;
-            emit dataChanged();
-          }
-      }
-
-      inline QString presence() const { return contactPresence; }
-      inline QString name() const { return contactName; }
-      inline QString jid() const { return contactJid; }
-      inline QString resource() const { return contactResource; }
-      inline QString statusText() const { return contactStatusText; }
-      inline QString avatar() const { return contactAvatar; }
-      inline QString accountId() const { return contactAccountID; }
-
-      void copy( const RosterItemModel* item ) {
-          contactName = item->name();
-          contactPresence = item->presence();
-          contactName = item->name();
-          contactJid = item->jid();
-          contactResource = item->resource();
-          contactStatusText = item->statusText();
-          contactAvatar = item->avatar();
-      }
-
-    private:
-      QString contactName;
-      QString contactJid;
-      QString contactResource;
-      QString contactPresence;
-      QString contactStatusText;
-      QString contactAvatar;
-      QString contactAccountID;
 };
 
 #endif // ROSTERITEMMODEL_H

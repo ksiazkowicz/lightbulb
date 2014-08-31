@@ -24,7 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QApplication>
 #include <QtGui/QPixmap>
 #include <QUrl>
-#include <QDebug>
 
 // import different QML stuff for Qt 5 and Qt 4
 #if QT_VERSION < 0x050000
@@ -41,6 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "models/AccountsListModel.h"
 #include "models/RosterListModel.h"
+#include "models/RosterItemFilter.h"
 #include "models/MsgListModel.h"
 #include "models/NetworkCfgListModel.h"
 #include "models/ParticipantListModel.h"
@@ -82,7 +82,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
 
     qmlRegisterUncreatableType<SqlQueryModel>("lightbulb", 1, 0, "SqlQuery", "");
     qmlRegisterUncreatableType<AccountsListModel>("lightbulb", 1, 0, "AccountsList", "Use settings.accounts instead");
-    qmlRegisterUncreatableType<RosterListModel>("lightbulb",1,0,"RosterModel","");
+    qmlRegisterUncreatableType<RosterItemFilter>("lightbulb",1,0,"RosterModel","");
     qmlRegisterUncreatableType<NetworkCfgListModel>("lightbulb",1,0,"NetworkCfgListModel","just use NetworkManager.connections");
     qmlRegisterUncreatableType<ParticipantListModel>("lightbulb",1,0,"ParticipantListModel","just use NetworkManager.connections");
     qmlRegisterUncreatableType<ChatsListModel>("lightbulb",1,0,"ChatsModel","because I say so, who cares?");

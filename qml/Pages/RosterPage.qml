@@ -29,16 +29,12 @@ import "../Components"
 
 Page {
     id: rosterPage
+    onStatusChanged: if (rosterPage.status === PageStatus.Inactive) {
+                         xmppConnectivity.setFilter("");
+                         rosterPage.destroy()
+                     }
 
     property string selectedJid
-
-    Connections {
-        target: vars
-        onHideOfflineChanged: {
-            if (rosterSearch.height == 0)
-                xmppConnectivity.offlineContactsVisibility = !vars.hideOffline
-        }
-    }
 
     property string pageName: "Contacts"
 
@@ -48,26 +44,14 @@ Page {
         id: rosterView
         anchors { top: parent.top; left: parent.left; right: parent.right; bottom: rosterSearch.top; }
         model: xmppConnectivity.roster
-        delegate: Loader {
-            source: visible ? "qrc:/Components/RosterItemDelegate.qml" : ""
-            property string _contactName: (name === "" ? jid : name)
-            property string _contactJid: jid
-            property string _statusText: statusText
-            property string _accountId: accountId
-            width: rosterView.width
-            visible: rosterSearch.text !== "" ? (_contactName.toLowerCase().indexOf(rosterSearch.text.toLowerCase()) != -1) : true
-            height: visible ? sourceComponent.height : 0
-        }
+        delegate: RosterItemDelegate {width: rosterView.width }
     }
 
     ScrollBar {
-        id: scrollBar
-
         anchors {
             top: parent.top
             bottom: rosterSearch.top
             right: parent.right
-            margins: platformStyle.paddingSmall
         }
         flickableItem: rosterView
         platformInverted: main.platformInverted
@@ -77,40 +61,35 @@ Page {
 
     TextField {
         id: rosterSearch
-        height: 0
-        width: parent.width
-        anchors.bottom: parent.bottom
+        height: enabled ? 50 : 0
+        anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
         placeholderText: qsTr("Tap to write")
+        enabled: false
 
         Behavior on height { SmoothedAnimation { velocity: 200 } }
-        onTextChanged: {
-            if (text.length > 0) {
-                if (!xmppConnectivity.offlineContactsVisibility)
-                    xmppConnectivity.offlineContactsVisibility = true;
-            } else if (xmppConnectivity.offlineContactsVisibility != !vars.hideOffline) xmppConnectivity.offlineContactsVisibility = !vars.hideOffline
+        onTextChanged: xmppConnectivity.setFilter(text);
+
+        function switchEnabled() {
+            enabled = !enabled;
+            if (!enabled) text = "";
         }
     }
 
     tools: ToolBarLayout {
-        id: toolBarLayout
         ToolButton {
-            iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
+            iconSource: "toolbar-back"
+            platformInverted: main.platformInverted
             onClicked: pageStack.pop()
         }
         ToolButton {
-            iconSource: main.platformInverted ? "toolbar-add_inverse" : "toolbar-add"
+            iconSource: "toolbar-add"
+            platformInverted: main.platformInverted
             onClicked: dialog.createWithContext("qrc:/dialogs/Contact/Add")
         }
         ToolButton {
-            iconSource: main.platformInverted ? "toolbar-search_inverse" : "toolbar-search"
-            onClicked: {
-                if (rosterSearch.height == 50) {
-                    if (xmppConnectivity.offlineContactsVisibility != !vars.hideOffline)
-                            xmppConnectivity.offlineContactsVisibility = !vars.hideOffline;
-                    rosterSearch.height = 0;
-                    rosterSearch.text = "";
-                } else rosterSearch.height = 50;
-            }
+            iconSource: "toolbar-search"
+            platformInverted: main.platformInverted
+            onClicked: rosterSearch.switchEnabled()
         }
     }
 }

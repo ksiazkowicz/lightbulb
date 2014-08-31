@@ -1,9 +1,9 @@
 #include "NetworkManager.h"
-#include <QDebug>
+//#include <QDebug>
 
 NetworkManager::NetworkManager(QObject *parent) :
   QObject(parent) {
-  qDebug() << "NetworkManager::NetworkManager(): initialized";
+  //qDebug() << "NetworkManager::NetworkManager(): initialized";
 
   m_configurationsManager = new QNetworkConfigurationManager();
   m_configurations = new NetworkCfgListModel();
@@ -13,7 +13,7 @@ NetworkManager::NetworkManager(QObject *parent) :
   for (int i=0; i<confList.count();i++) {
       QNetworkConfiguration conf = confList.at(i);
       if (conf.purpose() == QNetworkConfiguration::PublicPurpose && conf.bearerTypeName() != "") {
-        qDebug() << "NetworkManager::NetworkManager(): found config at" << i << "name:" << conf.name() << "typeName" << conf.bearerTypeName();
+        //qDebug() << "NetworkManager::NetworkManager(): found config at" << i << "name:" << conf.name() << "typeName" << conf.bearerTypeName();
         appendConfig(conf.name(),conf.bearerTypeName(),i);
       }
   }
@@ -23,7 +23,7 @@ NetworkManager::~NetworkManager() {
     // Remeber to close connection
     if (m_session && m_session->isOpen()) {
         m_session->close();  
-        qDebug() << "NetworkManager::~NetworkManager(): Connection closed on destruction.";
+        //qDebug() << "NetworkManager::~NetworkManager(): Connection closed on destruction.";
       }
 }
 
@@ -41,11 +41,11 @@ void NetworkManager::openConnection() {
     else
       cfg = manager.allConfigurations().at(currentIAP);
 
-    qDebug() << "NetworkManager::NetworkManager(): attempting to use access point. name:" << cfg.name() << "typeName" << cfg.bearerTypeName();
+    //qDebug() << "NetworkManager::NetworkManager(): attempting to use access point. name:" << cfg.name() << "typeName" << cfg.bearerTypeName();
 
     if (!cfg.isValid() || !canStartIAP) {
         // Available Access Points not found
-        qDebug() << "NetworkManager::openConnection(): No access points found.";
+        //qDebug() << "NetworkManager::openConnection(): No access points found.";
 
         emit connectionFailed("CFG_INVALID_NO_ACCESSPOINTS");
         emit connectionChanged();
@@ -69,13 +69,13 @@ void NetworkManager::connectionStatusChanged() {
   if (m_session && m_session->isOpen()) {
       QNetworkInterface iff = m_session->interface();
       emit connectionOpened(iff.humanReadableName());
-      qDebug().nospace() << "NetworkManager::connectionStatusChanged(): Connection opened on interface " << qPrintable(iff.humanReadableName()) << " using access point " << qPrintable(m_session->configuration().name()) << ".";
+      //qDebug().nospace() << "NetworkManager::connectionStatusChanged(): Connection opened on interface " << qPrintable(iff.humanReadableName()) << " using access point " << qPrintable(m_session->configuration().name()) << ".";
     } else {
       if (!m_session) {
-        qDebug().nospace() <<"NetworkManager::connectionStatusChanged(): Connection failed. QNetworkSession not initialized.";
+        //qDebug().nospace() <<"NetworkManager::connectionStatusChanged(): Connection failed. QNetworkSession not initialized.";
         emit connectionFailed("NOT_INITIALIZED");
       } else {
-          qDebug().nospace() <<"NetworkManager::connectionStatusChanged(): Connection failed. " << qPrintable(m_session->errorString());
+          //qDebug().nospace() <<"NetworkManager::connectionStatusChanged(): Connection failed. " << qPrintable(m_session->errorString());
           emit connectionFailed(m_session->errorString());
         }
     }

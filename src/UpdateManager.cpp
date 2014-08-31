@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 UpdateManager::UpdateManager(QObject *parent) :
   QObject(parent)
 {
-  httpStuff = new QNetworkAccessManager(new QThread(this));
+  httpStuff = new QNetworkAccessManager;
   connect(httpStuff,SIGNAL(finished(QNetworkReply*)),this,SLOT(dataReceived(QNetworkReply*)));
 
   updateAvailable = false;
@@ -38,22 +38,13 @@ void UpdateManager::checkForUpdate() {
   httpStuff->get(QNetworkRequest(QUrl("https://ksiazkowicz.github.io/lightbulb/fluorescent_version.txt")));
 }
 
-QString UpdateManager::getLatestVersion() {
-  return replyData.split(";")[0];
-}
-
-QDateTime UpdateManager::getUpdateDate() {
-  return QDateTime::fromString(replyData.split(";")[1],"dd-MM-yyyy");
-}
-
-QString UpdateManager::getUpdateUrl() {
-  return replyData.split(";")[2];
-}
+QString UpdateManager::getLatestVersion() { return replyData.split(";")[0]; }
+QDateTime UpdateManager::getUpdateDate() { return QDateTime::fromString(replyData.split(";")[1],"dd-MM-yyyy"); }
+QString UpdateManager::getUpdateUrl() { return replyData.split(";")[2]; }
 
 void UpdateManager::dataReceived(QNetworkReply *reply) {
   if (reply->error() == QNetworkReply::NoError) {
       replyData = reply->readAll();
-
       this->compareVersions();
   } else {
       // throw an error

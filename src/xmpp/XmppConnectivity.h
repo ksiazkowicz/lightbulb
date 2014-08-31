@@ -48,9 +48,9 @@ class XmppConnectivity : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(RosterListModel* roster READ getRoster NOTIFY rosterChanged)
+    Q_PROPERTY(RosterItemFilter* roster READ getRoster NOTIFY rosterChanged)
     Q_PROPERTY(ChatsListModel* chats READ getChats NOTIFY chatsChanged)
-    Q_PROPERTY(EventsManager* events READ getEvents)
+    Q_PROPERTY(EventsManager* events READ getEvents NOTIFY eventsChanged)
     Q_PROPERTY(int messagesLimit READ getMsgLimit WRITE setMsgLimit NOTIFY msgLimitChanged )
 
     Q_PROPERTY(bool offlineContactsVisibility READ getVisibility WRITE setVisibility NOTIFY visibilityChanged)
@@ -59,6 +59,7 @@ public:
     ~XmppConnectivity();
 
     bool initializeAccount(QString index, AccountsItemModel* account);
+    Q_INVOKABLE void setFilter(QString regexp) { contacts->changeFilter(regexp); }
 
     /* --- diagnostics --- */
     Q_INVOKABLE bool dbRemoveDb();
@@ -75,7 +76,7 @@ public:
 signals:
     void personalityChanged();
     void rosterChanged();
-
+    void eventsChanged();
     void pageChanged();
     void sqlMessagesChanged();
     void chatsChanged();
@@ -170,7 +171,7 @@ private:
 
     QMap<QString,MsgListModel*> *cachedMessages;
 
-    RosterListModel* getRoster();
+    RosterItemFilter *getRoster();
     ContactListManager *contacts;
 
     ChatsListModel* chats;

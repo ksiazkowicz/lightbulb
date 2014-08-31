@@ -5,6 +5,7 @@ import lightbulb 1.0
 Item {
     id: rosterItemDelegate
     height: txtJid.paintedHeight > 56 ? txtJid.paintedHeight + 22 /*margins*/ : 56
+    property string _contactName: (name === "" ? jid : name)
 
     Row {
         id: row
@@ -19,7 +20,7 @@ Item {
             width: 48
             height: 48
             smooth: true
-            source: xmppConnectivity.getAvatarByJid(_contactJid)
+            source: xmppConnectivity.getAvatarByJid(jid)
             Rectangle { anchors.fill: parent; color: "black"; z: -1 }
             Image {
                 anchors.fill: parent
@@ -30,12 +31,12 @@ Item {
 
             Connections {
                 target: xmppConnectivity
-                onAvatarUpdatedForJid: if (bareJid == jid) avatarIcon.source = xmppConnectivity.getAvatarByJid(_contactJid)
+                onAvatarUpdatedForJid: if (bareJid == jid) avatarIcon.source = xmppConnectivity.getAvatarByJid(jid)
             }
         }
         Text {
             id: txtJid
-            text: _contactName + ((_statusText !== "") ? (" · <font color='#aaaaaa'><i>" + _statusText + "</i></font>") : "")
+            text: _contactName + ((statusText !== "") ? (" · <font color='#aaaaaa'><i>" + statusText + "</i></font>") : "")
             anchors.verticalCenter: parent.verticalCenter
             onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
             wrapMode: Text.WordWrap
@@ -63,7 +64,7 @@ Item {
 
     MouseArea {
         anchors.fill: parent
-        onClicked: pageStack.replace("qrc:/pages/Conversation",{"accountId": _accountId,"contactName":_contactName,"contactJid":_contactJid,"isInArchiveMode":false})
-        onPressAndHold: dialog.createWithProperties("qrc:/menus/Roster/Contact",{"accountId": _accountId,"contactName":_contactName,"contactJid":_contactJid})
+        onClicked: pageStack.replace("qrc:/pages/Conversation",{"accountId": accountId,"contactName":_contactName,"contactJid":jid,"isInArchiveMode":false})
+        onPressAndHold: dialog.createWithProperties("qrc:/menus/Roster/Contact",{"accountId": accountId,"contactName":_contactName,"contactJid":jid})
     }
 }
