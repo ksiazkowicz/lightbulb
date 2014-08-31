@@ -84,7 +84,7 @@ void UpdateManager::compareVersions() {
 
   // emit signal
   if (updateAvailable == true)
-    emit updateFound(latestVersion.join("."),releaseDate);
+    emit updateFound(getLatestVersion(),releaseDate);
   else
     emit versionUpToDate();
 }

@@ -18,6 +18,7 @@
         <file alias="muc">images/muc.png</file>
         <file alias="attention">images/attention.svg</file>
         <file alias="updateIcon">images/updateIcon.svg</file>
+        <file alias="subRequestIcon">images/subRequestIcon.svg</file>
     </qresource>
     <qresource prefix="/smileys">
         <file alias="angry">images/smileys/angry.png</file>

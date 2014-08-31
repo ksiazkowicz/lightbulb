@@ -59,7 +59,6 @@ Menu {
                 pageStack.pop()
                 xmppConnectivity.closeChat(accountId,contactJid)
                 xmppConnectivity.resetUnreadMessages(accountId,contactJid)
-                xmppConnectivity.chatJid = ""
             }
         }
         MenuItem {

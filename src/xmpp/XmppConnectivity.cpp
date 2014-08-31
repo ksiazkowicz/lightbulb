@@ -114,7 +114,7 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
     qDebug().nospace() << "XmppConnectivity::initializeAccount(): initialized account " << qPrintable(clients->value(index)->getMyJid()) << "/" << qPrintable(clients->value(index)->getResource());
 
     if (lSettings->gBool(index,"connectOnStart")) {
-        clients->value(index)->goOnline(lSettings->get("behavior","lastStatus").toString());
+        clients->value(index)->setPresence(MyXmppClient::Online,lSettings->get("behavior","lastStatus").toString());
     }
 
     clients->value(index)->disableAvatarCaching = lSettings->get("behavior","disableAvatarCaching").toBool();

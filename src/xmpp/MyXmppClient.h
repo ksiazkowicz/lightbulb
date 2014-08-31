@@ -29,6 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "QXmppVCardIq.h"
 #include "QXmppVCardManager.h"
 #include "QXmppClient.h"
+#include "QXmppUtils.h"
 #include "QXmppRosterManager.h"
 #include "QXmppVersionManager.h"
 #include "QXmppMucManager.h"
@@ -37,6 +38,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "QXmppConfiguration.h"
 #include "QXmppClient.h"
 #include "QXmppMessage.h"
+#include "QXmppEntityTimeManager.h"
+#include "QXmppEntityTimeIq.h"
 
 #include <QObject>
 #include <QList>
@@ -65,6 +68,7 @@ class MyXmppClient : public QObject
     QXmppMucManager *mucManager;
     QXmppTransferManager *transferManager;
     QXmppDiscoveryManager *serviceDiscovery;
+    QXmppEntityTimeManager *entityTime;
 
     MyCache* cacheIM;
 
@@ -103,9 +107,6 @@ public :
 
     /*--- info by jid ---*/
     Q_INVOKABLE QStringList getResourcesByJid (QString bareJid) { return rosterManager->getResources(bareJid); }
-
-    static QString getBareJidByJid( const QString &jid );
-    static QString getResourceByJid( const QString &jid );
 
     /*--- add/remove contact ---*/
     Q_INVOKABLE void addContact(QString bareJid, QString nick, QString group, bool sendSubscribe );
@@ -151,8 +152,10 @@ public :
     void setAccountId( const QString & value ) { m_accountId = value; }
     void setKeepAlive(int arg) { m_keepAlive = arg; }
 
-    void goOnline(QString lastStatus) { this->setPresence(Online,lastStatus); }
+    // XEP-0202: Entity Time
+    Q_INVOKABLE void requestContactTime(const QString bareJid);
 
+    // MUC
     Q_INVOKABLE void joinMUCRoom(QString room, QString nick, QString password="");
     void leaveMUCRoom(QString room);
     QString getMUCNick(QString room);
@@ -165,7 +168,7 @@ public :
     Q_INVOKABLE void setMUCSubject(QString room, QString subject) { mucRooms.value(room)->setSubject(subject); }
     Q_INVOKABLE void kickMUCUser(QString room, QString userJid, QString reason) { mucRooms.value(room)->kick(userJid,reason); }
     Q_INVOKABLE void banMUCUser(QString room, QString userJid, QString reason) {
-      QString userBareJid = getBareJidByJid(mucRooms.value(room)->participantFullJid(userJid));
+      QString userBareJid = QXmppUtils::jidToBareJid(mucRooms.value(room)->participantFullJid(userJid));
       mucRooms.value(room)->ban(userBareJid,reason);
     }
 	
@@ -195,6 +198,9 @@ signals:
 
     void iFoundYourParentsGoddamit(QString jid);
 
+    // XEP-0202: Entity Time
+    void entityTimeReceived(QString accountId, QString bareJid, QString time);
+
     // muc
     void mucInvitationReceived(QString accountId, QString bareJid, QString invSender, QString reason);
     void mucRoomJoined(QString accountId,QString bareJid);
@@ -215,6 +221,9 @@ private slots:
     void error(QXmppClient::Error);
 
     void notifyNewSubscription(QString bareJid) { emit subscriptionReceived(m_accountId, bareJid); }
+
+    // XEP-0202: Entity Time
+    void entityTimeReceivedSlot(const QXmppEntityTimeIq &entity);
 
     void mucTopicChangeSlot(QString subject);
     void mucJoinedSlot();
@@ -258,7 +267,6 @@ private:
     QString m_host;
     int m_port;
     QString m_resource;
-    QString m_lastChatJid;
 
     QString m_accountId;
 

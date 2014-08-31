@@ -96,6 +96,7 @@ Flickable {
                 sourceSize { width: 48; height: 48 }
                 smooth: true
                 source: main.platformInverted ? "qrc:/avatar-mask_inverse" : "qrc:/avatar-mask"
+                visible: chatType !== 3
             }
             opacity: wrapper.opacity
 

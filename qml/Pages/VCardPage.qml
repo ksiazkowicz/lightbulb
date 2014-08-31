@@ -32,10 +32,7 @@ Page {
     tools: ToolBarLayout {
         ToolButton {
             iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
-            onClicked: {
-                pageStack.pop()
-                xmppConnectivity.chatJid = ""
-            }
+            onClicked: pageStack.pop()
         }
     }
 
@@ -52,7 +49,10 @@ Page {
     // Code for destroying the page after pop
     onStatusChanged: if (vCardPage.status === PageStatus.Inactive) vCardPage.destroy()
 
-    Component.onCompleted: vCard.loadVCard(contactJid)
+    Component.onCompleted: {
+        xmppConnectivity.useClient(accountId).requestContactTime(contactJid)
+        vCard.loadVCard(contactJid)
+    }
 
     XmppVCard { id: vCard }
 
@@ -177,6 +177,22 @@ Page {
                 valueFont.bold: true
                 wrapMode: Text.WrapAnywhere
                 visible: vCard.url != ""
+            }
+
+            LineItem { visible: vCard.url != ""}
+
+            DetailsItem {
+                id: entityTime
+                title: qsTr("Local time")
+                value: ""
+                valueFont.bold: true
+                wrapMode: Text.WrapAnywhere
+                visible: value != ""
+
+                Connections {
+                    target: xmppConnectivity.useClient(accountId)
+                    onEntityTimeReceived: if (bareJid == contactJid) entityTime.value = time;
+                }
             }
         }
 
