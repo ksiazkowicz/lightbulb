@@ -155,6 +155,28 @@ void EventsManager::appendUpdate(bool updateAvailable, QString version, QString 
   events->countWasChanged();
 }
 
+void EventsManager::appendTransferJob(QString accountId, QString bareJid, QString name, QString description, int transferJob, bool isIncoming) {
+  // create a new EventItemModel
+  EventItemModel* item = new EventItemModel();
+  item->setData(QVariant(bareJid),EventItemModel::Jid);
+  item->setData(QVariant(accountId),EventItemModel::Account);
+  item->setData(QVariant(name),EventItemModel::Name);
+  item->setData(QVariant(description),EventItemModel::Description);
+  item->setData(QVariant(transferJob),EventItemModel::TransferJob);
+
+  if (isIncoming)
+    item->setData(QVariant((int)EventItemModel::IncomingTransfer),EventItemModel::Type);
+  else
+    item->setData(QVariant((int)EventItemModel::OutcomingTransfer),EventItemModel::Type);
+
+  item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
+
+  // and append it at the top of the list
+  events->insertRow(0,item);
+  events->countWasChanged();
+}
+
+
 void EventsManager::removeEvent(int id) {
   // assume that id is a row ID and remove it
   events->takeRow(id);

@@ -42,6 +42,8 @@ Flickable {
         case 37: // fav user status change
         case 38: return "qrc:/updateIcon"; // app update
         case 39: return "qrc:/errorIcon"; // connection error
+        case 40: return "qrc:/incomingTransfer" // incoming transfer
+        case 41: return "qrc:/outcomingTransfer" // outcoming transfer
         default: return "";
         }
     }

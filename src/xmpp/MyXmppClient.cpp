@@ -625,8 +625,6 @@ bool MyXmppClient::isActionPossible(int permissionLevel, int action) {
 // ---------- file transfer --------------------------------------------------------------------------------------------------------
 
 void MyXmppClient::incomingTransfer(QXmppTransferJob *job) {
-  qDebug() << "received file from" << job->jid() << "with filename" << job->fileName() << "and size" << job->fileSize();
-
   switch (job->method()) {
     case QXmppTransferJob::NoMethod:
       qDebug() << "no method o.o"; break;
@@ -637,6 +635,9 @@ void MyXmppClient::incomingTransfer(QXmppTransferJob *job) {
     case QXmppTransferJob::AnyMethod:
       qDebug() << "Any method"; break;
   }
+
+  QString description = "Incoming transfer. <b>" + job->fileName() + "</b> (" + QString::number(job->fileSize()) + ") <b>Tap to accept</b>.";
+  emit incomingTransferReceived(m_accountId,job->jid(),"lol nope",description,0/*lol,placeholder*/,true);
 
   job->accept("F://Received files//" + job->fileName());
 }

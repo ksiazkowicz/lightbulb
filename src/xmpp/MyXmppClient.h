@@ -206,6 +206,9 @@ signals:
     void mucRoomJoined(QString accountId,QString bareJid);
     void mucNameChanged(QString accountId,QString bareJid,QString name);
 
+    // file transfer
+    void incomingTransferReceived(QString accountId, QString bareJid, QString name, QString description, int transferJob, bool isIncoming);
+
 public slots:
     void clientStateChanged( QXmppClient::State state );
 

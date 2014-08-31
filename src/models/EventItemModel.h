@@ -42,7 +42,8 @@ public:
       Type,
       Description,
       Account,
-      Date
+      Date,
+      TransferJob
     };
 
     enum EventTypes {
@@ -53,13 +54,15 @@ public:
       AttentionRequest,
       FavUserStatusChange,
       AppUpdate,
-      ConnectionError
+      ConnectionError,
+      IncomingTransfer,
+      OutcomingTransfer
     };
 
 public:
       EventItemModel(QObject *parent = 0): ListItem(parent) {
         itemData = new QList<QVariant>();
-        for (int i=0; i<7;i++)
+        for (int i=0; i<8;i++)
           itemData->append(QVariant());
       }
 
@@ -73,10 +76,16 @@ public:
           names[Description] = "description";
           names[Account] = "accountID";
           names[Date] = "date";
+          names[TransferJob] = "transferJob";
           return names;
         }
 
-      virtual QString id() const { return getData(Jid).toString() + ";" + getData(Account).toString() + ";" + getData(Type).toString(); }
+      virtual QString id() const {
+        if (getData(Type).toInt() == (int)IncomingTransfer || getData(Type).toInt() == (int)OutcomingTransfer)
+          return getData(Jid).toString() + ";" + getData(Account).toString() + ";" + getData(Type).toString() + ";" + getData(TransferJob).toString();
+        else
+          return getData(Jid).toString() + ";" + getData(Account).toString() + ";" + getData(Type).toString();
+      }
 
       void setData(QVariant data,Roles id) {
         itemData->replace((int)id-Jid,data);

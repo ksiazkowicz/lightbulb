@@ -98,6 +98,9 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
 
     connect(clients->value(index),SIGNAL(avatarUpdatedForJid(QString)),this,SIGNAL(avatarUpdatedForJid(QString)),Qt::UniqueConnection);
 
+    // connect file transfer signals
+    connect(clients->value(index),SIGNAL(incomingTransferReceived(QString,QString,QString,QString,int,bool)),events,SLOT(appendTransferJob(QString,QString,QString,QString,int,bool)),Qt::UniqueConnection);
+
     // connect MUC signals
     connect(clients->value(index),SIGNAL(mucInvitationReceived(QString,QString,QString,QString)),this,SIGNAL(mucInvitationReceived(QString,QString,QString,QString)),Qt::UniqueConnection);
     connect(clients->value(index),SIGNAL(mucRoomJoined(QString,QString)),this,SLOT(openChat(QString,QString)),Qt::UniqueConnection);
