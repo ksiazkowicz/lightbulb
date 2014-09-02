@@ -31,7 +31,6 @@ Page {
     id: rosterPage
     onStatusChanged: if (rosterPage.status === PageStatus.Inactive) {
                          xmppConnectivity.setFilter("");
-                         rosterPage.destroy()
                      }
 
     property string selectedJid

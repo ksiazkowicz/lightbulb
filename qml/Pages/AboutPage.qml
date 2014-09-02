@@ -107,7 +107,7 @@ Page {
             Button {
                 text: "Donate"
                 platformInverted: main.platformInverted
-                onClicked: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SA8DZYA7PUCCU"})
+                onClicked: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SA8DZYA7PUCCU&lc=US"})
             }
         }
     }

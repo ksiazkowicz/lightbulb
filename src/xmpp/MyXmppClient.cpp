@@ -67,6 +67,9 @@ MyXmppClient::MyXmppClient() : QObject(0) {
       connect(entityTime,SIGNAL(timeReceived(QXmppEntityTimeIq)),this,SLOT(entityTimeReceivedSlot(QXmppEntityTimeIq)));
     else qDebug() << "entity time not available";
 
+    fbProfilePicDownloader = new QNetworkAccessManager;
+    connect(fbProfilePicDownloader,SIGNAL(finished(QNetworkReply*)),this,SLOT(pushFacebookPic(QNetworkReply*)));
+
     if (xmppDebugEnabled)
       connect(xmppClient,SIGNAL(logMessage(QXmppLogger::MessageType,QString)),this,SLOT(logMessageReceived(QXmppLogger::MessageType,QString)));
 }
@@ -155,11 +158,30 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard) {
 
     // avatar
     bool isAvatarCreated = true;
-    QString avatarFile = cacheIM->getAvatarCache( bareJid );
-    if ((avatarFile.isEmpty() || avatarFile == "qrc:/avatar") && vCard.photo() != "" && !disableAvatarCaching) {
-        isAvatarCreated =  cacheIM->setAvatarCache( bareJid, vCard.photo() );
-        emit avatarUpdatedForJid(bareJid);
-    }
+
+    // check if caching is disabled
+    if (!disableAvatarCaching) {
+        if (bareJid.split("@").at(1) != "chat.facebook.com") {
+            QString avatarFile = cacheIM->getAvatarCache( bareJid );
+            if ((avatarFile.isEmpty() || avatarFile == "qrc:/avatar") && vCard.photo() != "") {
+                isAvatarCreated =  cacheIM->setAvatarCache( bareJid, vCard.photo() );
+                emit avatarUpdatedForJid(bareJid);
+              }
+          } else {
+            // try to download profile pic
+            QString picUrl = "http://graph.facebook.com/";
+
+            QString profileId = bareJid.split("@").at(0);
+
+            // if it's your profile, not someone else, don't omit the first char
+            if (profileId.left(1) == "-")
+              profileId = profileId.right(profileId.length()-1);
+
+            picUrl += profileId;
+            picUrl += "/picture?width=128&height=128";
+            fbProfilePicDownloader->get(QNetworkRequest(QUrl(picUrl)));
+          }
+      }
 
     dataVCard.nickName = nickName;
     dataVCard.firstName = vCard.firstName();
@@ -229,7 +251,6 @@ bool MyXmppClient::requestAttention(QString bareJid, QString resource) {
 
     return xmppClient->sendPacket( xmppMsg );
 }
-
 
 void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
 {
@@ -488,7 +509,10 @@ void MyXmppClient::addContact( QString bareJid, QString nick, QString group, boo
 
 void MyXmppClient::requestContactTime(const QString bareJid) {
   // provides support for XEP-0202: Entity Time
-  QString jid = bareJid + "/" + rosterManager->getResources(bareJid)[0];
+  QString jid = bareJid + "/";
+  QStringList resources = rosterManager->getResources(bareJid);
+  if (resources.count() > 0)
+    jid += resources.value(0);
 
   entityTime->requestTime(jid);
   qDebug() << "Requested entity time for" << jid;
@@ -620,6 +644,35 @@ bool MyXmppClient::isActionPossible(int permissionLevel, int action) {
   }
 
   return false;
+}
+
+// ---------- Graph API Support ----------------------------------------------------------------------------------------------------
+
+void MyXmppClient::pushFacebookPic(QNetworkReply *pReply) {
+  if (pReply->error() == QNetworkReply::NoError) {
+      QVariant possibleRedirectUrl = pReply->attribute(QNetworkRequest::RedirectionTargetAttribute);
+
+      if (!possibleRedirectUrl.toString().isEmpty() && !profilePicCache.values().contains(pReply->url().toString())) {
+          fbProfilePicDownloader->get(QNetworkRequest(possibleRedirectUrl.toUrl()));
+          profilePicCache.insert(pReply->url().toString(),possibleRedirectUrl.toString());
+        } else {
+          QString key = profilePicCache.key(pReply->url().toString());
+
+          // check if is a number and if is, append -
+          bool* isNumber;
+          key.mid(26,1).toInt(isNumber);
+          QString bareJid = isNumber ? "-" : "";
+
+          bareJid += key.mid(26,key.length()-55) + "@chat.facebook.com";
+
+          cacheIM->setAvatarCache(bareJid, pReply->readAll());
+          emit avatarUpdatedForJid(bareJid);
+        }
+  } else {
+      // throw an error
+      qDebug() << "error occured while downloading" << pReply->url().toString();
+  }
+
 }
 
 // ---------- file transfer --------------------------------------------------------------------------------------------------------

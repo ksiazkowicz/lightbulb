@@ -50,6 +50,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDir>
 #include <QStringList>
 #include <QDebug>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 
 #include "../database/Settings.h"
 
@@ -70,7 +73,15 @@ class MyXmppClient : public QObject
     QXmppDiscoveryManager *serviceDiscovery;
     QXmppEntityTimeManager *entityTime;
 
+    QMap<QString,QXmppMucRoom*> mucRooms;
+    QMap<QString,ParticipantListModel*> mucParticipants;
+
+    QMap<int,QXmppTransferJob*> transferJobs;
+
     MyCache* cacheIM;
+
+    QNetworkAccessManager* fbProfilePicDownloader;
+    QMap<QString,QString> profilePicCache;
 
 public :
     bool disableAvatarCaching;
@@ -220,6 +231,7 @@ private slots:
     void initRoster();
     void initPresence(const QString& bareJid, const QString& resource);
     void initVCard(const QXmppVCardIq &vCard);
+    void pushFacebookPic(QNetworkReply* pReply);
     void itemAdded( const QString &);
     void itemRemoved( const QString &);
     void itemChanged( const QString &);
@@ -281,11 +293,6 @@ private:
     QString getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const;
 
     int m_keepAlive;
-
-    QMap<QString,QXmppMucRoom*> mucRooms;
-    QMap<QString,ParticipantListModel*> mucParticipants;
-
-    QMap<int,QXmppTransferJob*> transferJobs;
 };
 
 #endif

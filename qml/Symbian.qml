@@ -191,7 +191,7 @@ PageStackWindow {
         }
         Connections {
             target: pageStack
-            onCurrentPageChanged: statusBarText.text = pageStack.currentPage.pageName
+            onCurrentPageChanged: if (pageStack.currentPage !== 0) statusBarText.text = pageStack.currentPage.pageName
         }
     }
 }

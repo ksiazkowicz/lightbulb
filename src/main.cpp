@@ -105,7 +105,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
 
     #if QT_VERSION < 0x050000
     viewer.rootContext()->setContextProperty("emoticon",&parser);
-    viewer.rootContext()->setContextProperty("appVersion",VERSION);
+    viewer.rootContext()->setContextProperty("appVersion",QString(VERSION).mid(1,5));
     viewer.rootContext()->setContextProperty("migration",&migration);
     viewer.rootContext()->setContextProperty("updater",&updater);
     viewer.rootContext()->setContextProperty("settings",&settings);
