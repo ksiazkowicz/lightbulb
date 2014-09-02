@@ -1,1 +1,1 @@
-0.4.0;30-08-2014;https://github.com/ksiazkowicz/lightbulb/releases/tag/0.4-0008-pre
+0.4.0;02-09-2014;https://github.com/ksiazkowicz/lightbulb/releases/tag/0.4-0009-pre
