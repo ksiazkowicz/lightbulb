@@ -73,15 +73,9 @@ class MyXmppClient : public QObject
     QXmppDiscoveryManager *serviceDiscovery;
     QXmppEntityTimeManager *entityTime;
 
-    QMap<QString,QXmppMucRoom*> mucRooms;
-    QMap<QString,ParticipantListModel*> mucParticipants;
-
-    QMap<int,QXmppTransferJob*> transferJobs;
-
     MyCache* cacheIM;
 
     QNetworkAccessManager* fbProfilePicDownloader;
-    QMap<QString,QString> profilePicCache;
 
 public :
     bool disableAvatarCaching;
@@ -273,6 +267,13 @@ private slots:
 private:
     // functions
     void initRosterManager();
+    void pushNextCacheURL() {
+      if (currentSessions < 3 && urlQueue.count() > 0) {
+          currentSessions++;
+          fbProfilePicDownloader->get(QNetworkRequest(QUrl(urlQueue.first())));
+          urlQueue.takeFirst();
+        }
+    }
 
     // private variables
     QString m_bareJidLastMessage;
@@ -293,6 +294,16 @@ private:
     QString getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const;
 
     int m_keepAlive;
+
+    QMap<QString,QXmppMucRoom*> mucRooms;
+    QMap<QString,ParticipantListModel*> mucParticipants;
+
+    // facebook avatar caching
+    QMap<QString,QString> profilePicCache;
+    QList<QString> urlQueue;
+    int currentSessions;
+
+    QMap<int,QXmppTransferJob*> transferJobs;
 };
 
 #endif

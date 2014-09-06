@@ -69,6 +69,7 @@ MyXmppClient::MyXmppClient() : QObject(0) {
 
     fbProfilePicDownloader = new QNetworkAccessManager;
     connect(fbProfilePicDownloader,SIGNAL(finished(QNetworkReply*)),this,SLOT(pushFacebookPic(QNetworkReply*)));
+    currentSessions = 0;
 
     if (xmppDebugEnabled)
       connect(xmppClient,SIGNAL(logMessage(QXmppLogger::MessageType,QString)),this,SLOT(logMessageReceived(QXmppLogger::MessageType,QString)));
@@ -161,7 +162,7 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard) {
 
     // check if caching is disabled
     if (!disableAvatarCaching) {
-        if (bareJid.split("@").at(1) != "chat.facebook.com") {
+        if (bareJid.right(17) != "chat.facebook.com") {
             QString avatarFile = cacheIM->getAvatarCache( bareJid );
             if ((avatarFile.isEmpty() || avatarFile == "qrc:/avatar") && vCard.photo() != "") {
                 isAvatarCreated =  cacheIM->setAvatarCache( bareJid, vCard.photo() );
@@ -179,7 +180,8 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard) {
 
             picUrl += profileId;
             picUrl += "/picture?width=128&height=128";
-            fbProfilePicDownloader->get(QNetworkRequest(QUrl(picUrl)));
+            urlQueue.append(picUrl);
+            pushNextCacheURL();
           }
       }
 
@@ -649,30 +651,48 @@ bool MyXmppClient::isActionPossible(int permissionLevel, int action) {
 // ---------- Graph API Support ----------------------------------------------------------------------------------------------------
 
 void MyXmppClient::pushFacebookPic(QNetworkReply *pReply) {
+  if (currentSessions > 0)
+    currentSessions--;
+
   if (pReply->error() == QNetworkReply::NoError) {
+      // no error occured, check if reply is a redirection
       QVariant possibleRedirectUrl = pReply->attribute(QNetworkRequest::RedirectionTargetAttribute);
+      qDebug() << pReply->url();
 
       if (!possibleRedirectUrl.toString().isEmpty() && !profilePicCache.values().contains(pReply->url().toString())) {
-          fbProfilePicDownloader->get(QNetworkRequest(possibleRedirectUrl.toUrl()));
+          // redirect found, append another url
+          urlQueue.append(possibleRedirectUrl.toString());
           profilePicCache.insert(pReply->url().toString(),possibleRedirectUrl.toString());
         } else {
+          qDebug() << "avatar downloaded";
+
+          // generate jid back from profile cache
           QString key = profilePicCache.key(pReply->url().toString());
 
+          QByteArray data = pReply->readAll();
+
           // check if is a number and if is, append -
-          bool* isNumber;
-          key.mid(26,1).toInt(isNumber);
+          bool isNumber;
+          key.mid(26,1).toInt(&isNumber);
           QString bareJid = isNumber ? "-" : "";
 
           bareJid += key.mid(26,key.length()-55) + "@chat.facebook.com";
 
-          cacheIM->setAvatarCache(bareJid, pReply->readAll());
+          // update avatar cache
+          if (!cacheIM->setAvatarCache(bareJid, data)) {
+              qDebug() << "something failed miserably while saving avatar";
+            }
           emit avatarUpdatedForJid(bareJid);
+
+          // remove element from profile pic url list
+          profilePicCache.remove(key);
         }
   } else {
       // throw an error
       qDebug() << "error occured while downloading" << pReply->url().toString();
   }
 
+  pushNextCacheURL();
 }
 
 // ---------- file transfer --------------------------------------------------------------------------------------------------------
