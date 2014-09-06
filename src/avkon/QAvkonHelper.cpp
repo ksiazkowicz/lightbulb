@@ -97,14 +97,11 @@ void QAvkonHelper::playNotification(QString path) {
 }
 
 void QAvkonHelper::showPopup(QString title, QString message) {
-    TPtrC16 sTitle(reinterpret_cast<const TUint16*>(title.utf16()));
-    TPtrC16 sMessage(reinterpret_cast<const TUint16*>(message.utf16()));
-
     if (lastPopup != title + ";" + message) lastPopup = title + ";" + message; else return;
 
     if (_switchToApp) {
-        TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(sTitle, sMessage,KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL, {0xE00AC666}));
-    } else TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(sTitle, sMessage,KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL));
+        TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(convertToSymbianString(title), convertToSymbianString(message),KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL, {0xE00AC666}));
+    } else TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(convertToSymbianString(title), convertToSymbianString(message),KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL));
     QTimer::singleShot(2000,this,SLOT(cleanLastMsg()));
 }
 
@@ -112,15 +109,12 @@ void QAvkonHelper::notificationBlink(int device) {
     switch (device) {
         case 1: TRAP_IGNORE(notifyLight->LightBlinkL(CHWRMLight::ECustomTarget1, 30, 1, 1, KHWRMDefaultIntensity)); break;
         case 2: TRAP_IGNORE(notifyLight->LightBlinkL(CHWRMLight::ECustomTarget2, 30, 1, 1, KHWRMDefaultIntensity)); break;
-        case 3: TRAP_IGNORE(notifyLight->LightBlinkL(CHWRMLight::ECustomTarget3, 30, 1, 1, KHWRMDefaultIntensity)); break;
-        case 4: TRAP_IGNORE(notifyLight->LightBlinkL(CHWRMLight::ECustomTarget4, 30, 1, 1, KHWRMDefaultIntensity)); break;
         default: TRAP_IGNORE(notifyLight->LightBlinkL(CHWRMLight::ECustomTarget2, 30, 1, 1, KHWRMDefaultIntensity)); break;
     }
 }
 
 void QAvkonHelper::displayGlobalNote(QString message, bool isError) {
-   TPtrC16 aMessage(reinterpret_cast<const TUint16*>(message.utf16()));
-   if (isError) ShowErrorL(aMessage); else ShowNoteL(aMessage);
+   if (isError) ShowErrorL(convertToSymbianString(message)); else ShowNoteL(convertToSymbianString(message));
 }
 
 void QAvkonHelper::ShowNoteL(const TDesC16& aMessage) {
@@ -226,8 +220,7 @@ void QAvkonHelper::setAppHiddenState(bool state) {
 }
 
 void QAvkonHelper::restartApp() {
-    if (displayAvkonQueryDialog("Close","Are you sure you want to restart the app?"))
-    {
+    if (displayAvkonQueryDialog("Close","Are you sure you want to restart the app?")) {
         QProcess::startDetached(QApplication::applicationFilePath());
         exit(12);
         hideChatIcon();
@@ -252,23 +245,20 @@ void QAvkonHelper::restartAppMigra() {
 }
 
 bool QAvkonHelper::displayAvkonQueryDialog(QString title, QString message) {
-    // based on https://github.com/huellif/RebootMe/blob/master/main.cpp, Fabian H�llmantel
+    // based on https://github.com/huellif/RebootMe/blob/master/main.cpp, Fabian Hullmantel
 
-    TPtrC16 aTitle(reinterpret_cast<const TUint16*>(title.utf16()));     // convert title to Symbian string
-    TPtrC16 aMessage(reinterpret_cast<const TUint16*>(message.utf16())); // convert message to Symbian string
+    CAknGlobalMsgQuery* pDlg = CAknGlobalMsgQuery::NewL(); //creating the pointer
+    CleanupStack::PushL(pDlg);                             //exception handling
+    TRequestStatus iStatus;                                //the app should wait until the user selected an option
 
-    CAknGlobalMsgQuery* pDlg = CAknGlobalMsgQuery::NewL();//creating the pointer
-    CleanupStack::PushL(pDlg);                      //exception handling
-    TRequestStatus iStatus;                         //the app should wait until the user selected an option
-    pDlg->ShowMsgQueryL(iStatus, aMessage, R_AVKON_SOFTKEYS_YES_NO, aTitle, KNullDesC,0,-1,CAknQueryDialog::ENoTone);
-    // in the above line iStatus makes it wait for user selection
-    // R_AVKON_SOFTKEYS_YES_NO displays yes and no buttons
-    // KNullDesC means no image in the window
-    // 0 and -1 means no icon
-    // the last one disables sound
+    pDlg->ShowMsgQueryL(iStatus, convertToSymbianString(message), R_AVKON_SOFTKEYS_YES_NO, convertToSymbianString(title), KNullDesC,0,-1,CAknQueryDialog::ENoTone);
 
     User::WaitForRequest(iStatus);                  //the app should wait until the user selected an option
 
     CleanupStack::PopAndDestroy(pDlg);              //freeing CleanupStack
-    if (iStatus.Int() == EAknSoftkeyYes) return true; else return false;
+    return iStatus.Int() == EAknSoftkeyYes;
+}
+
+TPtrC16 QAvkonHelper::convertToSymbianString(QString string) {
+  return reinterpret_cast<const TUint16*>(string.utf16());
 }

@@ -80,6 +80,8 @@ private:
     AvkonMedia* iAudioPlayer;
 
     bool _switchToApp;
+
+    TPtrC16 convertToSymbianString(QString string);
     
 signals:
     
