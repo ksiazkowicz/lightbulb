@@ -70,7 +70,7 @@ void UpdateManager::compareVersions() {
   }
 
   // compare release date (remember to update this every build)
-  if (getUpdateDate() > QDateTime::fromString("30-08-2014","dd-MM-yyyy"))
+  if (getUpdateDate() > QDateTime::fromString("06-09-2014","dd-MM-yyyy"))
       updateAvailable = true;
 
   // emit signal

@@ -65,8 +65,7 @@ Item {
             onClicked: {
                 switch (tmpValue) {
                     case 2: tmpValue = 1; break;
-                    case 1: tmpValue = 4; break;
-                    case 4: tmpValue = 2; break;
+                    case 1: tmpValue = 2; break;
                 }
                 settings.sInt(tmpValue, "notifications", "blinkScreenDevice")
             }
