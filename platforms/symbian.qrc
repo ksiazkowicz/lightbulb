@@ -1,0 +1,157 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="avatar">symbian/images/avatar.png</file>
+        <file alias="unread-count">symbian/images/unread-count.svg</file>
+        <file alias="unread-mark">symbian/images/unread-mark.svg</file>
+        <file alias="unread-mark_inverse">symbian/images/unread-mark_inverse.svg</file>
+        <file alias="splash">symbian/images/splash.png</file>
+        <file alias="avatar-mask">symbian/images/avatar_mask.svg</file>
+        <file alias="message">symbian/images/messaging.svg</file>
+        <file alias="avatar-mask_inverse">symbian/images/avatar_mask_inverse.svg</file>
+        <file alias="muc_modOverlay">symbian/images/muc_moderator.svg</file>
+        <file alias="errorIcon">symbian/images/errorIcon.svg</file>
+        <file alias="muc">symbian/images/muc.png</file>
+        <file alias="attention">symbian/images/attention.svg</file>
+        <file alias="updateIcon">symbian/images/updateIcon.svg</file>
+        <file alias="subRequestIcon">symbian/images/subRequestIcon.svg</file>
+        <file alias="incomingTransfer">symbian/images/incomingTransfer.svg</file>
+        <file alias="outcomingTransfer">symbian/images/outcomingTransfer.svg</file>
+        <file alias="qml/main.qml">symbian/qml/main.qml</file>
+		
+		<file>global/qml/Globals.qml</file>
+        <file alias="Lightbulb.svg">global/images/Fluorescent.svg</file>
+        <file>global/qml/Notifications.qml</file>
+    </qresource>
+    <qresource prefix="/presence">
+        <file alias="away">symbian/images/presence/presence-away.svg</file>
+        <file alias="busy">symbian/images/presence/presence-busy.svg</file>
+        <file alias="chatty">symbian/images/presence/presence-chatty.svg</file>
+        <file alias="offline">symbian/images/presence/presence-offline.svg</file>
+        <file alias="online">symbian/images/presence/presence-online.svg</file>
+        <file alias="xa">symbian/images/presence/presence-xa.svg</file>
+        <file alias="unknown">symbian/images/presence/presence-unknown.svg</file>
+    </qresource>
+    <qresource prefix="/dialogs">
+        <file alias="Contact/Add">symbian/qml/Dialogs/AddContact.qml</file>
+        <file alias="Status/Change">symbian/qml/Dialogs/ChangeStatus.qml</file>
+        <file alias="Status/Reconnect">symbian/qml/Dialogs/ReconnectDialog.qml</file>
+        <file alias="Contact/Rename">symbian/qml/Dialogs/RenameContact.qml</file>
+        <file alias="Settings/Vibration">symbian/qml/Dialogs/VibrationSettings.qml</file>
+        <file alias="AccountSwitcher">symbian/qml/Dialogs/AccountSwitcher.qml</file>
+        <file alias="Contributors">symbian/qml/Dialogs/Contributors.qml</file>
+        <file alias="Resources">symbian/qml/Dialogs/ResourcesDialog.qml</file>
+        <file alias="AccountDetails">symbian/qml/Dialogs/AccountDetails.qml</file>
+        <file alias="AccessPointSelector">symbian/qml/Dialogs/AccessPointsDialog.qml</file>
+        <file alias="MUC/Join">symbian/qml/Dialogs/MucJoinDialog.qml</file>
+        <file alias="MUC/Participants">symbian/qml/Dialogs/MucParticipantsDialog.qml</file>
+        <file alias="MUC/Query">symbian/qml/Dialogs/MucQueryDialog.qml</file>
+    </qresource>
+    <qresource prefix="/pages">
+        <file alias="About">symbian/qml/Pages/AboutPage.qml</file>
+        <file alias="AccountsAdd">symbian/qml/Pages/AccountAddPage.qml</file>
+        <file alias="Roster">symbian/qml/Pages/RosterPage.qml</file>
+        <file alias="VCard">symbian/qml/Pages/VCardPage.qml</file>
+        <file alias="Preferences">symbian/qml/Pages/PreferencesPage.qml</file>
+        <file alias="FirstRun">symbian/qml/Pages/FirstRunPage.qml</file>
+        <file alias="Accounts">symbian/qml/Pages/AccountsPage.qml</file>
+        <file alias="Events">symbian/qml/Pages/Events.qml</file>
+        <file alias="Migration">symbian/qml/Pages/MigrationPage.qml</file>
+        <file alias="Conversation">symbian/qml/Pages/ConversationPage.qml</file>
+        <file alias="LogView">symbian/qml/Pages/LogPage.qml</file>
+    </qresource>
+    <qresource prefix="/toolbar">
+        <file alias="close">symbian/images/toolbar/toolbar-close.svg</file>
+        <file alias="close_inverse">symbian/images/toolbar/toolbar-close_inverse.svg</file>
+        <file alias="edit">symbian/images/toolbar/toolbar-edit.svg</file>
+        <file alias="edit_inverse">symbian/images/toolbar/toolbar-edit_inverse.svg</file>
+        <file alias="ok">symbian/images/toolbar/toolbar-ok.svg</file>
+        <file alias="ok_inverse">symbian/images/toolbar/toolbar-ok_inverse.svg</file>
+        <file alias="send">symbian/images/toolbar/toolbar-send.svg</file>
+        <file alias="send_inverse">symbian/images/toolbar/toolbar-send_inverse.svg</file>
+        <file alias="chats">symbian/images/toolbar/toolbar-chats.svg</file>
+        <file alias="chats_inverse">symbian/images/toolbar/toolbar-chats_inverse.svg</file>
+        <file alias="eye">symbian/images/toolbar/eye.svg</file>
+        <file alias="eye_inverse">symbian/images/toolbar/eye_inverse.svg</file>
+    </qresource>
+    <qresource prefix="/FirstRun">
+        <file alias="01">symbian/qml/FirstRun/01_gettingStarted.qml</file>
+        <file alias="03">symbian/qml/FirstRun/03_accountSetup.qml</file>
+        <file alias="07">symbian/qml/FirstRun/07_congratulations.qml</file>
+        <file alias="img/popup01">symbian/images/popupLayout01.png</file>
+        <file alias="img/popup02">symbian/images/popupLayout02.png</file>
+        <file alias="img/black">symbian/images/black.png</file>
+        <file alias="img/white">symbian/images/white.png</file>
+    </qresource>
+    <qresource prefix="/Preflets">
+        <file alias="Popups">symbian/qml/Preflets/Popups.qml</file>
+        <file alias="Colors">symbian/qml/Preflets/Colors.qml</file>
+        <file alias="Advanced">symbian/qml/Preflets/Advanced.qml</file>
+        <file alias="Roster">symbian/qml/Preflets/Roster.qml</file>
+        <file alias="Events">symbian/qml/Preflets/Events.qml</file>
+        <file alias="Connection">symbian/qml/Preflets/Connection.qml</file>
+        <file alias="LED">symbian/qml/Preflets/LED.qml</file>
+    </qresource>
+    <qresource prefix="/Events">
+        <file alias="alarm">symbian/images/events/alarm.svg</file>
+        <file alias="alarm_disabled">symbian/images/events/alarm_disabled.svg</file>
+        <file alias="vibra">symbian/images/events/vibra.svg</file>
+        <file alias="vibra_disabled">symbian/images/events/vibra_disabled.svg</file>
+        <file alias="popup">symbian/images/events/popup.svg</file>
+        <file alias="popup_disabled">symbian/images/events/popup_disabled.svg</file>
+        <file alias="alarm_disabled_inverse">symbian/images/events/alarm_disabled_inverse.svg</file>
+        <file alias="alarm_inverse">symbian/images/events/alarm_inverse.svg</file>
+        <file alias="popup_disabled_inverse">symbian/images/events/popup_disabled_inverse.svg</file>
+        <file alias="popup_inverse">symbian/images/events/popup_inverse.svg</file>
+        <file alias="vibra_disabled_inverse">symbian/images/events/vibra_disabled_inverse.svg</file>
+        <file alias="vibra_inverse">symbian/images/events/vibra_inverse.svg</file>
+    </qresource>
+    <qresource prefix="/accounts">
+        <file alias="Facebook">symbian/images/accounts/Facebook.svg</file>
+        <file alias="Hangouts">symbian/images/accounts/Hangouts.svg</file>
+        <file alias="XMPP">symbian/images/accounts/XMPP.svg</file>
+    </qresource>
+    <qresource prefix="/menus">
+        <file alias="UrlContext">symbian/qml/Menus/UrlContextMenu.qml</file>
+        <file alias="Roster/Options">symbian/qml/Menus/RosterMenu.qml</file>
+        <file alias="Roster/Contact">symbian/qml/Menus/ContactMenu.qml</file>
+        <file alias="Messages">symbian/qml/Menus/MessagesOptions.qml</file>
+        <file alias="MessageContext">symbian/qml/Menus/MessageContextMenu.qml</file>
+        <file alias="MucOptions">symbian/qml/Menus/MucMenu.qml</file>
+        <file alias="Archive">symbian/qml/Menus/ArchiveMenu.qml</file>
+    </qresource>
+    <qresource prefix="/Components">
+        <file alias="AccountItem.qml">symbian/qml/Components/AccountItem.qml</file>
+        <file alias="DetailsItem.qml">symbian/qml/Components/DetailsItem.qml</file>
+        <file alias="LineItem.qml">symbian/qml/Components/LineItem.qml</file>
+        <file alias="HeaderButton.qml">symbian/qml/Components/HeaderButton.qml</file>
+        <file alias="Convo/ArchiveDelegate">symbian/qml/Components/ConvoArchiveDelegate.qml</file>
+        <file alias="Convo/IncomingDelegate">symbian/qml/Components/ConvoIncomingMsgDelegate.qml</file>
+        <file alias="Convo/OutcomingDelegate">symbian/qml/Components/ConvoOutcomingMsgDelegate.qml</file>
+        <file alias="Convo/InformationDelegate">symbian/qml/Components/ConvoInformationDelegate.qml</file>
+        <file alias="ChatDelegate.qml">symbian/qml/Components/ChatDelegate.qml</file>
+        <file alias="MucParticipantDelegate.qml">symbian/qml/Components/MucParticipantDelegate.qml</file>
+        <file alias="EventDelegate.qml">symbian/qml/Components/EventDelegate.qml</file>
+        <file alias="RosterItemDelegate.qml">symbian/qml/Components/RosterItemDelegate.qml</file>
+        <file alias="AccountDelegate.qml">symbian/qml/Components/AccountDelegate.qml</file>
+    </qresource>
+    <qresource prefix="/networks">
+        <file alias="2G">symbian/images/networks/2G.svg</file>
+        <file alias="Bluetooth">symbian/images/networks/Bluetooth.svg</file>
+        <file alias="WLAN">symbian/images/networks/wlan.svg</file>
+        <file alias="Default">symbian/images/networks/Internet.svg</file>
+        <file alias="2G_inverse">symbian/images/networks/2G_inverse.svg</file>
+        <file alias="Bluetooth_inverse">symbian/images/networks/Bluetooth_inverse.svg</file>
+        <file alias="Default_inverse">symbian/images/networks/Internet_inverse.svg</file>
+        <file alias="WLAN_inverse">symbian/images/networks/wlan_inverse.svg</file>
+    </qresource>
+    <qresource prefix="/convo">
+        <file alias="defaultSkin/logBeginOverlay">symbian/images/convo/logBeginOverlay.svg</file>
+        <file alias="defaultSkin/logEndOverlay">symbian/images/convo/logEndOverlay.svg</file>
+        <file alias="defaultSkin/incoming">symbian/images/convo/bubble_incTriangle.png</file>
+        <file alias="defaultSkin/outcoming">symbian/images/convo/bubble_outTriangle.png</file>
+        <file alias="defaultSkin/unreadIcon">symbian/images/convo/symMsgUnreadIcon.png</file>
+        <file alias="defaultSkin/infoIcon">symbian/images/convo/infoIcon.svg</file>
+        <file alias="defaultSkin/errorIcon">symbian/images/convo/errorIcon.svg</file>
+        <file alias="defaultSkin/alertIcon">symbian/images/convo/alertIcon.svg</file>
+    </qresource>
+</RCC>

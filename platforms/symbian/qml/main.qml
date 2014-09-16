@@ -27,6 +27,7 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 import com.nokia.extras 1.1
 import lightbulb 1.0
+import "../../global/qml"
 
 PageStackWindow {
     id: main

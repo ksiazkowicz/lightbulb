@@ -37,6 +37,11 @@ class RosterListModel : public QStandardItemModel
 
 public:
   explicit RosterListModel( QObject *parent = 0) :QStandardItemModel(parent) {
+  #if QT_VERSION >= 0x050000
+    }
+    QHash<int,QByteArray> roleNames() {
+  #endif
+
     QHash<int, QByteArray> names;
     names[RosterItemModel::Name] = "name";
     names[RosterItemModel::Jid] = "jid";
@@ -47,7 +52,11 @@ public:
     names[RosterItemModel::AccountId] = "accountId";
     names[RosterItemModel::ItemId] = "itemId";
 
+    #if QT_VERSION < 0x050000
     this->setRoleNames(names);
+    #else
+    return names;
+    #endif
   }
 
   Q_INVOKABLE void append( RosterItemModel *item ) { this->appendRow((QStandardItem*)item); }

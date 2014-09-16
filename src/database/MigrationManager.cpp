@@ -1,7 +1,7 @@
 #include "MigrationManager.h"
 #include "Settings.h"
-#include <QFile.h>
-#include <QDir.h>
+#include <QFile>
+#include <QDir>
 #include <QDebug>
 #include <QSettings>
 #include <QVariant>

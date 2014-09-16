@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "qmlvcard.h"
 #include <QDebug>
 #include "StoreVCard.h"
-#include <QDir.h>
+#include <QDir>
 
 QMLVCard::QMLVCard(QObject *parent) : QObject(parent)
 {

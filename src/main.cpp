@@ -61,9 +61,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "database/MigrationManager.h"
 #include "xmpp/EventsManager.h"
 
-Q_DECL_EXPORT int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
+#ifdef Q_OS_SAILFISH
+#include <sailfishapp.h>
+#include <QGuiApplication>
+#endif
 
+Q_DECL_EXPORT int main(int argc, char *argv[]) {
+    #ifdef Q_OS_SAILFISH
+    QGuiApplication *app = SailfishApp::application(argc,argv);
+    #else
+    QApplication* app = new QApplication(argc, argv);
+    #endif
     #ifdef Q_OS_SYMBIAN
     QSplashScreen *splash = new QSplashScreen(QPixmap(":/splash"));
     splash->show();
@@ -115,20 +123,33 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     viewer.viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
     viewer.viewport()->setAttribute(Qt::WA_NoSystemBackground);
     viewer.setProperty("orientationMethod", 1);
-    viewer.setSource( QUrl(QLatin1String("qrc:/qml/Symbian.qml")) );
+    viewer.setSource( QUrl(QLatin1String("qrc:/qml/main.qml")) );
     viewer.showFullScreen();
     splash->finish(&viewer);
     splash->deleteLater();
     #else
     // Qt5 cool stuff
-    QQmlApplicationEngine engine;
-    engine.rootContext()->setContextProperty("emoticon",&parser);
-    engine.rootContext()->setContextProperty("appVersion",VERSION);
-    engine.rootContext()->setContextProperty("migration",&migration);
-    engine.rootContext()->setContextProperty("updater",&updater);
-    engine.rootContext()->setContextProperty("settings",&settings);
-    engine.rootContext()->setContextProperty("xmppConnectivity",&xmpp);
-    engine.load(QUrl(QStringLiteral("qrc:///qml/Desktop.qml")));
+    #ifdef Q_OS_SAILFISH
+    QQuickView *viewer = SailfishApp::createView();
+    QObject::connect(viewer->engine(), SIGNAL(quit()), app, SLOT(quit()));
+    viewer->setSource(QUrl("qrc:///qml/main.qml"));
+    viewer->rootContext()->setContextProperty("emoticon",&parser);
+    viewer->rootContext()->setContextProperty("appVersion",VERSION);
+    viewer->rootContext()->setContextProperty("migration",&migration);
+    viewer->rootContext()->setContextProperty("updater",&updater);
+    viewer->rootContext()->setContextProperty("settings",&settings);
+    viewer->rootContext()->setContextProperty("xmppConnectivity",&xmpp);
+    #else
+    QQmlApplicationEngine viewer;
+    viewer.rootContext()->setContextProperty("emoticon",&parser);
+    viewer.rootContext()->setContextProperty("appVersion",VERSION);
+    viewer.rootContext()->setContextProperty("migration",&migration);
+    viewer.rootContext()->setContextProperty("updater",&updater);
+    viewer.rootContext()->setContextProperty("settings",&settings);
+    viewer.rootContext()->setContextProperty("xmppConnectivity",&xmpp);
+    viewer.load(QUrl(QStringLiteral("qrc:///qml/main.qml")));
     #endif
-    return app.exec();
+    #endif
+
+    return app->exec();
 }

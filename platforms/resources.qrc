@@ -1,0 +1,46 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/Globals.qml</file>
+        <file alias="Lightbulb.svg">images/Fluorescent.svg</file>
+        <file>qml/Notifications.qml</file>
+    </qresource>
+    <qresource prefix="/smileys">
+        <file alias="angry">images/smileys/angry.png</file>
+        <file alias="confused">images/smileys/confused.png</file>
+        <file alias="cool">images/smileys/cool.png</file>
+        <file alias="cry">images/smileys/cry.png</file>
+        <file alias="evil">images/smileys/evil.png</file>
+        <file alias="happy">images/smileys/happy.png</file>
+        <file alias="heart">images/smileys/heart.png</file>
+        <file alias="indifference">images/smileys/indifference.png</file>
+        <file alias="kiss">images/smileys/kiss.png</file>
+        <file alias="laugh">images/smileys/laugh.png</file>
+        <file alias="laugh2">images/smileys/laugh2.png</file>
+        <file alias="nerdsmile">images/smileys/nerdsmile.png</file>
+        <file alias="quiet">images/smileys/quiet.png</file>
+        <file alias="sad">images/smileys/sad.png</file>
+        <file alias="skeptical">images/smileys/skeptical.png</file>
+        <file alias="smile">images/smileys/smile.png</file>
+        <file alias="suprised">images/smileys/suprised.png</file>
+        <file alias="tired">images/smileys/tired.png</file>
+        <file alias="tounge">images/smileys/tounge.png</file>
+        <file alias="wink">images/smileys/wink.png</file>
+        <file alias="wink2">images/smileys/wink2.png</file>
+        <file alias="wink3">images/smileys/wink3.png</file>
+        <file alias="fb/angel">images/smileys/fb/angel.png</file>
+        <file alias="fb/cry">images/smileys/fb/cry.png</file>
+        <file alias="fb/curlylips">images/smileys/fb/curlylips.png</file>
+        <file alias="fb/devil">images/smileys/fb/devil.png</file>
+        <file alias="fb/grumpy">images/smileys/fb/grumpy.png</file>
+        <file alias="fb/pacman">images/smileys/fb/pacman.png</file>
+        <file alias="fb/peng">images/smileys/fb/penguin.png</file>
+        <file alias="fb/poop">images/smileys/fb/poop.png</file>
+        <file alias="fb/putnam">images/smileys/fb/putnam.png</file>
+        <file alias="fb/robot">images/smileys/fb/robot.png</file>
+        <file alias="fb/shark">images/smileys/fb/shark.png</file>
+        <file alias="fb/thumb">images/smileys/fb/thumb.png</file>
+        <file alias="fb/unsure">images/smileys/fb/unshure.png</file>
+        <file alias="fb/upset">images/smileys/fb/upset.png</file>
+        <file alias="fb/kiki">images/smileys/fb/kiki.png</file>
+    </qresource>
+</RCC>

@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *********************************************************************/
 
 #include "MyXmppClient.h"
-#include "QSettings.h"
+#include <QSettings>
 
 const bool xmppDebugEnabled = false;
 

@@ -20,11 +20,39 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #######################################################################
 
-QT += declarative network sql
-TEMPLATE = app
+QT += network sql
+sailfish {
+    DEFINES += Q_OS_SAILFISH # it's good to make Qt know we're building for Sailfish
+    CONFIG += sailfishapp
+    TARGET = fluorescent
+
+    RESOURCES += platforms/sailfish.qrc
+    #qxmpp
+    include(qxmpp/qxmpp.pri)
+    INCLUDEPATH += qxmpp/base/ qxmpp/client
+
+    #other files, useful for haxing qml code
+    OTHER_FILES += platforms/sailfish/qml/Dialogs/*.* \
+                   platforms/sailfish/qml/*.* \
+                   platforms/sailfish/qml/Pages/*.* \
+                   platforms/sailfish/qml/Cover/*.* \
+                   platforms/sailfish/qml/FirstRun/*.* \
+                   platforms/sailfish/qml/JavaScript/*.* \
+                   platforms/sailfish/qml/Preflets/*.* \
+                   platforms/sailfish/qml/Menus/*.* \
+                   platforms/sailfish/qml/Components/*.*
+
+} else {
+    TEMPLATE = app
+    macx{ RESOURCES += platforms/desktop.qrc }
+    win32{ RESOURCES += platforms/desktop.qrc }
+    linux{ RESOURCES += platforms/desktop.qrc }
+}
 
 VERSION = 0.4.0
 DEFINES += VERSION=\"\\\"$$VERSION\\\"\"
+
+OTHER_FILES += README.md platforms/global/qml/*.*
 
 include(qmlpp.pri)
 
@@ -33,6 +61,10 @@ symbian {
     TARGET.CAPABILITY += NetworkServices WriteDeviceData ReadDeviceData ReadUserData WriteUserData LocalServices
     TARGET.EPOCHEAPSIZE = 0x200000 0x1F400000
     CONFIG += qt-components
+    ICON = platforms/global/images/Fluorescent.svg
+    QT += declarative
+
+    RESOURCES += platforms/symbian.qrc
 
     vendorinfo += "%{\"n1958 Apps\"}" ":\"n1958 Apps\""
     my_deployment.pkg_prerules = vendorinfo
@@ -56,17 +88,16 @@ symbian {
     include(qmlapplicationviewer/qmlapplicationviewer.pri)
     qtcAddDeployment()
 
-    qmlPreprocessFolder(qml, @QtQuick1, 1.1)
+    qmlPreprocessFolder(platforms/global, @QtQuick1, 1.1)
 
-    OTHER_FILES += README.md \
-        qml/Dialogs/*.* \
-        qml/*.* \
-        qml/Pages/*.* \
-        qml/FirstRun/*.* \
-        qml/JavaScript/*.* \
-        qml/Preflets/*.* \
-        qml/Menus/*.* \
-        qml/Components/*.*
+    OTHER_FILES += platforms/symbian/qml/Dialogs/*.* \
+                   platforms/symbian/qml/*.* \
+                   platforms/symbian/qml/Pages/*.* \
+                   platforms/symbian/qml/FirstRun/*.* \
+                   platforms/symbian/qml/JavaScript/*.* \
+                   platforms/symbian/qml/Preflets/*.* \
+                   platforms/symbian/qml/Menus/*.* \
+                   platforms/symbian/qml/Components/*.*
 
     LIBS += -lavkon \
             -laknnotify \
@@ -89,12 +120,16 @@ symbian {
             -lcntmodel
 } else {
     QT += qml quick widgets
-    include(deployment.pri)
-    include(../qxmpp/qxmpp.pri)
-    QMAKE_LIBDIR += ../qxmpp/src
-    INCLUDEPATH += $$QXMPP_INCLUDEPATH
-    LIBS += $$QXMPP_LIBS
-    qmlPreprocessFolder(qml, @QtQuick2, 2.0)
+    !sailfish {
+        include(deployment.pri)
+    }
+    packagesExist(qxmpp_d) {
+        include(../qxmpp/qxmpp.pri)
+        QMAKE_LIBDIR += ../qxmpp/src
+        INCLUDEPATH += $$QXMPP_INCLUDEPATH
+        LIBS += $$QXMPP_LIBS
+    }
+    qmlPreprocessFolder(platforms/global, @QtQuick2, 2.0)
 }
 
 # If your application uses the Qt Mobility libraries, uncomment the following
@@ -155,10 +190,3 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/xmpp/EventsManager.h \
     src/UpdateManager.h \
     src/models/RosterItemFilter.h
-
-DEPLOYMENT += addFiles
-
-RESOURCES += resources.qrc
-
-OTHER_FILES += \
-    qml/Components/AccountDelegate.qml

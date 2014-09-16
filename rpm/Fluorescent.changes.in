@@ -1,0 +1,12 @@
+# Rename this file as test.changes to include changelog
+# entries in your RPM file.
+#
+# Add new changelog entries following the format below.
+# Add newest entries to the top of the list.
+# Separate entries from eachother with a blank line.
+
+# * date Author's Name <author's email> version-release
+# - Summary of changes
+
+* Sat Sep 13 2014 Maciej Janiszewski <pisarzk@gmail.com> 0.4.0-1
+- Initial Sailfish port

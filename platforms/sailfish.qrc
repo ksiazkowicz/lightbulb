@@ -1,0 +1,15 @@
+<RCC>
+	<qresource>
+        <file alias="qml/main.qml">sailfish/qml/main.qml</file>
+		<file>global/qml/Globals.qml</file>
+        <file alias="Lightbulb.svg">global/images/Fluorescent.svg</file>
+        <file>global/qml/Notifications.qml</file>
+	</qresource>
+    <qresource prefix="/pages">
+        <file alias="Accounts">sailfish/qml/pages/Accounts.qml</file>
+        <file alias="Events">sailfish/qml/pages/Events.qml</file>
+    </qresource>
+    <qresource prefix="/cover">
+        <file alias="CoverPage">sailfish/qml/cover/CoverPage.qml</file>
+    </qresource>
+</RCC>
