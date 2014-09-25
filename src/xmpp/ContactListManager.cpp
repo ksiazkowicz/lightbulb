@@ -75,8 +75,10 @@ void ContactListManager::clearPresenceForAccount(QString accountId) {
   RosterItemModel* element;
   for (int i=0;i<roster->count();i++) {
       element = (RosterItemModel*)roster->itemFromIndex(roster->index(i,0));
-      if (element != 0 && element->data(RosterItemModel::AccountId).toString() == accountId)
+      if (element != 0 && element->data(RosterItemModel::AccountId).toString() == accountId) {
         element->set("qrc:/presence/offline",RosterItemModel::Presence);
+        emit forceXmppPresenceChanged(accountId,element->data(RosterItemModel::Jid).toString(),element->data(RosterItemModel::Resource).toString(),"qrc:/presence/offline",element->data(RosterItemModel::StatusText).toString());
+      }
     }
   roster->sort(0);
 }

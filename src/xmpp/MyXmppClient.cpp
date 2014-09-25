@@ -258,7 +258,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
 {
     QString bareJid_from = QXmppUtils::jidToBareJid(xmppMsg.from());
 
-    QString messageDate = xmppMsg.stamp().isNull() ? QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss") : xmppMsg.stamp().toString("dd-MM-yy hh:mm:ss");
+    QString messageDate = xmppMsg.stamp().isNull() ? QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss") : xmppMsg.stamp().toLocalTime().toString("dd-MM-yy hh:mm:ss");
 
     if( xmppMsg.state() == QXmppMessage::Active ) qDebug() << "Msg state is QXmppMessage::Active";
     else if( xmppMsg.state() == QXmppMessage::Inactive ) qDebug() << "Msg state is QXmppMessage::Inactive";

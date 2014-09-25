@@ -24,6 +24,7 @@ public:
 signals:
   void rosterChanged();
   void contactNameChanged(QString accountId, QString jid, QString name);
+  void forceXmppPresenceChanged(QString m_accountId, QString bareJid, QString resources, QString picStatus, QString txtStatus);
   
 public slots:
   void addContact(QString acc,QString jid, QString name);

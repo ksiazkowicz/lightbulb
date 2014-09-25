@@ -178,6 +178,10 @@ void EventsManager::appendTransferJob(QString accountId, QString bareJid, QStrin
 
 
 void EventsManager::removeEvent(int id) {
+  // check if id is valid (because it doesn't have to) and crash if not
+  if (id > events->rowCount()-1 || id < 0)
+    return;
+
   // assume that id is a row ID and remove it
   events->takeRow(id);
   events->countWasChanged();
