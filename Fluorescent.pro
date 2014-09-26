@@ -52,8 +52,7 @@ sailfish {
 VERSION = 0.4.0
 DEFINES += VERSION=\"\\\"$$VERSION\\\"\"
 
-OTHER_FILES += README.md platforms/global/qml/*.* \
-    platforms/symbian/qml/Components/SettingField.qml
+OTHER_FILES += README.md platforms/global/qml/*.*
 
 include(qmlpp.pri)
 

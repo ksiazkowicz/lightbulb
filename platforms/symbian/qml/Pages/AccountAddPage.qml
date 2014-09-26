@@ -29,7 +29,6 @@ import "../Components"
 Page {
     id: accAddPage
 
-    tools: toolBarLayout
     property string accGRID: ""
     property string pageName: accGRID !== "" ? qsTr("Editing ") + xmppConnectivity.getAccountName(accGRID) : "New account"
 
@@ -157,19 +156,6 @@ Page {
                 onHighlightedChanged: if (highlighted) unhighlightFields("resource");
             }
 
-            CheckBox {
-               id: goOnline
-               text: qsTr("Go online on startup")
-               enabled: selectionDialog.selectedIndex != -1
-               checked: settings.gBool(accGRID,'connectOnStart')
-               platformInverted: main.platformInverted
-            }
-
-            Item {
-                height: 5
-                width: accAddPage.width
-            }
-
             SettingField {
                 id: serverDetails
                 settingLabel: "Server details"
@@ -177,10 +163,19 @@ Page {
                 enabled: selectionDialog.selectedIndex == 2
                 visible: enabled
                 width: parent.width
+                height: visible ? 66 : 0
 
                 // need support for input validation
 
                 onHighlightedChanged: if (highlighted) unhighlightFields("serverDetails");
+            }
+
+            CheckBox {
+               id: goOnline
+               text: qsTr("Go online on startup")
+               enabled: selectionDialog.selectedIndex != -1
+               checked: settings.gBool(accGRID,'connectOnStart')
+               platformInverted: main.platformInverted
             }
         }
 
@@ -189,44 +184,29 @@ Page {
 
     /******************************************/
 
-    ToolBarLayout {
-        id: toolBarLayout
+    tools: ToolBarLayout {
         ToolButton {
-            iconSource: main.platformInverted ? "toolbar-back_inverse" : "toolbar-back"
+            platformInverted: main.platformInverted
+            iconSource: "toolbar-back"
             onClicked: {
                 pageStack.replace( "qrc:/pages/Accounts" )
                 main.splitscreenY = 0
             }
         }
-
         ToolButton {
             iconSource: main.platformInverted ? "qrc:/toolbar/ok_inverse" : "qrc:/toolbar/ok"
             enabled: login.value !== "" && password.value !== "" && selectionDialog.selectedIndex != -1
             onClicked: {
-                var grid,vName,icon,goonline,host,port;
-                if (accGRID != "") grid = accGRID;
-                    else grid = settings.generateGRID()
-                vName = name.value
-                if (name.value == "") {
-                    vName = xmppConnectivity.generateAccountName(host,jid);
-                }
+                var grid,vName,icon;
+                grid = accGRID != "" ? accGRID : settings.generateGRID();
+                vName = name.value == "" ? xmppConnectivity.generateAccountName(host,jid) : name.value
                 switch (selectionDialog.selectedIndex) {
-                    case 0:
-                        icon = "Facebook";
-                        break;
-                    case 1:
-                        icon = "Hangouts";
-                        break;
-                    case 2:
-                        icon = "XMPP";
-                        break;
+                    case 0: icon = "Facebook"; break;
+                    case 1: icon = "Hangouts"; break;
+                    case 2: icon = "XMPP"; break;
                 }
-                goonline = goOnline.checked
 
-                host = serverDetails.value.split(":")[0];
-                port = serverDetails.value.split(":")[1];
-
-                settings.setAccount( grid, vName, icon, login.value, password.value, goonline, resource.value, host, port,  true )
+                settings.setAccount(grid,vName,icon,login.value, password.value,goOnline.checked,resource.value,serverDetails.value.split(":")[0],serverDetails.value.split(":")[1],true)
                 pageStack.pop()
             }
         }

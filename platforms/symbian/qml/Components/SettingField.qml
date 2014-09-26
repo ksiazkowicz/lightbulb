@@ -34,28 +34,24 @@ Rectangle {
             id: dataInputField
             color: platformInverted ? (highlighted ? "white" : "black") : (highlighted ? "black" : "white")
             font.pixelSize: platformStyle.fontSizeMedium
+            font.bold: true
             width: parent.width
 
             onFocusChanged: {
                 // highlight the field
                 if (focus)
                     highlighted = true;
-                else {
-                    // not focused, reset the splitscreen and return
-                    main.splitscreenY = 0;
-                    return;
-                }
 
                 // (main.height - inputContext.height = visible space)
-                var visibleSpace = main.height - inputContext.height;
+                var visibleSpace = Math.abs(main.height - inputContext.height);
                 // calculate position + required space (font size + padding)
-                var posAndSpace = settingField.y + platformStyle.fontSizeMedium + platformStyle.paddingSmall;
+                var posAndSpace = Math.abs(settingField.y + platformStyle.fontSizeMedium + platformStyle.paddingSmall);
 
                 // check if position + required space > (visibleSpace - settingField.height) to determine if there is need to move it up or not
-                var isMovementRequired = posAndSpace > visibleSpace-settingField.height;
+                var isMovementRequired = posAndSpace > Math.abs(visibleSpace-settingField.height);
 
                 // set splitscreenY
-                main.splitscreenY = isMovementRequired ? (posAndSpace - visibleSpace + settingField.height) : 0
+                main.splitscreenY = isMovementRequired ? Math.abs(posAndSpace - visibleSpace + settingField.height) : 0
             }
 
             Connections {
@@ -67,6 +63,7 @@ Rectangle {
                 color: parent.color
                 opacity: 0.5
                 font.pixelSize: platformStyle.fontSizeMedium
+                font.bold: true
                 visible: dataInputField.text == ""
                 text: placeholder
             }
