@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import QtQuick 1.1
 import com.nokia.symbian 1.1
+import "../Components"
 
 Page {
     id: accAddPage
@@ -31,6 +32,14 @@ Page {
     tools: toolBarLayout
     property string accGRID: ""
     property string pageName: accGRID !== "" ? qsTr("Editing ") + xmppConnectivity.getAccountName(accGRID) : "New account"
+
+    function unhighlightFields(exception) {
+        if (exception !== "name") name.highlighted = false;
+        if (exception !== "password") password.highlighted = false;
+        if (exception !== "resource") resource.highlighted = false;
+        if (exception !== "login") login.highlighted = false;
+        if (exception !== "serverDetails") serverDetails.highlighted = false;
+    }
 
     Component.onCompleted: {
         if (accGRID != "") {
@@ -41,14 +50,13 @@ Page {
             else
                 selectionDialog.selectedIndex = 2;
 
-            tiName.text = settings.gStr(accGRID,'name')
-            tiJid.text  = settings.gStr(accGRID,'jid')
-            tiPass.text = settings.gStr(accGRID,'passwd')
-            tiHost.text = settings.gStr(accGRID,'host')
-            tiPort.text = settings.gStr(accGRID,'port')
-            tiResource.text = settings.gStr(accGRID,'resource')
-            if (tiName.text == "false")
-                tiName.text = "";
+            name.value = settings.gStr(accGRID,'name')
+            login.value = settings.gStr(accGRID,'jid')
+            password.value = settings.gStr(accGRID,'passwd')
+            serverDetails.value = settings.gStr(accGRID,'host') + ":" + settings.gStr(accGRID,'port')
+            resource.value = settings.gStr(accGRID,'resource')
+            if (name.value == "false")
+                name.value = "";
         }
     }
 
@@ -77,7 +85,7 @@ Page {
                 anchors { left: parent.left; right: parent.right }
                 title: "Server"
 
-                onClicked: selectionDialog.open()
+                onClicked: { unhighlightFields(""); selectionDialog.open() }
 
                 SelectionDialog {
                     id: selectionDialog
@@ -90,22 +98,21 @@ Page {
                         ListElement { name: "Generic XMPP server" }
                     }
                     onSelectedIndexChanged: {
-                        tiPass.text = ""
-                        tiPort.text = "5222"
+                        password.value = ""
                         switch (selectionDialog.selectedIndex) {
                             case 0: {
-                                tiJid.text = "@chat.facebook.com";
-                                tiHost.text = "chat.facebook.com";
+                                login.value = "@chat.facebook.com";
+                                serverDetails.value = "chat.facebook.com:5222";
                                 break;
                             }
                             case 1: {
-                                tiJid.text = "@gmail.com";
-                                tiHost.text = "talk.google.com";
+                                login.value = "@gmail.com";
+                                serverDetails.value = "talk.google.com:5222";
                                 break;
                             }
                             case 2: {
-                                tiJid.text = "";
-                                tiHost.text = "";
+                                login.value = "";
+                                serverDetails.value = "";
                                 break;
                             }
                         }
@@ -113,80 +120,41 @@ Page {
                 }
             }
 
-            Text {
-                text: "Name (optional)"
-                color: main.textColor
+            SettingField {
+                id: name
+                settingLabel: "Name (optional)"
+                width: parent.width
+                onHighlightedChanged: if (highlighted) unhighlightFields("name");
             }
-            TextField {
-                id: tiName
-                height: 50
+
+            SettingField {
+                id: login
+                settingLabel: "Login"
+                placeholder: "login@server.com"
                 enabled: selectionDialog.selectedIndex != -1
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: accAddPage.width - 10
-                onActiveFocusChanged: main.splitscreenY = 0
+                width: parent.width
+
+                onHighlightedChanged: if (highlighted) unhighlightFields("login");
             }
 
-            Text {
-                text: "Login"
-                color: main.textColor
-            }
-            TextField {
-                id: tiJid
-                height: 50
+            SettingField {
+                id: password
+                settingLabel: "Password"
                 enabled: selectionDialog.selectedIndex != -1
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: accAddPage.width - 10
-                placeholderText: qsTr("login@server.com")
-                onActiveFocusChanged: main.splitscreenY = 0
-            }
-
-            Item {
-                height: 5
-                width: accAddPage.width
-            }
-
-            Text {
-                text: "Password"
-                color: main.textColor
-            }
-
-            TextField {
-                id: tiPass
-                anchors.horizontalCenter: parent.horizontalCenter
-                enabled: selectionDialog.selectedIndex != -1
-                width: accAddPage.width-10
-                height: 50
+                width: parent.width
                 echoMode: TextInput.Password
-                placeholderText: qsTr("Password")
-                onActiveFocusChanged: main.splitscreenY = inputContext.height - (main.height - y) + 1.5*height
+
+                onHighlightedChanged: if (highlighted) unhighlightFields("password");
             }
 
-            Item { height: 5; width: accAddPage.width}
-
-            Item {
-                height: 5
-                width: accAddPage.width
-            }
-
-            Text {
-                text: "Resource (optional)"
-                color: main.textColor
-            }
-
-            TextField {
-                id: tiResource
-                height: 50
-                anchors.horizontalCenter: parent.horizontalCenter
+            SettingField {
+                id: resource
+                settingLabel: "Resource (optional)"
+                placeholder: "(default: Lightbulb)"
                 enabled: selectionDialog.selectedIndex != -1
-                width: accAddPage.width-10
-                placeholderText: qsTr("(default: Lightbulb)")
+                width: parent.width
 
-                onActiveFocusChanged: main.splitscreenY = inputContext.height - (main.height - y) + 1.5*height
-            }
-
-            Item {
-                height: 5
-                width: accAddPage.width
+                onHighlightedChanged: if (highlighted) unhighlightFields("resource");
             }
 
             CheckBox {
@@ -202,43 +170,18 @@ Page {
                 width: accAddPage.width
             }
 
-            Text {
-                text: "Server details"
-                color: main.textColor
-                visible: selectionDialog.selectedIndex == 2
+            SettingField {
+                id: serverDetails
+                settingLabel: "Server details"
+                placeholder: "talk.google.com:5222"
+                enabled: selectionDialog.selectedIndex == 2
+                visible: enabled
+                width: parent.width
+
+                // need support for input validation
+
+                onHighlightedChanged: if (highlighted) unhighlightFields("serverDetails");
             }
-
-            Rectangle {
-                id: somethingInteresting
-                height: 50
-                width: accAddPage.width-20
-                anchors.horizontalCenter: parent.horizontalCenter
-                visible: selectionDialog.selectedIndex == 2
-                color: "transparent"
-                TextField {
-                    id: tiHost
-                    width: parent.width-10-tiPort.width
-                    anchors.left: parent.left
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
-                    readOnly: !somethingInteresting.visible
-                    placeholderText: "talk.google.com"
-
-                    onActiveFocusChanged: main.splitscreenY = inputContext.height - (main.height - somethingInteresting.y) + 1.5*somethingInteresting.height
-                }
-                TextField {
-                   id: tiPort
-                   anchors.right: parent.right
-                   anchors.top: parent.top
-                   anchors.bottom: parent.bottom
-                   width: 60
-                   readOnly: !somethingInteresting.visible
-                   placeholderText: "5222"
-
-                   onActiveFocusChanged: main.splitscreenY = inputContext.height - (main.height - somethingInteresting.y) + 1.5*somethingInteresting.height
-                }
-            }
-
         }
 
     }
@@ -258,14 +201,14 @@ Page {
 
         ToolButton {
             iconSource: main.platformInverted ? "qrc:/toolbar/ok_inverse" : "qrc:/toolbar/ok"
-            enabled: tiJid.text !== "" && tiPass.text !== "" && selectionDialog.selectedIndex != -1
+            enabled: login.value !== "" && password.value !== "" && selectionDialog.selectedIndex != -1
             onClicked: {
-                var grid,name,icon,jid,pass,goonline,resource,host,port;
+                var grid,vName,icon,goonline,host,port;
                 if (accGRID != "") grid = accGRID;
                     else grid = settings.generateGRID()
-                name = tiName.text
-                if (tiName.text == "") {
-                    name = xmppConnectivity.generateAccountName(host,jid);
+                vName = name.value
+                if (name.value == "") {
+                    vName = xmppConnectivity.generateAccountName(host,jid);
                 }
                 switch (selectionDialog.selectedIndex) {
                     case 0:
@@ -278,14 +221,12 @@ Page {
                         icon = "XMPP";
                         break;
                 }
-                jid = tiJid.text
-                pass = tiPass.text
                 goonline = goOnline.checked
-                resource = tiResource.text
-                host = tiHost.text
-                port = tiPort.text
 
-                settings.setAccount( grid, name, icon, jid, pass, goonline, resource, host, port,  true )
+                host = serverDetails.value.split(":")[0];
+                port = serverDetails.value.split(":")[1];
+
+                settings.setAccount( grid, vName, icon, login.value, password.value, goonline, resource.value, host, port,  true )
                 pageStack.pop()
             }
         }

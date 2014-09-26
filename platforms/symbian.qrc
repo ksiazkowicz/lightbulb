@@ -17,8 +17,7 @@
         <file alias="incomingTransfer">symbian/images/incomingTransfer.svg</file>
         <file alias="outcomingTransfer">symbian/images/outcomingTransfer.svg</file>
         <file alias="qml/main.qml">symbian/qml/main.qml</file>
-		
-		<file>global/qml/Globals.qml</file>
+        <file>global/qml/Globals.qml</file>
         <file alias="Lightbulb.svg">global/images/Fluorescent.svg</file>
         <file>global/qml/Notifications.qml</file>
     </qresource>
@@ -133,6 +132,7 @@
         <file alias="EventDelegate.qml">symbian/qml/Components/EventDelegate.qml</file>
         <file alias="RosterItemDelegate.qml">symbian/qml/Components/RosterItemDelegate.qml</file>
         <file alias="AccountDelegate.qml">symbian/qml/Components/AccountDelegate.qml</file>
+        <file alias="SettingField.qml">symbian/qml/Components/SettingField.qml</file>
     </qresource>
     <qresource prefix="/networks">
         <file alias="2G">symbian/images/networks/2G.svg</file>
