@@ -162,7 +162,7 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard) {
 
     // check if caching is disabled
     if (!disableAvatarCaching) {
-        if (bareJid.right(17) != "chat.facebook.com") {
+        if (bareJid.right(17) != "chat.facebook.com" || legacyAvatarCaching) {
             QString avatarFile = cacheIM->getAvatarCache( bareJid );
             if ((avatarFile.isEmpty() || avatarFile == "qrc:/avatar") && vCard.photo() != "") {
                 isAvatarCreated =  cacheIM->setAvatarCache( bareJid, vCard.photo() );

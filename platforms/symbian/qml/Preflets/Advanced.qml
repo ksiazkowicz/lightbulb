@@ -80,6 +80,17 @@ Item {
         }
 
         CheckBox {
+            id: useOnlyLegacyAvatarCaching
+            text: qsTr("Use only legacy avatar caching")
+            checked: settings.gBool("behavior","legacyAvatarCaching")
+            platformInverted: main.platformInverted
+            onCheckedChanged: {
+                settings.sBool(checked,"behavior","legacyAvatarCaching")
+                xmppConnectivity.updateLegacyAvatarCachingSetting(checked)
+            }
+        }
+
+        CheckBox {
             id: hideFromTaskMgr
             text: qsTr("Hide app from task manager")
             checked: settings.gBool("behavior","hideFromTaskMgr")

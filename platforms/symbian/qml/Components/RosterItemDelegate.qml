@@ -54,13 +54,7 @@ Item {
         }
     }
 
-    Rectangle {
-        height: 1
-        anchors { top: parent.bottom; horizontalCenter: parent.horizontalCenter }
-        width: parent.width-10
-        color: main.textColor
-        opacity: 0.2
-    }
+    LineItem { anchors.bottom: parent.bottom }
 
     MouseArea {
         anchors.fill: parent

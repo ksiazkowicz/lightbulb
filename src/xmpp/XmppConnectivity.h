@@ -146,6 +146,7 @@ public slots:
     Q_INVOKABLE bool getVisibility()           { return contacts->getOfflineContactsState(); }
 	
     Q_INVOKABLE void updateAvatarCachingSetting(bool setting);
+    Q_INVOKABLE void updateLegacyAvatarCachingSetting(bool setting);
     Q_INVOKABLE void updateKeepAliveSetting(int keepAlive);
 
     Q_INVOKABLE void updateMyData(QString jid);

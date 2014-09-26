@@ -79,6 +79,7 @@ class MyXmppClient : public QObject
 
 public :
     bool disableAvatarCaching;
+    bool legacyAvatarCaching;
 
     enum StateConnect {
         Disconnect = 0,

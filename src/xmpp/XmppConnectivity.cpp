@@ -122,6 +122,7 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
     }
 
   clients->value(index)->disableAvatarCaching = lSettings->get("behavior","disableAvatarCaching").toBool();
+  clients->value(index)->legacyAvatarCaching = lSettings->get("behavior","legacyAvatarCaching").toBool();
 
   delete account;
   return true;
@@ -315,16 +316,12 @@ void XmppConnectivity::resetUnreadMessages(QString accountId, QString bareJid) {
 
 int XmppConnectivity::getUnreadCount(QString accountId, QString bareJid) {
   ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(accountId + ";" + bareJid);
-  if (itemExists != NULL)
-    return itemExists->unread();
-  else return 0;
+  return itemExists != NULL ? itemExists->unread() : 0;
 }
 
 int XmppConnectivity::getChatType(QString accountId, QString bareJid) {
   ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(accountId + ";" + bareJid);
-  if (itemExists != NULL)
-    return itemExists->type();
-  else return 0;
+    return itemExists != NULL ? itemExists->type() : 0;
 }
 
 QString XmppConnectivity::getPropertyByJid(QString account,QString property,QString jid) {
@@ -333,8 +330,7 @@ QString XmppConnectivity::getPropertyByJid(QString account,QString property,QStr
 
 QString XmppConnectivity::getPreservedMsg(QString jid) {  //this poorly written piece of shit should take care of account id one day
   ChatsItemModel* chat = (ChatsItemModel*)chats->find(jid);
-  if (chat != 0) return chat->msg();
-  return "";
+  return chat !=0 ? chat->msg() : "";
 }
 
 void XmppConnectivity::preserveMsg(QString accountId,QString jid,QString message) { //this poorly written piece of shit should take care of account id one day
@@ -429,6 +425,14 @@ void XmppConnectivity::updateAvatarCachingSetting(bool setting) {
   for (i = clients->begin(); i != clients->end(); i++) {
       if (clients->value(i.key()) != 0)
         clients->value(i.key())->disableAvatarCaching = setting;
+    }
+}
+
+void XmppConnectivity::updateLegacyAvatarCachingSetting(bool setting) {
+  QMap<QString,MyXmppClient*>::iterator i;
+  for (i = clients->begin(); i != clients->end(); i++) {
+      if (clients->value(i.key()) != 0)
+        clients->value(i.key())->legacyAvatarCaching = setting;
     }
 }
 

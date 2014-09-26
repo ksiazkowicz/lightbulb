@@ -178,9 +178,7 @@ Page {
                platformInverted: main.platformInverted
             }
         }
-
     }
-
 
     /******************************************/
 

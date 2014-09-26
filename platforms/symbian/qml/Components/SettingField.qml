@@ -54,10 +54,6 @@ Rectangle {
                 main.splitscreenY = isMovementRequired ? Math.abs(posAndSpace - visibleSpace + settingField.height) : 0
             }
 
-            Connections {
-                target: inputContext
-                onVisibleChanged: if (!visible) dataInputField.focus = false;
-            }
 
             Text {
                 color: parent.color
