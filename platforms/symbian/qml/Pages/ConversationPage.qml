@@ -199,7 +199,7 @@ Page {
                 sendMessage()
             }
         }
-        Component.onCompleted: text = xmppConnectivity.getPreservedMsg(contactJid);
+        Component.onCompleted: text = xmppConnectivity.getPreservedMsg(accountId,contactJid);
     }
 
     // toolbar

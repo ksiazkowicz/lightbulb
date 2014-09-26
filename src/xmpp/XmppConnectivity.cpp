@@ -328,12 +328,12 @@ QString XmppConnectivity::getPropertyByJid(QString account,QString property,QStr
   return contacts->getPropertyByJid(account,jid,property);
 }
 
-QString XmppConnectivity::getPreservedMsg(QString jid) {  //this poorly written piece of shit should take care of account id one day
-  ChatsItemModel* chat = (ChatsItemModel*)chats->find(jid);
+QString XmppConnectivity::getPreservedMsg(QString accountId, QString jid) {
+  ChatsItemModel* chat = (ChatsItemModel*)chats->find(accountId + ";" + jid);
   return chat !=0 ? chat->msg() : "";
 }
 
-void XmppConnectivity::preserveMsg(QString accountId,QString jid,QString message) { //this poorly written piece of shit should take care of account id one day
+void XmppConnectivity::preserveMsg(QString accountId,QString jid,QString message) {
   ChatsItemModel* chat = (ChatsItemModel*)chats->find(accountId + ";" + jid);
   if (chat != 0) chat->setChatMsg(message);
   chat = 0; delete chat;
