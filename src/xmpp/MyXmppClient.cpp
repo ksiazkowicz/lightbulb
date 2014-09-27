@@ -567,13 +567,16 @@ void MyXmppClient::permissionsReceived(const QList<QXmppMucItem> &permissions) {
 
 void MyXmppClient::mucErrorSlot(const QXmppStanza::Error &error) {
   QXmppMucRoom* room = (QXmppMucRoom*)sender();
+  events->appendError(m_accountId,room->name(),"Error "+QString::number(error.code()) + " occured");
   emit insertMessage(m_accountId,room->jid(),"[[ERR]] Error " + QString::number(error.code()) + " occured",QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss"),0,4,"");
 }
 void MyXmppClient::mucKickedSlot(const QString &jid, const QString &reason) {
   QXmppMucRoom* room = (QXmppMucRoom*)sender();
   QString body = "[[ERR]] You've been [[bold]]kicked out[[/bold]] of the room";
-  if (reason != "")
+  if (reason != "") {
     body += ". Reason: [[bold]]" + reason + "[[/bold]]";
+    events->appendError(m_accountId,room->name(),"You've been kicked out of the room. Reason: "+reason);
+  } else events->appendError(m_accountId,room->name(),"You've been kicked out of the room");
   emit insertMessage(m_accountId,room->jid(),body,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss"),0,4,QXmppUtils::jidToResource(jid));
 }
 void MyXmppClient::mucRoomNameChangedSlot(const QString &name) {
