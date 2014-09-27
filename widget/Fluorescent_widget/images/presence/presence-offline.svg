@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.3, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="80px" height="80px" viewBox="0 0 80 80" enable-background="new 0 0 80 80" xml:space="preserve">
+<g id="PLACE_YOUR_GRAPHIC_HERE">
+</g>
+<g id="DO_NOT_EDIT_-_FOCAL_ZONE_GUIDES_ONLY">
+</g>
+<g>
+	<path opacity="0.3" enable-background="new    " d="M40,78C12.299,78,2,67.698,2,39.991C2,12.718,11.825,2.422,38.25,2h3.467
+		C68.171,2.422,78,12.718,78,39.991C78,67.698,67.701,78,40,78z"/>
+	<path opacity="0.4" enable-background="new    " d="M40,77C12.682,77,3,67.314,3,39.991C3,13.436,12.558,3.41,38.268,3h3.45
+		C67.441,3.41,77,13.436,77,39.991C77,67.314,67.316,77,40,77z"/>
+	
+		<linearGradient id="GREEN_1_1_" gradientUnits="userSpaceOnUse" x1="1666" y1="2113.5" x2="1666" y2="2185.5" gradientTransform="matrix(1 0 0 1 -1626 -2109.5)">
+		<stop  offset="0" style="stop-color:#8F8F8F"/>
+		<stop  offset="1" style="stop-color:#575757"/>
+	</linearGradient>
+	<path id="GREEN_1_2_" fill="url(#GREEN_1_1_)" d="M4,39.991C4,66.665,13.329,76,40,76c26.673,0,36-9.335,36-36.009
+		C76,13.897,67.066,4.404,41.718,4h-3.435C12.936,4.404,4,13.897,4,39.991z"/>
+	<path opacity="0.4" fill="#FFFFFF" enable-background="new    " d="M38.283,6h3.435c25.015,0.399,34.038,9.661,34.271,34.979
+		C75.992,40.648,76,40.327,76,39.991C76,13.897,67.066,4.404,41.718,4h-3.435C12.936,4.404,4,13.897,4,39.991
+		c0,0.336,0.008,0.657,0.011,0.989C4.245,15.661,13.27,6.399,38.283,6z"/>
+	<path opacity="0.3" enable-background="new    " d="M43.165,46.228c-4.455,4.456-8.904,8.918-13.367,13.364
+		c-2.334,2.32-5.102,4.041-7.969,1.395c-3.199-2.948-1.453-5.908,1.061-8.426c8.895-8.926,17.811-17.83,26.728-26.729
+		c2.33-2.327,5.107-4.037,7.972-1.395c3.203,2.951,1.443,5.895-1.064,8.423C52.083,37.331,47.618,41.773,43.165,46.228z"/>
+	<g id="PLACE_YOUR_GRAPHIC_HERE_1_">
+		<path fill="#FFFFFF" d="M42.751,43.813c-4.456,4.456-8.904,8.919-13.367,13.365c-2.334,2.32-5.103,4.041-7.969,1.395
+			c-3.201-2.949-1.454-5.908,1.059-8.428c8.896-8.924,17.813-17.829,26.729-26.728c2.33-2.327,5.107-4.037,7.973-1.394
+			c3.202,2.949,1.443,5.895-1.063,8.424C51.669,34.917,47.204,39.359,42.751,43.813z"/>
+	</g>
+</g>
+</svg>
