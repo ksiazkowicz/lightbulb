@@ -199,6 +199,12 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard) {
         emit iFoundYourParentsGoddamit(m_myjid);
 }
 
+void MyXmppClient::forceRefreshVCard(QString bareJid) {
+  qDebug() << "MyXmppClient::forceRefreshVCard(): called for jid " << bareJid;
+  cacheIM->addCacheJid(bareJid);
+  vCardManager->requestVCard(bareJid);
+}
+
 // ---------- handling messages (receiving/sending) ------------------------------------------------------------------------------
 
 bool MyXmppClient::sendMessage(QString bareJid, QString resource, QString msgBody, int chatState, int msgType) {
@@ -307,8 +313,6 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg )
 void MyXmppClient::initPresence(const QString& bareJid, const QString& resource) {
     QXmppPresence xmppPresence = rosterManager->getPresence( bareJid, resource );
     QXmppPresence::Type statusJid = xmppPresence.type();
-
-
 
     QStringList _listResources = this->getResourcesByJid( bareJid );
     if( (_listResources.count() > 0) && (!_listResources.contains(resource)) ) {

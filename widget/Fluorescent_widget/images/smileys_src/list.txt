@@ -1,0 +1,28 @@
+:) - happy.png
+:-)
+:D - laugh.png
+:-D - laugh2.png
+;) - wink.png
+;D - wink2.png
+
+:-(
+:( - sad.png
+
+:P - tounge.png
+;( - cry.png
+:| - indifference.png
+:-\ - skeptical.png
+
+:o
+o.o
+:O - suprised.png
+:* - kiss.png
+:X - quiet.png
+:> - smile.png
+B) - cool.png
+%) - confused.png
+:@ - angry.png
+;> - wink3.png
+>) - evil.png
+8) - nerdsmile.png
+(=_=) - tired

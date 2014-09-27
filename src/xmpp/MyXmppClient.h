@@ -181,6 +181,9 @@ public :
     // File transfer
     Q_INVOKABLE void acceptTransfer(int jobId);
     Q_INVOKABLE void abortTransfer(int jobId);
+
+    // avatar caching
+    Q_INVOKABLE void forceRefreshVCard(QString bareJid);
 	
 signals:
     void statusTextChanged();

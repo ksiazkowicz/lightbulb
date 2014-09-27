@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/main.qml</file>
+		<file alias="unread-count">images/unread-count.svg</file>
+    </qresource>
+	<qresource prefix="/presence">
+        <file alias="away">images/presence/presence-away.svg</file>
+        <file alias="busy">images/presence/presence-busy.svg</file>
+        <file alias="chatty">images/presence/presence-chatty.svg</file>
+        <file alias="offline">images/presence/presence-offline.svg</file>
+        <file alias="online">images/presence/presence-online.svg</file>
+        <file alias="xa">images/presence/presence-xa.svg</file>
+        <file alias="unknown">images/presence/presence-unknown.svg</file>
+    </qresource>
+	<qresource prefix="/accounts">
+        <file alias="Facebook">images/accounts/Facebook.svg</file>
+        <file alias="Hangouts">images/accounts/Hangouts.svg</file>
+        <file alias="XMPP">images/accounts/XMPP.svg</file>
+    </qresource>
+</RCC>

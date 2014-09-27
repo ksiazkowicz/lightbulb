@@ -76,6 +76,12 @@ ContextMenu {
             }
         }
         MenuItem {
+            text: qsTr("Refresh")
+            platformInverted: main.platformInverted
+            onClicked: xmppConnectivity.useClient(accountId).forceRefreshVCard(contactJid)
+        }
+
+        MenuItem {
             text: qsTr("Subscribe")
             platformInverted: main.platformInverted
             onClicked: {
