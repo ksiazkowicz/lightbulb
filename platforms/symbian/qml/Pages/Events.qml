@@ -18,10 +18,7 @@ Page {
     XmppVCard {
         id: vCardHandler
         Component.onCompleted: loadVCard(settings.gStr("behavior","personality"))
-        onVCardChanged: {
-            if (fullname !== "")
-                name.text = fullname
-        }
+        onVCardChanged: if (fullname !== "") name.text = fullname
     }
 
     Flickable {

@@ -131,7 +131,7 @@ public :
     QString getJidLastMsg() const { return m_bareJidLastMessage; }
     QString getResourceLastMsg() const { return m_resourceLastMessage; }
 
-    Q_INVOKABLE StateConnect getStateConnect() const { return m_stateConnect; }
+    Q_INVOKABLE int getStateConnect() const { return m_stateConnect; }
 
     QString getStatusText() const { return m_statusText; }
     void setStatusText( const QString& );

@@ -365,7 +365,8 @@ void MyXmppClient::presenceReceived( const QXmppPresence & presence ) {
               case QXmppPresence::DND: m_status = DND; break;
             }
         }
-        emit statusChanged(m_accountId);
+        if (m_stateConnect != 2)
+          emit statusChanged(m_accountId);
     }
 }
 

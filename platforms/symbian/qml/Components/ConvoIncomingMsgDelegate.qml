@@ -106,7 +106,7 @@ Item {
               property string date: _dateTime.substr(0,8) == Qt.formatDateTime(new Date(), "dd-MM-yy") ? _dateTime.substr(9,5) : _dateTime
               property string name: _msgType !== 3 ? (_contactName === "" ? _contactJid : _contactName) : _msgResource
 
-              text: "<font color='#009FEB'>" + name + ":</font> " + messageText + "<div align='right' style='color: \"#999999\"'>"+ date + "</div>"
+              text: "<font color='#009FEB'>" + name + ":</font> " + messageText + "<div align='right' style='color: \""+platformStyle.colorNormalMid+"\"'>"+ date + "</div>"
               color: platformStyle.colorNormalDark
               font.pixelSize: platformStyle.fontSizeSmall
               wrapMode: Text.WordWrap

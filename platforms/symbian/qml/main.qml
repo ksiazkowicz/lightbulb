@@ -32,7 +32,9 @@ import "../../global/qml"
 PageStackWindow {
     id: main
     property int splitscreenY: 0
-    property string textColor:       main.platformInverted ? platformStyle.colorNormalDark : platformStyle.colorNormalLight
+    property string textColor: main.platformInverted ? platformStyle.colorNormalDark : platformStyle.colorNormalLight
+    property string midColor:  main.platformInverted ? platformStyle.colorNormalMid : platformStyle.colorNormalMidInverted
+    property string disabledColor: main.platformInverted ? platformStyle.colorDisabledDark : platformStyle.colorDisabledLight
 
     function resetSplitscreen() {
         main.y = 0;

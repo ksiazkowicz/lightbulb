@@ -29,7 +29,7 @@ CommonDialog {
     id: dlgIAP
     titleText: qsTr("Available Access Points")
     platformInverted: main.platformInverted
-    height: data.contentHeight+48 > parent.height-64 ? parent.height - 64 : data.contentHeight+48
+    height: data.contentHeight+platformStyle.graphicSizeMedium > parent.height-(platformStyle.graphicSizeMedium+platformStyle.paddingLarge) ? parent.height - (platformStyle.graphicSizeMedium+platformStyle.paddingLarge) : data.contentHeight+platformStyle.graphicSizeMedium
 
     // Code for dynamic load
     Component.onCompleted: {
@@ -47,7 +47,7 @@ CommonDialog {
                 delegate: Component {
                     Rectangle {
                         id: itemConfig
-                        height: 48
+                        height: platformStyle.graphicSizeMedium
                         width: parent.width
                         gradient: gr_normal
                         Gradient {
@@ -61,11 +61,11 @@ CommonDialog {
                             GradientStop { position: 1; color: "#51A8FB" }
                         }
                         Image {
-                            anchors { left: parent.left; verticalCenter: parent.verticalCenter; leftMargin: 16 }
+                            anchors { left: parent.left; verticalCenter: parent.verticalCenter; leftMargin: platformStyle.paddingLarge }
                             source: "qrc:/networks/" + bearer + (main.platformInverted ? "_inverse" : "")
-                            sourceSize { width: 32; height: 32 }
-                            width: 32
-                            height: 32
+                            sourceSize { width: platformStyle.graphicSizeSmall; height: platformStyle.graphicSizeSmall }
+                            width: platformStyle.graphicSizeSmall
+                            height: platformStyle.graphicSizeSmall
 
                         }
 
@@ -73,7 +73,7 @@ CommonDialog {
                             id: textConfig
                             text: name
                             font.pixelSize: platformStyle.fontSizeSmall
-                            anchors { left: parent.left; leftMargin: 64; verticalCenter: parent.verticalCenter; }
+                            anchors { left: parent.left; leftMargin: platformStyle.graphicSizeMedium+platformStyle.paddingLarge; verticalCenter: parent.verticalCenter; }
                             color: main.textColor
                             font.bold: false
                         }

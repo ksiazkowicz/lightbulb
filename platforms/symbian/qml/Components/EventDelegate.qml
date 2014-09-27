@@ -148,7 +148,7 @@ Flickable {
                     Text {
                         visible: type == 32
                         width: 20; height: width
-                        color: "#ffffff"
+                        color: platformStyle.colorNormalLight
                         text: type == 32 ? xmppConnectivity.getUnreadCount(accountID,bareJid)+1 : ""
                         verticalAlignment: Text.AlignVCenter
                         horizontalAlignment: Text.AlignHCenter
@@ -176,7 +176,7 @@ Flickable {
                     spacing: platformStyle.paddingSmall
                     height: text.font.pixelSize
                     Text {
-                        color: "#b9b9b9"
+                        color: main.midColor
                         text: name
                         width: parent.width-parent.spacing-dateText.paintedWidth
                         horizontalAlignment: Text.AlignJustify
@@ -188,7 +188,7 @@ Flickable {
                     Text {
                         id: dateText
                         text: Qt.formatDateTime(date, "~hh:mm")
-                        color: "#a9a9a9"
+                        color: main.midColor
                         font.pixelSize: parent.height
                         horizontalAlignment: Text.AlignRight
                         font.italic: true

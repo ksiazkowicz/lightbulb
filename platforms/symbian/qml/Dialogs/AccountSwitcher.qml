@@ -43,7 +43,7 @@ CommonDialog {
                 id: wrapper
                 clip: true
                 width: parent.width
-                height: 48
+                height: platformStyle.graphicSizeMedium
                 gradient: gr_free
                 Gradient {
                     id: gr_free

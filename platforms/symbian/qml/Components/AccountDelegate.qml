@@ -6,21 +6,19 @@ ToolButton {
     onClicked: dialog.createWithProperties("qrc:/dialogs/Status/Change", {"accountId": accGRID})
     iconSource: "qrc:/accounts/" + accIcon
     platformInverted: main.platformInverted
-    width: 48
-    height: 48
+    width: platformStyle.graphicSizeMedium
+    height: platformStyle.graphicSizeMedium
     flat: false
     Connections {
         target: xmppConnectivity
-        onXmppStatusChanged: {
-            if (accountId == accGRID)
-                accPresence.source = "qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accGRID))
-        }
+        onXmppStatusChanged: if (accountId == accGRID) accPresence.source = "qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accGRID))
+        onXmppConnectingChanged: if (accountId == accGRID && xmppConnectivity.useClient(accGRID).getStateConnect() == 2) accPresence.source = "qrc:/presence/unknown";
     }
     Image {
         id: accPresence
         anchors { right: parent.right; bottom: parent.bottom; margins: platformStyle.paddingMedium }
         source: "qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accGRID))
         smooth: true
-        sourceSize { width: 12; height: 12 }
+        sourceSize { width: platformStyle.graphicSizeSmall/2; height: platformStyle.graphicSizeSmall/2 }
     }
 }

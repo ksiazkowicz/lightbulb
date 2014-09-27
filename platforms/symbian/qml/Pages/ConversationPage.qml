@@ -113,6 +113,17 @@ Page {
         NumberAnimation { id: anim; target: listViewMessages; property: "contentY"; duration: 100 }
     }
 
+    ScrollBar {
+        anchors {
+            top: listViewMessages.top
+            bottom: listViewMessages.bottom
+            right: parent.right
+        }
+        flickableItem: listViewMessages
+        platformInverted: main.platformInverted
+        interactive: false
+    }
+
     Component.onCompleted: {
         // sending a chat state meaning that chat is active if not in archive mode
         if (!isInArchiveMode) {

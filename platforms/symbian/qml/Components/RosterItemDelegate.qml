@@ -16,15 +16,13 @@ Item {
         Image {
             id: avatarIcon
             anchors { top: parent.top; topMargin: 4 }
-            sourceSize { width: 48; height: 48 }
-            width: 48
-            height: 48
+            sourceSize { width: platformStyle.graphicSizeMedium; height: platformStyle.graphicSizeMedium }
             smooth: true
             source: xmppConnectivity.getAvatarByJid(jid)
             Rectangle { anchors.fill: parent; color: "black"; z: -1 }
             Image {
                 anchors.fill: parent
-                sourceSize { width: 48; height: 48 }
+                sourceSize { width: platformStyle.graphicSizeMedium; height: platformStyle.graphicSizeMedium }
                 smooth: true
                 source: main.platformInverted ? "qrc:/avatar-mask_inverse" : "qrc:/avatar-mask"
             }
@@ -36,7 +34,7 @@ Item {
         }
         Text {
             id: txtJid
-            text: _contactName + ((statusText !== "") ? (" · <font color='#aaaaaa'><i>" + statusText + "</i></font>") : "")
+            text: _contactName + ((statusText !== "") ? (" · <font color='"+main.midColor+"'><i>" + statusText + "</i></font>") : "")
             anchors.verticalCenter: parent.verticalCenter
             onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
             wrapMode: Text.WordWrap

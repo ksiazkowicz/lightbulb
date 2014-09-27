@@ -5,7 +5,7 @@ import com.nokia.symbian 1.1
 
 Item {
     id: mucPartDelegate
-    height: 48
+    height: platformStyle.graphicSizeMedium + platformStyle.paddingLarge
     property string contactJid
     property string accountId
     property bool kick
@@ -13,15 +13,13 @@ Item {
     Image {
         id: imgPresence
         source: presence
-        sourceSize { height: 24; width: 24 }
-        anchors { verticalCenter: mucPartDelegate.verticalCenter; left: parent.left; leftMargin: 10; }
-        height: 24
-        width: 24
+        sourceSize { height: platformStyle.graphicSizeTiny; width: platformStyle.graphicSizeTiny }
+        anchors { verticalCenter: mucPartDelegate.verticalCenter; left: parent.left; leftMargin: platformStyle.paddingMedium; }
     }
     Image {
         source: visible ? "qrc:/muc_modOverlay" : ""
-        sourceSize { height: 32; width: 32 }
-        anchors { verticalCenter: mucPartDelegate.verticalCenter; left: parent.left; leftMargin: 4; }
+        sourceSize { height: platformStyle.graphicSizeMedium; width: platformStyle.graphicSizeMedium }
+        anchors { verticalCenter: mucPartDelegate.verticalCenter; left: parent.left; leftMargin: platformStyle.paddingSmall; }
         smooth: visible
         visible: xmppConnectivity.getMUCParticipantAffiliationName(affiliation) == "admin"
     }
@@ -30,9 +28,9 @@ Item {
         flickableDirection: Flickable.HorizontalFlick
         interactive: (kick || permission)
         boundsBehavior: Flickable.DragOverBounds
-        height: 48
+        height: mucPartDelegate.height
         width: mucPartDelegate.width
-        contentWidth: wrapper.width + buttonRow.width+10
+        contentWidth: wrapper.width + buttonRow.width+platformStyle.paddingMedium
 
         NumberAnimation {
             id: animation
@@ -64,12 +62,12 @@ Item {
             id: wrapper
             width: mucPartDelegate.width
             anchors.left: parent.left
-            height: 48
+            height: flick.height
             Text {
                 id: partName
-                anchors { verticalCenter: parent.verticalCenter; left: parent.left; right: parent.right; rightMargin: 5; leftMargin: 44 }
+                anchors { verticalCenter: parent.verticalCenter; left: parent.left; right: parent.right; rightMargin: platformStyle.paddingSmall; leftMargin: platformStyle.graphicSizeMedium + platformStyle.paddingLarge }
                 text: name
-                font.pixelSize: 18
+                font.pixelSize: platformStyle.fontSizeSmall
                 clip: true
                 color: main.textColor
                 elide: Text.ElideRight
