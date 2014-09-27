@@ -39,7 +39,7 @@ Flickable {
         case 34: return "qrc:/subRequestIcon"; // subscription request
         case 35: return "qrc:/muc"; // muc invite, change it to something else later
         case 36: return "qrc:/attention"; // attention request
-        case 37: // fav user status change
+        case 37: return xmppConnectivity.getAvatarByJid(bareJid); // fav user status change
         case 38: return "qrc:/updateIcon"; // app update
         case 39: return "qrc:/errorIcon"; // connection error
         case 40: return "qrc:/incomingTransfer" // incoming transfer
@@ -54,8 +54,7 @@ Flickable {
         case 34: { xmppConnectivity.useClient(accountID).acceptSubscription(bareJid); dialog.createWithProperties("qrc:/dialogs/Contact/Add",{"accountId": accountID, "bareJid": bareJid}); xmppConnectivity.events.removeEvent(index); break; }
         case 35: { dialog.createWithProperties("qrc:/dialogs/MUC/Join",{"accountId":accountID,"mucJid":bareJid}); xmppConnectivity.events.removeEvent(index)}; break;
         case 38: if (updater.isUpdateAvailable) dialog.createWithProperties("qrc:/menus/UrlContext", {"url": updater.updateUrl}); break;
-        case 40:
-        case 41: xmppConnectivity.useClient(accountID).acceptTransfer(transferJob); break;
+        case 40: xmppConnectivity.useClient(accountID).acceptTransfer(transferJob); break;
         default: return false;
         }
     }
@@ -64,7 +63,6 @@ Flickable {
         switch (type) {
         case 32: xmppConnectivity.resetUnreadMessages(accountID,bareJid); break;
         case 34: xmppConnectivity.useClient(accountID).rejectSubscription(bareJid); return true;
-        case 35: return true;
         case 40:
         case 41: xmppConnectivity.useClient(accountID).abortTransfer(transferJob); break;
         default: return false;
@@ -73,8 +71,14 @@ Flickable {
 
     function getMiniIcon() {
         // used if type == 33 to determine which icon should be displayed
-        if (description.substring(0,7) == "Current") return ("qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accountID)));
-        return "";
+        switch (type) {
+        case 33: {
+            if (description.substring(0,7) == "Current")
+                return ("qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accountID)));
+            }; break;
+        case 37: return xmppConnectivity.getPropertyByJid(accountID,"presence",bareJid);
+        default: return "";
+        }
     }
 
     onContentXChanged: {
@@ -127,7 +131,7 @@ Flickable {
                 smooth: true
                 source: getIcon()
 
-                Rectangle { anchors.fill: parent; color: (type == 32) ? "black" : "transparent"; z: -1 }
+                Rectangle { anchors.fill: parent; color: (type == 32 || type == 37) ? "black" : "transparent"; z: -1 }
                 Image {
                     anchors.fill: parent
                     smooth: true
@@ -142,8 +146,8 @@ Flickable {
                     width: type == 32 ? 64 : 24
                     height: width
                     sourceSize { height: height; width: width }
-                    source: type == 32 ? "qrc:/unread-count" : type == 33 ? getMiniIcon() : ""
-                    visible: (type == 32) || (type == 33)
+                    source: type == 32 ? "qrc:/unread-count" : (type == 33 || type == 37) ? getMiniIcon() : ""
+                    visible: (type == 32) || (type == 33) || (type == 37)
 
                     Text {
                         visible: type == 32
