@@ -48,10 +48,10 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
 
   chats = new ChatsListModel();
   events = new EventsManager();
+  connect(contacts,SIGNAL(favUserStatusChanged(QString,QString,QString,QString)),events,SLOT(appendUserStatusChange(QString,QString,QString,QString)));
 
-  for (int i=0; i<lSettings->accountsCount(); i++) {
+  for (int i=0; i<lSettings->accountsCount(); i++)
       initializeAccount(lSettings->getAccount(i)->grid(),lSettings->getAccount(i));
-    }
 }
 
 XmppConnectivity::~XmppConnectivity() {  

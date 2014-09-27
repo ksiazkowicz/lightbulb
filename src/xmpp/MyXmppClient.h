@@ -42,6 +42,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "QXmppEntityTimeIq.h"
 
 #include <QObject>
+#include <QTimer>
 #include <QList>
 #include <QMap>
 #include <QVariant>
@@ -236,6 +237,8 @@ private slots:
     void incomingTransfer(QXmppTransferJob *job);
     void permissionsReceived(const QList<QXmppMucItem> &permissions);
 
+    void resetInitState() { initializationState = false; }
+
     void logMessageReceived(QXmppLogger::MessageType type, const QString &text) {
       QString typeStr;
 
@@ -255,6 +258,7 @@ private:
     void initRosterManager();
 
     StatusXmpp m_status;
+    bool initializationState;
     QString m_statusText;
     QString m_myjid;
     QString m_password;

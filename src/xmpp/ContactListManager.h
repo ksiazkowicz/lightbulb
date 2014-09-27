@@ -25,10 +25,11 @@ signals:
   void rosterChanged();
   void contactNameChanged(QString accountId, QString jid, QString name);
   void forceXmppPresenceChanged(QString m_accountId, QString bareJid, QString resources, QString picStatus, QString txtStatus);
+  void favUserStatusChanged(QString accountId, QString bareJid, QString name, QString description);
   
 public slots:
   void addContact(QString acc,QString jid, QString name);
-  void changePresence(QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus);
+  void changePresence(QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus, bool initializationState);
   void changeName(QString m_accountId,QString bareJid,QString name);
   void removeContact(QString acc,QString bareJid);
 

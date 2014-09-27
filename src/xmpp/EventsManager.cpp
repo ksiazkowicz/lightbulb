@@ -104,6 +104,29 @@ void EventsManager::appendStatusChange(QString accountId, QString name, QString 
   events->countWasChanged();
 }
 
+void EventsManager::appendUserStatusChange(QString accountId, QString bareJid, QString name, QString description) {
+  // appends or updates an information about unread message
+  int rowId; // holds the row ID, might be used for moving items to the top of the list
+  EventItemModel *item = (EventItemModel*)events->find(";" +accountId + ";" + QString::number((int)EventItemModel::FavUserStatusChange),rowId);
+
+  // check if item exists, if yes, remove it
+  if (item != NULL)
+      events->takeRow(rowId);
+
+  // create a new EventItemModel
+  item = new EventItemModel();
+  item->setData(QVariant(accountId),EventItemModel::Account);
+  item->setData(QVariant(name),EventItemModel::Name);
+  item->setData(QVariant(bareJid),EventItemModel::Jid);
+  item->setData(QVariant(description),EventItemModel::Description);
+  item->setData(QVariant((int)EventItemModel::FavUserStatusChange),EventItemModel::Type);
+  item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
+
+  // and append it at the top of the list
+  events->insertRow(0,item);
+  events->countWasChanged();
+}
+
 void EventsManager::appendError(QString accountId, QString name, QString errorString) {
   // appends or updates an information about unread message
   int rowId; // holds the row ID, might be used for moving items to the top of the list

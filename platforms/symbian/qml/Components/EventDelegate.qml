@@ -137,7 +137,7 @@ Flickable {
                     smooth: true
                     source: main.platformInverted ? "qrc:/avatar-mask_inverse" : "qrc:/avatar-mask"
                     sourceSize { width: 64; height: 64 }
-                    visible: (type == 32 && icon.source != "qrc:/muc")
+                    visible: (type == 32 && icon.source != "qrc:/muc") || (type == 37)
                 }
                 Image {
                     id: mark

@@ -282,7 +282,7 @@ void MyXmppClient::initPresence(const QString& bareJid, const QString& resource)
   QString picStatus = this->getPicPresence( xmppPresence );
   QString txtStatus = xmppPresence.statusText();
 
-  contacts->changePresence(m_accountId,bareJid,resource,picStatus,txtStatus);
+  contacts->changePresence(m_accountId,bareJid,resource,picStatus,txtStatus,initializationState);
   emit presenceChanged(m_accountId,bareJid,resource,picStatus,txtStatus);
 }
 
@@ -407,6 +407,7 @@ void MyXmppClient::initRosterManager() {
 
 void MyXmppClient::initRoster() {
   qDebug() << "MyXmppClient::initRoster() called";
+  initializationState = true;
   if (!rosterManager->isRosterReceived()) {
       qDebug() << "MyXmppClient::initRoster(): roster not available yet";
       return;
@@ -437,6 +438,8 @@ void MyXmppClient::initRoster() {
       cacheIM->addCacheJid(m_myjid);
       vCardManager->requestVCard( m_myjid );
     }
+
+  QTimer::singleShot(1000,this,SLOT(resetInitState()));
 }
 
 void MyXmppClient::itemAdded(const QString &bareJid ) {

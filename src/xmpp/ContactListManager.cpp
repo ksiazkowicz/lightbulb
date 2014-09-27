@@ -32,17 +32,34 @@ void ContactListManager::addContact(QString acc, QString jid, QString name) {
   roster->sort(0);
 }
 
-void ContactListManager::changePresence(QString accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus) {
+void ContactListManager::changePresence(QString accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus, bool initializationState) {
   qDebug() << "ContactListManager::changePresence() called" << bareJid << resource << picStatus << txtStatus;
   RosterItemModel *contact = roster->find( accountId + ";" + bareJid );
+
   if (contact != 0) {
+      bool isStatusDifferent = (contact->data(RosterItemModel::Presence) != picStatus);
+
+      qDebug() << "presence changed";
+      // set data
       contact->set(resource,RosterItemModel::Resource);
       contact->set(picStatus,RosterItemModel::Presence);
       contact->set(txtStatus,RosterItemModel::StatusText);
-    } else return;
 
-  qDebug() << "presence changed";
-  roster->sort(0);
+      // if user is someone cool, push the status change notification
+      if (contact->data(RosterItemModel::IsFavorite).toBool() && isStatusDifferent && !initializationState) {
+          QString description = "";
+          if (picStatus == "qrc:/presence/online" || picStatus == "qrc:/presence/chatty") description = "I'm online. ^^";
+          if (picStatus == "qrc:/presence/offline") description = "I just went offline. :c";
+          if (picStatus == "qrc:/presence/away" || picStatus == "qrc:/presence/xa") description = "I'm away.";
+          if (picStatus == "qrc:/presence/busy") description = "I'm busy.";
+
+          if (description != "")
+            emit favUserStatusChanged(accountId,bareJid,contact->data(RosterItemModel::Name).toString(),description);
+        }
+
+      // sort the roster again
+      roster->sort(0);
+    } else return;
 }
 void ContactListManager::changeName(QString accountId,QString bareJid,QString name) {
   RosterItemModel *contact = roster->find( accountId + ";" + bareJid );

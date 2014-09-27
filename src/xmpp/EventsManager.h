@@ -21,6 +21,7 @@ public slots:
   void appendMUCInvitation(QString accountId, QString bareJid, QString sender);
   void appendSubscription(QString accountId, QString bareJid);
   void appendStatusChange(QString accountId, QString name, QString description);
+  void appendUserStatusChange(QString accountId, QString bareJid, QString name, QString description);
   void appendError(QString accountId, QString name, QString errorString);
   void appendUpdate(bool updateAvailable = true, QString version = "", QString date = "");
   void appendTransferJob(QString accountId, QString bareJid, QString name, QString description, int transferJob, bool isIncoming);
