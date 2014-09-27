@@ -12,7 +12,7 @@ ToolButton {
     Connections {
         target: xmppConnectivity
         onXmppStatusChanged: if (accountId == accGRID) accPresence.source = "qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accGRID))
-        onXmppConnectingChanged: if (accountId == accGRID && xmppConnectivity.useClient(accGRID).getStateConnect() == 2) accPresence.source = "qrc:/presence/unknown";
+        onXmppConnectingChanged: if (accountId == accGRID && xmppConnectivity.useClient(accGRID).getStateConnect() == 1) accPresence.source = "qrc:/presence/unknown";
     }
     Image {
         id: accPresence

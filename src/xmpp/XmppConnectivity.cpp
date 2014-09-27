@@ -35,6 +35,7 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
   lSettings = new Settings();
   lCache = new MyCache(lSettings->gStr("paths","cache"));
   lCache->createHomeDir();
+  connect(lCache,SIGNAL(avatarUpdated(QString)),this,SIGNAL(avatarUpdatedForJid(QString)),Qt::UniqueConnection);
 
   dbWorker = new DatabaseWorker;
   dbThread = new QThread(this);
@@ -43,6 +44,7 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
 
   contacts = new ContactListManager();
   connect(contacts,SIGNAL(contactNameChanged(QString,QString,QString)),this,SLOT(updateChatName(QString,QString,QString)));
+  connect(contacts,SIGNAL(forceXmppPresenceChanged(QString,QString,QString,QString,QString)),this,SIGNAL(xmppPresenceChanged(QString,QString,QString,QString,QString)),Qt::UniqueConnection);
 
   chats = new ChatsListModel();
   events = new EventsManager();
@@ -66,7 +68,7 @@ XmppConnectivity::~XmppConnectivity() {
 bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* account) {
   // check if client with specified index exists. If not, add one
   if (!clients->contains(index))
-    clients->insert(index,new MyXmppClient());
+    clients->insert(index,new MyXmppClient(lCache,contacts,events));
 
   // initialize account
   clients->value(index)->setMyJid(account->jid());
@@ -84,36 +86,20 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
   clients->value(index)->setKeepAlive(lSettings->gInt("behavior","keepAliveInterval"));
 
   connect(clients->value(index),SIGNAL(iFoundYourParentsGoddamit(QString)),this,SLOT(updateMyData(QString)),Qt::UniqueConnection);
+  connect(clients->value(index),SIGNAL(presenceChanged(QString,QString,QString,QString,QString)), this, SIGNAL(xmppPresenceChanged(QString,QString,QString,QString,QString)),Qt::UniqueConnection);
 
   connect(clients->value(index),SIGNAL(insertMessage(QString,QString,QString,QString,int,int,QString)),this,SLOT(insertMessage(QString,QString,QString,QString,int,int,QString)),Qt::UniqueConnection);
-  connect(clients->value(index),SIGNAL(attentionRequested(QString,QString)),this,SLOT(pushAttention(QString,QString)),Qt::UniqueConnection);
 
   connect(clients->value(index),SIGNAL(connectingChanged(QString)),this,SIGNAL(xmppConnectingChanged(QString)),Qt::UniqueConnection);
   connect(clients->value(index),SIGNAL(statusChanged(QString)),this,SLOT(handleXmppStatusChange(QString)),Qt::UniqueConnection);
   connect(clients->value(index),SIGNAL(errorHappened(QString,QString)),this,SIGNAL(xmppErrorHappened(QString,QString)),Qt::UniqueConnection);
   connect(clients->value(index),SIGNAL(errorHappened(QString,QString)),this,SLOT(pushError(QString,QString)),Qt::UniqueConnection);
   connect(clients->value(index),SIGNAL(subscriptionReceived(QString,QString)),this,SIGNAL(xmppSubscriptionReceived(QString,QString)),Qt::UniqueConnection);
-  connect(clients->value(index),SIGNAL(subscriptionReceived(QString,QString)),events,SLOT(appendSubscription(QString,QString)),Qt::UniqueConnection);
   connect(clients->value(index),SIGNAL(typingChanged(QString,QString,bool)),this,SIGNAL(xmppTypingChanged(QString,QString,bool)),Qt::UniqueConnection);
 
-  connect(clients->value(index),SIGNAL(avatarUpdatedForJid(QString)),this,SIGNAL(avatarUpdatedForJid(QString)),Qt::UniqueConnection);
-
-  // connect file transfer signals
-  connect(clients->value(index),SIGNAL(incomingTransferReceived(QString,QString,QString,QString,int,bool)),events,SLOT(appendTransferJob(QString,QString,QString,QString,int,bool)),Qt::UniqueConnection);
-
   // connect MUC signals
-  connect(clients->value(index),SIGNAL(mucInvitationReceived(QString,QString,QString,QString)),this,SIGNAL(mucInvitationReceived(QString,QString,QString,QString)),Qt::UniqueConnection);
   connect(clients->value(index),SIGNAL(mucRoomJoined(QString,QString)),this,SLOT(openChat(QString,QString)),Qt::UniqueConnection);
   connect(clients->value(index),SIGNAL(mucNameChanged(QString,QString,QString)),this,SLOT(updateChatName(QString,QString,QString)),Qt::UniqueConnection);
-
-  // connect ContactListManager
-  connect(clients->value(index),SIGNAL(contactAdded(QString,QString,QString)),contacts,SLOT(addContact(QString,QString,QString)),Qt::UniqueConnection);
-  connect(clients->value(index),SIGNAL(presenceChanged(QString,QString,QString,QString,QString)),contacts,SLOT(changePresence(QString,QString,QString,QString,QString)),Qt::UniqueConnection);
-  connect(clients->value(index),SIGNAL(presenceChanged(QString,QString,QString,QString,QString)), this, SIGNAL(xmppPresenceChanged(QString,QString,QString,QString,QString)),Qt::UniqueConnection);
-  connect(contacts,SIGNAL(forceXmppPresenceChanged(QString,QString,QString,QString,QString)),this,SIGNAL(xmppPresenceChanged(QString,QString,QString,QString,QString)),Qt::UniqueConnection);
-  connect(clients->value(index),SIGNAL(nameChanged(QString,QString,QString)),contacts,SLOT(changeName(QString,QString,QString)),Qt::UniqueConnection);
-  connect(clients->value(index),SIGNAL(nameChanged(QString,QString,QString)),this,SLOT(updateChatName(QString,QString,QString)),Qt::UniqueConnection);
-  connect(clients->value(index),SIGNAL(contactRemoved(QString,QString)),contacts,SLOT(removeContact(QString,QString)),Qt::UniqueConnection);
 
   qDebug().nospace() << "XmppConnectivity::initializeAccount(): initialized account " << qPrintable(clients->value(index)->getMyJid()) << "/" << qPrintable(clients->value(index)->getResource());
 
@@ -475,9 +461,9 @@ void XmppConnectivity::handleXmppStatusChange (const QString accountId) {
     }
 
   switch (clients->value(accountId)->getStateConnect()) {
-    case MyXmppClient::Connecting: events->appendStatusChange(accountId,getAccountName(accountId),"Connecting..."); break;
-    case MyXmppClient::Connected: events->appendStatusChange(accountId,getAccountName(accountId),"Current status is "+status); break;
-    case MyXmppClient::Disconnect: events->appendStatusChange(accountId,getAccountName(accountId),"Disconected :c"); break;
+    case QXmppClient::ConnectingState: events->appendStatusChange(accountId,getAccountName(accountId),"Connecting..."); break;
+    case QXmppClient::ConnectedState: events->appendStatusChange(accountId,getAccountName(accountId),"Current status is "+status); break;
+    case QXmppClient::DisconnectedState: events->appendStatusChange(accountId,getAccountName(accountId),"Disconected :c"); break;
     }
 
   emit xmppStatusChanged(accountId);

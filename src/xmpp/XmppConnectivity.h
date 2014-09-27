@@ -97,7 +97,6 @@ signals:
     void xmppTypingChanged        (const QString accountId, QString bareJid, bool isTyping);
     void xmppPresenceChanged      (QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus);
 
-    void mucInvitationReceived    (QString accountId, QString bareJid, QString invSender, QString reason);
     void avatarUpdatedForJid(QString bareJid);
     
 public slots:
@@ -110,7 +109,6 @@ public slots:
     Q_INVOKABLE void pushUpdate(QString version, QString date) { events->appendUpdate(true,version,date); }
     Q_INVOKABLE void pushNoUpdate() { events->appendUpdate(false); }
 
-    void pushAttention(QString m_accountId, QString bareJid) { events->appendAttention(m_accountId,bareJid,contacts->getPropertyByJid(m_accountId,bareJid,"name")); }
     Q_INVOKABLE QString getAvatarByJid(QString bareJid) { return lCache->getAvatarCache(bareJid); }
 
     // handling chats list

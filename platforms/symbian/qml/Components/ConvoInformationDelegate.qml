@@ -62,7 +62,7 @@ Item {
         font.pixelSize: platformStyle.fontSizeSmall
         font.italic: true
         textFormat: Text.RichText
-        wrapMode: Text.WordWrap
+        wrapMode: Text.Wrap
         onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
     }
 }

@@ -46,12 +46,13 @@ public:
     }
     bool addCacheJid( const QString &jid );
 
-    bool setAvatarCache( const QString &jid, const QByteArray &avatar ) const;
-    QString getAvatarCache( const QString &jid ) const;
+    bool setAvatarCache(QString jid, const QByteArray &avatar);
+    QString getAvatarCache(const QString &jid) const;
 
     QString getCachePath() const { return cachePath; }
     
 signals:
+    void avatarUpdated(QString bareJid);
     
 public slots:
     

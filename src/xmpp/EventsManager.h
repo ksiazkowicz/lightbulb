@@ -18,6 +18,7 @@ signals:
 public slots:
   void appendUnreadMessage(QString bareJid, QString accountId, QString name, QString description);
   void appendAttention(QString accountId, QString bareJid, QString name);
+  void appendMUCInvitation(QString accountId, QString bareJid, QString sender);
   void appendSubscription(QString accountId, QString bareJid);
   void appendStatusChange(QString accountId, QString name, QString description);
   void appendError(QString accountId, QString name, QString errorString);

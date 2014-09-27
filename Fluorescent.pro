@@ -157,7 +157,8 @@ SOURCES += src/main.cpp \
     src/database/MigrationManager.cpp \
     src/xmpp/EventsManager.cpp \
     src/UpdateManager.cpp \
-    src/models/RosterItemFilter.cpp
+    src/models/RosterItemFilter.cpp \
+    src/api/GraphAPIExtensions.cpp
 
 HEADERS += src/xmpp/MyXmppClient.h \
     src/cache/MyCache.h \
@@ -189,4 +190,5 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/models/EventItemModel.h \
     src/xmpp/EventsManager.h \
     src/UpdateManager.h \
-    src/models/RosterItemFilter.h
+    src/models/RosterItemFilter.h \
+    src/api/GraphAPIExtensions.h

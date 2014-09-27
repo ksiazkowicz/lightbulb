@@ -72,11 +72,11 @@ Item {
                     case 0:
                         avkon.showPopup(xmppConnectivity.getAccountName(accountId),"Disconnected. :c");
                         break;
-                    case 1:
+                    case 2:
                         notify.notifySndVibr("NotifyConn")
                         avkon.showPopup(xmppConnectivity.getAccountName(accountId),"Status changed to " + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accountId)));
                         break;
-                    case 2:
+                    case 1:
                         avkon.showPopup(xmppConnectivity.getAccountName(accountId),"Connecting...");
                         break;
                 }

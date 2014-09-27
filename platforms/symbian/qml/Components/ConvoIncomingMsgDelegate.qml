@@ -109,7 +109,7 @@ Item {
               text: "<font color='#009FEB'>" + name + ":</font> " + messageText + "<div align='right' style='color: \""+platformStyle.colorNormalMid+"\"'>"+ date + "</div>"
               color: platformStyle.colorNormalDark
               font.pixelSize: platformStyle.fontSizeSmall
-              wrapMode: Text.WordWrap
+              wrapMode: Text.Wrap
               onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
         }
     }

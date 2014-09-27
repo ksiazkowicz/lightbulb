@@ -50,15 +50,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDir>
 #include <QStringList>
 #include <QDebug>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-
-#include "../database/Settings.h"
 
 #include "../cache/MyCache.h"
 #include "../models/ParticipantListModel.h"
 #include "../models/ParticipantItemModel.h"
+#include "../api/GraphAPIExtensions.h"
+#include "ContactListManager.h"
+#include "EventsManager.h"
 
 class MyXmppClient : public QObject
 {
@@ -72,20 +70,15 @@ class MyXmppClient : public QObject
     QXmppTransferManager *transferManager;
     QXmppDiscoveryManager *serviceDiscovery;
     QXmppEntityTimeManager *entityTime;
+    GraphAPIExtensions *graph;
 
+    ContactListManager *contacts;
+    EventsManager *events;
     MyCache* cacheIM;
-
-    QNetworkAccessManager* fbProfilePicDownloader;
 
 public :
     bool disableAvatarCaching;
     bool legacyAvatarCaching;
-
-    enum StateConnect {
-        Disconnect = 0,
-        Connected = 1,
-        Connecting = 2
-    };
 
     enum StatusXmpp {
         Offline = 0,
@@ -96,9 +89,9 @@ public :
         DND = 5
     };
 
-    Q_ENUMS( StateConnect StatusXmpp )
+    Q_ENUMS( StatusXmpp )
 
-    explicit MyXmppClient();
+    explicit MyXmppClient(MyCache* lCache, ContactListManager *lContacts, EventsManager *lEvents);
     ~MyXmppClient();
 
     /* --- presence --- */
@@ -127,11 +120,7 @@ public :
 
     /*----------------------------------*/
     /*--- getter/setter ---*/
-
-    QString getJidLastMsg() const { return m_bareJidLastMessage; }
-    QString getResourceLastMsg() const { return m_resourceLastMessage; }
-
-    Q_INVOKABLE int getStateConnect() const { return m_stateConnect; }
+    Q_INVOKABLE int getStateConnect() const { return xmppClient->state(); }
 
     QString getStatusText() const { return m_statusText; }
     void setStatusText( const QString& );
@@ -194,20 +183,12 @@ signals:
     void updateContact(QString m_accountId,QString bareJid,QString property,int count);
     void insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine,int type,QString resource);
     void attentionRequested(QString m_accountId, QString bareJid);
-    void contactRenamed(QString jid,QString name);
+    void presenceChanged(QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus);
 
     void connectingChanged(const QString accountId);
     void errorHappened(const QString accountId,const QString &errorString);
     void subscriptionReceived(const QString accountId,const QString bareJid);
     void statusChanged(const QString accountId);
-
-    void avatarUpdatedForJid(QString bareJid);
-
-    // contact list manager
-    void contactAdded(QString acc,QString jid, QString name);
-    void presenceChanged(QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus);
-    void nameChanged(QString m_accountId,QString bareJid,QString name);
-    void contactRemoved(QString acc,QString bareJid);
 
     void iFoundYourParentsGoddamit(QString jid);
 
@@ -215,7 +196,6 @@ signals:
     void entityTimeReceived(QString accountId, QString bareJid, QString time);
 
     // muc
-    void mucInvitationReceived(QString accountId, QString bareJid, QString invSender, QString reason);
     void mucRoomJoined(QString accountId,QString bareJid);
     void mucNameChanged(QString accountId,QString bareJid,QString name);
 
@@ -223,13 +203,12 @@ signals:
     void incomingTransferReceived(QString accountId, QString bareJid, QString name, QString description, int transferJob, bool isIncoming);
 
 public slots:
-    void clientStateChanged( QXmppClient::State state );
+    void clientStateChanged(QXmppClient::State state);
 
 private slots:
     void initRoster();
     void initPresence(const QString& bareJid, const QString& resource);
     void initVCard(const QXmppVCardIq &vCard);
-    void pushFacebookPic(QNetworkReply* pReply);
     void itemAdded( const QString &);
     void itemRemoved( const QString &);
     void itemChanged( const QString &);
@@ -237,7 +216,10 @@ private slots:
     void presenceReceived( const QXmppPresence & presence );
     void error(QXmppClient::Error);
 
-    void notifyNewSubscription(QString bareJid) { emit subscriptionReceived(m_accountId, bareJid); }
+    void notifyNewSubscription(QString bareJid) {
+      emit subscriptionReceived(m_accountId, bareJid);
+      events->appendSubscription(m_accountId, bareJid);
+    }
 
     // XEP-0202: Entity Time
     void entityTimeReceivedSlot(const QXmppEntityTimeIq &entity);
@@ -271,19 +253,7 @@ private slots:
 private:
     // functions
     void initRosterManager();
-    void pushNextCacheURL() {
-      if (currentSessions < 3 && urlQueue.count() > 0) {
-          currentSessions++;
-          fbProfilePicDownloader->get(QNetworkRequest(QUrl(urlQueue.first())));
-          urlQueue.takeFirst();
-        }
-    }
 
-    // private variables
-    QString m_bareJidLastMessage;
-    QString m_resourceLastMessage;
-
-    StateConnect m_stateConnect;
     StatusXmpp m_status;
     QString m_statusText;
     QString m_myjid;
@@ -297,15 +267,11 @@ private:
     QString getPicPresence( const QXmppPresence &presence ) const;
     QString getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const;
 
+    QXmppClient::State previousState;
     int m_keepAlive;
 
     QMap<QString,QXmppMucRoom*> mucRooms;
     QMap<QString,ParticipantListModel*> mucParticipants;
-
-    // facebook avatar caching
-    QMap<QString,QString> profilePicCache;
-    QList<QString> urlQueue;
-    int currentSessions;
 
     QMap<int,QXmppTransferJob*> transferJobs;
 };

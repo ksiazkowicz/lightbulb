@@ -29,10 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDebug>
 
 MyCache::MyCache(QString path, QObject *parent) : StoreVCard(parent) {
-    if (path == "" || path == "false")
-      cachePath = QDir::currentPath() + QString("/cache");
-    else
-      cachePath = path;
+    cachePath = (path == "" || path == "false") ? QDir::currentPath() + QString("/cache") : path;
 
     this->setCachePath( cachePath );
 }
@@ -68,7 +65,7 @@ bool MyCache::addCacheJid(const QString &jid) {
     return true;
 }
 
-bool MyCache::setAvatarCache(const QString &jid, const QByteArray &avatar) const {
+bool MyCache::setAvatarCache(QString jid, const QByteArray &avatar) {
     if (!this->existsCacheJid(jid))
       return false;
 
@@ -83,6 +80,7 @@ bool MyCache::setAvatarCache(const QString &jid, const QByteArray &avatar) const
     if (avatarImage.size() != QSize(0,0)) {
       if( avatarImage.save(avatarJid) ) {
         qDebug() << "avatar saved properly to" << avatarJid;
+        emit avatarUpdated(jid);
         return true;
       } else qDebug() << "brick T_T occured while trying to save avatar to" << avatarJid;
     }

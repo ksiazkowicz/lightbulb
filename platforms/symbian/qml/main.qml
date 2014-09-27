@@ -94,10 +94,6 @@ PageStackWindow {
         onUnreadCountChanged: vars.globalUnreadCount = vars.globalUnreadCount+delta
         onXmppErrorHappened: if (settings.gBool("behavior", "reconnectOnError"))
                                  dialog.createWithProperties("qrc:/dialogs/Status/Reconnect",{"accountId": accountId})
-        onMucInvitationReceived: {
-            if (avkon.displayAvkonQueryDialog("Invitation (" + getAccountName(accountId) + ")", invSender + " invites you to chatroom " + bareJid + qsTr(". Do you want to join?")))
-                dialog.createWithProperties("qrc:/dialogs/MUC/Join",{"accountId":accountId,"mucJid":bareJid})
-        }
     }
 
     Connections {
