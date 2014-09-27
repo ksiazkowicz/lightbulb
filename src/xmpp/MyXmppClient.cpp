@@ -624,35 +624,80 @@ void MyXmppClient::incomingTransfer(QXmppTransferJob *job) {
   int jobId = transferJobs.count();
   transferJobs.insert(jobId,job);
 
+  connect(job,SIGNAL(finished()),SLOT(transferFinished()));
+  connect(job,SIGNAL(error(QXmppTransferJob::Error)),SLOT(transferError(QXmppTransferJob::Error)));
+  connect(job,SIGNAL(progress(qint64,qint64)),SLOT(progress(qint64,qint64)));
+
   switch (job->method()) {
-    case QXmppTransferJob::NoMethod:
-      qDebug() << "no method o.o"; break;
     case QXmppTransferJob::InBandMethod:
       qDebug() << "InBandMethod"; break;
     case QXmppTransferJob::SocksMethod:
       qDebug() << "SocksMethod"; break;
-    case QXmppTransferJob::AnyMethod:
-      qDebug() << "Any method"; break;
     }
 
   // TODO: try to recognize file type
-  // TODO: show name/jid instead of "lol nope"
-  QString description = "Incoming transfer. File with size " + QString::number(job->fileSize()) + ". <b>Tap to accept</b>.";
-  events->appendTransferJob(m_accountId,job->jid(),"lol nope",description,jobId,true);
+  QString description = "Incoming transfer. " + job->fileName() + ". <b>Tap to accept</b>.";
+  events->appendTransferJob(m_accountId,job->jid(),contacts->getPropertyByJid(m_accountId,QXmppUtils::jidToBareJid(job->jid()),"name"),description,jobId,true);
 }
 
 void MyXmppClient::acceptTransfer(int jobId) {
   QXmppTransferJob* job = transferJobs.value(jobId);
-  if (job != NULL) {
+  if (job != NULL && job->state() == QXmppTransferJob::OfferState) {
       job->accept("F://Received files//" + job->fileName());
-      qDebug() << "Transfer job accepted";
+      events->updateTransferJob(m_accountId,job->jid(),"Transfer in progress... 0%\n"+job->fileName(),jobId,true,true);
     }
 }
 
 void MyXmppClient::abortTransfer(int jobId) {
   QXmppTransferJob* job = transferJobs.value(jobId);
-  if (job != NULL) {
-      job->abort();
-      qDebug() << "Transfer job aborted";
+  if (job != NULL)
+    job->abort();
+}
+
+void MyXmppClient::transferFinished() {
+  QXmppTransferJob* job = (QXmppTransferJob*)sender();
+  int jobId = transferJobs.key(job);
+  bool isIncoming = (job->direction() == QXmppTransferJob::IncomingDirection);
+  if (job->error() == QXmppTransferJob::NoError)
+    events->updateTransferJob(m_accountId,job->jid(),"Transfer finished. " + job->fileName(),jobId,isIncoming,true);
+}
+
+int MyXmppClient::fileTransferState(int jobId) {
+  QXmppTransferJob* job = transferJobs.value(jobId);
+  return (job != NULL) ? job->state() : 0;
+}
+
+void MyXmppClient::openLocalTransferPath(int jobId) {
+  QXmppTransferJob* job = transferJobs.value(jobId);
+
+  qDebug() << job->localFileUrl().toLocalFile();
+
+  if (job != NULL)
+    QDesktopServices::openUrl(QUrl(job->localFileUrl()));
+}
+
+void MyXmppClient::progress(qint64 done, qint64 total) {
+  double slice = ((double)done/(double)total)*100;
+  QXmppTransferJob* job = (QXmppTransferJob*)sender();
+  int jobId = transferJobs.key(job);
+  bool isIncoming = (job->direction() == QXmppTransferJob::IncomingDirection);
+  events->updateTransferJob(m_accountId,job->jid(),"Transfer in progress... "+QString::number(floor(slice))+"%\n"+job->fileName(),jobId,isIncoming,false);
+}
+
+void MyXmppClient::transferError(QXmppTransferJob::Error error) {
+  QXmppTransferJob* job = (QXmppTransferJob*)sender();
+  int jobId = transferJobs.key(job);
+  bool isIncoming = (job->direction() == QXmppTransferJob::IncomingDirection);
+  QString errorString = "";
+  switch (error) {
+    case QXmppTransferJob::AbortError: errorString = "File transfer aborted for file " + job->fileName(); break;
+    case QXmppTransferJob::FileAccessError: errorString = "Unable to access " + job->localFileUrl().toString(); break;
+    case QXmppTransferJob::FileCorruptError: errorString = "File " + job->fileName() + " is corrupted"; break;
+    case QXmppTransferJob::ProtocolError: errorString = "Connection issue. Aborting (" + job->fileName() + ")."; break;
     }
+
+  if (errorString != "") {
+    events->appendError(m_accountId,contacts->getPropertyByJid(m_accountId,QXmppUtils::jidToBareJid(job->jid()),"name"),errorString);
+    events->updateTransferJob(m_accountId,job->jid(),"File transfer failed.",jobId,isIncoming,false);
+  }
 }

@@ -199,6 +199,21 @@ void EventsManager::appendTransferJob(QString accountId, QString bareJid, QStrin
   events->countWasChanged();
 }
 
+void EventsManager::updateTransferJob(QString accountId, QString bareJid, QString description, int transferJob, bool isIncoming, bool isFinished) {
+  // updates transfer job
+  int rowId; // holds the row ID, might be used for moving items to the top of the list
+  int type = isIncoming ? (int)EventItemModel::IncomingTransfer : (int)EventItemModel::OutcomingTransfer;
+  EventItemModel *item = (EventItemModel*)events->find(bareJid+";" + accountId+ ";" + QString::number(type) + ";"+QString::number(transferJob),rowId);
+
+  // check if item exists, if not, don't do anything
+  if (item == NULL)
+    return;
+
+  item->setData(QVariant(description),EventItemModel::Description);
+  item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
+  item->setData(QVariant(isFinished),EventItemModel::Finished);
+}
+
 void EventsManager::appendMUCInvitation(QString accountId, QString bareJid, QString sender) {
   // appends or updates an information about unread message
   int rowId; // holds the row ID, might be used for moving items to the top of the list

@@ -25,6 +25,7 @@ public slots:
   void appendError(QString accountId, QString name, QString errorString);
   void appendUpdate(bool updateAvailable = true, QString version = "", QString date = "");
   void appendTransferJob(QString accountId, QString bareJid, QString name, QString description, int transferJob, bool isIncoming);
+  void updateTransferJob(QString accountId, QString bareJid, QString description, int transferJob, bool isIncoming, bool isFinished);
 
   Q_INVOKABLE void removeEvent(int id);
   Q_INVOKABLE void removeEvent(QString bareJid, QString accountId,int type);

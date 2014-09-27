@@ -51,6 +51,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDir>
 #include <QStringList>
 #include <QDebug>
+#include <QDesktopServices>
 
 #include "../cache/MyCache.h"
 #include "../models/ParticipantListModel.h"
@@ -171,6 +172,8 @@ public :
     // File transfer
     Q_INVOKABLE void acceptTransfer(int jobId);
     Q_INVOKABLE void abortTransfer(int jobId);
+    Q_INVOKABLE int fileTransferState(int jobId);
+    Q_INVOKABLE void openLocalTransferPath(int jobId);
 
     // avatar caching
     Q_INVOKABLE void forceRefreshVCard(QString bareJid);
@@ -235,6 +238,9 @@ private slots:
     void mucParticipantRemovedSlot(const QString &jid);
 
     void incomingTransfer(QXmppTransferJob *job);
+    void transferFinished();
+    void transferError(QXmppTransferJob::Error error);
+    void progress(qint64 done, qint64 total);
     void permissionsReceived(const QList<QXmppMucItem> &permissions);
 
     void resetInitState() { initializationState = false; }
