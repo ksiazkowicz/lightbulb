@@ -127,7 +127,7 @@ Page {
     Component.onCompleted: {
         // sending a chat state meaning that chat is active if not in archive mode
         if (!isInArchiveMode) {
-            xmppConnectivity.openChat( accountId,contactJid )
+            xmppConnectivity.openChat(accountId,contactJid,contactResource)
             listViewMessages.model = xmppConnectivity.getMessages(contactJid)
         } else {
             archivePage = 1

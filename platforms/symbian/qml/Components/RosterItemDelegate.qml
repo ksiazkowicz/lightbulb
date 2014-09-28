@@ -18,11 +18,13 @@ Item {
             anchors { top: parent.top; topMargin: 4 }
             sourceSize { width: platformStyle.graphicSizeMedium; height: platformStyle.graphicSizeMedium }
             smooth: true
+            width: platformStyle.graphicSizeMedium; height: platformStyle.graphicSizeMedium
             source: xmppConnectivity.getAvatarByJid(jid)
             Rectangle { anchors.fill: parent; color: "black"; z: -1 }
             Image {
                 anchors.fill: parent
                 sourceSize { width: platformStyle.graphicSizeMedium; height: platformStyle.graphicSizeMedium }
+                width: platformStyle.graphicSizeMedium; height: platformStyle.graphicSizeMedium
                 smooth: true
                 source: main.platformInverted ? "qrc:/avatar-mask_inverse" : "qrc:/avatar-mask"
             }

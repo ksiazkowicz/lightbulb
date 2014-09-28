@@ -59,8 +59,8 @@ PageStackWindow {
         }
 
     }
-    function openChat(account,name,jid,type) {
-        pageStack.push("qrc:/pages/Conversation",{"accountId":account,"contactName":name,"contactJid":jid,"isInArchiveMode":false,"chatType":type})
+    function openChat(account,name,jid,resource,type) {
+        pageStack.push("qrc:/pages/Conversation",{"accountId":account,"contactName":name,"contactJid":jid,"contactResource":resource,"isInArchiveMode":false,"chatType":type})
     }
 
     Timer {
@@ -124,6 +124,9 @@ PageStackWindow {
         avkon.switchToApp = settings.gBool("behavior","linkInDiscrPopup")
         xmppConnectivity.offlineContactsVisibility = !vars.hideOffline
         avkon.setAppHiddenState(settings.gBool("behavior","hideFromTaskMgr"));
+
+        var recvFilesPath = settings.gStr("paths","recvFiles");
+        vars.receivedFilesPath = recvFilesPath == "false" ? "" : recvFilesPath
 
         if (!settings.gBool("behavior","disableUpdateChecker"))
             updater.checkForUpdate();

@@ -54,7 +54,7 @@ Flickable {
         case 34: { xmppConnectivity.useClient(accountID).acceptSubscription(bareJid); dialog.createWithProperties("qrc:/dialogs/Contact/Add",{"accountId": accountID, "bareJid": bareJid}); xmppConnectivity.events.removeEvent(index); break; }
         case 35: { dialog.createWithProperties("qrc:/dialogs/MUC/Join",{"accountId":accountID,"mucJid":bareJid}); xmppConnectivity.events.removeEvent(index)}; break;
         case 38: if (updater.isUpdateAvailable) dialog.createWithProperties("qrc:/menus/UrlContext", {"url": updater.updateUrl}); break;
-        case 40: { if (!finished) xmppConnectivity.useClient(accountID).acceptTransfer(transferJob); else xmppConnectivity.useClient(accountID).openLocalTransferPath(transferJob)}; break;
+        case 40: { if (!finished) xmppConnectivity.useClient(accountID).acceptTransfer(transferJob,vars.receivedFilesPath); else xmppConnectivity.useClient(accountID).openLocalTransferPath(transferJob)}; break;
         default: return false;
         }
     }

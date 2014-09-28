@@ -44,11 +44,11 @@ Settings::Settings(QObject *parent) : QSettings(Settings::confFile, QSettings::N
 /*************************** (generic settings) **************************/
 QVariant Settings::get(QString group, QString key) {
     beginGroup( group );
-    QVariant ret = value( key, false );
+    QVariant ret = value(key,false);
     endGroup();
     return ret;
 }
-void     Settings::set(QVariant data, QString group, QString key) {
+void Settings::set(QVariant data, QString group, QString key) {
     beginGroup(group);
     setValue(key,data);
     endGroup();

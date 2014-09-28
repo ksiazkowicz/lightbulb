@@ -166,7 +166,7 @@ void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString
   body = body.replace("<", "&lt;");  //and < stuff too ^^
   body = msgWrapper->parseMsgOnLink(body);
 
-  this->openChat(m_accountId,bareJid);
+  this->openChat(m_accountId,bareJid,resource);
 
   bool msgUnreadState;
   if (type != 4 && mine == 0)
@@ -201,12 +201,12 @@ SqlQueryModel* XmppConnectivity::getSqlMessagesByPage(QString accountId, QString
 }
 
 // handling chats list
-void XmppConnectivity::openChat(QString accountId, QString bareJid) {
+void XmppConnectivity::openChat(QString accountId, QString bareJid, QString resource) {
   if (!chats->checkIfExists(accountId + ";" + bareJid)) {
       ChatsItemModel* chat;
       QString message;
       if (clients->value(accountId)->isMucRoom(bareJid)) {
-          chat = new ChatsItemModel(bareJid,bareJid,accountId,3);
+          chat = new ChatsItemModel(bareJid,bareJid,"",accountId,3);
           chat->setUnreadMsg(0);
           // change it to MUC room name one day
           message = "[[INFO]] Joined chatroom\n[[bold]][[name]][[/bold]] @[[date]]";
@@ -215,7 +215,7 @@ void XmppConnectivity::openChat(QString accountId, QString bareJid) {
           if (!contacts->doesContactExists(accountId,bareJid))
             contacts->addContact(accountId,bareJid,bareJid);
 
-          chat = new ChatsItemModel(contacts->getPropertyByJid(accountId,bareJid,"name"),bareJid,accountId,0);
+          chat = new ChatsItemModel(contacts->getPropertyByJid(accountId,bareJid,"name"),bareJid,resource,accountId,0);
           message = "[[INFO]] Chat started with [[bold]][[name]][[/bold]] @[[date]]";
         }
 

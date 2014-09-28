@@ -190,8 +190,14 @@ void MyXmppClient::forceRefreshVCard(QString bareJid) {
 // ---------- handling messages (receiving/sending) ------------------------------------------------------------------------------
 
 bool MyXmppClient::sendMessage(QString bareJid, QString resource, QString msgBody, int chatState, int msgType) {
-  if (xmppClient->state() != QXmppClient::ConnectedState)
+  if (xmppClient->state() != QXmppClient::ConnectedState || bareJid == "")
     return false;
+
+  QString jid = bareJid;
+  if( resource == "" )
+      jid += "/resource";
+  else
+    jid += "/" + resource;
 
   QXmppMessage xmppMsg;
 
@@ -200,7 +206,7 @@ bool MyXmppClient::sendMessage(QString bareJid, QString resource, QString msgBod
       return (room != NULL && room->isJoined()) ? room->sendMessage(msgBody) : false;
     }
 
-  xmppMsg.setTo( bareJid + "/" + resource );
+  xmppMsg.setTo(jid);
   xmppMsg.setFrom( m_myjid + "/" + xmppClient->configuration().resource() );
 
   xmppMsg.setStamp(QDateTime::currentDateTime());
@@ -680,10 +686,29 @@ void MyXmppClient::sendAFile(QString bareJid, QString resource, QString path) {
   events->appendTransferJob(m_accountId,job->jid(),contacts->getPropertyByJid(m_accountId,bareJid,"name"),description,jobId,false);
 }
 
-void MyXmppClient::acceptTransfer(int jobId) {
+void MyXmppClient::acceptTransfer(int jobId, QString path) {
   QXmppTransferJob* job = transferJobs.value(jobId);
+
+  QString recvPath = "";
+  QStringList defaultPaths = QStringList() << "F:/Received files/" << "E:/Received files/" << "C:/Data/Received files/" << "C:/Data/";
+
+  // check if path exists, if not, use something else
+  if (path == "" || path == "false" || !QFile::exists(path)) {
+      for (int i=0; i<defaultPaths.count(); i++) {
+          qDebug() << "trying path " << defaultPaths.at(i);
+          if (QFile::exists(defaultPaths.at(i))) {
+            recvPath = defaultPaths.at(i);
+            break;
+          }
+        }
+    } else { recvPath = path; }
+
+  qDebug() << recvPath;
+  if (recvPath == "") return;
+
   if (job != NULL && job->state() == QXmppTransferJob::OfferState) {; 
-      job->accept("F://Received files//" + job->fileName());
+      job->accept(recvPath + job->fileName());
+      qDebug() << "path is" << job->localFileUrl().toString();
       events->updateTransferJob(m_accountId,job->jid(),"Transfer in progress... 0%\n"+job->fileName(),jobId,true,true);
     }
 }
@@ -699,7 +724,7 @@ void MyXmppClient::transferFinished() {
   int jobId = transferJobs.key(job);
   bool isIncoming = (job->direction() == QXmppTransferJob::IncomingDirection);
   if (job->error() == QXmppTransferJob::NoError)
-    events->updateTransferJob(m_accountId,job->jid(),"Transfer finished. " + job->fileName(),jobId,isIncoming,true);
+    events->updateTransferJob(m_accountId,job->jid(),"Transfer finished. <b>Tap to open.</b> " + job->fileName(),jobId,isIncoming,true);
 }
 
 int MyXmppClient::fileTransferState(int jobId) {

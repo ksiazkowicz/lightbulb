@@ -118,10 +118,8 @@ Item {
                 var recvFolder = avkon.openFolderSelectionDlg(settings.gStr("paths","recvFiles"));
 
                 settings.sStr(recvFolder,"paths","recvFiles")
-                if (recvFolder != "")
-                    cacheDirText.text = "Currently used folder for received file is " + settings.gStr("paths","recvFiles")
-                else
-                    recvDirText.text = "Not using custom folder for received files.";
+                vars.receivedFilesPath = recvFolder
+                recvDirText.updateText()
             }
         }
 
@@ -131,9 +129,14 @@ Item {
             color: main.textColor
             anchors { left: parent.left; right: parent.right }
             font.pixelSize: platformStyle.fontSizeSmall
-            text: settings.gStr("paths","recvFiles") != "" ? "Currently used folder for received file is " + settings.gStr("paths","recvFiles") : "Not using custom folder for received files."
             wrapMode: Text.WordWrap
             horizontalAlignment: Text.AlignJustify
+
+            Component.onCompleted: updateText();
+
+            function updateText() {
+                text = vars.receivedFilesPath != "" ? "Currently used folder for received file is " + vars.receivedFilesPath : "Not using custom folder for received files."
+            }
         }
 
 

@@ -116,7 +116,7 @@ public slots:
     Q_INVOKABLE QString getPropertyByJid(QString account,QString property,QString jid);
     Q_INVOKABLE QString getPreservedMsg(QString accountId,QString jid);
     Q_INVOKABLE void preserveMsg(QString accountId,QString jid,QString message);
-    Q_INVOKABLE void openChat(QString accountId, QString bareJid);
+    Q_INVOKABLE void openChat(QString accountId, QString bareJid, QString resource = "");
     Q_INVOKABLE void closeChat(QString accountId, QString bareJid);
     void updateChatName(QString m_accountId,QString bareJid,QString name);
 

@@ -34,6 +34,7 @@ public:
     enum Roles {
         roleAccount = Qt::UserRole+1,
         roleName,
+        roleResource,
         roleJid,
         roleMsg,
         roleType,
@@ -43,6 +44,7 @@ public:
 public:
       ChatsItemModel(QObject *parent = 0): ListItem(parent) {
           contactName = "";
+          contactResource = "";
           contactJid = "";
           contactAccountID = "";
           chatMsg = "";
@@ -51,12 +53,14 @@ public:
       }
       explicit ChatsItemModel( const QString &_contactName,
                                        const QString &_contactJid,
+                                       const QString &_contactResource,
                                        const QString _accountID,
                                        const int _chatType,
                                        QObject *parent = 0 ) : ListItem(parent),
           contactAccountID(_accountID),
           contactName(_contactName),
           contactJid(_contactJid),
+          contactResource(_contactResource),
           chatType(_chatType),
           chatUnreadMsg(0)
       {
@@ -68,6 +72,8 @@ public:
             return accountID();
         case roleName:
           return name();
+        case roleResource:
+          return resource();
         case roleJid:
           return jid();
         case roleMsg:
@@ -84,6 +90,7 @@ public:
           QHash<int, QByteArray> names;
           names[roleAccount] = "account";
           names[roleName] = "name";
+          names[roleResource] = "resource";
           names[roleJid] = "jid";
           names[roleMsg] = "chatMsg";
           names[roleType] = "chatType";
@@ -107,6 +114,13 @@ public:
           }
       }
 
+      void setResource( const QString &_contactResource ) {
+          if(contactResource != _contactResource) {
+            contactResource = _contactResource;
+            emit dataChanged();
+          }
+      }
+
       void setJid( const QString &_contactJid ) {
           if(contactJid != _contactJid) {
             contactJid = _contactJid;
@@ -126,6 +140,7 @@ public:
 
       inline QString accountID() const { return contactAccountID; }
       inline QString name() const { return contactName; }
+      inline QString resource() const { return contactResource; }
       inline QString jid() const { return contactJid; }
       inline QString msg() const { return chatMsg; }
       inline int type() const { return chatType; }
@@ -134,6 +149,7 @@ public:
     private:
       QString contactAccountID;
       QString contactName;
+      QString contactResource;
       QString contactJid;
       QString chatMsg;
       int chatType;

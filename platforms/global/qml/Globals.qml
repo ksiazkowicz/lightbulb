@@ -37,6 +37,7 @@ Item {
     property bool                    areEmoticonsDisabled: settings.gBool("behavior","disableEmoticons")
     property int                     keepAliveInterval: settings.gInt("behavior","keepAliveInterval")
     property string                  defaultMUCNick: settings.gStr("behavior","defaultMUCNick")
+    property string                  receivedFilesPath: settings.gStr("paths","recvFiles")
 
     property bool                    isRestartRequired: false
     property bool                    isBlinkingOverrideEnabled: false

@@ -170,7 +170,7 @@ public :
     }
 
     // File transfer
-    Q_INVOKABLE void acceptTransfer(int jobId);
+    Q_INVOKABLE void acceptTransfer(int jobId, QString path);
     Q_INVOKABLE void abortTransfer(int jobId);
     Q_INVOKABLE int fileTransferState(int jobId);
     Q_INVOKABLE void openLocalTransferPath(int jobId);
