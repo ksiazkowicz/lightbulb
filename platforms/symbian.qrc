@@ -71,6 +71,8 @@
         <file alias="chats_inverse">symbian/images/toolbar/toolbar-chats_inverse.svg</file>
         <file alias="eye">symbian/images/toolbar/eye.svg</file>
         <file alias="eye_inverse">symbian/images/toolbar/eye_inverse.svg</file>
+        <file alias="attach">symbian/images/toolbar/attach.svg</file>
+        <file alias="attach_inverse">symbian/images/toolbar/attach_inverse.svg</file>
     </qresource>
     <qresource prefix="/FirstRun">
         <file alias="01">symbian/qml/FirstRun/01_gettingStarted.qml</file>

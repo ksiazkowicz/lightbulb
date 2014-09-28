@@ -174,6 +174,7 @@ public :
     Q_INVOKABLE void abortTransfer(int jobId);
     Q_INVOKABLE int fileTransferState(int jobId);
     Q_INVOKABLE void openLocalTransferPath(int jobId);
+    Q_INVOKABLE void sendAFile(QString bareJid, QString resource, QString path);
 
     // avatar caching
     Q_INVOKABLE void forceRefreshVCard(QString bareJid);

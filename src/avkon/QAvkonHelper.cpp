@@ -127,16 +127,22 @@ void QAvkonHelper::ShowErrorL(const TDesC16& aMessage) {
     iNoteId = iNote->ShowNoteL(EAknGlobalErrorNote,aMessage);
 }
 
-QString QAvkonHelper::openFileSelectionDlg() {
+QString QAvkonHelper::openFileSelectionDlg(bool onlySounds, bool showNotification) {
     TBuf16<256> filename;
     TInt types = AknCommonDialogsDynMem::EMemoryTypeMMCExternal|
                  AknCommonDialogsDynMem::EMemoryTypeInternalMassStorage|
                  AknCommonDialogsDynMem::EMemoryTypePhone;
 
-    CExtensionFilter* extensionFilter = new (ELeave) CExtensionFilter;
-    CleanupStack::PushL(extensionFilter);
-    TBool run  = AknCommonDialogsDynMem::RunSelectDlgLD(types, filename, _L(""), 0, 0, _L("Select a sound file"), extensionFilter);
-    CleanupStack::PopAndDestroy(extensionFilter);
+    TBool run;
+
+    if (onlySounds) {
+        CExtensionFilter* extensionFilter = new (ELeave) CExtensionFilter;
+        CleanupStack::PushL(extensionFilter);
+        run = AknCommonDialogsDynMem::RunSelectDlgLD(types, filename, _L(""), 0, 0, _L("Select a sound file"), extensionFilter);
+        CleanupStack::PopAndDestroy(extensionFilter);
+    } else {
+        run = AknCommonDialogsDynMem::RunSelectDlgLD(types, filename, _L(""), 0, 0, _L("Select a file"));
+      }
 
     if (!run) {
         return " ";
@@ -144,7 +150,8 @@ QString QAvkonHelper::openFileSelectionDlg() {
         // convert Symbian string to QString
         QString qString = QString::fromUtf16(filename.Ptr(), filename.Length());
 
-        this->displayGlobalNote("File set to " + qString + ".",false); // SUCCESS! ^^
+        if (showNotification)
+         this->displayGlobalNote("File set to " + qString + ".",false); // SUCCESS! ^^
 
         return qString;
     }

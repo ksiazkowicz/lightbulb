@@ -238,7 +238,23 @@ Page {
             onClicked: sendMessage()
         }
         ToolButton {
-            iconSource: main.platformInverted ? "toolbar-menu_inverse" : "toolbar-menu"
+            iconSource: main.platformInverted ? "qrc:/toolbar/attach_inverse" : "qrc:/toolbar/attach"
+            opacity: enabled ? 1 : 0.5
+            // TODO: disable if disconnected
+            onClicked: {
+                var filename = avkon.openFileSelectionDlg(false,false);
+                if (filename != " ") {
+                    xmppConnectivity.useClient(accountId).sendAFile(contactJid,contactResource,filename)
+                    avkon.displayGlobalNote("Attempting to send a file. ^^",false)
+                } else {
+                    avkon.displayGlobalNote("File transfer aborted.",true)
+                }
+            }
+        }
+
+        ToolButton {
+            platformInverted: main.platformInverted
+            iconSource: "toolbar-menu"
             onClicked: {
                 xmppConnectivity.preserveMsg(accountId,contactJid,msgInputField.text)
 

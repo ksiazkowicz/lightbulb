@@ -109,6 +109,34 @@ Item {
 
         }
 
+        Button {
+            id: moveFolderSelectionDlg
+            text: "Change received files directory"
+            platformInverted: main.platformInverted
+            anchors { left: parent.left; right: parent.right }
+            onClicked: {
+                var recvFolder = avkon.openFolderSelectionDlg(settings.gStr("paths","recvFiles"));
+
+                settings.sStr(recvFolder,"paths","recvFiles")
+                if (recvFolder != "")
+                    cacheDirText.text = "Currently used folder for received file is " + settings.gStr("paths","recvFiles")
+                else
+                    recvDirText.text = "Not using custom folder for received files.";
+            }
+        }
+
+        Text {
+            id: recvDirText
+            width: parent.width
+            color: main.textColor
+            anchors { left: parent.left; right: parent.right }
+            font.pixelSize: platformStyle.fontSizeSmall
+            text: settings.gStr("paths","recvFiles") != "" ? "Currently used folder for received file is " + settings.gStr("paths","recvFiles") : "Not using custom folder for received files."
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignJustify
+        }
+
+
     }
 }
 
