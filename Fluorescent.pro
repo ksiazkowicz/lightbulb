@@ -158,7 +158,8 @@ SOURCES += src/main.cpp \
     src/xmpp/EventsManager.cpp \
     src/UpdateManager.cpp \
     src/models/RosterItemFilter.cpp \
-    src/api/GraphAPIExtensions.cpp
+    src/api/GraphAPIExtensions.cpp \
+    src/models/ServiceItemFilter.cpp
 
 HEADERS += src/xmpp/MyXmppClient.h \
     src/cache/MyCache.h \
@@ -191,4 +192,7 @@ HEADERS += src/xmpp/MyXmppClient.h \
     src/xmpp/EventsManager.h \
     src/UpdateManager.h \
     src/models/RosterItemFilter.h \
-    src/api/GraphAPIExtensions.h
+    src/api/GraphAPIExtensions.h \
+    src/models/ServiceItemModel.h \
+    src/models/ServiceListModel.h \
+    src/models/ServiceItemFilter.h

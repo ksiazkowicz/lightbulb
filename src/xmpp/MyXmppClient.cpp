@@ -108,8 +108,14 @@ void MyXmppClient::connectToXmppServer() {
   // initialize service discovery if account is not facebook
   if (!serviceDiscovery && xmppConfig.host() != "chat.facebook.com") {
       qDebug() << "MyXmppClient::connectToXmppServer(): initializing Service Discovery manager";
-      serviceDiscovery = new QXmppDiscoveryManager();
-      xmppClient->addExtension(serviceDiscovery);
+      serviceDiscovery = xmppClient->findExtension<QXmppDiscoveryManager>();
+      if (!serviceDiscovery) {
+          serviceDiscovery = new QXmppDiscoveryManager();
+          xmppClient->addExtension(serviceDiscovery);
+        }
+      serviceDiscovery->setClientCategory("phone");
+      connect(serviceDiscovery,SIGNAL(itemsReceived(QXmppDiscoveryIq)),this,SLOT(itemsReceived(QXmppDiscoveryIq)),Qt::UniqueConnection);
+      connect(serviceDiscovery,SIGNAL(infoReceived(QXmppDiscoveryIq)),this,SLOT(infoReceived(QXmppDiscoveryIq)),Qt::UniqueConnection);
     }
 
   // initialize profile pic downloader if account is facebook
@@ -125,6 +131,7 @@ void MyXmppClient::clientStateChanged(QXmppClient::State state) {
   if (state == QXmppClient::ConnectedState) {
       if (!rosterManager) initRosterManager();
       this->presenceReceived(xmppClient->clientPresence());
+      if (serviceDiscovery != 0) this->askServer(m_host);
     }
 
   // avoid spam by checking if state changed
@@ -624,6 +631,84 @@ bool MyXmppClient::isActionPossible(int permissionLevel, int action) {
   return false;
 }
 
+// ---------- Service Discovery ----------------------------------------------------------------------------------------------------
+
+void MyXmppClient::askServer(QString jid) {
+  qDebug() << "attempting to get data for" << jid;
+  serviceDiscovery->requestItems(jid);
+      //bytestreams
+}
+
+void MyXmppClient::debugThisCrapServices() {
+    qDebug() << "--- cache for:" << m_host << "---";
+    ServiceListModel *serviceList = services(m_host);
+
+    if (!serviceList) {
+        qDebug() << "unavailable :cc";
+    } else {
+        qDebug() << "-" << qPrintable(m_host);
+        ServiceItemModel* item;
+        for (int i=0;i<serviceList->rowCount();i++) {
+            item = (ServiceItemModel*)serviceList->itemFromIndex(serviceList->index(i,0));
+            qDebug() << " -" << qPrintable(item->data(ServiceItemModel::Jid).toString());
+            qDebug() << "  *" << "name:"<< qPrintable(item->data(ServiceItemModel::Name).toString());
+            qDebug() << "  *" << "category:"<< qPrintable(item->data(ServiceItemModel::Features).toString());
+            qDebug() << "  *" << "type:"<< qPrintable(item->data(ServiceItemModel::Type).toString());
+        }
+    }
+}
+
+void MyXmppClient::itemsReceived(const QXmppDiscoveryIq &items) {
+  qDebug() << "received data for " << items.from();
+  ServiceItemModel *item;
+  ServiceListModel *cache = this->services(items.from());
+
+  for (int i=0;i<items.items().count();i++) {
+    item = new ServiceItemModel(items.items().at(i).name(),items.items().at(i).jid(),items.items().at(i).node());
+    cache->append(item);
+    serviceDiscovery->requestInfo(items.items().at(i).jid());
+  }
+}
+
+void MyXmppClient::infoReceived(const QXmppDiscoveryIq &iq) {
+  QString path;
+  // check if contains @
+  if (iq.from().contains("@")) {
+      path = iq.from().split("@")[1];
+  } else {
+      // the most. terrible. solution. EVER.
+      path = iq.from().right(iq.from().length() - (iq.from().split(".")[0].length()+1));
+  }
+
+  // find a service item model
+  ServiceItemModel *item = services(path)->find(QXmppUtils::jidToBareJid(iq.from()));
+
+  // if item found, update with node features
+  if (item != 0) {
+    foreach (const QXmppDiscoveryIq::Identity &identity, iq.identities()) {
+      item->set(identity.category(),ServiceItemModel::Features);
+      item->set(identity.type(),ServiceItemModel::Type);
+
+      // if item is a bytestreams proxy, update the data
+      if (identity.type() == "bytestreams" && path == m_host && identity.category() == "proxy") {
+          defaultTransferProxy = iq.from();
+      }
+    }
+   }
+}
+
+ServiceListModel* MyXmppClient::services(QString jid) {
+  // check if cache is available
+  if (!servicesCache.contains(jid)) {
+      // if not, initialize cache
+      servicesCache.insert(jid,new ServiceListModel());
+    }
+
+  // return cache for JID
+  return servicesCache.value(jid);
+}
+
+
 // ---------- file transfer --------------------------------------------------------------------------------------------------------
 
 void MyXmppClient::incomingTransfer(QXmppTransferJob *job) {
@@ -634,15 +719,12 @@ void MyXmppClient::incomingTransfer(QXmppTransferJob *job) {
   connect(job,SIGNAL(error(QXmppTransferJob::Error)),SLOT(transferError(QXmppTransferJob::Error)));
   connect(job,SIGNAL(progress(qint64,qint64)),SLOT(progress(qint64,qint64)));
 
+  // don't force inband, because we actually CAN receive files using bytestreams proxy
   transferManager->setSupportedMethods(QXmppTransferJob::AnyMethod);
+  // don't force our own proxy too
+  transferManager->setProxy("");
 
-  switch (job->method()) {
-    case QXmppTransferJob::InBandMethod:
-      qDebug() << "InBandMethod"; break;
-    case QXmppTransferJob::SocksMethod:
-      qDebug() << "SocksMethod"; break;
-    }
-
+  // Cut a part of filename to make it fit in a notification
   QString filename_short = job->fileName();
   if (filename_short.length() > 10)
     filename_short = filename_short.left(7) + "...";
@@ -661,13 +743,16 @@ void MyXmppClient::sendAFile(QString bareJid, QString resource, QString path) {
   QStringList validResources = rosterManager->getResources(bareJid);
 
   // if resource is invalid, choose default
-  if (!validResources.contains(resource))
-    jid += "/" + validResources.first();
-  else
-    jid += "/" + resource;
+  jid += "/" + (!validResources.contains(resource) ? validResources.first() : resource);
 
-  // force inband as we don't support finding a proxy server through service discovery yet
-  transferManager->setSupportedMethods(QXmppTransferJob::InBandMethod);
+  // check if bytestreams proxy is available
+  if (!defaultTransferProxy.isEmpty()) {
+    transferManager->setSupportedMethods(QXmppTransferJob::AnyMethod);
+    transferManager->setProxy(defaultTransferProxy);
+  } else {
+    // force inband as we don't know the JID of bytestreams proxy
+    transferManager->setSupportedMethods(QXmppTransferJob::InBandMethod);
+  }
 
   // send a file
   QXmppTransferJob *job = transferManager->sendFile(jid,path);
@@ -677,6 +762,7 @@ void MyXmppClient::sendAFile(QString bareJid, QString resource, QString path) {
   connect(job,SIGNAL(error(QXmppTransferJob::Error)),SLOT(transferError(QXmppTransferJob::Error)));
   connect(job,SIGNAL(progress(qint64,qint64)),SLOT(progress(qint64,qint64)));
 
+  // Cut a part of filename to make it fit in a notification
   QString filename_short = job->fileName();
   if (filename_short.length() > 10)
     filename_short = filename_short.left(7) + "...";
@@ -695,7 +781,6 @@ void MyXmppClient::acceptTransfer(int jobId, QString path) {
   // check if path exists, if not, use something else
   if (path == "" || path == "false" || !QFile::exists(path)) {
       for (int i=0; i<defaultPaths.count(); i++) {
-          qDebug() << "trying path " << defaultPaths.at(i);
           if (QFile::exists(defaultPaths.at(i))) {
             recvPath = defaultPaths.at(i);
             break;
@@ -703,8 +788,7 @@ void MyXmppClient::acceptTransfer(int jobId, QString path) {
         }
     } else { recvPath = path; }
 
-  qDebug() << recvPath;
-  if (recvPath == "") return;
+  if (recvPath == "") return; // TODO: show an error if path is useless
 
   if (job != NULL && job->state() == QXmppTransferJob::OfferState) {; 
       job->accept(recvPath + job->fileName());
@@ -724,12 +808,7 @@ void MyXmppClient::transferFinished() {
   int jobId = transferJobs.key(job);
   bool isIncoming = (job->direction() == QXmppTransferJob::IncomingDirection);
   if (job->error() == QXmppTransferJob::NoError)
-    events->updateTransferJob(m_accountId,job->jid(),"Transfer finished. <b>Tap to open.</b> " + job->fileName(),jobId,isIncoming,true);
-}
-
-int MyXmppClient::fileTransferState(int jobId) {
-  QXmppTransferJob* job = transferJobs.value(jobId);
-  return (job != NULL) ? job->state() : 0;
+    events->updateTransferJob(m_accountId,job->jid(),"Transfer finished." + (!isIncoming ? QString() : QString(" <b>Tap to open.</b> ")) + job->fileName(),jobId,isIncoming,true);
 }
 
 void MyXmppClient::openLocalTransferPath(int jobId) {

@@ -79,6 +79,11 @@ CommonDialog {
 
         spacing: 5
 
+        /*Button {
+            text: "detonate this shit"
+            onClicked: xmppConnectivity.useClient(accountId).debugThisCrapServices()
+        }*/
+
         SelectionListItem {
             id: statusSelection
             platformInverted: main.platformInverted

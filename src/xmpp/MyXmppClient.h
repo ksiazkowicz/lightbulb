@@ -59,6 +59,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "../api/GraphAPIExtensions.h"
 #include "ContactListManager.h"
 #include "EventsManager.h"
+#include "../models/ServiceListModel.h"
+#include "../models/ServiceItemFilter.h"
 
 class MyXmppClient : public QObject
 {
@@ -172,12 +174,15 @@ public :
     // File transfer
     Q_INVOKABLE void acceptTransfer(int jobId, QString path);
     Q_INVOKABLE void abortTransfer(int jobId);
-    Q_INVOKABLE int fileTransferState(int jobId);
     Q_INVOKABLE void openLocalTransferPath(int jobId);
     Q_INVOKABLE void sendAFile(QString bareJid, QString resource, QString path);
 
     // avatar caching
     Q_INVOKABLE void forceRefreshVCard(QString bareJid);
+
+    // service discovery
+    Q_INVOKABLE void askServer(QString jid);
+    Q_INVOKABLE void debugThisCrapServices();
 	
 signals:
     void statusTextChanged();
@@ -229,6 +234,7 @@ private slots:
     // XEP-0202: Entity Time
     void entityTimeReceivedSlot(const QXmppEntityTimeIq &entity);
 
+    // multi user chat
     void mucTopicChangeSlot(QString subject);
     void mucJoinedSlot();
     void mucErrorSlot(const QXmppStanza::Error &error);
@@ -237,12 +243,20 @@ private slots:
     void mucYourNickChanged(const QString &nickName);
     void mucParticipantAddedSlot(const QString &jid);
     void mucParticipantRemovedSlot(const QString &jid);
+    void permissionsReceived(const QList<QXmppMucItem> &permissions);
 
+
+    // file transfer
     void incomingTransfer(QXmppTransferJob *job);
     void transferFinished();
     void transferError(QXmppTransferJob::Error error);
     void progress(qint64 done, qint64 total);
-    void permissionsReceived(const QList<QXmppMucItem> &permissions);
+
+    // service discovery
+    void itemsReceived (const QXmppDiscoveryIq &items);
+    void infoReceived (const QXmppDiscoveryIq &iq);
+
+    //
 
     void resetInitState() { initializationState = false; }
 
@@ -274,6 +288,8 @@ private:
     QString m_resource;
 
     QString m_accountId;
+    QMap<QString,ServiceListModel*> servicesCache;
+    ServiceListModel *services(QString jid);
 
     QString getPicPresence( const QXmppPresence &presence ) const;
     QString getTextStatus(const QString &textStatus, const QXmppPresence &presence ) const;
@@ -285,6 +301,7 @@ private:
     QMap<QString,ParticipantListModel*> mucParticipants;
 
     QMap<int,QXmppTransferJob*> transferJobs;
+    QString defaultTransferProxy;
 };
 
 #endif
