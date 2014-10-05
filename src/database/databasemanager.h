@@ -69,6 +69,7 @@ public:
 
         // create database structure
         bool mkMessagesTable();
+        bool mkRosterTable();
         QSqlError lastError();
         QSqlDatabase db;
         QStringList parameters;
@@ -76,6 +77,10 @@ public:
     public slots:
         Q_INVOKABLE bool initDB();
         bool insertMessage();
+
+        bool insertContact();
+        bool deleteContact();
+        bool updateContact();
 
         void getLastError();
     };

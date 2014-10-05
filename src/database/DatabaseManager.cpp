@@ -80,6 +80,7 @@ bool DatabaseManager::deleteDB() {
 
 bool DatabaseManager::initDB() {
     mkMessagesTable();
+    mkRosterTable();
 
     emit finished();
     return true;
@@ -97,6 +98,67 @@ bool DatabaseManager::mkMessagesTable() {
                          "dateTime varchar(30), "
                          "isMine integer)");
     }
+    emit finished();
+    return ret;
+}
+
+bool DatabaseManager::mkRosterTable()
+{
+    bool ret = false;
+    if (db.isOpen()) {
+        QSqlQuery query(db);
+        ret = query.exec("create table roster "
+                         "(id integer primary key, "
+                         "id_account varchar(256), "
+                         "name varchar(80), "
+                         "jid varchar(80), "
+                         "isFavorite integer)");
+    }
+    emit finished();
+    return ret;
+}
+
+bool DatabaseManager::insertContact()
+{
+    QStringList params = parameters;
+    bool ret = false;
+    QSqlQuery query(db);
+    ret = query.prepare("INSERT INTO roster (id_account, name, jid) "
+                        "VALUES (:acc, :name, :jid)");
+    if (ret) {
+        query.bindValue(":acc", params.at(0));
+        query.bindValue(":jid", params.at(1));
+        query.bindValue(":name", params.at(2));
+        if (databaseOpen) {
+            ret = query.exec();
+        }
+    }
+    emit finished();
+    return ret;
+}
+
+bool DatabaseManager::updateContact()
+{
+    QStringList params = parameters;
+    bool ret = false;
+    QSqlQuery query(db);
+    ret = query.prepare("UPDATE roster SET " + params.at(2) + "=:value where jid=:jid and id_account=:acc");
+    query.bindValue(":acc", params.at(0));
+    query.bindValue(":value",params.at(3));
+    query.bindValue(":jid",params.at(1));
+    query.exec();
+    emit finished();
+    return ret;
+}
+
+bool DatabaseManager::deleteContact()
+{
+    QStringList params = parameters;
+    bool ret = false;
+    QSqlQuery query(db);
+    if (databaseOpen)
+        ret = query.exec("DELETE FROM roster WHERE jid='" + params.at(1) + "' and id_account =" + params.at(0));
+
     emit finished();
     return ret;
 }

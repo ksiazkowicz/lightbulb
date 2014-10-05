@@ -44,9 +44,11 @@ DatabaseWorker::DatabaseWorker(QObject *parent) :
 
     //initialize SqlQueryModel
     sqlMessages = new SqlQueryModel( 0 );
+    sqlRoster = new SqlQueryModel( 0 );
 
     // populates queryType list so I could use switch with QStrings. I like switches.
-    queryType << "begin" << "end" << "insertMessage";
+    queryType << "begin" << "end" << "insertMessage" << "insertContact" << "deleteContact" <<
+                 "updateContact";
 }
 
 void DatabaseWorker::executeQuery(QStringList& query) {
@@ -58,25 +60,23 @@ void DatabaseWorker::executeQuery(QStringList& query) {
     }
 
     // Used for debugging. I like debugging. Debugging is nice.
-
-    qDebug() << "DatabaseWorker::executeQuery(): executing query with parameters: " << database->parameters;
+    qDebug() << "DatabaseWorker::executeQuery(): executing query with parameters:" << database->parameters;
 
 
     // Check the type of query and execute
     switch (queryType.indexOf(query.at(0))) {
         case 0:
-
             qDebug() << "DatabaseWorker::executeQuery(): beginning transaction";
-
             QSqlQuery("begin",database->db);
             break;
         case 1:
-
             qDebug() << "DatabaseWorker::executeQuery(): ending transaction";
-
             QSqlQuery("end",database->db);
             break;
         case 2: database->insertMessage(); break;
+        case 3: database->insertContact(); break;
+        case 4: database->deleteContact(); break;
+        case 5: database->updateContact(); break;
         default:
             #ifdef QT_DEBUG
             qDebug() << "DatabaseWorker::executeQuery(): query " + query.at(0) + " not recognized.";
@@ -94,6 +94,13 @@ void DatabaseWorker::updateMessages(QString m_accountId, QString bareJid, int pa
     sqlMessages = new SqlQueryModel( 0 );
     if (bareJid != "") sqlMessages->setQuery("SELECT * FROM (SELECT * FROM messages WHERE bareJid='" + bareJid + "' and id_account='"+m_accountId + "' ORDER BY id DESC limit " + QString::number(border) + ") ORDER BY id ASC limit 20",database->db);
     emit sqlMessagesUpdated();
+}
+
+void DatabaseWorker::updateRoster(QString m_accountId) {
+    if (accountId != m_accountId) accountId = m_accountId;
+    qDebug() << "DatabaseWorker::updateRoster(): updating contact list.";
+    sqlRoster->setQuery("select * from roster where id_account="+m_accountId, database->db);
+    emit sqlRosterUpdated();
 }
 
 int DatabaseWorker::getPageCount(QString m_accountId, QString bareJid) {

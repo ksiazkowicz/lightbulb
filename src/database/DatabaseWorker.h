@@ -38,6 +38,7 @@ class DatabaseWorker : public QObject
 public:
     explicit DatabaseWorker(QObject *parent = 0);
 
+    SqlQueryModel* sqlRoster;
     SqlQueryModel* sqlMessages;
     SqlQueryModel* getSqlMessages() const { return sqlMessages; }
     Q_INVOKABLE int getPageCount(QString m_accoutId, QString bareJid);
@@ -47,10 +48,13 @@ signals:
     void messagesChanged();
 
     void sqlMessagesUpdated();
+    void sqlRosterUpdated();
     
 public slots:
     void executeQuery(QStringList &query);
     void updateMessages (QString m_accountId, QString bareJid, int page);
+    void updateRoster(QString m_accountId);
+
     QString generateLog(QString m_accountId, QString bareJid, QString contactName, int beginID, int endID);
 
 private:
