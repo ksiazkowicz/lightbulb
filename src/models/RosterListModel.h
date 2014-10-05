@@ -69,7 +69,7 @@ public:
 
   RosterItemModel* find(const QString &id, int &row) const {
     RosterItemModel* result;
-    for (int row=0; row < this->rowCount(); row++) {
+    for (row=0; row < this->rowCount(); row++) {
         result = (RosterItemModel*)this->itemFromIndex(this->index(row,0));
         if (result->data(RosterItemModel::ItemId).toString() == id)
           return result;

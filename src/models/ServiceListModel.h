@@ -28,7 +28,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "serviceitemmodel.h"
 #include "QModelIndexList"
 #include "QStandardItemModel"
-#include <QDebug>
 
 class ServiceListModel : public QStandardItemModel
 {
@@ -45,6 +44,7 @@ public:
     names[ServiceItemModel::Name] = "name";
     names[ServiceItemModel::Jid] = "jid";
     names[ServiceItemModel::Features] = "features";
+    names[ServiceItemModel::Type] = "type";
 
     #if QT_VERSION < 0x050000
     this->setRoleNames(names);
@@ -58,7 +58,7 @@ public:
 
   ServiceItemModel* find(const QString &id, int &row) const {
     ServiceItemModel* result;
-    for (int row=0; row < this->rowCount(); row++) {
+    for (row=0; row < this->rowCount(); row++) {
         result = (ServiceItemModel*)this->itemFromIndex(this->index(row,0));
         if (result->data(ServiceItemModel::Jid).toString() == id)
           return result;
@@ -72,10 +72,7 @@ public:
     return this->find(id,row);
   }
 
-  bool checkIfExists(const QString &id) const {
-    return this->find(id) != NULL;
-  }
-
+  bool checkIfExists(const QString &id) const { return this->find(id) != NULL; }
 
 signals:
   void nodesChanged();
