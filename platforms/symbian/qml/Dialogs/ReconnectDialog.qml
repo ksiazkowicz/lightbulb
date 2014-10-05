@@ -60,7 +60,7 @@ CommonDialog {
             if (timeLeft > 0) {
                 timeLeft--
             } else {
-                xmppConnectivity.useClient(accountId).setPresence(XmppClient.Online,main.laststatus)
+                xmppConnectivity.restorePreviousStatus(accountId)
                 reconDialog.close()
                 running = false
             }
