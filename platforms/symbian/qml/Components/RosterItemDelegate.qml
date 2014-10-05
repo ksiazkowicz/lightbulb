@@ -36,7 +36,7 @@ Item {
         }
         Text {
             id: txtJid
-            text: _contactName + ((statusText !== "") ? (" · <font color='"+main.midColor+"'><i>" + statusText + "</i></font>") : "")
+            text: (favorite == "1" ? "★ " : "")  + _contactName + ((statusText !== "") ? (" · <font color='"+main.midColor+"'><i>" + statusText + "</i></font>") : "")
             anchors.verticalCenter: parent.verticalCenter
             onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
             wrapMode: Text.WordWrap
