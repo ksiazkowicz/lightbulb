@@ -370,6 +370,7 @@ void MyXmppClient::setStatusText( const QString &__statusText ) {
 void MyXmppClient::setStatus( StatusXmpp __status) {
   if (__status != m_status || xmppClient->state() == QXmppClient::ConnectingState) {
       QXmppPresence myPresence = xmppClient->clientPresence();
+      m_prevStatus = m_status;
 
       if (__status != Offline) {
           if( xmppClient->state() == QXmppClient::DisconnectedState )

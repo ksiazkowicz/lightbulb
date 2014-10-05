@@ -112,7 +112,6 @@ public slots:
     Q_INVOKABLE QString getAvatarByJid(QString bareJid) { return lCache->getAvatarCache(bareJid); }
 
     // handling chats list
-
     Q_INVOKABLE QString getPropertyByJid(QString account,QString property,QString jid);
     Q_INVOKABLE QString getPreservedMsg(QString accountId,QString jid);
     Q_INVOKABLE void preserveMsg(QString accountId,QString jid,QString message);
@@ -163,6 +162,11 @@ public slots:
 
     // a clever idea to unclutter this shit
     Q_INVOKABLE MyXmppClient* useClient(QString accountId) { return clients->value(accountId); }
+
+    // auto-away and reconnection related functions
+    Q_INVOKABLE void restorePreviousStatus(QString accountId);
+    void setAway(QString accountId);
+    Q_INVOKABLE void setGlobalAway();
 
 private:
     QString currentClient;

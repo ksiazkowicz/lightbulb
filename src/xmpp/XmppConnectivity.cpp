@@ -472,3 +472,48 @@ void XmppConnectivity::handleXmppStatusChange (const QString accountId) {
 
   emit xmppStatusChanged(accountId);
 }
+
+void XmppConnectivity::restorePreviousStatus(QString accountId) {
+    /*
+     *  restores previous status
+     *
+     */
+
+    // check if accountId is valid and fail if not
+    if (!clients->contains(accountId))
+        return;
+
+    // get previous status and set it
+    MyXmppClient::StatusXmpp prevStatus = this->useClient(accountId)->getPrevStatus();
+    this->useClient(accountId)->setStatus(prevStatus);
+}
+
+void XmppConnectivity::setAway(QString accountId) {
+    /*
+     *  sets away state if contact is online/chatty
+     *
+     */
+
+    // check if accountId is valid and fail if not
+    if (!clients->contains(accountId))
+        return;
+
+    // check if account is connected. if not, fail
+    if (this->useClient(accountId)->getStateConnect() != QXmppClient::ConnectedState)
+        return;
+
+    // change status if current one is online/chatty
+    int status = this->useClient(accountId)->getStatus();
+    if (status == MyXmppClient::Online || status == MyXmppClient::Chat) {
+        this->useClient(accountId)->setStatus(MyXmppClient::Away);
+    }
+}
+
+void XmppConnectivity::setGlobalAway() {
+    // iterate through list
+    QMap<QString,MyXmppClient*>::iterator i;
+    for (i = clients->begin(); i != clients->end(); i++) {
+        // call "setAway" for every account
+        this->setAway(i.key());
+      }
+}

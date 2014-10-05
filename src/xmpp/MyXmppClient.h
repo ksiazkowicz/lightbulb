@@ -133,6 +133,8 @@ public :
     Q_INVOKABLE StatusXmpp getStatus() const { return m_status; }
     void setStatus( StatusXmpp __status );
 
+    Q_INVOKABLE StatusXmpp getPrevStatus() const { return m_prevStatus; }
+
     QString getMyJid() const { return m_myjid; }
     void setMyJid( const QString& myjid ) { m_myjid=myjid; }
 
@@ -280,6 +282,7 @@ private:
     void initRosterManager();
 
     StatusXmpp m_status;
+    StatusXmpp m_prevStatus;
     bool initializationState;
     QString m_statusText;
     QString m_myjid;
