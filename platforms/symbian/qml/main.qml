@@ -76,6 +76,16 @@ PageStackWindow {
         }
     }
 
+    Timer {
+        id: autoAway
+        running: !vars.isActive && vars.autoAway
+        repeat: false
+        interval: 60000*vars.autoAwayTime
+        onTriggered: {
+            // TODO: auto-away feature actually
+        }
+    }
+
     Connections         {
         target: Qt.application
         onActiveChanged: {

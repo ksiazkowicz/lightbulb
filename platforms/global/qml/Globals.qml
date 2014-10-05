@@ -33,6 +33,10 @@ Item {
     property bool                    isActive: true
     property string                  context: ""
 
+    // auto-away
+    property bool                    autoAway: settings.gBool("behavior","autoAway")
+    property int                     autoAwayTime: settings.gInt("behavior","autoAwayTime")
+
     // settings
     property bool                    areEmoticonsDisabled: settings.gBool("behavior","disableEmoticons")
     property int                     keepAliveInterval: settings.gInt("behavior","keepAliveInterval")

@@ -55,6 +55,7 @@ Page {
             ListElement { name: "Notification LED" }
             ListElement { name: "Colors" }
             ListElement { name: "Contact list" }
+            ListElement { name: "Behavior" }
             ListElement { name: "Advanced" }
         }
         onSelectedIndexChanged: {
@@ -90,6 +91,11 @@ Page {
                     break;
                 }
                 case 6: {
+                    titleText.text = "Behavior";
+                    preflet.source = "qrc:/Preflets/Behavior";
+                    break;
+                }
+                case 7: {
                     titleText.text = "Advanced";
                     preflet.source = "qrc:/Preflets/Advanced";
                     break;
