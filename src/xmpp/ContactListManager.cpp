@@ -13,8 +13,8 @@ ContactListManager::ContactListManager(DatabaseWorker *db, QObject *parent) :
   database = db;
 
   // pull data from cache
-  db->updateRoster();
   connect(database,SIGNAL(sqlRosterUpdated()),this,SLOT(restoreCache()),Qt::UniqueConnection);
+  database->updateRoster();
 
   // initialize filter
   filter = new RosterItemFilter;
@@ -27,9 +27,13 @@ void ContactListManager::restoreCache() {
     for (int i=0;i<database->sqlRoster->rowCount();i++) {
         // if contact found, add it to list
         QSqlRecord record = database->sqlRoster->record(i);
-        this->addContact(record.value("id_account").toString(),record.value("jid").toString(),record.value("name").toString(),false);
+        this->addContact(record.value("id_account").toString(),record.value("jid").toString(),record.value("name").toString(),false,record.value("isFavorite").toBool());
     }
+
+    // disconnect the signal, we want it to be done just once in a lifetime~!
     disconnect(database,SIGNAL(sqlRosterUpdated()));
+
+    // debug the amount of contact which were restored from the cache, it might get handy if something breaks
     qDebug() << "Restored" << database->sqlRoster->rowCount() << "contacts from cache.";
 }
 
@@ -53,7 +57,9 @@ void ContactListManager::cleanupCache(QString acc, QStringList bareJids) {
 // contact list management code
 
 void ContactListManager::addContact(QString acc, QString jid, QString name, bool updateDatabase,bool isFavorite) {
-  qDebug() << "ContactListManager::addContact() called";
+  // don't debug it while pulling data from cache, it's a mess T_T
+  if (updateDatabase)
+    qDebug() << "ContactListManager::addContact() called for" << qPrintable(jid) << "at" << qPrintable(acc);
 
   // first, check if contact isn't already on the contact list
   RosterItemModel *item = roster->find( acc + ";" + jid );
