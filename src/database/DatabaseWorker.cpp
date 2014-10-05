@@ -99,7 +99,11 @@ void DatabaseWorker::updateMessages(QString m_accountId, QString bareJid, int pa
 void DatabaseWorker::updateRoster(QString m_accountId) {
     if (accountId != m_accountId) accountId = m_accountId;
     qDebug() << "DatabaseWorker::updateRoster(): updating contact list.";
-    sqlRoster->setQuery("select * from roster where id_account="+m_accountId, database->db);
+    if (m_accountId.isEmpty()) {
+        sqlRoster->setQuery("select * from roster", database->db);
+    } else {
+        sqlRoster->setQuery("select * from roster where id_account="+m_accountId, database->db);
+    }
     emit sqlRosterUpdated();
 }
 

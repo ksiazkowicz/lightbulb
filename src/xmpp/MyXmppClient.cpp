@@ -406,10 +406,12 @@ void MyXmppClient::setPresence( StatusXmpp status, QString textStatus ) { //Q_IN
 // ---------- roster management --------------------------------------------------------------------------------------------------
 
 void MyXmppClient::initRosterManager() {
+  // initialize roster manager
   rosterManager = &xmppClient->rosterManager();
 
   qDebug() << "MyXmppClient::clientStateChanged(): initializing roster manager";
 
+  // CONNECT ALL THE SIGNALS!!1111
   QObject::connect( rosterManager, SIGNAL(presenceChanged(QString,QString)), this, SLOT(initPresence(const QString, const QString)), Qt::UniqueConnection );
   QObject::connect( rosterManager, SIGNAL(rosterReceived()), this, SLOT(initRoster()), Qt::UniqueConnection );
   QObject::connect( rosterManager, SIGNAL(subscriptionReceived(QString)), this, SLOT(notifyNewSubscription(QString)), Qt::UniqueConnection );
@@ -420,38 +422,50 @@ void MyXmppClient::initRosterManager() {
 
 void MyXmppClient::initRoster() {
   qDebug() << "MyXmppClient::initRoster() called";
-  initializationState = true;
-  if (!rosterManager->isRosterReceived()) {
-      qDebug() << "MyXmppClient::initRoster(): roster not available yet";
-      return;
-    }
 
+  // put the client in "contact list initialization" state
+  initializationState = true;
+
+  // get a list of all JIDs
   QStringList listBareJids = rosterManager->getRosterBareJids();
 
-  for( int j=0; j < listBareJids.length(); j++ )
-    {
+  // clean up the cache
+  contacts->cleanupCache(m_accountId,listBareJids);
+
+  // iterate through the list
+  for( int j=0; j < listBareJids.length(); j++ ) {
       QString bareJid = listBareJids.at(j);
 
-      cacheIM->addCacheJid( bareJid );
+      // prepare cache
+      cacheIM->addCacheJid(bareJid);
 
-      QXmppRosterIq::Item itemRoster = rosterManager->getRosterEntry( bareJid );
-      QString name = itemRoster.name();
+      // get contact name, we might need it
+      QString name = rosterManager->getRosterEntry(bareJid).name();
+
+      // try to get VCard
       vCardData vCdata = cacheIM->getVCard( bareJid );
 
-      if ( vCdata.isEmpty() ) {
+      // request it from the server if unavailable
+      if (vCdata.isEmpty()) {
           qDebug() << "MyXmppClient::initRoster():" << bareJid << "has no VCard. Requesting.";
           vCardManager->requestVCard( bareJid );
         }
+
+      // inform contact list manager that there is something cool coming
       contacts->addContact(m_accountId,bareJid,name);
     }
 
+  // check if our cache is available, if there isn't - request it
+  // it's essential for "personality" feature (shows our name and photo on Events page)
+  // I might move it to a place where it makes more sense in the future
   vCardData vCdata = cacheIM->getVCard( m_myjid );
-  if ( vCdata.isEmpty() ) {
+  if (vCdata.isEmpty()) {
       qDebug() << "MyXmppClient::initRoster():" << m_myjid << "has no VCard. Requesting.";
       cacheIM->addCacheJid(m_myjid);
       vCardManager->requestVCard( m_myjid );
     }
 
+  // let the app know we are past "contact list initialization" state
   QTimer::singleShot(1000,this,SLOT(resetInitState()));
 }
 

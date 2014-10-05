@@ -53,7 +53,7 @@ signals:
 public slots:
     void executeQuery(QStringList &query);
     void updateMessages (QString m_accountId, QString bareJid, int page);
-    void updateRoster(QString m_accountId);
+    void updateRoster(QString m_accountId = QString());
 
     QString generateLog(QString m_accountId, QString bareJid, QString contactName, int beginID, int endID);
 

@@ -42,7 +42,7 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
   dbWorker->moveToThread(dbThread);
   dbThread->start(QThread::LowestPriority);
 
-  contacts = new ContactListManager();
+  contacts = new ContactListManager(dbWorker);
   connect(contacts,SIGNAL(contactNameChanged(QString,QString,QString)),this,SLOT(updateChatName(QString,QString,QString)));
   connect(contacts,SIGNAL(forceXmppPresenceChanged(QString,QString,QString,QString,QString)),this,SIGNAL(xmppPresenceChanged(QString,QString,QString,QString,QString)),Qt::UniqueConnection);
 
@@ -343,11 +343,15 @@ void XmppConnectivity::accountRemoved(QString id) {
                      << qPrintable(id)<<"::"<<qPrintable(clients->value(id)->getMyJid());
   clients->remove(id);
 
+  // remove all messages for this account id
   DatabaseManager* database = new DatabaseManager();
   SqlQueryModel* sqlQuery = new SqlQueryModel( 0 );
   sqlQuery->setQuery("DELETE FROM MESSAGES WHERE id_account='" +id + "'", database->db);
   database->deleteLater();
   sqlQuery->deleteLater();
+
+  // remove all contacts for this account id
+  contacts->removeContact(id);
 
   for (int i=0; i<chats->count(); i++) {
       int unreadDelta = 0;

@@ -157,7 +157,9 @@ bool DatabaseManager::deleteContact()
     bool ret = false;
     QSqlQuery query(db);
     if (databaseOpen)
-        ret = query.exec("DELETE FROM roster WHERE jid='" + params.at(1) + "' and id_account =" + params.at(0));
+        if (params.count() > 1)
+            ret = query.exec("DELETE FROM roster WHERE jid='" + params.at(1) + "' and id_account =" + params.at(0));
+        else ret = query.exec("DELETE FROM roster WHERE id_account =" + params.at(0));
 
     emit finished();
     return ret;

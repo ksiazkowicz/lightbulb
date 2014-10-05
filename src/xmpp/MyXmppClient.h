@@ -121,6 +121,7 @@ public :
     Q_INVOKABLE bool unsubscribe (const QString bareJid) { return rosterManager->unsubscribe(bareJid); }
     Q_INVOKABLE bool acceptSubscription (const QString bareJid) { return rosterManager->acceptSubscription(bareJid); }
     Q_INVOKABLE bool rejectSubscription (const QString bareJid) { return rosterManager->refuseSubscription(bareJid); }
+    Q_INVOKABLE bool setFavContact(const QString bareJid, bool state) { contacts->setContactFavState(m_accountId,bareJid,state); }
 
     /*----------------------------------*/
     /*--- getter/setter ---*/

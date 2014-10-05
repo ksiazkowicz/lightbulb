@@ -32,6 +32,7 @@ ContextMenu {
     property string contactName: ""
     property string contactJid:  ""
     property string accountId: ""
+    property bool isFavorite: false
     property bool shouldICareAnyway: false
 
     onStatusChanged: {
@@ -80,7 +81,11 @@ ContextMenu {
             platformInverted: main.platformInverted
             onClicked: xmppConnectivity.useClient(accountId).forceRefreshVCard(contactJid)
         }
-
+        MenuItem {
+            text: !isFavorite ? qsTr("Mark as fav.") : qsTr("Unfav. contact")
+            platformInverted: main.platformInverted
+            onClicked: xmppConnectivity.useClient(accountId).setFavContact(contactJid,!isFavorite)
+        }
         MenuItem {
             text: qsTr("Subscribe")
             platformInverted: main.platformInverted
