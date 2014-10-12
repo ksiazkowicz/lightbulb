@@ -47,6 +47,7 @@ CommonDialog {
     onButtonClicked: {
         if ((index === 0) && ( newNameText.text != "" )) {
            xmppConnectivity.useClient(accountId).renameContact(contactJid, newNameText.text)
+            avkon.showPopup("Contact name","changed")
         }
     }
 

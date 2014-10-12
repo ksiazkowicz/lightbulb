@@ -112,9 +112,9 @@ public :
     Q_INVOKABLE QStringList getResourcesByJid (QString bareJid) { return rosterManager->getResources(bareJid); }
 
     /*--- add/remove contact ---*/
-    Q_INVOKABLE void addContact(QString bareJid, QString nick, QString group, bool sendSubscribe );
-    Q_INVOKABLE void removeContact( QString bareJid ) { rosterManager->removeItem( bareJid ); }
-    Q_INVOKABLE void renameContact(QString bareJid, QString name) { rosterManager->renameItem( bareJid, name ); }
+    Q_INVOKABLE bool addContact(QString bareJid, QString nick, QString group, bool sendSubscribe );
+    Q_INVOKABLE bool removeContact( QString bareJid ) { return rosterManager->removeItem( bareJid ); }
+    Q_INVOKABLE bool renameContact(QString bareJid, QString name) { return rosterManager->renameItem( bareJid, name ); }
 
     /*--- subscribe ---*/
     Q_INVOKABLE bool subscribe (const QString bareJid) { return rosterManager->subscribe(bareJid); }

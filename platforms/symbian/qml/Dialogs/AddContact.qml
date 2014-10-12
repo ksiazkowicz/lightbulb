@@ -40,7 +40,12 @@ CommonDialog {
     property bool isCreated: false
 
     onStatusChanged: if (isCreated && addContact.status === DialogStatus.Closed) addContact.destroy()
-    onButtonClicked: if (index === 0 && addName.text != "" && addJid.text != "") xmppConnectivity.useClient(accountId).addContact(addJid.text, addName.text, "", true)
+    onButtonClicked: if (index === 0 && addName.text != "" && addJid.text != "") {
+                         var result = xmppConnectivity.useClient(accountId).addContact(addJid.text, addName.text, "", true)
+                         if (result)
+                             avkon.showPopup("Contact "+addName.text,"added to contact list")
+                         else avkon.showPopup("Error occured","while adding contact to list")
+                     }
 
     content: Column {
             spacing: platformStyle.paddingSmall

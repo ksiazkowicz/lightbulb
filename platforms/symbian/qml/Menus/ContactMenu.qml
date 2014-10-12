@@ -53,8 +53,10 @@ ContextMenu {
             text: qsTr("Remove")
             platformInverted: main.platformInverted
             onClicked: {
-                if (avkon.displayAvkonQueryDialog("Remove", qsTr("Are you sure you want to remove ") + contactName + qsTr(" from your contact list?")))
+                if (avkon.displayAvkonQueryDialog("Remove", qsTr("Are you sure you want to remove ") + contactName + qsTr(" from your contact list?"))) {
                     xmppConnectivity.useClient(accountId).removeContact(contactJid);
+                    avkon.showPopup("Contact " + contactName,"was removed from contact list.")
+                }
             }
         }
         MenuItem {
@@ -79,19 +81,26 @@ ContextMenu {
         MenuItem {
             text: qsTr("Refresh")
             platformInverted: main.platformInverted
-            onClicked: xmppConnectivity.useClient(accountId).forceRefreshVCard(contactJid)
+            onClicked: {
+                xmppConnectivity.useClient(accountId).forceRefreshVCard(contactJid)
+                avkon.showPopup("Refreshing VCard for",contactName)
+            }
         }
         MenuItem {
             text: !isFavorite ? qsTr("Mark as fav.") : qsTr("Unfav. contact")
             platformInverted: main.platformInverted
-            onClicked: xmppConnectivity.useClient(accountId).setFavContact(contactJid,!isFavorite)
+            onClicked: {
+                xmppConnectivity.useClient(accountId).setFavContact(contactJid,!isFavorite)
+                var body = !isFavorite ? "is now favorite" : "is no longer favorite"
+                avkon.showPopup("Contact " + contactName,body)
+            }
         }
         MenuItem {
             text: qsTr("Subscribe")
             platformInverted: main.platformInverted
             onClicked: {
                 xmppConnectivity.useClient(accountId).subscribe(contactJid)
-                //notify.postGlobalNote(qsTr("Sent request to ")+contactName)
+                avkon.showPopup("Sent sub. request to",contactName)
             }
         }
         MenuItem {
@@ -100,7 +109,7 @@ ContextMenu {
             onClicked: {
                 contactMenu.close()
                 xmppConnectivity.useClient(accountId).unsubscribe(contactJid)
-                //notify.postGlobalNote(qsTr("Unsuscribed ")+contactName)
+                avkon.showPopup(contactName,"is no longer subscribed")
             }
         }
     }

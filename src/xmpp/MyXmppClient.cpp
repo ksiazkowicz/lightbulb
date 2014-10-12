@@ -490,16 +490,18 @@ void MyXmppClient::itemRemoved(const QString &bareJid ) {
   contacts->removeContact(m_accountId,bareJid);
 }
 
-void MyXmppClient::addContact( QString bareJid, QString nick, QString group, bool sendSubscribe ) {
-  if( rosterManager ) {
-      QSet<QString> gr;
-      QString n;
-      if( !(group.isEmpty() || group.isNull()) )  { gr.insert( group ); }
-      if( !(nick.isEmpty() || nick.isNull()) )  { n = nick; }
-      rosterManager->addItem(bareJid, n, gr );
+bool MyXmppClient::addContact( QString bareJid, QString nick, QString group, bool sendSubscribe ) {
+    bool result = false;
+    if( rosterManager ) {
+        QSet<QString> gr;
+        QString n;
+        if( !(group.isEmpty() || group.isNull()) )  { gr.insert( group ); }
+        if( !(nick.isEmpty() || nick.isNull()) )  { n = nick; }
+        result = rosterManager->addItem(bareJid, n, gr );
 
-      if( sendSubscribe ) rosterManager->subscribe( bareJid );
+        if( sendSubscribe ) rosterManager->subscribe( bareJid );
     }
+    return result;
 }
 
 // --------- XEP-0202: Entity Time ------------------------------------------------------------------------------------------------
