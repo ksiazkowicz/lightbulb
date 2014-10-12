@@ -44,7 +44,11 @@ public:
       Account,
       Date,
       TransferJob,
-      Finished
+      State,
+      Filename,
+      Filetype,
+      Progress,
+      Count
     };
 
     enum EventTypes {
@@ -63,7 +67,7 @@ public:
 public:
       EventItemModel(QObject *parent = 0): ListItem(parent) {
         itemData = new QList<QVariant>();
-        for (int i=0; i<9;i++)
+        for (int i=0; i<13;i++)
           itemData->append(QVariant());
       }
 
@@ -78,7 +82,11 @@ public:
           names[Account] = "accountID";
           names[Date] = "date";
           names[TransferJob] = "transferJob";
-          names[Finished] = "finished";
+          names[State] = "state";
+          names[Filename] = "filename";
+          names[Filetype] = "filetype";
+          names[Progress] = "progress";
+          names[Count] = "count";
           return names;
         }
 

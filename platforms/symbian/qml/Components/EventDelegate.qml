@@ -50,11 +50,11 @@ Flickable {
 
     function makeAction() {
         switch (type) {
-        case 32: main.openChat(accountID,name,bareJid,xmppConnectivity.getChatType(accountID,bareJid)); break;
+        case 32: main.openChat(accountID,name,bareJid,xmppConnectivity.restoreResource(accountID,bareJid),xmppConnectivity.getChatType(accountID,bareJid)); break;
         case 34: { xmppConnectivity.useClient(accountID).acceptSubscription(bareJid); dialog.createWithProperties("qrc:/dialogs/Contact/Add",{"accountId": accountID, "bareJid": bareJid}); xmppConnectivity.events.removeEvent(index); break; }
         case 35: { dialog.createWithProperties("qrc:/dialogs/MUC/Join",{"accountId":accountID,"mucJid":bareJid}); xmppConnectivity.events.removeEvent(index)}; break;
         case 38: if (updater.isUpdateAvailable) dialog.createWithProperties("qrc:/menus/UrlContext", {"url": updater.updateUrl}); break;
-        case 40: { if (!finished) xmppConnectivity.useClient(accountID).acceptTransfer(transferJob,vars.receivedFilesPath); else xmppConnectivity.useClient(accountID).openLocalTransferPath(transferJob)}; break;
+        case 40: { if (state != 2) xmppConnectivity.useClient(accountID).acceptTransfer(transferJob,vars.receivedFilesPath); else xmppConnectivity.useClient(accountID).openLocalTransferPath(transferJob)}; break;
         default: return false;
         }
     }
@@ -77,6 +77,22 @@ Flickable {
                 return ("qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accountID)));
             }; break;
         case 37: return xmppConnectivity.getPropertyByJid(accountID,"presence",bareJid);
+        default: return "";
+        }
+    }
+
+    function getDescription() {
+        switch (type) {
+        case 32: return description; // unread message
+        case 33: return description; // connection state change
+        case 34: return description; // subscription request
+        case 35: return description; // muc invite, change it to something else later
+        case 36: return (count > 1) ? "You received " + count + " attention requests" : "You received an attention request."; // attention request
+        case 37: return description; // fav user status change
+        case 38: return description; // app update
+        case 39: return description; // connection error
+        case 40: return description; // incoming transfer
+        case 41: return description; // outcoming transfer
         default: return "";
         }
     }
@@ -170,7 +186,7 @@ Flickable {
                     width: mainPage.width - 25 - 90
                     maximumLineCount: 2
                     font.pixelSize: 18
-                    text: description
+                    text: getDescription()
                     wrapMode: Text.Wrap
                     elide: Text.ElideRight
                 }

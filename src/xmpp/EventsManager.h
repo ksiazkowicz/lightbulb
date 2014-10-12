@@ -14,6 +14,10 @@ public:
   
 signals:
   void eventsChanged();
+
+private:
+  bool cleanEvent(QString id);
+  bool appendEvent(EventItemModel* item);
   
 public slots:
   void appendUnreadMessage(QString bareJid, QString accountId, QString name, QString description);

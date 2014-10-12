@@ -9,18 +9,39 @@ EventsManager::EventsManager(QObject *parent) :
   events = new EventListModel();
 }
 
+bool EventsManager::cleanEvent(QString id) {
+    int rowId; // holds the row ID for row which is being removed
+    EventItemModel *item = (EventItemModel*)events->find(id,rowId);
+
+    // check if item exists, if yes, remove it
+    if (item != NULL) {
+        events->takeRow(rowId);
+        return true;
+    }
+
+    // item doesn't exist, return false
+    return false;
+}
+
+bool EventsManager::appendEvent(EventItemModel *item) {
+    // check if item is valid
+    if (item == NULL)
+        return false;
+
+    // try to append it at the top of the list
+    events->insertRow(0,item);
+    events->countWasChanged();
+    return true;
+}
+
 void EventsManager::appendUnreadMessage(QString bareJid, QString accountId, QString name, QString description) {
   // appends or updates an information about unread message
-  int rowId; // holds the row ID, might be used for moving items to the top of the list
-  EventItemModel *item = (EventItemModel*)events->find(bareJid + ";" + accountId + ";" + QString::number((int)EventItemModel::UnreadMessage),rowId);
 
-  // check if item exists, if yes, remove it
-  if (item != NULL) {
-      events->takeRow(rowId);
-  }
+  // message might already be there, clean it up
+  this->cleanEvent(bareJid + ";" + accountId + ";" + QString::number((int)EventItemModel::UnreadMessage));
 
   // create a new EventItemModel
-  item = new EventItemModel();
+  EventItemModel *item = new EventItemModel();
   item->setData(QVariant(bareJid),EventItemModel::Jid);
   item->setData(QVariant(accountId),EventItemModel::Account);
   item->setData(QVariant(name),EventItemModel::Name);
@@ -29,32 +50,32 @@ void EventsManager::appendUnreadMessage(QString bareJid, QString accountId, QStr
   item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
 
   // and append it at the top of the list
-  events->insertRow(0,item);
-  events->countWasChanged();
+  this->appendEvent(item);
 }
 
 void EventsManager::appendAttention(QString accountId, QString bareJid, QString name) {
-  // appends or updates an information about unread message
-  int rowId; // holds the row ID, might be used for moving items to the top of the list
-  EventItemModel *item = (EventItemModel*)events->find(bareJid + ";" + accountId + ";" + QString::number((int)EventItemModel::UnreadMessage),rowId);
+  // appends attention request
+  int count = 1;
 
-  // check if item exists, if yes, remove it
-  if (item != NULL) {
-      events->takeRow(rowId);
-  }
+  // check if there was already an attention request
+  EventItemModel *item = (EventItemModel*)events->find(bareJid + ";" + accountId + ";" + QString::number((int)EventItemModel::AttentionRequest));
+
+  // change count if there was
+  if (item != NULL)
+      count = item->getData(EventItemModel::Count).toInt()+1;
 
   // create a new EventItemModel
   item = new EventItemModel();
   item->setData(QVariant(bareJid),EventItemModel::Jid);
   item->setData(QVariant(accountId),EventItemModel::Account);
   item->setData(QVariant(name),EventItemModel::Name);
-  item->setData(QVariant("You received attention request."),EventItemModel::Description);
+  item->setData(QVariant(count),EventItemModel::Count);
+  // item->setData(QVariant("You received attention request."),EventItemModel::Description);
   item->setData(QVariant((int)EventItemModel::AttentionRequest),EventItemModel::Type);
   item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
 
   // and append it at the top of the list
-  events->insertRow(0,item);
-  events->countWasChanged();
+  this->appendEvent(item);
 }
 
 void EventsManager::appendSubscription(QString accountId,QString bareJid) {
@@ -211,7 +232,10 @@ void EventsManager::updateTransferJob(QString accountId, QString bareJid, QStrin
 
   item->setData(QVariant(description),EventItemModel::Description);
   item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
-  item->setData(QVariant(isFinished),EventItemModel::Finished);
+
+  if (isFinished)
+    item->setData(QVariant(2),EventItemModel::State);
+  else item->setData(QVariant(0),EventItemModel::State);
 }
 
 void EventsManager::appendMUCInvitation(QString accountId, QString bareJid, QString sender) {
