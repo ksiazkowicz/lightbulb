@@ -141,6 +141,8 @@ public slots:
 
     Q_INVOKABLE void setVisibility(bool state)   { contacts->setOfflineContactsState(state); emit rosterChanged(); }
     Q_INVOKABLE bool getVisibility()           { return contacts->getOfflineContactsState(); }
+    Q_INVOKABLE void rememberContactResource(QString m_accountId, QString bareJid, QString resource) { contacts->rememberResource(m_accountId,bareJid,resource); }
+    Q_INVOKABLE QString restoreResource(QString m_accountId, QString bareJid) { return contacts->restoreResource(m_accountId,bareJid); }
 	
     Q_INVOKABLE void updateAvatarCachingSetting(bool setting);
     Q_INVOKABLE void updateLegacyAvatarCachingSetting(bool setting);
@@ -167,10 +169,14 @@ public slots:
     Q_INVOKABLE void restorePreviousStatus(QString accountId);
     void setAway(QString accountId);
     Q_INVOKABLE void setGlobalAway();
+    Q_INVOKABLE void restoreAllPrevStatuses();
+    Q_INVOKABLE bool isRestoringNeeded() { return restoringNeeded; }
 
 private:
     QString currentClient;
     QMap<QString,MyXmppClient*> *clients;
+    QStringList autoAwayCache;
+    bool restoringNeeded;
 
     QMap<QString,MsgListModel*> *cachedMessages;
 

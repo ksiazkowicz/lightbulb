@@ -42,7 +42,7 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
   dbWorker->moveToThread(dbThread);
   dbThread->start(QThread::LowestPriority);
 
-  contacts = new ContactListManager(dbWorker);
+  contacts = new ContactListManager(dbWorker,lSettings);
   connect(contacts,SIGNAL(contactNameChanged(QString,QString,QString)),this,SLOT(updateChatName(QString,QString,QString)));
   connect(contacts,SIGNAL(forceXmppPresenceChanged(QString,QString,QString,QString,QString)),this,SIGNAL(xmppPresenceChanged(QString,QString,QString,QString,QString)),Qt::UniqueConnection);
 
@@ -506,6 +506,12 @@ void XmppConnectivity::setAway(QString accountId) {
     int status = this->useClient(accountId)->getStatus();
     if (status == MyXmppClient::Online || status == MyXmppClient::Chat) {
         this->useClient(accountId)->setStatus(MyXmppClient::Away);
+
+        // add accountId to cache
+        autoAwayCache.append(accountId);
+
+        // let app know we need to restore status
+        restoringNeeded = true;
     }
 }
 
@@ -517,3 +523,15 @@ void XmppConnectivity::setGlobalAway() {
         this->setAway(i.key());
       }
 }
+
+void XmppConnectivity::restoreAllPrevStatuses() {
+    // iterate through list
+    for (int i=0; i<autoAwayCache.count(); i++) {
+        // call "restorePreviousStatus" for every account
+        this->restorePreviousStatus(autoAwayCache.at(i));
+      }
+    // reset the cache
+    autoAwayCache.clear();
+    restoringNeeded = false;
+}
+
