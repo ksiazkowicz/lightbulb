@@ -90,6 +90,9 @@ PageStackWindow {
             if (Qt.application.active) {
                 vars.isActive = true
                 blink.running = false
+
+                if (xmppConnectivity.isRestoringNeeded() && vars.autoAway)
+                    xmppConnectivity.restoreAllPrevStatuses()
             } else {
                 vars.isActive = false
                 if ((vars.globalUnreadCount>0 || vars.isBlinkingOverrideEnabled) && settings.gBool("behavior", "wibblyWobblyTimeyWimeyStuff")) blink.running = true
