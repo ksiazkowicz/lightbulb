@@ -60,6 +60,7 @@ PageStackWindow {
 
     }
     function openChat(account,name,jid,resource,type) {
+        console.log("test "+resource)
         pageStack.push("qrc:/pages/Conversation",{"accountId":account,"contactName":name,"contactJid":jid,"contactResource":resource,"isInArchiveMode":false,"chatType":type})
     }
 

@@ -125,6 +125,10 @@ Page {
     }
 
     Component.onCompleted: {
+        if (contactResource == "")
+            console.log("brick");
+        else console.log(contactResource);
+
         // sending a chat state meaning that chat is active if not in archive mode
         if (!isInArchiveMode) {
             xmppConnectivity.openChat(accountId,contactJid,contactResource)
@@ -142,11 +146,11 @@ Page {
             listModelResources.append({resource:qsTr("(by default)"), checked:(contactResource == "")})
 
             if (notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accountId)) != "Offline") {
+                console.log(contactResource)
                 var listResources = xmppConnectivity.useClient(accountId).getResourcesByJid(contactJid)
-                for( var z=0; z<listResources.length; z++ ) {
-                    if (listResources[z] == "") { continue; }
-                    if (contactResource ==listResources[z]) listModelResources.append({resource:listResources[z], checked:true})
-                    else listModelResources.append({resource:listResources[z], checked:false})
+                for (var z=0; z<listResources.length; z++) {
+                    if (listResources[z] !== "")
+                        listModelResources.append({resource:listResources[z], checked:(contactResource == listResources[z])})
                 }
             }
         } else availableActions = xmppConnectivity.useClient(accountId).getPermissionLevel(contactJid);
@@ -242,6 +246,11 @@ Page {
             opacity: enabled ? 1 : 0.5
             // TODO: disable if disconnected
             onClicked: {
+                if (contactJid.left(17) == "chat.facebook.com") {
+                    avkon.displayGlobalNote("This feature is not available on Facebook.",true)
+                    return;
+                }
+
                 var filename = avkon.openFileSelectionDlg(false,false);
                 if (filename != " ") {
                     xmppConnectivity.useClient(accountId).sendAFile(contactJid,contactResource,filename)

@@ -83,8 +83,10 @@ CommonDialog {
 
                                 if( index == 0 )
                                     pageStack.currentPage.contactResource = ""
-                                else
+                                else {
                                     pageStack.currentPage.contactResource = resource
+                                    xmppConnectivity.rememberContactResource(pageStack.currentPage.accountId,pageStack.contactJid,resource)
+                                }
 
                                 for (var i=0; i<listModelResources.count; i++) {
                                     if(index == i) listModelResources.get(index).checked = true
