@@ -3,7 +3,7 @@
 #include <QXmppMessage.h>
 #include <QSqlRecord>
 
-ContactListManager::ContactListManager(DatabaseWorker *db, QObject *parent) :
+ContactListManager::ContactListManager(DatabaseWorker *db, Settings *st, QObject *parent) :
   QObject(parent)
 {
   roster = new RosterListModel();
@@ -11,6 +11,9 @@ ContactListManager::ContactListManager(DatabaseWorker *db, QObject *parent) :
 
   // get database code to work
   database = db;
+
+  //
+  settings = st;
 
   // pull data from cache
   connect(database,SIGNAL(sqlRosterUpdated()),this,SLOT(restoreCache()),Qt::UniqueConnection);
@@ -104,7 +107,7 @@ void ContactListManager::changePresence(QString accountId,QString bareJid,QStrin
           if (picStatus == "qrc:/presence/away" || picStatus == "qrc:/presence/xa") description = "I'm away.";
           if (picStatus == "qrc:/presence/busy") description = "I'm busy.";
 
-          if (description != "")
+          if (description != "" && settings->gBool("notifications","notifyStatusChange"))
             emit favUserStatusChanged(accountId,bareJid,contact->data(RosterItemModel::Name).toString(),description);
         }
 
@@ -123,6 +126,26 @@ void ContactListManager::changeName(QString accountId,QString bareJid,QString na
 
   roster->sort(0);
   emit contactNameChanged(accountId,bareJid,name);
+}
+
+void ContactListManager::rememberResource(QString accountId, QString bareJid, QString resource) {
+  // try to find a roster element
+  RosterItemModel *contact = roster->find(accountId + ";" + bareJid);
+
+  // if exists, set resource
+  if (contact != 0)
+    contact->set(resource,RosterItemModel::Resource);
+}
+
+QString ContactListManager::restoreResource(QString accountId, QString bareJid) {
+  // try to find a roster element
+  RosterItemModel *contact = roster->find(accountId + ";" + bareJid);
+
+  // if exists, return resource
+  if (contact != 0)
+    return contact->data(RosterItemModel::Resource).toString();
+
+  return QString();
 }
 
 void ContactListManager::removeContact(QString acc,QString bareJid) {

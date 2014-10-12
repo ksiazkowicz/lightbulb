@@ -349,6 +349,29 @@ Item {
                 }
             }
         }
+
+        Item {
+            width: parent.width
+            height: text.height+2*platformStyle.paddingSmall
+
+            Text {
+                anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: notifyStatusChange.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
+                color: main.textColor
+                property string color2: main.platformInverted ? "#333333" : "#888888"
+                text: qsTr("Status change notifications") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("If enabled, app will show status change notifications for fav. contacts") + "</font>"
+                font.pixelSize: 20
+                wrapMode: Text.WordWrap
+            }
+            Switch {
+                id: notifyStatusChange
+                checked: settings.gBool("notifications","notifyStatusChange")
+                anchors { right: parent.right; rightMargin: platformStyle.paddingSmall; verticalCenter: parent.verticalCenter }
+                onCheckedChanged: {
+                    settings.sBool(checked,"notifications","notifyStatusChange")
+                }
+            }
+        }
+
     }
 }
 
