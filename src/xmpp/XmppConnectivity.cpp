@@ -164,6 +164,7 @@ void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString
 
   body = body.replace(">", "&gt;");  //fix for > stuff
   body = body.replace("<", "&lt;");  //and < stuff too ^^
+  body.replace("\n"," <br />");
   body = msgWrapper->parseMsgOnLink(body);
 
   this->openChat(m_accountId,bareJid,resource);

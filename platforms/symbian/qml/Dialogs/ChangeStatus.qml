@@ -53,6 +53,7 @@ CommonDialog {
     onButtonClicked: {
         var ret = ""
 
+        // convert index to status
         switch (selectionDialog.selectedIndex) {
             case 0: ret = XmppClient.Online; break;
             case 1: ret = XmppClient.Chat; break;
@@ -63,16 +64,21 @@ CommonDialog {
             default: ret = XmppClient.Unknown; break;
         }
 
+        // reopen connection if it's not available
         if (!network.connectionStatus)
             network.openConnection()
 
         xmppConnectivity.useClient(accountId).setPresence(ret, wrapperTextEdit.text)
 
-        vars.lastStatus = wrapperTextEdit.text
         vars.lastUsedStatus = selectionDialog.selectedIndex
 
-        if (storeStatus) settings.sStr(wrapperTextEdit.text,"behavior","lastStatusText")
-        else settings.sStr("","behavior","lastStatusText")
+        if (!isFacebook) {
+            // we are on facebook, don't touch anything related to status text, seriously
+            vars.lastStatus = wrapperTextEdit.text
+
+            if (storeStatus) settings.sStr(wrapperTextEdit.text,"behavior","lastStatusText")
+            else settings.sStr("","behavior","lastStatusText")
+        }
     }
 
     content: Column {

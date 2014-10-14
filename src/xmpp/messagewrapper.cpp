@@ -73,6 +73,5 @@ QString MessageWrapper::parseMsgOnLink( const QString &inString ) const
         outString += inString.mid(pos_space);
     }
 
-    outString.replace("\n","<br />");
     return outString;
 }

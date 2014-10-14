@@ -145,8 +145,7 @@ Page {
 
             listModelResources.append({resource:qsTr("(by default)"), checked:(contactResource == "")})
 
-            if (notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accountId)) != "Offline") {
-                console.log(contactResource)
+            if (xmppConnectivity.getStatusByIndex(accountId) != 0) {
                 var listResources = xmppConnectivity.useClient(accountId).getResourcesByJid(contactJid)
                 for (var z=0; z<listResources.length; z++) {
                     if (listResources[z] !== "")
