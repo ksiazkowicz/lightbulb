@@ -36,6 +36,40 @@ Page {
         }
     }
 
+    /*Connections {
+        target: xmppConnectivity.useClient(accountId)
+        onEntityTimeReceived: if (bareJid == contactJid) vCardData.addElement("Local time (default)",time);
+    }*/
+
+    ListModel {
+        id: vCardData
+        function addElement(title,value) {
+            if (value !== "" && value !== "<a href=\"\"></a>")
+                append({_title:title,_value:value})
+        }
+
+        function loadData() {
+            clear()
+            // load data from vcard. seriously, use a goddamn loop here one day -_-
+            addElement("Nickname",vCard.nickname)
+            addElement("Name",vCard.name)
+            addElement("Middle name",vCard.middlename)
+            addElement("Lastname",vCard.lastname)
+            addElement("Full name",vCard.fullname)
+            addElement("E-mail",vCard.email)
+            addElement("Jabber ID",contactJid)
+            addElement("Website","<a href=\"" + vCard.url + "\">" + vCard.url + "</a>");
+
+            // initialize a list of resources
+            if (xmppConnectivity.getStatusByIndex(accountId) != 0) {
+                var listResources = xmppConnectivity.useClient(accountId).getResourcesByJid(contactJid)
+                for (var z=0; z<listResources.length; z++)
+                    if (listResources[z] !== "")
+                        addElement("Details ("+listResources[z]+")","Version: \nTime: \nPresence \ntodo")
+            }
+        }
+    }
+
     property string pageName:          "VCard"
 
     property string accountId:         ""
@@ -54,7 +88,10 @@ Page {
         vCard.loadVCard(contactJid)
     }
 
-    XmppVCard { id: vCard }
+    XmppVCard {
+        id: vCard
+        onVCardChanged: vCardData.loadData()
+    }
 
     Flickable {
         id: flickArea
@@ -116,82 +153,14 @@ Page {
                 }
             }
 
-            DetailsItem {
-                title: qsTr("Nickname")
-                value: vCard.nickname
-                valueFont.bold: true
-                visible: value != ""
-            }
-            LineItem {visible: vCard.nickname != ""}
-
-            DetailsItem {
-                title: qsTr("Name")
-                value: vCard.name
-                valueFont.bold: true
-                visible: value != ""
-            }
-            LineItem {visible: vCard.name != ""}
-
-            DetailsItem {
-                title: qsTr("Middle name")
-                value: vCard.middlename
-                valueFont.bold: true
-                visible: value != ""
-            }
-            LineItem {visible: vCard.middlename != ""}
-
-            DetailsItem {
-                title: qsTr("Lastname")
-                value: vCard.lastname
-                valueFont.bold: true
-                visible: value != ""
-            }
-            LineItem {visible: vCard.lastname != ""}
-
-            DetailsItem {
-                title: qsTr("Full name")
-                value: vCard.fullname
-                valueFont.bold: true
-                visible: value != ""
-            }
-            LineItem {visible: vCard.fullname != ""}
-
-            DetailsItem {
-                title: qsTr("Jabber ID")
-                value: contactJid
-                valueFont.bold: true
-            }
-            LineItem {}
-
-            DetailsItem {
-                title: qsTr("E-mail")
-                value: vCard.email
-                valueFont.bold: true
-                visible: value != ""
-            }
-            LineItem { visible: vCard.email != ""}
-
-            DetailsItem {
-                title: qsTr("Website")
-                value: "<a href=\"" + vCard.url + "\">" + vCard.url + "</a>"
-                valueFont.bold: true
-                wrapMode: Text.WrapAnywhere
-                visible: vCard.url != ""
-            }
-
-            LineItem { visible: vCard.url != ""}
-
-            DetailsItem {
-                id: entityTime
-                title: qsTr("Local time")
-                value: ""
-                valueFont.bold: true
-                wrapMode: Text.WrapAnywhere
-                visible: value != ""
-
-                Connections {
-                    target: xmppConnectivity.useClient(accountId)
-                    onEntityTimeReceived: if (bareJid == contactJid) entityTime.value = time;
+            Repeater {
+                model: vCardData
+                delegate: DetailsItem {
+                    width: parent.width;
+                    valueFont.bold: true;
+                    title: _title
+                    value: _value
+                    LineItem { visible: index != vCardData.count-1 }
                 }
             }
         }
