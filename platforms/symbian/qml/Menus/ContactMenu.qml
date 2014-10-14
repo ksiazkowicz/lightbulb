@@ -35,6 +35,9 @@ ContextMenu {
     property bool isFavorite: false
     property bool shouldICareAnyway: false
 
+    property bool isFacebook: xmppConnectivity.useClient(accountId).isFacebook()
+    property bool isConnected: xmppConnectivity.useClient(accountId).isConnected()
+
     onStatusChanged: {
         if (contactMenu.status == DialogStatus.Closed && shouldICareAnyway) {
             contactMenu.destroy();
@@ -52,6 +55,9 @@ ContextMenu {
         MenuItem {
             text: qsTr("Remove")
             platformInverted: main.platformInverted
+            enabled: !(isFacebook || !isConnected)
+            height: enabled ? privateStyle.menuItemHeight : 0
+            clip: true
             onClicked: {
                 if (avkon.displayAvkonQueryDialog("Remove", qsTr("Are you sure you want to remove ") + contactName + qsTr(" from your contact list?"))) {
                     xmppConnectivity.useClient(accountId).removeContact(contactJid);
@@ -62,6 +68,9 @@ ContextMenu {
         MenuItem {
             text: qsTr("Rename")
             platformInverted: main.platformInverted
+            enabled: !(isFacebook || !isConnected)
+            height: enabled ? privateStyle.menuItemHeight : 0
+            clip: true
             onClicked: dialog.createWithProperties("qrc:/dialogs/Contact/Rename",{"accountId": accountId,"contactName": contactName, "contactJid": contactJid})
         }
         MenuItem {
@@ -81,6 +90,9 @@ ContextMenu {
         MenuItem {
             text: qsTr("Refresh")
             platformInverted: main.platformInverted
+            enabled: isConnected
+            height: enabled ? privateStyle.menuItemHeight : 0
+
             onClicked: {
                 xmppConnectivity.useClient(accountId).forceRefreshVCard(contactJid)
                 avkon.showPopup("Refreshing VCard for",contactName)
@@ -98,6 +110,9 @@ ContextMenu {
         MenuItem {
             text: qsTr("Subscribe")
             platformInverted: main.platformInverted
+            enabled: !(isFacebook || !isConnected)
+            height: enabled ? privateStyle.menuItemHeight : 0
+            clip: true
             onClicked: {
                 xmppConnectivity.useClient(accountId).subscribe(contactJid)
                 avkon.showPopup("Sent sub. request to",contactName)
@@ -106,6 +121,9 @@ ContextMenu {
         MenuItem {
             text: qsTr("Unsubscribe")
             platformInverted: main.platformInverted
+            enabled: !(isFacebook || !isConnected)
+            height: enabled ? privateStyle.menuItemHeight : 0
+            clip: true
             onClicked: {
                 contactMenu.close()
                 xmppConnectivity.useClient(accountId).unsubscribe(contactJid)

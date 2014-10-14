@@ -201,7 +201,7 @@ bool MyXmppClient::sendMessage(QString bareJid, QString resource, QString msgBod
     return false;
 
   QString jid = bareJid;
-  if( resource == "" )
+  if( resource == "" && !rosterManager->getResources(bareJid).contains(resource) )
       jid += "/resource";
   else
     jid += "/" + resource;

@@ -68,6 +68,7 @@ CommonDialog {
                     anchors { verticalCenter: parent.verticalCenter; left: imgPresence.right; right: parent.right; rightMargin: 10; leftMargin: 10 }
                     text: xmppConnectivity.getAccountName(accGRID)
                     font.pixelSize: 18
+                    opacity: area.enabled ? 1 : 0.5
                     clip: true
                     color: main.textColor
                 }
@@ -86,7 +87,9 @@ CommonDialog {
                     PropertyChanges { target: wrapper; gradient: gr_press }
                 }
                 MouseArea {
+                    id: area
                     anchors.fill: parent
+                    enabled: !xmppConnectivity.useClient(accGRID).isFacebook() ? xmppConnectivity.getStatusByIndex(accGRID) !== 0 : false
                     onClicked: {
                         wrapper.ListView.view.currentIndex = index
                         vars.context = accGRID

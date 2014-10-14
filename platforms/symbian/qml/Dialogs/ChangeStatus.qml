@@ -36,6 +36,9 @@ CommonDialog {
     property bool storeStatus: settings.gBool("behavior","storeLastStatus")
     property string accountId: ""
 
+    // facebook is retarded
+    property bool   isFacebook: xmppConnectivity.useClient(accountId).isFacebook()
+
     platformInverted: main.platformInverted
 
     // Code for dynamic load
@@ -79,11 +82,6 @@ CommonDialog {
 
         spacing: 5
 
-        /*Button {
-            text: "detonate this shit"
-            onClicked: xmppConnectivity.useClient(accountId).debugThisCrapServices()
-        }*/
-
         SelectionListItem {
             id: statusSelection
             platformInverted: main.platformInverted
@@ -113,10 +111,11 @@ CommonDialog {
 
         TextField {
             id: wrapperTextEdit
-            height: 50
+            height: !isFacebook ? 50 : 0
+            enabled: !isFacebook
             anchors {left: parent.left; right: parent.right }
             placeholderText: qsTr("Status text")
-            text: vars.lastStatus
+            text: !isFacebook ? vars.lastStatus : ""
         }
     }
 }

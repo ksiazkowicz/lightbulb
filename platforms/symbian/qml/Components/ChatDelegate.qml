@@ -130,7 +130,7 @@ Flickable {
         MouseArea {
             id: maAccItem
             anchors { fill: parent }
-            onClicked: main.openChat(account,name,jid,resource,chatType)
+            onClicked: main.openChat(account,name,jid,xmppConnectivity.restoreResource(account,jid),chatType)
         }
 
         Connections {

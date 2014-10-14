@@ -186,6 +186,10 @@ public :
     // service discovery
     Q_INVOKABLE void askServer(QString jid);
     Q_INVOKABLE void debugThisCrapServices();
+
+    // am I retarded?
+    Q_INVOKABLE bool isFacebook() { return m_host == "chat.facebook.com"; }
+    Q_INVOKABLE bool isConnected() { return getStateConnect() != QXmppClient::DisconnectedState; }
 	
 signals:
     void statusTextChanged();

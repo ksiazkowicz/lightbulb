@@ -58,6 +58,10 @@ Page {
     property int    beginID:           -1
     property int    endID:             -1
     property bool   logGenerationMode: false
+
+    // facebook is retarded
+    property bool   isFacebook: xmppConnectivity.useClient(accountId).isFacebook()
+
     onLogGenerationModeChanged: {
         showToolBar = !logGenerationMode
     }
@@ -125,10 +129,6 @@ Page {
     }
 
     Component.onCompleted: {
-        if (contactResource == "")
-            console.log("brick");
-        else console.log(contactResource);
-
         // sending a chat state meaning that chat is active if not in archive mode
         if (!isInArchiveMode) {
             xmppConnectivity.openChat(accountId,contactJid,contactResource)
@@ -244,6 +244,7 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "qrc:/toolbar/attach_inverse" : "qrc:/toolbar/attach"
             opacity: enabled ? 1 : 0.5
+            enabled: !isFacebook
             // TODO: disable if disconnected
             onClicked: {
                 if (contactJid.left(17) == "chat.facebook.com") {
