@@ -34,7 +34,7 @@ CommonDialog {
     property string accountId: ""
     platformInverted: main.platformInverted
 
-    buttonTexts: [qsTr("Cancel")]
+    buttonTexts: [qsTr("Now"),qsTr("Cancel")]
 
     // Code for dynamic load
     Component.onCompleted: {
@@ -49,6 +49,9 @@ CommonDialog {
 
     onButtonClicked: {
         timeLeftTimer.running = false
+
+        if (index === 0)
+            xmppConnectivity.restorePreviousStatus(accountId)
     }
 
 
