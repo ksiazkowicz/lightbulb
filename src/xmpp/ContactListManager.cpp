@@ -142,10 +142,7 @@ QString ContactListManager::restoreResource(QString accountId, QString bareJid) 
   RosterItemModel *contact = roster->find(accountId + ";" + bareJid);
 
   // if exists, return resource
-  if (contact != 0)
-    return contact->data(RosterItemModel::Resource).toString();
-
-  return QString();
+  return (contact != 0) ? contact->data(RosterItemModel::Resource).toString() : QString();
 }
 
 void ContactListManager::removeContact(QString acc,QString bareJid) {

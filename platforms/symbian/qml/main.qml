@@ -52,7 +52,7 @@ PageStackWindow {
     Globals {
         id: vars
         onAwaitingContextChanged: {
-            if (!awaitingContext && dialogQmlFile != "") {
+            if (!awaitingContext && dialogQmlFile != "" && vars.context != "") {
                 dialog.createWithProperties(dialogQmlFile,{"accountId": vars.context})
                 dialogQmlFile = "";
             }
@@ -60,7 +60,6 @@ PageStackWindow {
 
     }
     function openChat(account,name,jid,resource,type) {
-        console.log("test "+resource)
         pageStack.push("qrc:/pages/Conversation",{"accountId":account,"contactName":name,"contactJid":jid,"contactResource":resource,"isInArchiveMode":false,"chatType":type})
     }
 
@@ -176,6 +175,7 @@ PageStackWindow {
         function createWithContext(qmlFile) {
             c=Qt.createComponent("qrc:/dialogs/AccountSwitcher")
             c.createObject(main)
+            vars.context = ""
             vars.awaitingContext = true;
             vars.dialogQmlFile = qmlFile;
         }
@@ -191,7 +191,7 @@ PageStackWindow {
                 anchors.verticalCenter: parent.verticalCenter
                 maximumLineCount: 1
                 color: "white"
-                font.pointSize: 6
+                font.pointSize: 6.5
             }
             Rectangle {
                 width: 25
