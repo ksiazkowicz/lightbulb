@@ -167,7 +167,9 @@ void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString
   body.replace("\n"," <br />");
   body = msgWrapper->parseMsgOnLink(body);
 
-  this->openChat(m_accountId,bareJid,resource);
+  // don't open a new chat on chat state notification
+  if (body.right(26) != "has left the conversation.")
+    this->openChat(m_accountId,bareJid,resource);
 
   bool msgUnreadState;
   if (type != 4 && mine == 0)
