@@ -68,7 +68,7 @@ Page {
             anchors { top: programName.bottom; leftMargin: 10; rightMargin: 10; left: parent.left; right: parent.right }
             color: main.textColor
             wrapMode: Text.Wrap
-            text: "coded with ♥ and coffee"
+            text: "coded with ♥ and coffee\nbuilt on " + buildDate
             font.pixelSize: platformStyle.fontSizeSmall
             horizontalAlignment: Text.AlignHCenter
         }
