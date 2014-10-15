@@ -37,6 +37,7 @@ Menu {
     property string contactResource
     property string accountId
     property bool isFacebook: xmppConnectivity.useClient(accountId).isFacebook()
+    property bool isConnected: xmppConnectivity.useClient(accountId).isConnected
 
     onStatusChanged: { if (isCreated && msgOptions.status === DialogStatus.Closed) { msgOptions.destroy() } }
     // define the items in the menu and corresponding actions
@@ -45,13 +46,13 @@ Menu {
             text: qsTr("Set resource")
             platformInverted: main.platformInverted
             onClicked: dialog.create("qrc:/dialogs/Resources")
-            enabled: !isFacebook
+            enabled: !isFacebook && isConnected
         }
         MenuItem {
             text: qsTr("Request attention")
             platformInverted: main.platformInverted
             onClicked: xmppConnectivity.useClient(accountId).requestAttention(contactJid,contactResource)
-            enabled: !isFacebook
+            enabled: !isFacebook && isConnected
         }
 
         MenuItem {

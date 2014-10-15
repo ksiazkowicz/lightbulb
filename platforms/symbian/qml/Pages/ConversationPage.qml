@@ -62,6 +62,8 @@ Page {
     // facebook is retarded
     property bool   isFacebook: xmppConnectivity.useClient(accountId).isFacebook()
 
+    property bool isConnected: xmppConnectivity.useClient(accountId).isConnected
+
     onLogGenerationModeChanged: {
         showToolBar = !logGenerationMode
     }
@@ -237,20 +239,14 @@ Page {
             id: toolBarButtonSend
             iconSource: main.platformInverted ? "qrc:/toolbar/send_inverse" : "qrc:/toolbar/send"
             opacity: enabled ? 1 : 0.5
-            enabled: msgInputField.text != ""
+            enabled: msgInputField.text != "" && isConnected
             onClicked: sendMessage()
         }
         ToolButton {
             iconSource: main.platformInverted ? "qrc:/toolbar/attach_inverse" : "qrc:/toolbar/attach"
             opacity: enabled ? 1 : 0.5
-            enabled: !isFacebook
-            // TODO: disable if disconnected
+            enabled: !isFacebook && isConnected
             onClicked: {
-                if (contactJid.left(17) == "chat.facebook.com") {
-                    avkon.displayGlobalNote("This feature is not available on Facebook.",true)
-                    return;
-                }
-
                 var filename = avkon.openFileSelectionDlg(false,false);
                 if (filename != " ") {
                     xmppConnectivity.useClient(accountId).sendAFile(contactJid,contactResource,filename)

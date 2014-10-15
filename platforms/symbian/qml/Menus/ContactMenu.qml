@@ -36,7 +36,7 @@ ContextMenu {
     property bool shouldICareAnyway: false
 
     property bool isFacebook: xmppConnectivity.useClient(accountId).isFacebook()
-    property bool isConnected: xmppConnectivity.useClient(accountId).isConnected()
+    property bool isConnected: xmppConnectivity.useClient(accountId).isConnected
 
     onStatusChanged: {
         if (contactMenu.status == DialogStatus.Closed && shouldICareAnyway) {

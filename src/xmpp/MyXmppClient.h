@@ -66,6 +66,8 @@ class MyXmppClient : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY( MyXmppClient )
+    Q_PROPERTY(bool isConnected READ isConnected NOTIFY connectingChanged)
+
 
     QXmppClient *xmppClient;
     QXmppRosterManager *rosterManager;
@@ -189,7 +191,7 @@ public :
 
     // am I retarded?
     Q_INVOKABLE bool isFacebook() { return m_host == "chat.facebook.com"; }
-    Q_INVOKABLE bool isConnected() { return getStateConnect() != QXmppClient::DisconnectedState; }
+    Q_INVOKABLE bool isConnected() { return getStateConnect() == QXmppClient::ConnectedState; }
 	
 signals:
     void statusTextChanged();
