@@ -191,7 +191,8 @@ PageStackWindow {
                 anchors.verticalCenter: parent.verticalCenter
                 maximumLineCount: 1
                 color: "white"
-                font.pointSize: 6.5
+                font.pointSize: 6
+                font.bold: true
             }
             Rectangle {
                 width: 25
