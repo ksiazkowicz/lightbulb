@@ -17,6 +17,7 @@ public:
   void downloadProfilePic(QString bareJid);
   
 signals:
+  void avatarDownloaded(QString bareJid);
   void errorOccured(QString error);
 
 private slots:

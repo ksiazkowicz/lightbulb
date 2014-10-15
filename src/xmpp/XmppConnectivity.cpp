@@ -460,7 +460,6 @@ void XmppConnectivity::updateMyData(QString jid) {
     }
 
   if (personalityNeedsChanging) {
-      qDebug() << "Updating personality";
       lSettings->sStr(jid,"behavior","personality");
       emit personalityChanged();
     }

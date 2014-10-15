@@ -293,6 +293,11 @@ private slots:
       qDebug().nospace() << "MyXmppClient(): [" << qPrintable(typeStr) << "] " << text;
     }
 
+    void checkIfPersonalityUpdated(QString bareJid) {
+      if (bareJid == m_myjid)
+        emit iFoundYourParentsGoddamit(m_myjid);
+    }
+
 private:
     // functions
     void initRosterManager();

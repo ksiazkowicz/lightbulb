@@ -124,6 +124,7 @@ void MyXmppClient::connectToXmppServer() {
   if (!graph && xmppConfig.host() == "chat.facebook.com") {
       qDebug() << "MyXmppClient::connectToXmppServer(): initializing Graph API extension";
       graph = new GraphAPIExtensions(cacheIM);
+      connect(graph,SIGNAL(avatarDownloaded(QString)),this,SLOT(checkIfPersonalityUpdated(QString)),Qt::UniqueConnection);
     }
 
   xmppClient->connectToServer(xmppConfig);
@@ -169,7 +170,7 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard) {
 
   // check if caching is disabled
   if (!disableAvatarCaching) {
-      if (bareJid.right(17) != "chat.facebook.com" || legacyAvatarCaching) {
+      if (!isFacebook() || legacyAvatarCaching) {
           QString avatarFile = cacheIM->getAvatarCache( bareJid );
           if ((avatarFile.isEmpty() || avatarFile == "qrc:/avatar") && vCard.photo() != "")
             cacheIM->setAvatarCache( bareJid, vCard.photo() );
@@ -186,7 +187,7 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard) {
 
   cacheIM->setVCard( bareJid, dataVCard );
 
-  if (bareJid == m_myjid)
+  if (bareJid == m_myjid && !isFacebook())
     emit iFoundYourParentsGoddamit(m_myjid);
 }
 

@@ -62,7 +62,7 @@ void GraphAPIExtensions::pushFacebookPic(QNetworkReply *pReply) {
           // update avatar cache
           if (!cacheManager->setAvatarCache(bareJid, data)) {
             emit errorOccured("something failed miserably while saving avatar");
-            }
+            } else emit avatarDownloaded(bareJid);
 
           // remove element from profile pic url list
           profilePicCache.remove(key);
