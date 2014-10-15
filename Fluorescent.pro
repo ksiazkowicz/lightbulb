@@ -50,7 +50,9 @@ sailfish {
 }
 
 VERSION = 0.4.0
+DATE = $$system(date /t) # might break on something else than winshit, damn you people who fuck standards
 DEFINES += VERSION=\"\\\"$$VERSION\\\"\"
+DEFINES += BUILDDATE=\"\\\"$$DATE\\\"\"
 
 OTHER_FILES += README.md platforms/global/qml/*.*
 
