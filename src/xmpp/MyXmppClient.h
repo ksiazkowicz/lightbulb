@@ -32,6 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "QXmppUtils.h"
 #include "QXmppRosterManager.h"
 #include "QXmppVersionManager.h"
+#include "QXmppVersionIq.h"
 #include "QXmppMucManager.h"
 #include "QXmppTransferManager.h"
 #include "QXmppDiscoveryManager.h"
@@ -76,6 +77,7 @@ class MyXmppClient : public QObject
     QXmppTransferManager *transferManager;
     QXmppDiscoveryManager *serviceDiscovery;
     QXmppEntityTimeManager *entityTime;
+    QXmppVersionManager *versionManager;
     GraphAPIExtensions *graph;
 
     ContactListManager *contacts;
@@ -157,7 +159,10 @@ public :
     void setKeepAlive(int arg) { m_keepAlive = arg; }
 
     // XEP-0202: Entity Time
-    Q_INVOKABLE void requestContactTime(const QString bareJid);
+    Q_INVOKABLE void requestContactTime(const QString bareJid, QString resource);
+
+    // XEP-0092: Software Version
+    Q_INVOKABLE void requestContactVersion(const QString bareJid, QString resource);
 
     // MUC
     Q_INVOKABLE void joinMUCRoom(QString room, QString nick, QString password="");
@@ -212,7 +217,10 @@ signals:
     void iFoundYourParentsGoddamit(QString jid);
 
     // XEP-0202: Entity Time
-    void entityTimeReceived(QString accountId, QString bareJid, QString time);
+    void entityTimeReceived(QString accountId, QString bareJid, QString resource, QString time);
+
+    //
+    void versionReceived(QString accountId, QString bareJid, QString resource, QString version);
 
     // muc
     void mucRoomJoined(QString accountId,QString bareJid);
@@ -242,6 +250,8 @@ private slots:
 
     // XEP-0202: Entity Time
     void entityTimeReceivedSlot(const QXmppEntityTimeIq &entity);
+
+    void versionReceivedSlot(const QXmppVersionIq &version);
 
     // multi user chat
     void mucTopicChangeSlot(QString subject);

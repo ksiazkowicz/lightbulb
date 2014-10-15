@@ -37,8 +37,10 @@ MyXmppClient::MyXmppClient(MyCache *lCache,ContactListManager *lContacts, Events
   m_status = Offline;
   m_keepAlive = 60;
 
-  xmppClient->versionManager().setClientName("Lightbulb");
-  xmppClient->versionManager().setClientVersion(QString(VERSION).mid(1,5));
+  versionManager = xmppClient->findExtension<QXmppVersionManager>();
+  versionManager->setClientName("Lightbulb");
+  versionManager->setClientVersion(QString(VERSION).mid(1,5));
+  connect(versionManager,SIGNAL(versionReceived(QXmppVersionIq)),this,SLOT(versionReceivedSlot(QXmppVersionIq)));
 
   rosterManager = 0;
   mucManager = 0;
@@ -506,12 +508,15 @@ bool MyXmppClient::addContact( QString bareJid, QString nick, QString group, boo
 
 // --------- XEP-0202: Entity Time ------------------------------------------------------------------------------------------------
 
-void MyXmppClient::requestContactTime(const QString bareJid) {
+void MyXmppClient::requestContactTime(const QString bareJid, QString resource) {
   // provides support for XEP-0202: Entity Time
-  QString jid = bareJid + "/";
-  QStringList resources = rosterManager->getResources(bareJid);
-  if (resources.count() > 0)
-    jid += resources.value(0);
+  QString jid = bareJid + "/" + resource;
+
+  if (resource == "") {
+      QStringList resources = rosterManager->getResources(bareJid);
+      if (resources.count() > 0)
+        jid += resources.value(0);
+    }
 
   entityTime->requestTime(jid);
   qDebug() << "Requested entity time for" << jid;
@@ -519,8 +524,31 @@ void MyXmppClient::requestContactTime(const QString bareJid) {
 
 void MyXmppClient::entityTimeReceivedSlot(const QXmppEntityTimeIq &entity) {
   if (entity.type() == QXmppIq::Result) {
-      QString time = entity.utc().toString() + " " + QXmppUtils::timezoneOffsetToString(entity.tzo());
-      emit entityTimeReceived(m_accountId,QXmppUtils::jidToBareJid(entity.from()),time);
+      QString time = entity.utc().toString(("hh:mm:ss")) + " " + QXmppUtils::timezoneOffsetToString(entity.tzo());
+      emit entityTimeReceived(m_accountId,QXmppUtils::jidToBareJid(entity.from()),QXmppUtils::jidToResource(entity.from()),time);
+    }
+}
+
+// --------- XEP-0092: Software Version ------------------------------------------------------------------------------------------------
+
+void MyXmppClient::requestContactVersion(const QString bareJid, QString resource) {
+  // provides support for XEP-0092: Software Version
+  QString jid = bareJid + "/" + resource;
+
+  if (resource == "") {
+      QStringList resources = rosterManager->getResources(bareJid);
+      if (resources.count() > 0)
+        jid += resources.value(0);
+    }
+
+  xmppClient->versionManager().requestVersion(jid);
+  qDebug() << "Requested version for" << jid;
+}
+
+void MyXmppClient::versionReceivedSlot(const QXmppVersionIq &version) {
+  if (version.type() == QXmppIq::Result) {
+      QString versionStr = version.name() + " " + version.version() + (version.os() != "" ? "@" + version.os() : QString());;
+      emit versionReceived(m_accountId,QXmppUtils::jidToBareJid(version.from()),QXmppUtils::jidToResource(version.from()),versionStr);
     }
 }
 

@@ -41,7 +41,6 @@ CommonDialog {
                 DetailsItem {
                     title: qsTr("Name:")
                     value: xmppConnectivity.getAccountName(accountGRID)
-                    valueFont.bold: true
                 }
 
                 LineItem {}
@@ -49,7 +48,6 @@ CommonDialog {
                 DetailsItem {
                     title: qsTr("Login:")
                     value: settings.gStr(accountGRID, "jid")
-                    valueFont.bold: true
                 }
 
                 LineItem {}
@@ -107,7 +105,6 @@ CommonDialog {
                 DetailsItem {
                     title: qsTr("Host:")
                     value: settings.gStr(accountGRID, "host")
-                    valueFont.bold: true
                 }
 
                 LineItem {}
@@ -116,7 +113,6 @@ CommonDialog {
                     property string port: settings.gStr(accountGRID, "port")
                     title: qsTr("Port:")
                     value: (port == "false") ? "5222" : port
-                    valueFont.bold: true
                 }
 
                 LineItem { visible: resourceItem.visible }
@@ -127,7 +123,6 @@ CommonDialog {
                     title: qsTr("Resource:")
                     visible: (resource != "")
                     value: resource
-                    valueFont.bold: true
                 }
             }
         }

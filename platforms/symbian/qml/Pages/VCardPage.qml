@@ -36,10 +36,11 @@ Page {
         }
     }
 
-    /*Connections {
+    Connections {
         target: xmppConnectivity.useClient(accountId)
-        onEntityTimeReceived: if (bareJid == contactJid) vCardData.addElement("Local time (default)",time);
-    }*/
+        onEntityTimeReceived: if (bareJid == contactJid) vCardData.addElement("Time ("+resource+")",time);
+        onVersionReceived: if (bareJid == contactJid) vCardData.addElement("Client ("+resource+")",version)
+    }
 
     ListModel {
         id: vCardData
@@ -64,8 +65,13 @@ Page {
             if (xmppConnectivity.getStatusByIndex(accountId) != 0) {
                 var listResources = xmppConnectivity.useClient(accountId).getResourcesByJid(contactJid)
                 for (var z=0; z<listResources.length; z++)
-                    if (listResources[z] !== "")
-                        addElement("Details ("+listResources[z]+")","Version: \nTime: \nPresence \ntodo")
+                    if (listResources[z] !== "") {
+                        xmppConnectivity.useClient(accountId).requestContactTime(contactJid,listResources[z])
+                        xmppConnectivity.useClient(accountId).requestContactVersion(contactJid,listResources[z])
+                    }
+                if (listResources.length > 0) {
+                    addElement("Resources",listResources.join(", "));
+                }
             }
         }
     }
@@ -84,7 +90,6 @@ Page {
     onStatusChanged: if (vCardPage.status === PageStatus.Inactive) vCardPage.destroy()
 
     Component.onCompleted: {
-        xmppConnectivity.useClient(accountId).requestContactTime(contactJid)
         vCard.loadVCard(contactJid)
     }
 
@@ -95,7 +100,7 @@ Page {
 
     Flickable {
         id: flickArea
-        anchors { top: parent.top; topMargin: 12; bottom: parent.bottom; bottomMargin: 12; left: parent.left; leftMargin: 20; right: parent.right; rightMargin: 20 }
+        anchors { top: parent.top; topMargin: 12; bottom: parent.bottom; bottomMargin: 12; left: parent.left; leftMargin: platformStyle.paddingLarge; right: parent.right; rightMargin: platformStyle.paddingLarge }
         contentHeight: columnContent.height
         contentWidth: columnContent.width
 
@@ -157,10 +162,9 @@ Page {
                 model: vCardData
                 delegate: DetailsItem {
                     width: parent.width;
-                    valueFont.bold: true;
                     title: _title
                     value: _value
-                    LineItem { visible: index != vCardData.count-1 }
+                    LineItem { visible: index != vCardData.count-1; width: parent.width + 2*platformStyle.paddingLarge }
                 }
             }
         }
