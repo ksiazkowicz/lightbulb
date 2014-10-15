@@ -70,7 +70,7 @@ Page {
                         xmppConnectivity.useClient(accountId).requestContactVersion(contactJid,listResources[z])
                     }
                 if (listResources.length > 0) {
-                    addElement("Resources",listResources.join(", "));
+                    addElement(listResources.length > 1 ? "Resources" : "Resource",listResources.join(", "));
                 }
             }
         }
@@ -79,7 +79,6 @@ Page {
     property string pageName:          "VCard"
 
     property string accountId:         ""
-
     property string contactJid:        ""
     property string contactName:       ""
     property string contactPresence:   xmppConnectivity.getPropertyByJid(accountId,"presence",contactJid)
@@ -164,7 +163,7 @@ Page {
                     width: parent.width;
                     title: _title
                     value: _value
-                    LineItem { visible: index != vCardData.count-1; width: parent.width + 2*platformStyle.paddingLarge }
+                    LineItem { visible: index != vCardData.count-1 }
                 }
             }
         }

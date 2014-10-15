@@ -54,50 +54,46 @@ bool StoreVCard::setVCard( const QString &bareJid, vCardData &vCard ) {
     QDomElement rootVCard = vCardXMLDoc.createElement("vCard");
     vCardXMLDoc.appendChild( rootVCard );
 
-    QDomElement nodeNickname = vCardXMLDoc.createElement( "nickName" );
+    QDomElement nodeNickname = vCardXMLDoc.createElement("nickName");
     rootVCard.appendChild(nodeNickname);
-    QDomText txtNickname = vCardXMLDoc.createTextNode( vCard.nickName.toUtf8() );
-    nodeNickname.appendChild( txtNickname );
+    QDomText txtNickname = vCardXMLDoc.createTextNode(vCard.nickName);
+    nodeNickname.appendChild(txtNickname);
 
     //setElementStore( "firstName", vCard.firstName );
-    nodeNickname = vCardXMLDoc.createElement( "firstName" );
+    nodeNickname = vCardXMLDoc.createElement("firstName");
     rootVCard.appendChild(nodeNickname);
-    txtNickname = vCardXMLDoc.createTextNode( vCard.firstName.toUtf8() );
+    txtNickname = vCardXMLDoc.createTextNode(vCard.firstName);
     nodeNickname.appendChild( txtNickname );
 
     //setElementStore( "middleName", vCard.middleName );
-    nodeNickname = vCardXMLDoc.createElement( "middleName" );
+    nodeNickname = vCardXMLDoc.createElement("middleName");
     rootVCard.appendChild(nodeNickname);
-    txtNickname = vCardXMLDoc.createTextNode( vCard.middleName.toUtf8() );
-    nodeNickname.appendChild( txtNickname );
+    txtNickname = vCardXMLDoc.createTextNode(vCard.middleName);
+    nodeNickname.appendChild(txtNickname);
 
     //setElementStore( "lastName", vCard.lastName );
-    nodeNickname = vCardXMLDoc.createElement( "lastName" );
+    nodeNickname = vCardXMLDoc.createElement("lastName");
     rootVCard.appendChild(nodeNickname);
-    txtNickname = vCardXMLDoc.createTextNode( vCard.lastName.toUtf8() );
-    nodeNickname.appendChild( txtNickname );
+    txtNickname = vCardXMLDoc.createTextNode(vCard.lastName);
+    nodeNickname.appendChild(txtNickname);
 
     //setElementStore( "url", vCard.url );
-    nodeNickname = vCardXMLDoc.createElement( "url" );
+    nodeNickname = vCardXMLDoc.createElement("url");
     rootVCard.appendChild(nodeNickname);
-    txtNickname = vCardXMLDoc.createTextNode( vCard.url.toUtf8() );
-    nodeNickname.appendChild( txtNickname );
+    txtNickname = vCardXMLDoc.createTextNode(vCard.url);
+    nodeNickname.appendChild(txtNickname);
 
     //setElementStore( "eMail", vCard.eMail );
-    nodeNickname = vCardXMLDoc.createElement( "eMail" );
+    nodeNickname = vCardXMLDoc.createElement("eMail");
     rootVCard.appendChild(nodeNickname);
-    txtNickname = vCardXMLDoc.createTextNode( vCard.eMail.toUtf8() );
-    nodeNickname.appendChild( txtNickname );
+    txtNickname = vCardXMLDoc.createTextNode(vCard.eMail);
+    nodeNickname.appendChild(txtNickname);
 
     //setElementStore( "fullName", vCard.fullName );
-    nodeNickname = vCardXMLDoc.createElement( "fullName" );
+    nodeNickname = vCardXMLDoc.createElement("fullName");
     rootVCard.appendChild(nodeNickname);
-    txtNickname = vCardXMLDoc.createTextNode( vCard.fullName.toUtf8() );
-    nodeNickname.appendChild( txtNickname );
-
-    #ifdef QT_DEBUG
-    //qDebug() << "doc=" << vCardXMLDoc.toString();
-    #endif
+    txtNickname = vCardXMLDoc.createTextNode(vCard.fullName);
+    nodeNickname.appendChild(txtNickname);
 
     QString fileVCard = pathCache + QDir::separator() + bareJid + QDir::separator() +"vCard.xml";
     QFile xmlVCardFile(fileVCard);
@@ -106,6 +102,7 @@ bool StoreVCard::setVCard( const QString &bareJid, vCardData &vCard ) {
         return false;
     }
     QTextStream stream( &xmlVCardFile );
+    stream.setCodec("UTF-8");
     stream << vCardXMLDoc.toString();
     xmlVCardFile.close();
 

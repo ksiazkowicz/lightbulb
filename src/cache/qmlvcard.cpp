@@ -41,7 +41,6 @@ void QMLVCard::clearData() { //Q_INVOKABLE
   m_birthday = "";
   m_email = "";
   m_url = "";
-  m_jid = "";
 }
 
 void QMLVCard::loadVCard(QString bareJid) { //Q_INVOKABLE
@@ -56,6 +55,5 @@ void QMLVCard::loadVCard(QString bareJid) { //Q_INVOKABLE
   m_fullname = data.fullName;
   m_email = data.eMail;
   m_url = data.url;
-  m_jid = bareJid;
   emit vCardChanged();
 }

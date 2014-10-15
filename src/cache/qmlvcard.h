@@ -40,7 +40,6 @@ class QMLVCard : public QObject
     Q_PROPERTY( QString email READ getEMail NOTIFY vCardChanged )
     Q_PROPERTY( QString birthday READ getBirthday NOTIFY vCardChanged )
     Q_PROPERTY( QString url READ getUrl NOTIFY vCardChanged )
-    Q_PROPERTY( QString jid READ getJid NOTIFY vCardChanged )
 
 public:
     explicit QMLVCard(QObject *parent = 0);
@@ -72,9 +71,6 @@ public:
     QString getUrl() const { return m_url; }
     void setUrl( const QString &value ) { if(value != m_url) { m_url =value; } }
 
-    QString getJid() const { return m_jid; }
-    void setJid( const QString &value ) { if(value != m_jid) { m_jid =value; } }
-
     Q_INVOKABLE void clearData();
     Q_INVOKABLE void loadVCard(QString bareJid);
 
@@ -93,7 +89,6 @@ private:
     QString m_email;
     QString m_birthday;
     QString m_url;
-    QString m_jid;
 };
 
 #endif // QMLVCARD_H
