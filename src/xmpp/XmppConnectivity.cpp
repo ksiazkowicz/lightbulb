@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *********************************************************************/
 
 #include "XmppConnectivity.h"
+#include "../cache/storevcard.h"
 
 XmppConnectivity::XmppConnectivity(QObject *parent) :
   QObject(parent)
@@ -438,11 +439,28 @@ void XmppConnectivity::updateKeepAliveSetting(int keepAlive) {
 }
 
 void XmppConnectivity::updateMyData(QString jid) {
-  QString currentPersonality = lSettings->gStr("behavior","personality");
-  QString currentAvatar = lCache->getAvatarCache(currentPersonality);
-  QString newAvatar = lCache->getAvatarCache(jid);
+  qDebug() << "XmppConnectivity::updateMyData() called";
 
-  if ((currentPersonality == "") || (currentPersonality != jid && currentAvatar == "qrc:/avatar" && newAvatar != "qrc:/avatar")) {
+  // bool for storing all that results
+  bool personalityNeedsChanging = true;
+
+  // try to get current personality
+  QString currentPersonality = lSettings->gStr("behavior","personality");
+
+  // check if personality is empty
+  if (currentPersonality != "" && currentPersonality != jid) {
+      // it isn't, but is it valid?
+      vCardData vCdata = lCache->getVCard(currentPersonality);
+      if (!vCdata.isEmpty()) {
+          // it isn't, let's go further, compare the avatars
+          QString currentAvatar = lCache->getAvatarCache(currentPersonality);
+          QString newAvatar = lCache->getAvatarCache(jid);
+          personalityNeedsChanging = (currentAvatar == "qrc:/avatar" && newAvatar != "qrc:/avatar");
+      }
+    }
+
+  if (personalityNeedsChanging) {
+      qDebug() << "Updating personality";
       lSettings->sStr(jid,"behavior","personality");
       emit personalityChanged();
     }
