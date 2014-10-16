@@ -47,12 +47,15 @@ Menu {
             platformInverted: main.platformInverted
             onClicked: dialog.create("qrc:/dialogs/Resources")
             enabled: !isFacebook && isConnected
+            height: enabled ? privateStyle.menuItemHeight : 0
         }
         MenuItem {
             text: qsTr("Request attention")
             platformInverted: main.platformInverted
             onClicked: xmppConnectivity.useClient(accountId).requestAttention(contactJid,contactResource)
             enabled: !isFacebook && isConnected
+            height: enabled ? privateStyle.menuItemHeight : 0
+
         }
 
         MenuItem {
