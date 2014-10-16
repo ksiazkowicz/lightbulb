@@ -95,6 +95,8 @@ Item {
                 repeatHapticsEffect.stop()
                 hapticsEffect.running = false;
             }
+
+            if (vars.isActive) avkon.stopNotification()
         }
     }
 

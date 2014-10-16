@@ -92,6 +92,7 @@ signals:
 public slots:
     void cleanLastMsg() { lastPopup=""; }
     void playNotification(QString path);
+    void stopNotification() { iAudioPlayer->Stop(); }
 
     bool getSwitchToAppProperty()          { return _switchToApp; }
     void setSwitchToAppProperty(bool data) { _switchToApp = data; }
