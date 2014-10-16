@@ -134,7 +134,7 @@ Item {
 
         onTriggered: {
             // if the effect was already played required number of times, stop it
-            if (at == amount) { running = false; at = 0; } else {
+            if (at == amount || !avkon.isDeviceLocked()) { running = false; at = 0; } else {
                 // repeat the effect
                 at++; hapticsEffect.running = true;
             }
@@ -144,11 +144,11 @@ Item {
     function notifySndVibr(how) {
         console.log("notifySndVibra called");
         if( settings.gBool("notifications","vibra"+how /*&& !avkon.isInSilentMode()*/)) {
-            hapticsEffect.duration = settings.gInt("notifications","vibra"+how+"Duration")*(vars.isActive ? 0.5 : 1)
+            hapticsEffect.duration = settings.gInt("notifications","vibra"+how+"Duration")*(vars.isActive || !avkon.isDeviceLocked() ? 0.5 : 1)
             hapticsEffect.intensity = settings.gInt("notifications","vibra"+how+"Intensity")
             hapticsEffect.running = true
 
-            if (!vars.isActive)
+            if (!vars.isActive && avkon.isDeviceLocked())
                 repeatHapticsEffect.start()
         }
         if( settings.gBool("notifications","sound"+how ))

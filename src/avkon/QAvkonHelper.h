@@ -33,6 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <hwrmlight.h>
 #include <QUrl>
 #include <aknappui.h>
+#include <aknkeylock.h>
 
 #include "AvkonMedia.h"
 
@@ -66,6 +67,8 @@ public:
     Q_INVOKABLE bool isInSilentMode() { return iAudioPlayer->isInSilentMode(); }
     Q_INVOKABLE void setAppHiddenState(bool state);
 
+    Q_INVOKABLE bool isDeviceLocked() { return keyLock.IsKeyLockEnabled(); }
+
 private:
     TInt iNoteId;
     CAknGlobalNote* iNote;
@@ -78,6 +81,7 @@ private:
 
     bool chatIconStatus;
     AvkonMedia* iAudioPlayer;
+    RAknKeyLock keyLock;
 
     bool _switchToApp;
 
