@@ -75,7 +75,8 @@ CommonDialog {
                 stepSize: 10
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
-                maximumValue: 2000
+                minimumValue: 500
+                maximumValue: 10000
                 value: settings.gInt("notifications", currentlyEditedParameter + "Duration")
                 orientation: 1
                 platformInverted: main.platformInverted

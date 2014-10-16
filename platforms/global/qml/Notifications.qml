@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import QtQuick 1.1
 import QtMobility.feedback 1.1 //@QtQuick1
+//import QtFeedback 5.0 //@QtQuick2
 import lightbulb 1.0
 
 Item {
@@ -89,6 +90,12 @@ Item {
         onGlobalUnreadCountChanged: {
             notify.updateNotifiers()
         }
+        onIsActiveChanged: {
+            if (vars.isActive && repeatHapticsEffect.running) {
+                repeatHapticsEffect.stop()
+                hapticsEffect.running = false;
+            }
+        }
     }
 
     function getStatusNameByIndex(status) {
@@ -109,13 +116,40 @@ Item {
     function postInfo(messageString) { avkon.displayGlobalNote(messageString,false) }
     function postError(messageString) { avkon.displayGlobalNote(messageString,true) }
 
-    HapticsEffect { id: hapticsEffect } //@QtQuick1
+    HapticsEffect {
+        id: hapticsEffect;
+        attackTime: 250;
+        fadeTime: 250;
+        attackIntensity: 0;
+        fadeIntensity: 0
+    }
+
+    Timer {
+        id: repeatHapticsEffect;
+        repeat: true;
+        property int amount: 3; // will repeat haptics effect three times, means it plays 4 times
+        property int at: 0;
+        running: false;
+        interval: hapticsEffect.duration + hapticsEffect.attackTime;
+
+        onTriggered: {
+            // if the effect was already played required number of times, stop it
+            if (at == amount) { running = false; at = 0; } else {
+                // repeat the effect
+                at++; hapticsEffect.running = true;
+            }
+        }
+    }
 
     function notifySndVibr(how) {
-        if( settings.gBool("notifications","vibra"+how && !avkon.isInSilentMode())) {
-            hapticsEffect.duration = settings.gInt("notifications","vibra"+how+"Duration" )
-            hapticsEffect.intensity = settings.gInt("notifications","vibra"+how+"Intensity" )/100
+        console.log("notifySndVibra called");
+        if( settings.gBool("notifications","vibra"+how /*&& !avkon.isInSilentMode()*/)) {
+            hapticsEffect.duration = settings.gInt("notifications","vibra"+how+"Duration")*(vars.isActive ? 0.5 : 1)
+            hapticsEffect.intensity = settings.gInt("notifications","vibra"+how+"Intensity")
             hapticsEffect.running = true
+
+            if (!vars.isActive)
+                repeatHapticsEffect.start()
         }
         if( settings.gBool("notifications","sound"+how ))
             avkon.playNotification(settings.gStr("notifications","sound"+how+"File" ));
