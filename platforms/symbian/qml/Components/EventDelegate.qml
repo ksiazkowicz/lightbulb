@@ -50,7 +50,7 @@ Flickable {
 
     function makeAction() {
         switch (type) {
-        case 32: main.openChat(accountID,name,bareJid,xmppConnectivity.restoreResource(accountID,bareJid),xmppConnectivity.getChatType(accountID,bareJid)); break;
+        case 32: { main.openChat(accountID,name,bareJid,xmppConnectivity.restoreResource(accountID,bareJid),xmppConnectivity.getChatType(accountID,bareJid)); avkon.stopNotification(); break; }
         case 34: { xmppConnectivity.useClient(accountID).acceptSubscription(bareJid); dialog.createWithProperties("qrc:/dialogs/Contact/Add",{"accountId": accountID, "bareJid": bareJid}); xmppConnectivity.events.removeEvent(index); break; }
         case 35: { dialog.createWithProperties("qrc:/dialogs/MUC/Join",{"accountId":accountID,"mucJid":bareJid}); xmppConnectivity.events.removeEvent(index)}; break;
         case 38: if (updater.isUpdateAvailable) dialog.createWithProperties("qrc:/menus/UrlContext", {"url": updater.updateUrl}); break;
@@ -61,7 +61,7 @@ Flickable {
 
     function makeAltAction() {
         switch (type) {
-        case 32: xmppConnectivity.resetUnreadMessages(accountID,bareJid); break;
+        case 32: { xmppConnectivity.resetUnreadMessages(accountID,bareJid); avkon.stopNotification(); break; }
         case 34: xmppConnectivity.useClient(accountID).rejectSubscription(bareJid); return true;
         case 40:
         case 41: xmppConnectivity.useClient(accountID).abortTransfer(transferJob); break;

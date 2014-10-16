@@ -68,7 +68,6 @@ void AvkonMedia::ConstructL()
 void AvkonMedia::PlayL(const TDesC& aFileName)
 	{
 	iPlayerUtility->Close();
-	iPlayerUtility->SetVolume(iPlayerUtility->MaxVolume());
 	iPlayerUtility->OpenFileL(aFileName);
 	}
 
@@ -126,8 +125,8 @@ void AvkonMedia::MapcInitComplete(TInt aError,
 
 	if (KErrNone == aError)
 		{
-		//iPlayerUtility->SetVolume(
-			//	iPlayerUtility->MaxVolume() );// / KVolumeDenominator);
+		iPlayerUtility->SetVolume(
+				iPlayerUtility->MaxVolume() /*/ KVolumeDenominator*/);
 		iPlayerUtility->Play();
 		}
 	else

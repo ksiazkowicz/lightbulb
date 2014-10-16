@@ -109,7 +109,7 @@ Page {
                     id: clearBtn
                     height: parent.height
                     text: "Clear"
-                    onClicked: xmppConnectivity.events.clearList();
+                    onClicked: { avkon.stopNotification(); xmppConnectivity.events.clearList() }
                     platformInverted: main.platformInverted
                 }
             }
