@@ -178,7 +178,7 @@ Page {
     // timer for handling "stopped" notifications
     Timer {
         id: waitForInactivity
-        interval: 9000 //OVER 9000!!!!!11111111111
+        interval: 100000 //OVER 9000!!!!!11111111111
         repeat: false
         onTriggered: {
             if (isTyping) {
