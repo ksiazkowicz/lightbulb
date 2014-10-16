@@ -145,7 +145,7 @@ public :
     QString getPassword() const { return m_password; }
     void setPassword( const QString& value ) { m_password=value; }
 
-    QString getHost() const { return m_host; }
+    Q_INVOKABLE QString getHost() const { return m_host; }
     void setHost( const QString & value ) { m_host=value; }
 
     int getPort() const { return m_port; }
@@ -192,7 +192,7 @@ public :
 
     // service discovery
     Q_INVOKABLE void askServer(QString jid);
-    Q_INVOKABLE void debugThisCrapServices();
+    Q_INVOKABLE ServiceListModel* serviceModel(QString jid);
 
     // am I retarded?
     Q_INVOKABLE bool isFacebook() { return m_host == "chat.facebook.com"; }

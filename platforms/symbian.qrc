@@ -44,6 +44,7 @@
         <file alias="MUC/Join">symbian/qml/Dialogs/MucJoinDialog.qml</file>
         <file alias="MUC/Participants">symbian/qml/Dialogs/MucParticipantsDialog.qml</file>
         <file alias="MUC/Query">symbian/qml/Dialogs/MucQueryDialog.qml</file>
+        <file alias="Services/Ask">symbian/qml/Dialogs/ServicesDialog.qml</file>
     </qresource>
     <qresource prefix="/pages">
         <file alias="About">symbian/qml/Pages/AboutPage.qml</file>
@@ -57,6 +58,7 @@
         <file alias="Migration">symbian/qml/Pages/MigrationPage.qml</file>
         <file alias="Conversation">symbian/qml/Pages/ConversationPage.qml</file>
         <file alias="LogView">symbian/qml/Pages/LogPage.qml</file>
+        <file alias="Services">symbian/qml/Pages/ServicesPage.qml</file>
     </qresource>
     <qresource prefix="/toolbar">
         <file alias="close">symbian/images/toolbar/toolbar-close.svg</file>

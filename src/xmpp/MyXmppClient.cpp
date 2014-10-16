@@ -680,40 +680,32 @@ bool MyXmppClient::isActionPossible(int permissionLevel, int action) {
 // ---------- Service Discovery ----------------------------------------------------------------------------------------------------
 
 void MyXmppClient::askServer(QString jid) {
-  qDebug() << "attempting to get data for" << jid;
   serviceDiscovery->requestItems(jid);
-      //bytestreams
 }
 
-void MyXmppClient::debugThisCrapServices() {
-    qDebug() << "--- cache for:" << m_host << "---";
-    ServiceListModel *serviceList = services(m_host);
-
-    if (!serviceList) {
-        qDebug() << "unavailable :cc";
-    } else {
-        qDebug() << "-" << qPrintable(m_host);
-        ServiceItemModel* item;
-        for (int i=0;i<serviceList->rowCount();i++) {
-            item = (ServiceItemModel*)serviceList->itemFromIndex(serviceList->index(i,0));
-            qDebug() << " -" << qPrintable(item->data(ServiceItemModel::Jid).toString());
-            qDebug() << "  *" << "name:"<< qPrintable(item->data(ServiceItemModel::Name).toString());
-            qDebug() << "  *" << "category:"<< qPrintable(item->data(ServiceItemModel::Features).toString());
-            qDebug() << "  *" << "type:"<< qPrintable(item->data(ServiceItemModel::Type).toString());
-        }
-    }
+ServiceListModel* MyXmppClient::serviceModel(QString jid) {
+  return this->services(jid);
 }
 
 void MyXmppClient::itemsReceived(const QXmppDiscoveryIq &items) {
-  qDebug() << "received data for " << items.from();
   ServiceItemModel *item;
+
+  // get list model for services
   ServiceListModel *cache = this->services(items.from());
 
   for (int i=0;i<items.items().count();i++) {
-    item = new ServiceItemModel(items.items().at(i).name(),items.items().at(i).jid(),items.items().at(i).node());
-    cache->append(item);
-    serviceDiscovery->requestInfo(items.items().at(i).jid());
-  }
+      // check if item already exists
+      item = (ServiceItemModel*)cache->find(items.items().at(i).jid());
+
+      // it doesn't, create a new one and append it
+      if (item == 0) {
+          item = new ServiceItemModel(items.items().at(i).name(),items.items().at(i).jid(),items.items().at(i).node());
+          cache->append(item);
+        }
+
+      // request additional info for this node
+      serviceDiscovery->requestInfo(items.items().at(i).jid());
+    }
 }
 
 void MyXmppClient::infoReceived(const QXmppDiscoveryIq &iq) {

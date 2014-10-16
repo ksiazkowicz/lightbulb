@@ -37,6 +37,11 @@ Menu {
             onClicked: dialog.createWithContext("qrc:/dialogs/MUC/Join")
         }
         MenuItem {
+            text: qsTr("Browse services")
+            platformInverted: main.platformInverted
+            onClicked: dialog.createWithContext("qrc:/dialogs/Services/Ask")
+        }
+        MenuItem {
             text: qsTr("Preferences")
             platformInverted: main.platformInverted
             onClicked: main.pageStack.push( "qrc:/pages/Preferences" )

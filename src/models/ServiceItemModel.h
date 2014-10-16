@@ -45,7 +45,9 @@ public:
                                              const QString &_nodeJid,
                                              const QString &_nodeFeatures,
                                              QObject *parent = 0 ) {
-        setData(QVariant(_nodeName),Name);
+        if (_nodeName != "")
+          setData(QVariant(_nodeName),Name);
+        else setData(QVariant(_nodeJid),Name);
         setData(QVariant(_nodeJid),Jid);
         setData(QVariant(_nodeFeatures),Features);
       }
