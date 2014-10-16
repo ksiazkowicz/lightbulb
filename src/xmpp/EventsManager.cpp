@@ -287,9 +287,31 @@ void EventsManager::removeEvent(QString bareJid, QString accountId, int type) {
 void EventsManager::clearList() {
   // clear the list
   qDebug() << "EventsManager::clearList() called";
+  int eventsToIgnore = 0;
 
-  while (events->getCount() > 0)
-    events->takeRow(0);
+  // iterate through all events
+  while (events->getCount() > eventsToIgnore) {
+      // variable to check if we shall ignore this event
+      bool ignorePlz = false;
+
+      // try to find the event on the events list and stuff
+      EventItemModel *event = (EventItemModel*)events->getElementByID(eventsToIgnore);
+      if (event != 0) {
+          // event exists, that's great
+        int eventType = event->data(EventItemModel::Type).toInt();
+
+        // prevent removing the event if it's an unifinished transfer
+        if ((eventType == EventItemModel::IncomingTransfer || eventType == EventItemModel::OutcomingTransfer)
+            && (event->data(EventItemModel::State).toInt() != 2))
+          ignorePlz = true;
+
+        // if event shall be ignored, ignore it, otherwise remove
+        if (ignorePlz)
+          eventsToIgnore++;
+        else events->takeRow(eventsToIgnore);
+
+        } else eventsToIgnore++; // this should never be needed but I added it just in case
+  }
 
   events->countWasChanged();
 }
