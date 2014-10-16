@@ -32,14 +32,6 @@ Page {
     property string accGRID: ""
     property string pageName: accGRID !== "" ? qsTr("Editing ") + xmppConnectivity.getAccountName(accGRID) : "New account"
 
-    function unhighlightFields(exception) {
-        if (exception !== "name") name.highlighted = false;
-        if (exception !== "password") password.highlighted = false;
-        if (exception !== "resource") resource.highlighted = false;
-        if (exception !== "login") login.highlighted = false;
-        if (exception !== "serverDetails") serverDetails.highlighted = false;
-    }
-
     Component.onCompleted: {
         if (accGRID != "") {
             if (settings.gStr(accGRID,'host') == "chat.facebook.com")
@@ -84,7 +76,7 @@ Page {
                 anchors { left: parent.left; right: parent.right }
                 title: "Server"
 
-                onClicked: { unhighlightFields(""); selectionDialog.open() }
+                onClicked: { selectionDialog.open() }
 
                 SelectionDialog {
                     id: selectionDialog
@@ -123,7 +115,6 @@ Page {
                 id: name
                 settingLabel: "Name (optional)"
                 width: parent.width
-                onHighlightedChanged: if (highlighted) unhighlightFields("name");
             }
 
             SettingField {
@@ -132,8 +123,6 @@ Page {
                 placeholder: "login@server.com"
                 enabled: selectionDialog.selectedIndex != -1
                 width: parent.width
-
-                onHighlightedChanged: if (highlighted) unhighlightFields("login");
             }
 
             SettingField {
@@ -142,8 +131,6 @@ Page {
                 enabled: selectionDialog.selectedIndex != -1
                 width: parent.width
                 echoMode: TextInput.Password
-
-                onHighlightedChanged: if (highlighted) unhighlightFields("password");
             }
 
             SettingField {
@@ -152,8 +139,6 @@ Page {
                 placeholder: "(default: Lightbulb)"
                 enabled: selectionDialog.selectedIndex != -1
                 width: parent.width
-
-                onHighlightedChanged: if (highlighted) unhighlightFields("resource");
             }
 
             SettingField {
@@ -166,8 +151,6 @@ Page {
                 height: visible ? 66 : 0
 
                 // need support for input validation
-
-                onHighlightedChanged: if (highlighted) unhighlightFields("serverDetails");
             }
 
             CheckBox {

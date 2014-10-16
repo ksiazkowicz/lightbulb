@@ -8,7 +8,7 @@ Rectangle {
     radius: 4
     color: highlighted ? (platformInverted ? "black" : "white") : "transparent"
 
-    property bool highlighted: false
+    property bool highlighted: dataInputField.focus
     property alias enabled: dataInputField.enabled
     property bool platformInverted: main.platformInverted
     property string settingLabel
@@ -16,6 +16,7 @@ Rectangle {
     property alias value: dataInputField.text
     property alias echoMode: dataInputField.echoMode
     property alias inputMask: dataInputField.inputMask
+    property alias inputMethodHints: dataInputField.inputMethodHints
 
     MouseArea {
         anchors.fill: parent;
@@ -38,10 +39,6 @@ Rectangle {
             width: parent.width
 
             onFocusChanged: {
-                // highlight the field
-                if (focus)
-                    highlighted = true;
-
                 // (main.height - inputContext.height = visible space)
                 var visibleSpace = Math.abs(main.height - inputContext.height);
                 // calculate position + required space (font size + padding)

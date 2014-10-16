@@ -25,6 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import QtQuick 1.1
 import com.nokia.symbian 1.1
 
+import "../Components"
+
 Item {
     height: column.height
 
@@ -100,27 +102,17 @@ Item {
                 avkon.setAppHiddenState(checked);
             }
         }
-        Text {
-            text: qsTr("Visible messages limit")
-            font.pixelSize: 20
-            font.bold: true
-            color: main.textColor
-        }
-        TextField {
-            id: tiVisibleMsgLimit
-            anchors.horizontalCenter: parent.horizontalCenter;
-            inputMethodHints: Qt.ImhFormattedNumbersOnly
-            height: 50
-            width: column.width
-            Component.onCompleted: {
-                text = settings.gInt("behavior", "visibleMessagesLimit")
-            }
-            onActiveFocusChanged: {
-                main.splitscreenY = 0
-            }
 
-            onTextChanged: {
-                var limit = parseInt(text)
+        SettingField {
+            id: tiVisibleMsgLimit
+            settingLabel: "Visible messages limit"
+            width: column.width
+            inputMethodHints: Qt.ImhFormattedNumbersOnly
+
+            Component.onCompleted: value = settings.gInt("behavior", "visibleMessagesLimit")
+
+            onValueChanged: {
+                var limit = parseInt(value)
                 xmppConnectivity.messagesLimit = limit
                 settings.sInt(limit,"behavior", "visibleMessagesLimit")
             }

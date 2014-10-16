@@ -41,25 +41,19 @@ Item {
               vars.autoAway = checked;
            }
         }
-        Text {
-            text: qsTr("Time (in minutes)")
-            font.pixelSize: 20
-            font.bold: true
-            color: main.textColor
-        }
-        TextField {
-            anchors.horizontalCenter: parent.horizontalCenter;
-            inputMethodHints: Qt.ImhFormattedNumbersOnly
-            height: 50
+
+        SettingField {
+            settingLabel: qsTr("Time (in minutes)")
             width: content.width
-            Component.onCompleted: text = vars.autoAwayTime
-            onActiveFocusChanged: main.splitscreenY = 0
-            onTextChanged: {
-                var limit = parseInt(text)
+            inputMethodHints: Qt.ImhFormattedNumbersOnly
+
+            Component.onCompleted: value = vars.autoAwayTime
+
+            onValueChanged: {
+                var limit = parseInt(value)
                 vars.autoAwayTime = limit;
                 settings.sInt(limit,"behavior", "autoAwayTime")
             }
         }
-
     }
 }

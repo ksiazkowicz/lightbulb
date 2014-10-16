@@ -75,9 +75,11 @@ Page {
 
     ListView {
         id: listViewMessages
-        anchors { fill: parent; bottomMargin: isInArchiveMode ? logButtons.height : msgInputField.height }
+        anchors { fill: parent; bottomMargin: isInArchiveMode ? logButtons.height : msgInputField.height + (msgInputField.focus ? platformStyle.paddingLarge : 0) }
 
         property int oldHeight;
+
+        clip: true
 
         delegate: Loader {
             source: isInArchiveMode ? ":/Components/Convo/ArchiveDelegate" : (msgType == 4 ? ":/Components/Convo/InformationDelegate" : (isMine ? ":/Components/Convo/OutcomingDelegate" : ":/Components/Convo/IncomingDelegate"))
@@ -178,7 +180,7 @@ Page {
     // timer for handling "stopped" notifications
     Timer {
         id: waitForInactivity
-        interval: 100000 //OVER 9000!!!!!11111111111
+        interval: 100000
         repeat: false
         onTriggered: {
             if (isTyping) {

@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import QtQuick 1.1
 import com.nokia.symbian 1.1
+import "../Components"
 
 Item {
     height: content.height
@@ -44,47 +45,28 @@ Item {
                 settings.sBool(checked,"behavior", "reconnectOnError")
             }
         }
-        Text {
-            text: qsTr("Keep alive interval (secs)")
-            font.pixelSize: 20
-            font.bold: true
-            color: main.textColor
-            anchors { left: parent.left; leftMargin: 10; }
-        }
-        TextField {
-            id: tiKeepAlive
-            anchors.horizontalCenter: parent.horizontalCenter
-            inputMethodHints: Qt.ImhFormattedNumbersOnly
-            width: content.width-20
-            height: 50
-            Component.onCompleted: tiKeepAlive.text = vars.keepAliveInterval
-            onActiveFocusChanged:  main.splitscreenY = 0
 
-            onTextChanged: {
-                vars.keepAliveInterval = parseInt(tiKeepAlive.text)
+        SettingField {
+            settingLabel: qsTr("Keep alive interval (secs)")
+            width: content.width
+            inputMethodHints: Qt.ImhFormattedNumbersOnly
+
+            Component.onCompleted: value = vars.keepAliveInterval
+
+            onValueChanged: {
+                vars.keepAliveInterval = parseInt(value)
                 xmppConnectivity.updateKeepAliveSetting(vars.keepAliveInterval)
                 settings.sInt(vars.keepAliveInterval,"behavior", "keepAliveInterval")
             }
         }
+        SettingField {
+            settingLabel: qsTr("Default group chat nick")
+            width: content.width
+            Component.onCompleted: value = vars.defaultMUCNick
 
-        Text {
-            text: qsTr("Default group chat nick")
-            font.pixelSize: 20
-            font.bold: true
-            color: main.textColor
-            anchors { left: parent.left; leftMargin: 10; }
-        }
-        TextField {
-            id: tiDefaultMUCNick
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: content.width-20
-            height: 50
-            Component.onCompleted: tiDefaultMUCNick.text = vars.defaultMUCNick
-            onActiveFocusChanged:  main.splitscreenY = 0
-
-            onTextChanged: {
-                vars.defaultMUCNick = tiDefaultMUCNick.text
-                settings.sStr(vars.defaultMUCNick,"behavior", "defaultMUCNick")
+            onValueChanged: {
+                vars.defaultMUCNick = value
+                settings.sStr(value,"behavior", "defaultMUCNick")
             }
         }
 
