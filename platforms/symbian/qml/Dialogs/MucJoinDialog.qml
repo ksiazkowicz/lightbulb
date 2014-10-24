@@ -45,52 +45,52 @@ CommonDialog {
 
     onButtonClicked: {
         if ((index === 0) && ( jidField.text != "" ) && ( nickField.text != "" )) {
-           xmppConnectivity.useClient(accountId).joinMUCRoom(jidField.text,nickField.text,passField.text)
+            xmppConnectivity.useClient(accountId).joinMUCRoom(jidField.text,nickField.text,passField.text)
         }
     }
 
-    content: Column {
-        width: parent.width-20
-        spacing: 5
-        anchors.horizontalCenter: parent.horizontalCenter
+    content: Flickable {
+        id: flickable
+        height: Math.min(column.height +platformStyle.paddingMedium, platformContentMaximumHeight)
+        width: parent.width - 2*platformStyle.paddingLarge
+        contentHeight: column.height
+        flickableDirection: Flickable.VerticalFlick
+        clip: true
+        interactive: contentHeight > height
+        onInteractiveChanged: {
+            if (jidField.focus && interactive) flickable.contentY = jidField.y-(platformStyle.fontSizeSmall+platformStyle.paddingMedium)
+            if (nickField.focus && interactive) flickable.contentY = nickField.y-(platformStyle.fontSizeSmall+platformStyle.paddingMedium)
+            if (passField.focus && interactive) flickable.contentY = passField.y-(platformStyle.fontSizeSmall+platformStyle.paddingMedium)
+        }
 
-        Text {
-            id: jidLabel;
-            color: main.textColor
-            anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10 }
-            text: qsTr("Room JID");
-        }
-        TextField {
-            id: jidField
-            height: 50
-            text: mucJid
-            anchors { left: parent.left; right: parent.right }
-            placeholderText: qsTr("room@conference.example.com")
-        }
-        Text {
-            id: nickLabel
-            color: main.textColor
-            anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10 }
-            text: qsTr("Your nick");
-        }
-        TextField {
-            id: nickField
-            height: 50
-            anchors { left: parent.left; right: parent.right }
-            placeholderText: qsTr("Nick")
-            text: vars.defaultMUCNick != "false" ? vars.defaultMUCNick : ""
-        }
-        Text {
-            id: passLabel
-            color: main.textColor
-            anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10 }
-            text: qsTr("Room password (optional)");
-        }
-        TextField {
-            id: passField
-            height: 50
-            anchors { left: parent.left; right: parent.right }
-            echoMode: TextInput.Password
+        anchors { horizontalCenter: parent.horizontalCenter; topMargin: platformStyle.paddingMedium; bottomMargin: platformStyle.paddingMedium }
+        Column {
+            id: column
+            spacing: platformStyle.paddingMedium
+            height: content.height
+            width: parent.width
+
+            Label { anchors.horizontalCenter: parent.horizontalCenter; text: qsTr("Room JID:"); color: main.textColor }
+
+            TextField {
+                id: jidField
+                text: mucJid
+                anchors { left: parent.left; right: parent.right }
+                placeholderText: qsTr("room@conference.example.com")
+            }
+            Label { anchors.horizontalCenter: parent.horizontalCenter; text: qsTr("Your nick:"); color: main.textColor }
+            TextField {
+                id: nickField
+                anchors { left: parent.left; right: parent.right }
+                placeholderText: qsTr("Nick")
+                text: vars.defaultMUCNick != "false" ? vars.defaultMUCNick : ""
+            }
+            Label { anchors.horizontalCenter: parent.horizontalCenter; text: qsTr("Room password (optional):"); color: main.textColor }
+            TextField {
+                id: passField
+                anchors { left: parent.left; right: parent.right }
+                echoMode: TextInput.Password
+            }
         }
     }
 }

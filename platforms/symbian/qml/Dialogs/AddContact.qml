@@ -27,9 +27,10 @@ import com.nokia.symbian 1.1
 
 CommonDialog {
     id: addContact
-    titleText: qsTr("Add contact")
+    titleText: flickable.interactive ? "" : qsTr("Add contact")
     property string accountId;
     property string bareJid
+
 
     platformInverted: main.platformInverted
     buttonTexts: [qsTr("OK"), qsTr("Cancel")]
@@ -47,9 +48,25 @@ CommonDialog {
                          else avkon.showPopup("Error occured","while adding contact to list")
                      }
 
-    content: Column {
+    content: Flickable {
+        id: flickable
+        height: Math.min(column.height +platformStyle.paddingMedium, platformContentMaximumHeight)
+        width: parent.width - 2*platformStyle.paddingLarge
+        contentHeight: column.height
+        flickableDirection: Flickable.VerticalFlick
+        clip: true
+        interactive: contentHeight > height
+        onInteractiveChanged: {
+            if (addName.focus) flickable.contentY = addName.y-(platformStyle.fontSizeSmall+platformStyle.paddingMedium)
+            if (addJid.focus) flickable.contentY = addJid.y-(platformStyle.fontSizeSmall+platformStyle.paddingMedium)
+        }
+
+        anchors { horizontalCenter: parent.horizontalCenter; topMargin: platformStyle.paddingMedium; bottomMargin: platformStyle.paddingMedium }
+        Column {
+            id: column
             spacing: platformStyle.paddingSmall
-            anchors { left: parent.left; right: parent.right; margins: platformStyle.paddingSmall }
+            height: content.height
+            width: parent.width
 
             Label { anchors.horizontalCenter: parent.horizontalCenter; text: qsTr("Contact name:"); color: main.textColor }
             TextField {
@@ -63,6 +80,8 @@ CommonDialog {
                 text: bareJid
                 anchors { left: parent.left; right: parent.right }
                 placeholderText: qsTr("example@server.com")
+
             }
         }
+    }
 }
