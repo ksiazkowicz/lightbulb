@@ -54,34 +54,32 @@ CommonDialog {
 
                 DetailsItem {
                     textAlignment: Text.AlignHCenter
-                    title: qsTr("Core Developers")
-                    titleFont.bold: true
-                    titleFont.pixelSize: platformStyle.fontSizeLarge + 1
-                    value: "Maciej Janiszewski\nAnatoliy Kozlov (MeegIM)"
+                    title: qsTr("Core Developer")
+                    value: "Maciej Janiszewski"
                 }
 
                 DetailsItem {
                     textAlignment: Text.AlignHCenter
                     title: qsTr("Contributors")
-                    titleFont.bold: true
-                    titleFont.pixelSize: platformStyle.fontSizeLarge + 1
                     value: "Fabian Hüllmantel\nPaul Wallace\nDickson Leong\nBhavin Gandhi\nMotaz Alnuweiri"
                 }
 
                 DetailsItem {
                     textAlignment: Text.AlignHCenter
                     title: qsTr("Testing")
-                    titleFont.bold: true
-                    titleFont.pixelSize: platformStyle.fontSizeLarge + 1
                     value: "Mohamed Zinhom\nKonrad Bąk\nGodwin Tgn\nRudmata\nRicardo Partida\nMaximiliano Caleca"
                 }
 
                 DetailsItem {
                     textAlignment: Text.AlignHCenter
                     title: qsTr("Donators")
-                    titleFont.bold: true
-                    titleFont.pixelSize: platformStyle.fontSizeLarge + 1
                     value: "Pece Murtanovski\nPaul Wallace\nFabian Hüllmantel\nJerome Redon\nElena Archinova\nJuan Pablo Ambriz Guzman"
+                }
+
+                DetailsItem {
+                    textAlignment: Text.AlignHCenter
+                    title: qsTr("Special thanks to")
+                    value: "Anatoliy Kozlov (MeegIM)\nStackOverflow users\nNokia\nCountless users of Qt support forums"
                 }
             }
         }
