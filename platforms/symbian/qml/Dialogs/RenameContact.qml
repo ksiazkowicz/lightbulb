@@ -27,7 +27,7 @@ import com.nokia.symbian 1.1
 
 CommonDialog {
     id: renameContact
-    titleText: qsTr("Rename contact")
+    titleText: qsTr("New name")
     platformInverted: main.platformInverted
 
     buttonTexts: [qsTr("OK"), qsTr("Cancel")]
@@ -51,24 +51,11 @@ CommonDialog {
         }
     }
 
-    content: Rectangle {
-        width: parent.width-20
-        height: 100
-        anchors.horizontalCenter: parent.horizontalCenter
-        color: "transparent"
-
-        Text {
-            id: queryLabel;
-            color: main.textColor
-            anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10; top: parent.top; topMargin: 10 }
-            text: qsTr("Choose new name:");
-        }
-        TextField {
+    content: TextField {
             id: newNameText
             text: contactName
-            height: 50
-            anchors { bottom: parent.bottom; bottomMargin: 5; left: parent.left; right: parent.right }
             placeholderText: qsTr("New name")
+            width: parent.width - 2*platformStyle.paddingLarge
+            anchors { centerIn: parent }
         }
-    }
 }

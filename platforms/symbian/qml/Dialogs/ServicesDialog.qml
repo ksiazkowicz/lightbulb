@@ -27,7 +27,7 @@ import com.nokia.symbian 1.1
 
 CommonDialog {
     id: servDialog
-    titleText: qsTr("Discover services")
+    titleText: qsTr("Server address")
     platformInverted: main.platformInverted
 
     buttonTexts: [qsTr("OK"), qsTr("Cancel")]
@@ -49,22 +49,10 @@ CommonDialog {
         }
     }
 
-    content: Column {
-        width: parent.width-20
-        spacing: 5
-        anchors.horizontalCenter: parent.horizontalCenter
-
-        Text {
-            id: jidLabel
-            color: main.textColor
-            anchors { left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10 }
-            text: qsTr("JID to ask");
-        }
-        TextField {
+    content: TextField {
             id: jidField
-            height: 50
+            width: parent.width - 2*platformStyle.paddingLarge
             text: xmppConnectivity.useClient(accountId).getHost()
-            anchors { left: parent.left; right: parent.right }
+            anchors { centerIn: parent }
         }
-    }
 }

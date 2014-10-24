@@ -55,13 +55,13 @@ CommonDialog {
 
         // convert index to status
         switch (selectionDialog.selectedIndex) {
-            case 0: ret = XmppClient.Online; break;
-            case 1: ret = XmppClient.Chat; break;
-            case 2: ret = XmppClient.Away; break;
-            case 3: ret = XmppClient.XA; break;
-            case 4: ret = XmppClient.DND; break;
-            case 5: ret = XmppClient.Offline; break;
-            default: ret = XmppClient.Unknown; break;
+        case 0: ret = XmppClient.Online; break;
+        case 1: ret = XmppClient.Chat; break;
+        case 2: ret = XmppClient.Away; break;
+        case 3: ret = XmppClient.XA; break;
+        case 4: ret = XmppClient.DND; break;
+        case 5: ret = XmppClient.Offline; break;
+        default: ret = XmppClient.Unknown; break;
         }
 
         // reopen connection if it's not available
@@ -81,47 +81,60 @@ CommonDialog {
         }
     }
 
-    content: Column {
-        width: parent.width-20
-        height: content.height
-        anchors.horizontalCenter: parent.horizontalCenter
+    content: Flickable {
+        id: flickable
+        height: Math.min(column.height+platformStyle.paddingMedium, platformContentMaximumHeight)
+        width: parent.width - 2*platformStyle.paddingLarge
+        contentHeight: column.height
+        flickableDirection: Flickable.VerticalFlick
+        clip: true
+        interactive: contentHeight > height
 
-        spacing: 5
+        onInteractiveChanged: contentY = wrapperTextEdit.y
 
-        SelectionListItem {
-            id: statusSelection
-            platformInverted: main.platformInverted
-            subTitle: selectionDialog.selectedIndex >= 0
-                      ? selectionDialog.model.get(selectionDialog.selectedIndex).name
-                      : "Online, Chatty, Away..."
-            anchors { left: parent.left; right: parent.right }
-            title: "Status"
+        anchors { horizontalCenter: parent.horizontalCenter; topMargin: platformStyle.paddingMedium; bottomMargin: platformStyle.paddingMedium }
+        Column {
+            id: column
+            width: parent.width
+            height: content.height
 
-            onClicked: selectionDialog.open()
+            spacing: 5
 
-            SelectionDialog {
-                id: selectionDialog
-                titleText: "Available options"
-                selectedIndex: -1
+            SelectionListItem {
+                id: statusSelection
                 platformInverted: main.platformInverted
-                model: ListModel {
-                    ListElement { name: "Online" }
-                    ListElement { name: "Chatty" }
-                    ListElement { name: "Away" }
-                    ListElement { name: "Extended Away" }
-                    ListElement { name: "Do not disturb" }
-                    ListElement { name: "Offline" }
+                subTitle: selectionDialog.selectedIndex >= 0
+                          ? selectionDialog.model.get(selectionDialog.selectedIndex).name
+                          : "Online, Chatty, Away..."
+                anchors { left: parent.left; right: parent.right }
+                title: "Status"
+
+                onClicked: selectionDialog.open()
+
+                SelectionDialog {
+                    id: selectionDialog
+                    titleText: "Available options"
+                    selectedIndex: -1
+                    platformInverted: main.platformInverted
+                    model: ListModel {
+                        ListElement { name: "Online" }
+                        ListElement { name: "Chatty" }
+                        ListElement { name: "Away" }
+                        ListElement { name: "Extended Away" }
+                        ListElement { name: "Do not disturb" }
+                        ListElement { name: "Offline" }
+                    }
                 }
             }
-        }
 
-        TextField {
-            id: wrapperTextEdit
-            height: !isFacebook ? 50 : 0
-            enabled: !isFacebook
-            anchors {left: parent.left; right: parent.right }
-            placeholderText: qsTr("Status text")
-            text: !isFacebook ? vars.lastStatus : ""
+            TextField {
+                id: wrapperTextEdit
+                height: !isFacebook ? 50 : 0
+                enabled: !isFacebook
+                anchors {left: parent.left; right: parent.right }
+                placeholderText: qsTr("Status text")
+                text: !isFacebook ? vars.lastStatus : ""
+            }
         }
     }
 }
