@@ -98,6 +98,10 @@ Item {
                         var filename = avkon.openFileSelectionDlg();
                         if (filename != "") settings.sStr(filename,"notifications","soundMsgRecvFile")
                     }
+                    onPlatformPressAndHold: {
+                        var filename = avkon.openFileSelectionDlg(true,true,"Z:\\data\\sounds\\digital");
+                        if (filename != "") settings.sStr(filename,"notifications","soundMsgRecvFile")
+                    }
                 }
                 ToolButton {
                     enabled: false
@@ -165,6 +169,10 @@ Item {
                     width: parent.width/3
                     iconSource: "toolbar-settings"
                     platformInverted: main.platformInverted
+                    onPlatformPressAndHold: {
+                        var filename = avkon.openFileSelectionDlg(true,true,"Z:\\data\\sounds\\digital");
+                        if (filename != "") settings.sStr(filename,"notifications","soundMsgSentFile")
+                    }
                     onClicked: {
                         var filename = avkon.openFileSelectionDlg();
                         if (filename != "") settings.sStr(filename,"notifications","soundMsgSentFile")
@@ -226,6 +234,10 @@ Item {
                     platformInverted: main.platformInverted
                     onClicked: {
                         var filename = avkon.openFileSelectionDlg();
+                        if (filename != "") settings.sStr(filename,"notifications","soundNotifyConnFile")
+                    }
+                    onPlatformPressAndHold: {
+                        var filename = avkon.openFileSelectionDlg(true,true,"Z:\\data\\sounds\\digital");
                         if (filename != "") settings.sStr(filename,"notifications","soundNotifyConnFile")
                     }
                 }
@@ -308,6 +320,10 @@ Item {
                     platformInverted: main.platformInverted
                     onClicked: {
                         var filename = avkon.openFileSelectionDlg();
+                        if (filename != "") settings.sStr(filename,"notifications","soundMsgSubFile")
+                    }
+                    onPlatformPressAndHold: {
+                        var filename = avkon.openFileSelectionDlg(true,true,"Z:\\data\\sounds\\digital");
                         if (filename != "") settings.sStr(filename,"notifications","soundMsgSubFile")
                     }
                 }
