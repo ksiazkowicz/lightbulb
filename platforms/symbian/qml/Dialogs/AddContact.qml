@@ -56,12 +56,12 @@ CommonDialog {
         flickableDirection: Flickable.VerticalFlick
         clip: true
         interactive: contentHeight > height
-        onInteractiveChanged: {
+        onHeightChanged: {
             if (addName.focus) flickable.contentY = addName.y-(platformStyle.fontSizeSmall+platformStyle.paddingMedium)
             if (addJid.focus) flickable.contentY = addJid.y-(platformStyle.fontSizeSmall+platformStyle.paddingMedium)
         }
 
-        anchors { horizontalCenter: parent.horizontalCenter; topMargin: platformStyle.paddingMedium; bottomMargin: platformStyle.paddingMedium }
+        anchors { horizontalCenter: parent.horizontalCenter; topMargin: platformStyle.paddingMedium }
         Column {
             id: column
             spacing: platformStyle.paddingSmall

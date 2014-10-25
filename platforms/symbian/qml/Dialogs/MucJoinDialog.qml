@@ -57,13 +57,13 @@ CommonDialog {
         flickableDirection: Flickable.VerticalFlick
         clip: true
         interactive: contentHeight > height
-        onInteractiveChanged: {
-            if (jidField.focus && interactive) flickable.contentY = jidField.y-(platformStyle.fontSizeSmall+platformStyle.paddingMedium)
-            if (nickField.focus && interactive) flickable.contentY = nickField.y-(platformStyle.fontSizeSmall+platformStyle.paddingMedium)
-            if (passField.focus && interactive) flickable.contentY = passField.y-(platformStyle.fontSizeSmall+platformStyle.paddingMedium)
+        onHeightChanged: {
+            if (jidField.focus && interactive) contentY = jidField.y-(platformStyle.fontSizeSmall+platformStyle.paddingMedium)
+            if (nickField.focus && interactive) contentY = nickField.y-(platformStyle.fontSizeSmall+platformStyle.paddingMedium)
+            if (passField.focus && interactive) contentY = flickable.contentHeight
         }
 
-        anchors { horizontalCenter: parent.horizontalCenter; topMargin: platformStyle.paddingMedium; bottomMargin: platformStyle.paddingMedium }
+        anchors { horizontalCenter: parent.horizontalCenter; topMargin: platformStyle.paddingMedium }
         Column {
             id: column
             spacing: platformStyle.paddingMedium
@@ -71,7 +71,6 @@ CommonDialog {
             width: parent.width
 
             Label { anchors.horizontalCenter: parent.horizontalCenter; text: qsTr("Room JID:"); color: main.textColor }
-
             TextField {
                 id: jidField
                 text: mucJid
