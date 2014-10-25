@@ -53,7 +53,8 @@ public:
     Q_INVOKABLE void showPopup(QString title,QString message);
     Q_INVOKABLE void notificationBlink(int device);
     Q_INVOKABLE void displayGlobalNote(QString message, bool isError);
-    Q_INVOKABLE QString openFileSelectionDlg(bool onlySounds = true, bool showNotification = true);
+    Q_INVOKABLE QString openFileSelectionDlg(bool onlySounds = true, bool showNotification = true, QString startPath = "");
+    Q_INVOKABLE QString openMediaSelectionDialog(int type);
     Q_INVOKABLE QString openFolderSelectionDlg(QString lastDir);
     Q_INVOKABLE void openDefaultBrowser(const QUrl &url) const;
 

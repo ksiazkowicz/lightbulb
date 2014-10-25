@@ -34,6 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <e32svr.h>
 #include <eikmenup.h>
 #include <coemain.h>
+#include <MGFetch.h>
 #include <apgcli.h> // RApaLsSession
 #include <apgtask.h> // TApaTaskList, TApaTask
 #include <QUrl>
@@ -56,7 +57,7 @@ class CExtensionFilter : public MAknFileFilter {
 public:
     TBool Accept(const TDesC &aDriveAndPath, const TEntry &aEntry) const
     {
-        if (aEntry.IsDir() || aEntry.iName.Right(4) == _L(".wav") || aEntry.iName.Right(4) == _L(".mp3") )
+        if (aEntry.IsDir() || aEntry.iName.Right(4) == _L(".wav") || aEntry.iName.Right(4) == _L(".mp3") ||  aEntry.iName.Right(4) == _L(".aac"))
             return ETrue;
         else return EFalse;
     }
@@ -127,7 +128,7 @@ void QAvkonHelper::ShowErrorL(const TDesC16& aMessage) {
     iNoteId = iNote->ShowNoteL(EAknGlobalErrorNote,aMessage);
 }
 
-QString QAvkonHelper::openFileSelectionDlg(bool onlySounds, bool showNotification) {
+QString QAvkonHelper::openFileSelectionDlg(bool onlySounds, bool showNotification, QString startPath) {
     TBuf16<256> filename;
     TInt types = AknCommonDialogsDynMem::EMemoryTypeMMCExternal|
                  AknCommonDialogsDynMem::EMemoryTypeInternalMassStorage|
@@ -138,10 +139,10 @@ QString QAvkonHelper::openFileSelectionDlg(bool onlySounds, bool showNotificatio
     if (onlySounds) {
         CExtensionFilter* extensionFilter = new (ELeave) CExtensionFilter;
         CleanupStack::PushL(extensionFilter);
-        run = AknCommonDialogsDynMem::RunSelectDlgLD(types, filename, _L(""), 0, 0, _L("Select a sound file"), extensionFilter);
+        run = AknCommonDialogsDynMem::RunSelectDlgLD(types, filename, convertToSymbianString(startPath), 0, 0, _L("Select a sound file"), extensionFilter);
         CleanupStack::PopAndDestroy(extensionFilter);
     } else {
-        run = AknCommonDialogsDynMem::RunSelectDlgLD(types, filename, _L(""), 0, 0, _L("Select a file"));
+        run = AknCommonDialogsDynMem::RunSelectDlgLD(types, filename, convertToSymbianString(startPath), 0, 0, _L("Select a file"));
       }
 
     if (!run) {
@@ -155,6 +156,39 @@ QString QAvkonHelper::openFileSelectionDlg(bool onlySounds, bool showNotificatio
 
         return qString;
     }
+}
+
+QString QAvkonHelper::openMediaSelectionDialog(int type) {
+    // initialize variables
+    CDesCArrayFlat* fileArray = new CDesCArrayFlat(3);
+    TBool selectionOk = EFalse;
+    TMediaFileType aType;
+
+    // check if type is valid and set a TMediaFileType according to this data
+    switch (type) {
+      case 0: aType = EImageFile; break;
+      case 1: aType = EVideoFile; break;
+      case 2: aType = EAudioFile; break;
+      case 3: aType = EMusicFile; break;
+      default: return "";
+      }
+
+    // open selection dialog
+    TRAP_IGNORE(selectionOk = MGFetch::RunL(*fileArray,aType,ETrue,KNullDesC,KNullDesC););
+
+    if (selectionOk) {
+        // initialize variable
+        QString selected;
+
+        // go through the file array
+        for (int i = 0; i < fileArray->Count(); i++) {
+            selected += QString::fromUtf16(fileArray->MdcaPoint(i).Ptr(),
+                                           fileArray->MdcaPoint(i).Length()) + "\n";
+        }
+    } else
+        // selection dialog was cancelled
+        return "";
+
 }
 
 QString QAvkonHelper::openFolderSelectionDlg(QString lastDir) {

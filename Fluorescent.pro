@@ -119,7 +119,9 @@ symbian {
             -lesock \
             -lmediaclientaudio \
             -lprofileengine \
-            -lcntmodel
+            -lcntmodel \
+            -lbafl \
+            -lmgfetch
 } else {
     QT += qml quick widgets
     !sailfish {
