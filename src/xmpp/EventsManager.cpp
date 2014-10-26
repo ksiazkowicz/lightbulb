@@ -28,10 +28,29 @@ bool EventsManager::appendEvent(EventItemModel *item) {
     if (item == NULL)
         return false;
 
+    // try to push a system notification
+    this->pushSystemNotification((EventItemModel::EventTypes)item->getData(EventItemModel::Type).toInt(),item->getData(EventItemModel::Name).toString(),item->getData(EventItemModel::Description).toString());
+
     // try to append it at the top of the list
     events->insertRow(0,item);
     events->countWasChanged();
     return true;
+}
+
+void EventsManager::pushSystemNotification(EventItemModel::EventTypes type, QString title, QString description) {
+  switch (type) {
+    case EventItemModel::UnreadMessage: emit pushedSystemNotification("MsgRecv",title,description); break;
+    case EventItemModel::AttentionRequest: emit pushedSystemNotification("Attention",title,"requested your attention~!"); break;
+
+    case EventItemModel::AppUpdate: emit pushedSystemNotification("AppUpdate",title,description); break;
+    case EventItemModel::SubscriptionRequest: emit pushedSystemNotification("MsgSub",title,description); break;
+    case EventItemModel::ConnectionState: emit pushedSystemNotification("NotifyConn",title,description); break;
+    case EventItemModel::ConnectionError: emit pushedSystemNotification("NotifyError",title,description); break;
+    case EventItemModel::FavUserStatusChange: emit pushedSystemNotification("FavStatus",title,description); break;
+    case EventItemModel::IncomingTransfer: emit pushedSystemNotification("TransRecv",title,description); break;
+    case EventItemModel::OutcomingTransfer: emit pushedSystemNotification("TransSent",title,description); break;
+    case EventItemModel::MUCinvite: emit pushedSystemNotification("MUCInv",title,description); break;
+    }
 }
 
 void EventsManager::appendUnreadMessage(QString bareJid, QString accountId, QString name, QString description) {

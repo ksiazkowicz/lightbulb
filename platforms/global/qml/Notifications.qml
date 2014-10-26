@@ -33,23 +33,27 @@ Item {
     Connections {
         target: xmppConnectivity
         onNotifyMsgReceived: {
-            // show discreet popup if enabled
-            if (settings.gBool("notifications", "usePopupRecv") && (xmppConnectivity.chatJid !== jid || !vars.isActive)) {
-                if (settings.gBool("behavior","msgInDiscrPopup"))
-                        avkon.showPopup(name,body)
-                else
-                    avkon.showPopup(vars.globalUnreadCount+1 + " unread messages", "New message from "+ name + ".")
-            }
-
             // get the blinker running if enabled and app is inactive
             if (!vars.isActive && settings.gBool("behavior", "wibblyWobblyTimeyWimeyStuff")) blink.running = true;
-
-            // play sound and vibration
-            notify.notifySndVibr("MsgRecv")
 
             // update chats icon and widget if required
             notify.updateNotifiers()
         }
+        onPushedSystemNotification: {
+            console.log("XmppConnectivity::onPushedSystemNotification("+type+")")
+
+            // play sound and vibration
+            notify.notifySndVibr(type)
+
+            // show popup if enabled
+            if (settings.gBool("notifications","popup"+type) && title != "" && description != "") {
+                if (type == "MsgRecv" && !settings.gBool("behavior","msgInDiscrPopup")) {
+                    avkon.showPopup(vars.globalUnreadCount+1 + " unread messages", "New message from "+ title + ".")
+                } else avkon.showPopup(title,description);
+            }
+
+        }
+
         onXmppTypingChanged: {
             console.log( "XmppConnectivity::onXmppTypingChanged(" + accountId + "," + bareJid + "," + isTyping + ")" )
             if (settings.gBool("notifications", "notifyTyping") == true) {
@@ -60,13 +64,6 @@ Item {
             }
         }
         onXmppStatusChanged: notify.updateNotifiers()
-        onXmppSubscriptionReceived: {
-            console.log( "XmppConnectivity::onXmppSubscriptionReceived(" + accountId + "," + bareJid + ")" )
-            if (settings.gBool("notifications","notifySubscription") == true)
-                avkon.showPopup("Subscription request",bareJid)
-
-            notify.notifySndVibr("MsgSub")
-        }
         onXmppConnectingChanged: {
             if (settings.gBool("notifications", "notifyConnection")) {
                 switch (xmppConnectivity.useClient(accountId).getStateConnect()) {
@@ -74,7 +71,6 @@ Item {
                         avkon.showPopup(xmppConnectivity.getAccountName(accountId),"Disconnected. :c");
                         break;
                     case 2:
-                        notify.notifySndVibr("NotifyConn")
                         avkon.showPopup(xmppConnectivity.getAccountName(accountId),"Status changed to " + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accountId)));
                         break;
                     case 1:

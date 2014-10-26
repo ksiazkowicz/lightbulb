@@ -97,6 +97,9 @@ signals:
     void xmppTypingChanged        (const QString accountId, QString bareJid, bool isTyping);
     void xmppPresenceChanged      (QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus);
 
+    // Events ones
+    void pushedSystemNotification(QString type, QString title, QString description);
+
     void avatarUpdatedForJid(QString bareJid);
     
 public slots:

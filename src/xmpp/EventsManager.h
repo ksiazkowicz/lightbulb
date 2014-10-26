@@ -14,10 +14,12 @@ public:
   
 signals:
   void eventsChanged();
+  void pushedSystemNotification(QString type, QString title, QString description);
 
 private:
   bool cleanEvent(QString id);
   bool appendEvent(EventItemModel* item);
+  void pushSystemNotification(EventItemModel::EventTypes type, QString title, QString description);
   
 public slots:
   void appendUnreadMessage(QString bareJid, QString accountId, QString name, QString description);

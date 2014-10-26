@@ -72,11 +72,11 @@ Item {
                 ToolButton {
                     id: usePopupRecv
                     iconSource: selected ? ":/Events/popup" + invertStuff : ":/Events/popup_disabled" + invertStuff
-                    property bool selected: settings.gBool("notifications","usePopupRecv")
+                    property bool selected: settings.gBool("notifications","popupMsgRecv")
                     platformInverted: main.platformInverted
                     onClicked: {
                         if (selected) selected = false; else selected = true;
-                        settings.sBool(selected,"notifications","usePopupRecv")
+                        settings.sBool(selected,"notifications","popupMsgRecv")
                     }
                 }
             }
@@ -217,11 +217,11 @@ Item {
                 ToolButton {
                     id: notifyOnline
                     iconSource: selected ? ":/Events/popup" + invertStuff : ":/Events/popup_disabled" + invertStuff
-                    property bool selected: settings.gBool("notifications","notifyConnection")
+                    property bool selected: settings.gBool("notifications","popupNotifyConn")
                     platformInverted: main.platformInverted
                     onClicked: {
                         if (selected) selected = false; else selected = true;
-                        settings.sBool(selected,"notifications","notifyConnection")
+                        settings.sBool(selected,"notifications","popupNotifyConn")
                     }
                 }
             }
@@ -296,11 +296,11 @@ Item {
                 ToolButton {
                     id: subInfo
                     iconSource: selected ? ":/Events/popup" + invertStuff : ":/Events/popup_disabled" + invertStuff
-                    property bool selected: settings.gBool("notifications","notifySubscription")
+                    property bool selected: settings.gBool("notifications","popupMsgSub")
                     platformInverted: main.platformInverted
                     onClicked: {
                         if (selected) selected = false; else selected = true;
-                        settings.sBool(selected,"notifications","notifySubscription")
+                        settings.sBool(selected,"notifications","popupMsgSub")
                     }
                 }
             }
@@ -345,6 +345,89 @@ Item {
 
         Item {
             width: parent.width
+            height: attentionSettings.height * 2
+            Text {
+                anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: attentionSettings.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
+                color: main.textColor
+                property string color2: main.platformInverted ? "#333333" : "#888888"
+                text: qsTr("Attention request") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("Haptics feedback, sound notification or popup will happen when another user requests your attention if enabled.") + "</font>"
+                font.pixelSize: 20
+                wrapMode: Text.WordWrap
+            }
+            ButtonRow {
+                id: attentionSettings
+                anchors { right: parent.right; rightMargin: 10; top: parent.top }
+                ToolButton {
+                    id: vibrAttention
+                    iconSource: selected ? ":/Events/vibra" + invertStuff : ":/Events/vibra_disabled" + invertStuff
+                    property bool selected: settings.gBool("notifications","vibraAttention")
+                    platformInverted: main.platformInverted
+                    onClicked: {
+                        if (selected) selected = false; else selected = true;
+                        settings.sBool(selected,"notifications","vibraAttention")
+                    }
+                }
+                ToolButton {
+                    id: soundAttention
+                    iconSource: selected ? ":/Events/alarm" + invertStuff : ":/Events/alarm_disabled" + invertStuff
+                    property bool selected: settings.gBool("notifications","soundAttention")
+                    platformInverted: main.platformInverted
+                    onClicked: {
+                        if (selected) selected = false; else selected = true;
+                        settings.sBool(selected,"notifications","soundAttention")
+                    }
+                }
+                ToolButton {
+                    id: usePopupAttention
+                    iconSource: selected ? ":/Events/popup" + invertStuff : ":/Events/popup_disabled" + invertStuff
+                    property bool selected: settings.gBool("notifications","popupAttention")
+                    platformInverted: main.platformInverted
+                    onClicked: {
+                        if (selected) selected = false; else selected = true;
+                        settings.sBool(selected,"notifications","popupAttention")
+                    }
+                }
+            }
+            ButtonRow {
+                width: attentionSettings.width
+                anchors { right: parent.right; rightMargin: 10; top: attentionSettings.bottom }
+                ToolButton {
+                    width: parent.width/3
+                    iconSource: "toolbar-settings"
+                    platformInverted: main.platformInverted
+                    onClicked: dialog.createWithProperties("qrc:/dialogs/Settings/Vibration", {"currentlyEditedParameter" : "vibraAttention"})
+                }
+                ToolButton {
+                    width: parent.width/3
+                    iconSource: "toolbar-settings"
+                    platformInverted: main.platformInverted
+                    onClicked: {
+                        var filename = avkon.openFileSelectionDlg();
+                        if (filename != "") settings.sStr(filename,"notifications","soundAttentionFile")
+                    }
+                    onPlatformPressAndHold: {
+                        var filename = avkon.openFileSelectionDlg(true,true,"Z:\\data\\sounds\\digital");
+                        if (filename != "") settings.sStr(filename,"notifications","soundAttentionFile")
+                    }
+                }
+                ToolButton {
+                    enabled: false
+                    platformInverted: main.platformInverted
+                    height: button.height
+                    width: parent.width/3
+                }
+            }
+        }
+
+        Rectangle {
+            height: 1
+            anchors { left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
+            color: main.textColor
+            opacity: 0.2
+        }
+
+        Item {
+            width: parent.width
             height: text.height+2*platformStyle.paddingSmall
 
             Text {
@@ -366,6 +449,13 @@ Item {
             }
         }
 
+        Rectangle {
+            height: 1
+            anchors { left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
+            color: main.textColor
+            opacity: 0.2
+        }
+
         Item {
             width: parent.width
             height: text.height+2*platformStyle.paddingSmall
@@ -380,10 +470,10 @@ Item {
             }
             Switch {
                 id: notifyStatusChange
-                checked: settings.gBool("notifications","notifyStatusChange")
+                checked: settings.gBool("notifications","notifyFavStatus")
                 anchors { right: parent.right; rightMargin: platformStyle.paddingSmall; verticalCenter: parent.verticalCenter }
                 onCheckedChanged: {
-                    settings.sBool(checked,"notifications","notifyStatusChange")
+                    settings.sBool(checked,"notifications","notifyFavStatus")
                 }
             }
         }

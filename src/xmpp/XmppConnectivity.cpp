@@ -49,6 +49,7 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
 
   chats = new ChatsListModel();
   events = new EventsManager();
+  connect(events,SIGNAL(pushedSystemNotification(QString,QString,QString)),this,SIGNAL(pushedSystemNotification(QString,QString,QString)));
   connect(contacts,SIGNAL(favUserStatusChanged(QString,QString,QString,QString)),events,SLOT(appendUserStatusChange(QString,QString,QString,QString)));
 
   for (int i=0; i<lSettings->accountsCount(); i++)
