@@ -99,7 +99,6 @@ public:
         if (presence == "qrc:/presence/xa") return 3;
         if (presence == "qrc:/presence/busy") return 4;
         if (presence == "qrc:/presence/offline") return 5;
-        defult: return 9;
       }
 };
 

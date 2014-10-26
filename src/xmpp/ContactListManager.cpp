@@ -203,7 +203,7 @@ void ContactListManager::clearPresenceForAccount(QString accountId) {
   roster->sort(0);
 }
 
-void ContactListManager::setContactFavState(QString accountId, QString bareJid, bool favState) {
+bool ContactListManager::setContactFavState(QString accountId, QString bareJid, bool favState) {
   RosterItemModel *contact = roster->find(accountId + ";" + bareJid);
   if (contact != 0)
     contact->set(QString::number(favState),RosterItemModel::IsFavorite);
@@ -212,6 +212,8 @@ void ContactListManager::setContactFavState(QString accountId, QString bareJid, 
   database->executeQuery(QStringList() << "updateContact" << accountId << bareJid << "isFavorite" << QString::number(favState));
 
   roster->sort(0);
+
+  return contact != 0;
 }
 
 // some other stuff

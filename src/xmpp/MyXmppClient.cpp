@@ -257,6 +257,7 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg ) {
         break;
       case QXmppMessage::Composing: emit typingChanged(m_accountId,bareJid_from, true); break;
       case QXmppMessage::Paused: emit typingChanged(m_accountId,bareJid_from, false); break;
+      case QXmppMessage::None: break;
       }
     }
 
@@ -338,6 +339,7 @@ void MyXmppClient::presenceReceived( const QXmppPresence & presence ) {
             case QXmppPresence::Away: m_status = Away; break;
             case QXmppPresence::XA: m_status = XA; break;
             case QXmppPresence::DND: m_status = DND; break;
+            case QXmppPresence::Invisible: m_status = Offline; break;
             }
         }
       if (xmppClient->state() != QXmppClient::ConnectingState)
@@ -876,6 +878,7 @@ void MyXmppClient::transferError(QXmppTransferJob::Error error) {
     case QXmppTransferJob::FileAccessError: errorString = "Unable to access " + job->localFileUrl().toString(); break;
     case QXmppTransferJob::FileCorruptError: errorString = "File " + job->fileName() + " is corrupted"; break;
     case QXmppTransferJob::ProtocolError: errorString = "Connection issue. Aborting (" + job->fileName() + ")."; break;
+    case QXmppTransferJob::NoError: break;
     }
 
   if (errorString != "") {

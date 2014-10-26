@@ -38,7 +38,7 @@ public slots:
   Q_INVOKABLE QString restoreResource(QString m_accountId, QString bareJid);
   void removeContact(QString acc,QString bareJid);
   void removeContact(QString acc);
-  void setContactFavState(QString acc, QString bareJid, bool favState);
+  bool setContactFavState(QString acc, QString bareJid, bool favState);
 
   void cleanupCache(QString acc, QStringList bareJids);
 
