@@ -112,7 +112,7 @@ void EventsManager::appendSubscription(QString accountId,QString bareJid) {
   item->setData(QVariant(bareJid),EventItemModel::Jid);
   item->setData(QVariant(accountId),EventItemModel::Account);
   item->setData(QVariant(bareJid),EventItemModel::Name);
-  item->setData(QVariant("Tap to subscribe contact"),EventItemModel::Description);
+  item->setData(QVariant("asked you to add him/her to contact list."),EventItemModel::Description);
   item->setData(QVariant((int)EventItemModel::SubscriptionRequest),EventItemModel::Type);
   item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
 
@@ -254,7 +254,6 @@ void EventsManager::appendMUCInvitation(QString accountId, QString bareJid, QStr
   item->setData(QVariant(bareJid),EventItemModel::Jid);
   item->setData(QVariant(accountId),EventItemModel::Account);
   item->setData(QVariant(sender),EventItemModel::Name);
-  item->setData(QVariant("I invited you to join chat at "+bareJid),EventItemModel::Description);
   item->setData(QVariant((int)EventItemModel::MUCinvite),EventItemModel::Type);
   item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
 

@@ -102,11 +102,13 @@ Flickable {
         switch (type) {
         case 32: // unread message
         case 33: // connection state change
-        case 34: // subscription request
-        case 35: // muc invite, change it to something else later
         case 37: // fav user status change
         case 38: // app update
         case 39: return description; // connection error
+
+        case 34: return "Tap to subscribe contact.";
+        case 35: return "I invited you to join chat at " + bareJid; // muc invite
+
         case 40: // incoming transfer
         case 41: { // outcoming transfer
             switch (transferState) {
