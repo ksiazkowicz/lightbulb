@@ -247,15 +247,9 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "qrc:/toolbar/attach_inverse" : "qrc:/toolbar/attach"
             opacity: enabled ? 1 : 0.5
-            enabled: !isFacebook && isConnected
+            enabled: /*!isFacebook &&*/ isConnected
             onClicked: {
-                var filename = avkon.openFileSelectionDlg(false,false);
-                if (filename != " ") {
-                    xmppConnectivity.useClient(accountId).sendAFile(contactJid,contactResource,filename)
-                    avkon.displayGlobalNote("Attempting to send a file. ^^",false)
-                } else {
-                    avkon.displayGlobalNote("File transfer aborted.",true)
-                }
+                dialog.createWithProperties("qrc:/dialogs/Attachment",{"accountId":accountId,"contactJid":contactJid,"contactResource":contactResource})
             }
         }
 

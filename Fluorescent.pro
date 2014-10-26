@@ -54,13 +54,21 @@ DATE = $$system(date /t) # might break on something else than winshit, damn you 
 DEFINES += VERSION=\"\\\"$$VERSION\\\"\"
 DEFINES += BUILDDATE=\"\\\"$$DATE\\\"\"
 
-OTHER_FILES += README.md platforms/global/qml/*.*
+OTHER_FILES += README.md platforms/global/qml/*.* \
+    platforms/symbian/qml/Dialogs/AttachmentDialog.qml \
+    qtc_packaging/debian_harmattan/rules \
+    qtc_packaging/debian_harmattan/README \
+    qtc_packaging/debian_harmattan/manifest.aegis \
+    qtc_packaging/debian_harmattan/copyright \
+    qtc_packaging/debian_harmattan/control \
+    qtc_packaging/debian_harmattan/compat \
+    qtc_packaging/debian_harmattan/changelog
 
-include(qmlpp.pri)
+#include(qmlpp.pri)
 
 symbian {
     TARGET.UID3 = 0xE00AC666
-    TARGET.CAPABILITY += NetworkServices WriteDeviceData ReadDeviceData ReadUserData WriteUserData LocalServices
+    TARGET.CAPABILITY += NetworkServices WriteDeviceData ReadDeviceData ReadUserData WriteUserData LocalServices Location
     TARGET.EPOCHEAPSIZE = 0x200000 0x1F400000
     CONFIG += qt-components
     ICON = platforms/global/images/Fluorescent.svg
@@ -90,7 +98,7 @@ symbian {
     include(qmlapplicationviewer/qmlapplicationviewer.pri)
     qtcAddDeployment()
 
-    qmlPreprocessFolder(platforms/global, @QtQuick1, 1.1)
+    #qmlPreprocessFolder(platforms/global, @QtQuick1, 1.1)
 
     OTHER_FILES += platforms/symbian/qml/Dialogs/*.* \
                    platforms/symbian/qml/*.* \

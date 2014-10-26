@@ -45,6 +45,7 @@
         <file alias="MUC/Participants">symbian/qml/Dialogs/MucParticipantsDialog.qml</file>
         <file alias="MUC/Query">symbian/qml/Dialogs/MucQueryDialog.qml</file>
         <file alias="Services/Ask">symbian/qml/Dialogs/ServicesDialog.qml</file>
+        <file alias="Attachment">symbian/qml/Dialogs/AttachmentDialog.qml</file>
     </qresource>
     <qresource prefix="/pages">
         <file alias="About">symbian/qml/Pages/AboutPage.qml</file>
@@ -197,5 +198,12 @@
         <file alias="fb/unsure">global/images/smileys/fb/unshure.png</file>
         <file alias="fb/upset">global/images/smileys/fb/upset.png</file>
         <file alias="fb/kiki">global/images/smileys/fb/kiki.png</file>
+    </qresource>
+    <qresource prefix="/Attachments">
+        <file alias="document">symbian/images/attachments/document.svg</file>
+        <file alias="video">symbian/images/attachments/filmstrip.svg</file>
+        <file alias="location">symbian/images/attachments/location_mark.svg</file>
+        <file alias="song">symbian/images/attachments/music_file.svg</file>
+        <file alias="photo">symbian/images/attachments/photos.svg</file>
     </qresource>
 </RCC>
