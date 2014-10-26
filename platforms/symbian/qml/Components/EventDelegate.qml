@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *********************************************************************/
 
 import QtQuick 1.1
+import com.nokia.symbian 1.1
 import lightbulb 1.0
 
 Flickable {
@@ -31,6 +32,16 @@ Flickable {
     flickableDirection: Flickable.HorizontalFlick
     boundsBehavior: Flickable.DragOverBounds
     contentWidth: wrapper.width *2
+
+    property int transferProgress;
+    property int transferState;
+    property bool progressEnabled: transferState == 2;
+
+    Connections {
+        target: xmppConnectivity.useClient(accountID)
+        onProgressChanged: { if (jobId == transferJob) transferProgress = progress; console.log("progress changed to "+progress)}
+        onTransferStateChanged: { if (jobId == transferJob) transferState = state; console.log("state changed to "+state)}
+    }
 
     function getIcon() {
         switch (type) {
@@ -54,7 +65,13 @@ Flickable {
         case 34: { xmppConnectivity.useClient(accountID).acceptSubscription(bareJid); dialog.createWithProperties("qrc:/dialogs/Contact/Add",{"accountId": accountID, "bareJid": bareJid}); xmppConnectivity.events.removeEvent(index); break; }
         case 35: { dialog.createWithProperties("qrc:/dialogs/MUC/Join",{"accountId":accountID,"mucJid":bareJid}); xmppConnectivity.events.removeEvent(index)}; break;
         case 38: if (updater.isUpdateAvailable) dialog.createWithProperties("qrc:/menus/UrlContext", {"url": updater.updateUrl}); break;
-        case 40: { if (state != 2) xmppConnectivity.useClient(accountID).acceptTransfer(transferJob,vars.receivedFilesPath); else xmppConnectivity.useClient(accountID).openLocalTransferPath(transferJob)}; break;
+        case 40: {
+            switch (transferState) {
+             case 0: xmppConnectivity.useClient(accountID).acceptTransfer(transferJob,vars.receivedFilesPath); break;
+             case 3: xmppConnectivity.useClient(accountID).openLocalTransferPath(transferJob); break;
+            }
+            break;
+        }
         default: return false;
         }
     }
@@ -83,16 +100,23 @@ Flickable {
 
     function getDescription() {
         switch (type) {
-        case 32: return description; // unread message
-        case 33: return description; // connection state change
-        case 34: return description; // subscription request
-        case 35: return description; // muc invite, change it to something else later
-        case 36: return (count > 1) ? "You received " + count + " attention requests" : "You received an attention request."; // attention request
-        case 37: return description; // fav user status change
-        case 38: return description; // app update
+        case 32: // unread message
+        case 33: // connection state change
+        case 34: // subscription request
+        case 35: // muc invite, change it to something else later
+        case 37: // fav user status change
+        case 38: // app update
         case 39: return description; // connection error
-        case 40: return description; // incoming transfer
-        case 41: return description; // outcoming transfer
+        case 40: // incoming transfer
+        case 41: { // outcoming transfer
+            switch (transferState) {
+            case 0: if (type == 41) return filename + ". Waiting for user."; else return filename + ". Tap to <b>accept</b>."
+            case 1:
+            case 2:
+            case 3: return filename;
+            }
+        }
+        case 36: return (count > 1) ? "You received " + count + " attention requests" : "You received an attention request."; // attention request
         default: return "";
         }
     }
@@ -177,6 +201,17 @@ Flickable {
                     }
                 }
             }
+        ProgressBar {
+            minimumValue: 0
+            maximumValue: 100
+            value: transferProgress
+            visible: progressEnabled
+
+            // adjust geometry all by yourself cause anchors get broken in this case
+            anchors { right: parent.right; rightMargin: platformStyle.paddingSmall }
+            y: descriptionRow.y + platformStyle.paddingMedium
+            width: descriptionRow.width
+        }
         Column {
             anchors { left: icon.right; leftMargin: platformStyle.paddingSmall; right: wrapper.right; rightMargin: platformStyle.paddingSmall; verticalCenter: wrapper.verticalCenter }
             height: text.height + platformStyle.paddingSmall + descriptionRow.height
@@ -195,15 +230,17 @@ Flickable {
                     anchors { left: parent.left; right: parent.right }
                     spacing: platformStyle.paddingSmall
                     height: text.font.pixelSize
+
                     Text {
                         color: main.midColor
-                        text: name
+                        text: transferState == 3 ? "Finished." + (type == 40 ? " Tap to <b>open</b>." : "") : transferState == 1 ? "Connecting..." :  name
                         width: parent.width-parent.spacing-dateText.paintedWidth
                         horizontalAlignment: Text.AlignJustify
                         font.pixelSize: parent.height
                         elide: Text.ElideRight
                         maximumLineCount: 1
                         clip: true
+                        visible: !progressEnabled
                     }
                     Text {
                         id: dateText
@@ -212,6 +249,7 @@ Flickable {
                         font.pixelSize: parent.height
                         horizontalAlignment: Text.AlignRight
                         font.italic: true
+                        visible: !progressEnabled
                     }
                 }
         }

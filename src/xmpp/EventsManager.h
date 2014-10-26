@@ -30,11 +30,11 @@ public slots:
   void appendUserStatusChange(QString accountId, QString bareJid, QString name, QString description);
   void appendError(QString accountId, QString name, QString errorString);
   void appendUpdate(bool updateAvailable = true, QString version = "", QString date = "");
-  void appendTransferJob(QString accountId, QString bareJid, QString name, QString description, int transferJob, bool isIncoming);
-  void updateTransferJob(QString accountId, QString bareJid, QString description, int transferJob, bool isIncoming, bool isFinished);
+  void appendTransferJob(QString accountId, QString bareJid, QString name, QString fileName, int transferJob, bool isIncoming);
 
   Q_INVOKABLE void removeEvent(int id);
   Q_INVOKABLE void removeEvent(QString bareJid, QString accountId,int type);
+  Q_INVOKABLE void removeTransferJob(QString accountId, int transferJob);
   Q_INVOKABLE void clearList();
 
 private:

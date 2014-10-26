@@ -44,10 +44,8 @@ public:
       Account,
       Date,
       TransferJob,
-      State,
       Filename,
       Filetype,
-      Progress,
       Count
     };
 
@@ -67,7 +65,7 @@ public:
 public:
       EventItemModel(QObject *parent = 0): ListItem(parent) {
         itemData = new QList<QVariant>();
-        for (int i=0; i<13;i++)
+        for (int i=0; i<11;i++)
           itemData->append(QVariant());
       }
 
@@ -82,10 +80,8 @@ public:
           names[Account] = "accountID";
           names[Date] = "date";
           names[TransferJob] = "transferJob";
-          names[State] = "state";
           names[Filename] = "filename";
           names[Filetype] = "filetype";
-          names[Progress] = "progress";
           names[Count] = "count";
           return names;
         }

@@ -755,23 +755,17 @@ void MyXmppClient::incomingTransfer(QXmppTransferJob *job) {
   int jobId = transferJobs.count();
   transferJobs.insert(jobId,job);
 
-  connect(job,SIGNAL(finished()),SLOT(transferFinished()));
   connect(job,SIGNAL(error(QXmppTransferJob::Error)),SLOT(transferError(QXmppTransferJob::Error)));
   connect(job,SIGNAL(progress(qint64,qint64)),SLOT(progress(qint64,qint64)));
+  connect(job,SIGNAL(stateChanged(QXmppTransferJob::State)),SLOT(transferStateChangeSlot(QXmppTransferJob::State)));
 
   // don't force inband, because we actually CAN receive files using bytestreams proxy
   transferManager->setSupportedMethods(QXmppTransferJob::AnyMethod);
   // don't force our own proxy too
   transferManager->setProxy("");
 
-  // Cut a part of filename to make it fit in a notification
-  QString filename_short = job->fileName();
-  if (filename_short.length() > 10)
-    filename_short = filename_short.left(7) + "...";
-
   // TODO: try to recognize file type
-  QString description = "Incoming transfer. (" + filename_short + "). <b>Tap to accept</b>.";
-  events->appendTransferJob(m_accountId,job->jid(),contacts->getPropertyByJid(m_accountId,QXmppUtils::jidToBareJid(job->jid()),"name"),description,jobId,true);
+  events->appendTransferJob(m_accountId,job->jid(),contacts->getPropertyByJid(m_accountId,QXmppUtils::jidToBareJid(job->jid()),"name"),job->fileName(),jobId,true);
 }
 
 void MyXmppClient::sendAFile(QString bareJid, QString resource, QString path) {
@@ -798,18 +792,12 @@ void MyXmppClient::sendAFile(QString bareJid, QString resource, QString path) {
   QXmppTransferJob *job = transferManager->sendFile(jid,path);
   transferJobs.insert(jobId,job);
 
-  connect(job,SIGNAL(finished()),SLOT(transferFinished()));
   connect(job,SIGNAL(error(QXmppTransferJob::Error)),SLOT(transferError(QXmppTransferJob::Error)));
   connect(job,SIGNAL(progress(qint64,qint64)),SLOT(progress(qint64,qint64)));
-
-  // Cut a part of filename to make it fit in a notification
-  QString filename_short = job->fileName();
-  if (filename_short.length() > 10)
-    filename_short = filename_short.left(7) + "...";
+  connect(job,SIGNAL(stateChanged(QXmppTransferJob::State)),SLOT(transferStateChangeSlot(QXmppTransferJob::State)));
 
   // TODO: try to recognize file type
-  QString description = "Sending file (" + filename_short + "). <b>Waiting for user</b>.";
-  events->appendTransferJob(m_accountId,job->jid(),contacts->getPropertyByJid(m_accountId,bareJid,"name"),description,jobId,false);
+  events->appendTransferJob(m_accountId,job->jid(),contacts->getPropertyByJid(m_accountId,bareJid,"name"),job->fileName(),jobId,false);
 }
 
 void MyXmppClient::acceptTransfer(int jobId, QString path) {
@@ -830,25 +818,14 @@ void MyXmppClient::acceptTransfer(int jobId, QString path) {
 
   if (recvPath == "") return; // TODO: show an error if path is useless
 
-  if (job != NULL && job->state() == QXmppTransferJob::OfferState) {; 
+  if (job != NULL && job->state() == QXmppTransferJob::OfferState)
       job->accept(recvPath + job->fileName());
-      qDebug() << "path is" << job->localFileUrl().toString();
-      events->updateTransferJob(m_accountId,job->jid(),"Transfer in progress... 0%\n"+job->fileName(),jobId,true,true);
-    }
 }
 
 void MyXmppClient::abortTransfer(int jobId) {
   QXmppTransferJob* job = transferJobs.value(jobId);
   if (job != NULL)
     job->abort();
-}
-
-void MyXmppClient::transferFinished() {
-  QXmppTransferJob* job = (QXmppTransferJob*)sender();
-  int jobId = transferJobs.key(job);
-  bool isIncoming = (job->direction() == QXmppTransferJob::IncomingDirection);
-  if (job->error() == QXmppTransferJob::NoError)
-    events->updateTransferJob(m_accountId,job->jid(),"Transfer finished." + (!isIncoming ? QString() : QString(" <b>Tap to open.</b> ")) + job->fileName(),jobId,isIncoming,true);
 }
 
 void MyXmppClient::openLocalTransferPath(int jobId) {
@@ -864,14 +841,18 @@ void MyXmppClient::progress(qint64 done, qint64 total) {
   double slice = ((double)done/(double)total)*100;
   QXmppTransferJob* job = (QXmppTransferJob*)sender();
   int jobId = transferJobs.key(job);
-  bool isIncoming = (job->direction() == QXmppTransferJob::IncomingDirection);
-  events->updateTransferJob(m_accountId,job->jid(),"Transfer in progress... "+QString::number(floor(slice))+"%\n"+job->fileName(),jobId,isIncoming,false);
+  emit progressChanged(jobId,floor(slice));
+}
+
+void MyXmppClient::transferStateChangeSlot(QXmppTransferJob::State state) {
+  QXmppTransferJob* job = (QXmppTransferJob*)sender();
+  int jobId = transferJobs.key(job);
+  emit transferStateChanged(jobId,(int)state);
 }
 
 void MyXmppClient::transferError(QXmppTransferJob::Error error) {
   QXmppTransferJob* job = (QXmppTransferJob*)sender();
   int jobId = transferJobs.key(job);
-  bool isIncoming = (job->direction() == QXmppTransferJob::IncomingDirection);
   QString errorString = "";
   switch (error) {
     case QXmppTransferJob::AbortError: errorString = "File transfer aborted for file " + job->fileName(); break;
@@ -883,6 +864,6 @@ void MyXmppClient::transferError(QXmppTransferJob::Error error) {
 
   if (errorString != "") {
     events->appendError(m_accountId,contacts->getPropertyByJid(m_accountId,QXmppUtils::jidToBareJid(job->jid()),"name"),errorString);
-    events->updateTransferJob(m_accountId,job->jid(),"File transfer failed.",jobId,isIncoming,false);
-  }
+    events->removeTransferJob(m_accountId,jobId);
+    }
 }

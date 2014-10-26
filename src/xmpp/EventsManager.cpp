@@ -218,13 +218,13 @@ void EventsManager::appendUpdate(bool updateAvailable, QString version, QString 
   events->countWasChanged();
 }
 
-void EventsManager::appendTransferJob(QString accountId, QString bareJid, QString name, QString description, int transferJob, bool isIncoming) {
+void EventsManager::appendTransferJob(QString accountId, QString bareJid, QString name, QString filename, int transferJob, bool isIncoming) {
   // create a new EventItemModel
   EventItemModel* item = new EventItemModel();
   item->setData(QVariant(bareJid),EventItemModel::Jid);
   item->setData(QVariant(accountId),EventItemModel::Account);
   item->setData(QVariant(name),EventItemModel::Name);
-  item->setData(QVariant(description),EventItemModel::Description);
+  item->setData(QVariant(filename),EventItemModel::Filename);
   item->setData(QVariant(transferJob),EventItemModel::TransferJob);
 
   if (isIncoming)
@@ -237,24 +237,6 @@ void EventsManager::appendTransferJob(QString accountId, QString bareJid, QStrin
   // and append it at the top of the list
   events->insertRow(0,item);
   events->countWasChanged();
-}
-
-void EventsManager::updateTransferJob(QString accountId, QString bareJid, QString description, int transferJob, bool isIncoming, bool isFinished) {
-  // updates transfer job
-  int rowId; // holds the row ID, might be used for moving items to the top of the list
-  int type = isIncoming ? (int)EventItemModel::IncomingTransfer : (int)EventItemModel::OutcomingTransfer;
-  EventItemModel *item = (EventItemModel*)events->find(bareJid+";" + accountId+ ";" + QString::number(type) + ";"+QString::number(transferJob),rowId);
-
-  // check if item exists, if not, don't do anything
-  if (item == NULL)
-    return;
-
-  item->setData(QVariant(description),EventItemModel::Description);
-  item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
-
-  if (isFinished)
-    item->setData(QVariant(2),EventItemModel::State);
-  else item->setData(QVariant(0),EventItemModel::State);
 }
 
 void EventsManager::appendMUCInvitation(QString accountId, QString bareJid, QString sender) {
@@ -303,6 +285,21 @@ void EventsManager::removeEvent(QString bareJid, QString accountId, int type) {
   }
 }
 
+void EventsManager::removeTransferJob(QString accountId, int transferJob) {
+  int idToRemove = 0;
+
+  for (int i=0; i < events->getCount();i++) {
+      EventItemModel *event = (EventItemModel*)events->getElementByID(i);
+      if (event->getData(EventItemModel::Account).toString() == accountId && event->getData(EventItemModel::TransferJob).toInt() == transferJob) {
+        idToRemove = i;
+        break;
+      }
+    }
+
+  if (idToRemove != 0)
+    events->takeRow(idToRemove);
+}
+
 void EventsManager::clearList() {
   // clear the list
   qDebug() << "EventsManager::clearList() called";
@@ -320,8 +317,7 @@ void EventsManager::clearList() {
         int eventType = event->data(EventItemModel::Type).toInt();
 
         // prevent removing the event if it's an unifinished transfer
-        if ((eventType == EventItemModel::IncomingTransfer || eventType == EventItemModel::OutcomingTransfer)
-            && (event->data(EventItemModel::State).toInt() != 2))
+        if (eventType == EventItemModel::IncomingTransfer || eventType == EventItemModel::OutcomingTransfer)
           ignorePlz = true;
 
         // if event shall be ignored, ignore it, otherwise remove

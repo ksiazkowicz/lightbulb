@@ -186,6 +186,8 @@ public :
     Q_INVOKABLE void abortTransfer(int jobId);
     Q_INVOKABLE void openLocalTransferPath(int jobId);
     Q_INVOKABLE void sendAFile(QString bareJid, QString resource, QString path);
+    int getJobState(int jobId);
+    int getJobProgress(int jobId);
 
     // avatar caching
     Q_INVOKABLE void forceRefreshVCard(QString bareJid);
@@ -228,6 +230,8 @@ signals:
 
     // file transfer
     void incomingTransferReceived(QString accountId, QString bareJid, QString name, QString description, int transferJob, bool isIncoming);
+    void progressChanged(int jobId, int progress);
+    void transferStateChanged(int jobId, int state);
 
 public slots:
     void clientStateChanged(QXmppClient::State state);
@@ -267,9 +271,9 @@ private slots:
 
     // file transfer
     void incomingTransfer(QXmppTransferJob *job);
-    void transferFinished();
     void transferError(QXmppTransferJob::Error error);
     void progress(qint64 done, qint64 total);
+    void transferStateChangeSlot(QXmppTransferJob::State state);
 
     // service discovery
     void itemsReceived (const QXmppDiscoveryIq &items);
