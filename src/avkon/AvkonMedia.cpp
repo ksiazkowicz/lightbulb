@@ -35,6 +35,8 @@ const TInt KVolumeDenominator = 2;
 
 using namespace QtMobility;
 
+TBool AvkonMedia::isInProgress;
+
 AvkonMedia::AvkonMedia()
 {
 }
@@ -49,6 +51,7 @@ AvkonMedia* AvkonMedia::NewLC()
 	AvkonMedia* self = new (ELeave) AvkonMedia();
 	CleanupStack::PushL(self);
 	self->ConstructL();
+	isInProgress = false;
 	return self;
 	}
 
@@ -56,12 +59,14 @@ AvkonMedia* AvkonMedia::NewL()
 	{
 	AvkonMedia* self = AvkonMedia::NewLC();
 	CleanupStack::Pop(self);
+	isInProgress = false;
 	return self;
 	}
 
 void AvkonMedia::ConstructL()
 	{
 	iPlayerUtility = CMdaAudioPlayerUtility::NewL(*this);
+	isInProgress = false;
 	}
 
 void AvkonMedia::PlayL(const TDesC& aFileName)
@@ -73,6 +78,7 @@ void AvkonMedia::PlayL(const TDesC& aFileName)
 void AvkonMedia::Pause()
 	{
 	iPlayerUtility->Pause();
+	isInProgress = false;
 	}
 
 void AvkonMedia::Resume()
@@ -83,6 +89,7 @@ void AvkonMedia::Resume()
 void AvkonMedia::Stop()
 	{
 	iPlayerUtility->Stop();
+	isInProgress = false;
 	}
 
 void AvkonMedia::Rewind(TInt aIntervalInSeconds)
@@ -127,10 +134,12 @@ void AvkonMedia::MapcInitComplete(TInt aError,
 		iPlayerUtility->SetVolume(
 				iPlayerUtility->MaxVolume() /*/ KVolumeDenominator*/);
 		iPlayerUtility->Play();
+		isInProgress = true;
 		}
 	else
 		{
 		iPlayerUtility->Close();
+		isInProgress = false;
 
 		// Do something when an error happens.
 		//DisplayErrorMessage(aError);
@@ -147,6 +156,7 @@ void AvkonMedia::MapcPlayComplete(TInt aError)
 		// Do something when an error happens.
 		//DisplayErrorMessage(aError);
 		}
+	isInProgress = false;
 	}
 
 void AvkonMedia::DisplayErrorMessage(TInt aError)

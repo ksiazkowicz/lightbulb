@@ -60,6 +60,7 @@ private: // Public methods
 public: // Member variables
 	CMdaAudioPlayerUtility* iPlayerUtility;
 	TTimeIntervalMicroSeconds AudioTrackduration;
+	static TBool isInProgress;
 };
 
 #endif // AVKONMEDIA_H
