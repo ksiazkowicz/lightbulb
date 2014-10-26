@@ -12,6 +12,7 @@ CommonDialog {
     property string accountId;
     property string contactJid;
     property string contactResource;
+    property bool isFacebook;
 
     // Code for dynamic load
     Component.onCompleted: {
@@ -42,6 +43,7 @@ CommonDialog {
             iconSource: "qrc:/Attachments/document"
             width: parent.cellSize
             height: parent.cellSize
+            enabled: !isFacebook
             onClicked: {
                 var filename = avkon.openFileSelectionDlg(false,false);
                 if (filename != " ") {
@@ -57,6 +59,7 @@ CommonDialog {
             iconSource: "qrc:/Attachments/photo"
             width: parent.cellSize
             height: parent.cellSize
+            enabled: !isFacebook
             onClicked: {
                 var files = avkon.openMediaSelectionDialog(0);
                 for (var i=0; i<files.length; i++)
@@ -72,6 +75,7 @@ CommonDialog {
             iconSource: "qrc:/Attachments/video"
             width: parent.cellSize
             height: parent.cellSize
+            enabled: !isFacebook
             onClicked: {
                 var files = avkon.openMediaSelectionDialog(1);
                 for (var i=0; i<files.length; i++)
@@ -87,6 +91,7 @@ CommonDialog {
             iconSource: "qrc:/Attachments/song"
             width: parent.cellSize
             height: parent.cellSize
+            enabled: !isFacebook
             onClicked: {
                 var files = avkon.openMediaSelectionDialog(3);
                 for (var i=0; i<files.length; i++)

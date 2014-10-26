@@ -247,9 +247,9 @@ Page {
         ToolButton {
             iconSource: main.platformInverted ? "qrc:/toolbar/attach_inverse" : "qrc:/toolbar/attach"
             opacity: enabled ? 1 : 0.5
-            enabled: /*!isFacebook &&*/ isConnected
+            enabled: isConnected
             onClicked: {
-                dialog.createWithProperties("qrc:/dialogs/Attachment",{"accountId":accountId,"contactJid":contactJid,"contactResource":contactResource})
+                dialog.createWithProperties("qrc:/dialogs/Attachment",{"accountId":accountId,"contactJid":contactJid,"contactResource":contactResource,"isFacebook":isFacebook})
             }
         }
 
