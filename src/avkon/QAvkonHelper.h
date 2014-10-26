@@ -42,6 +42,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class AvkonMedia;
 #endif
 
+#include <QSystemInfo>
+#include <QSystemDeviceInfo>
+
+using namespace QtMobility;
+
 class QDeclarativeView;
 
 class QAvkonHelper : public QObject
@@ -54,7 +59,7 @@ public:
     Q_INVOKABLE void notificationBlink(int device);
     Q_INVOKABLE void displayGlobalNote(QString message, bool isError);
     Q_INVOKABLE QString openFileSelectionDlg(bool onlySounds = true, bool showNotification = true, QString startPath = "");
-    Q_INVOKABLE QString openMediaSelectionDialog(int type);
+    Q_INVOKABLE QStringList openMediaSelectionDialog(int type);
     Q_INVOKABLE QString openFolderSelectionDlg(QString lastDir);
     Q_INVOKABLE void openDefaultBrowser(const QUrl &url) const;
 
@@ -65,7 +70,7 @@ public:
     Q_INVOKABLE void restartAppMigra();
     Q_INVOKABLE bool displayAvkonQueryDialog(QString title, QString message);
 
-    Q_INVOKABLE bool isInSilentMode() { return iAudioPlayer->isInSilentMode(); }
+    Q_INVOKABLE bool isInSilentMode() { return (QSystemDeviceInfo::Profile)deviceInfo->currentProfile() == QSystemDeviceInfo::SilentProfile; }
     Q_INVOKABLE void setAppHiddenState(bool state);
 
     Q_INVOKABLE bool isDeviceLocked() { return keyLock.IsKeyLockEnabled(); }
@@ -83,6 +88,8 @@ private:
     bool chatIconStatus;
     AvkonMedia* iAudioPlayer;
     RAknKeyLock keyLock;
+
+    QSystemDeviceInfo *deviceInfo;
 
     bool _switchToApp;
 

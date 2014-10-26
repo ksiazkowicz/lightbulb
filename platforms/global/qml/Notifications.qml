@@ -144,8 +144,14 @@ Item {
     }
 
     function notifySndVibr(how) {
-        console.log("notifySndVibra called");
-        if( settings.gBool("notifications","vibra"+how /*&& !avkon.isInSilentMode()*/)) {
+        console.log("notifySndVibra called for "+how);
+
+        if (avkon.isInSilentMode()) {
+            console.log("Silent mode is active, aborting")
+            return;
+        }
+
+        if (settings.gBool("notifications","vibra"+how)) {
             hapticsEffect.duration = settings.gInt("notifications","vibra"+how+"Duration")*(vars.isActive || !avkon.isDeviceLocked() ? 0.5 : 1)
             hapticsEffect.intensity = settings.gInt("notifications","vibra"+how+"Intensity")
             hapticsEffect.running = true
@@ -153,7 +159,7 @@ Item {
             if (!vars.isActive && avkon.isDeviceLocked())
                 repeatHapticsEffect.start()
         }
-        if( settings.gBool("notifications","sound"+how ))
+        if (settings.gBool("notifications","sound"+how ))
             avkon.playNotification(settings.gStr("notifications","sound"+how+"File" ));
     }
 }

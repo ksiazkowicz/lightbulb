@@ -52,6 +52,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDebug>
 #include <QtDeclarative/QDeclarativeView>
 
+const TUid FluorescentUid = {0xE00AC666};
+
 // filters out non-sound files
 class CExtensionFilter : public MAknFileFilter {
 public:
@@ -72,6 +74,7 @@ QAvkonHelper::QAvkonHelper(QDeclarativeView *view, CAknAppUi *app, QObject *pare
     chatIconStatus = true;
     hideChatIcon();
     iAudioPlayer = AvkonMedia::NewL();
+    deviceInfo = new QSystemDeviceInfo();
 }
 
 void QAvkonHelper::showChatIcon() {
@@ -93,7 +96,7 @@ void QAvkonHelper::hideChatIcon() {
 
 void QAvkonHelper::playNotification(QString path) {
   TPtrC16 kPath(reinterpret_cast<const TUint16*>(path.utf16()));
-  if (!iAudioPlayer->isInSilentMode())
+  if (!isInSilentMode())
     iAudioPlayer->PlayL(kPath);
 }
 
@@ -101,7 +104,7 @@ void QAvkonHelper::showPopup(QString title, QString message) {
     if (lastPopup != title + ";" + message) lastPopup = title + ";" + message; else return;
 
     if (_switchToApp) {
-        TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(convertToSymbianString(title), convertToSymbianString(message),KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL, {0xE00AC666}));
+        TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(convertToSymbianString(title), convertToSymbianString(message),KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL, FluorescentUid));
     } else TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL(convertToSymbianString(title), convertToSymbianString(message),KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong, 0, NULL));
     QTimer::singleShot(2000,this,SLOT(cleanLastMsg()));
 }
@@ -158,7 +161,7 @@ QString QAvkonHelper::openFileSelectionDlg(bool onlySounds, bool showNotificatio
     }
 }
 
-QString QAvkonHelper::openMediaSelectionDialog(int type) {
+QStringList QAvkonHelper::openMediaSelectionDialog(int type) {
     // initialize variables
     CDesCArrayFlat* fileArray = new CDesCArrayFlat(3);
     TBool selectionOk = EFalse;
@@ -170,7 +173,7 @@ QString QAvkonHelper::openMediaSelectionDialog(int type) {
       case 1: aType = EVideoFile; break;
       case 2: aType = EAudioFile; break;
       case 3: aType = EMusicFile; break;
-      default: return "";
+      default: return QStringList();
       }
 
     // open selection dialog
@@ -178,16 +181,17 @@ QString QAvkonHelper::openMediaSelectionDialog(int type) {
 
     if (selectionOk) {
         // initialize variable
-        QString selected;
+        QStringList selected;
 
         // go through the file array
         for (int i = 0; i < fileArray->Count(); i++) {
-            selected += QString::fromUtf16(fileArray->MdcaPoint(i).Ptr(),
-                                           fileArray->MdcaPoint(i).Length()) + "\n";
+            selected << QString::fromUtf16(fileArray->MdcaPoint(i).Ptr(),
+                                           fileArray->MdcaPoint(i).Length());
         }
+        return selected;
     } else
         // selection dialog was cancelled
-        return "";
+        return QStringList();
 
 }
 
