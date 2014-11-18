@@ -45,9 +45,14 @@ Item {
         temp = temp.replace("[[/bold]]","</b>")
         temp = temp.replace("[[date]]",wrapper.date)
 
+        // map button
+        temp = temp.replace("[[mapbtn:","<a href=\"http://m.ovi.me/?c=");
+        temp = temp.replace(";mapbtn]]","\">Tap to open map</a>.")
+
         temp = temp.replace("[[INFO]]","<img src='qrc:/convo/defaultSkin/infoIcon' />");
         temp = temp.replace("[[ERR]]","<img src='qrc:/convo/defaultSkin/errorIcon' />");
         temp = temp.replace("[[ALERT]]","<img src='qrc:/convo/defaultSkin/alertIcon' />");
+        temp = temp.replace("[[MAP]]","<img src='qrc:/convo/defaultSkin/mapIcon' />");
 
         return temp;
     }
@@ -63,6 +68,6 @@ Item {
         font.italic: true
         textFormat: Text.RichText
         wrapMode: Text.Wrap
-        onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
+        onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link,"isMap":true})
     }
 }

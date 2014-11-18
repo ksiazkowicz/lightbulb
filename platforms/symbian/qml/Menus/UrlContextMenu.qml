@@ -29,6 +29,7 @@ ContextMenu {
     id: contextDialog
     platformInverted: main.platformInverted
     property string url: ""
+    property bool isMap: false
     MenuLayout {
         MenuItem {
             platformInverted: main.platformInverted
@@ -39,7 +40,7 @@ ContextMenu {
             }
         }
         MenuItem {
-            text: qsTr("Open in default browser");
+            text: isMap ? qsTr("Open Nokia Maps") : qsTr("Open in default browser");
             platformInverted: main.platformInverted
             onClicked: avkon.openDefaultBrowser(url)
         }

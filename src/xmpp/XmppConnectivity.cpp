@@ -151,11 +151,26 @@ bool XmppConnectivity::resetSettings() { return QFile::remove(lSettings->confFil
 // handling stuff from MyXmppClient
 void XmppConnectivity::insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine, int type, QString resource) {
   QString name;
+
+  // attachment support code
+  if (body.startsWith("http://m.nok.it/")) { // if message is a location
+    // use an information component plz
+    type = 4;
+
+    QString parameters = body.split("?").at(1).split("&").at(0).split("=").at(1);
+
+    // update body
+    body = QString("[[MAP]] ") + QString(mine == 1 ? "Location sent to [[name]]." : "Received position from [[name]].") + QString(" [[mapbtn:") + parameters + QString(";mapbtn]]");
+  }
+
+
+  // check if a regular chat or MUC
   if (type != 3)
     name = this->getPropertyByJid(m_accountId,"name",bareJid);
   else
     name = resource + "@" + bareJid.split('@')[0];
 
+  // check if information or message
   if (mine == 0 && type != 4) {
       emit notifyMsgReceived(name,bareJid,body.left(30),m_accountId);
       if (body.length() > 30)
