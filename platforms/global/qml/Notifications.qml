@@ -64,21 +64,6 @@ Item {
             }
         }
         onXmppStatusChanged: notify.updateNotifiers()
-        onXmppConnectingChanged: {
-            if (settings.gBool("notifications", "notifyConnection")) {
-                switch (xmppConnectivity.useClient(accountId).getStateConnect()) {
-                    case 0:
-                        avkon.showPopup(xmppConnectivity.getAccountName(accountId),"Disconnected. :c");
-                        break;
-                    case 2:
-                        avkon.showPopup(xmppConnectivity.getAccountName(accountId),"Status changed to " + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accountId)));
-                        break;
-                    case 1:
-                        avkon.showPopup(xmppConnectivity.getAccountName(accountId),"Connecting...");
-                        break;
-                }
-            }
-        }
     }
 
     Connections {

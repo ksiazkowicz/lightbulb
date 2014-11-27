@@ -26,21 +26,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef MYXMPPCLIENT_H
 #define MYXMPPCLIENT_H
 
-#include "QXmppVCardIq.h"
-#include "QXmppVCardManager.h"
-#include "QXmppClient.h"
-#include "QXmppUtils.h"
-#include "QXmppRosterManager.h"
-#include "QXmppVersionManager.h"
-#include "QXmppVersionIq.h"
-#include "QXmppMucManager.h"
-#include "QXmppTransferManager.h"
-#include "QXmppDiscoveryManager.h"
-#include "QXmppConfiguration.h"
-#include "QXmppClient.h"
-#include "QXmppMessage.h"
-#include "QXmppEntityTimeManager.h"
-#include "QXmppEntityTimeIq.h"
+#include <QXmppVCardIq.h>
+#include <QXmppVCardManager.h>
+#include <QXmppClient.h>
+#include <QXmppUtils.h>
+#include <QXmppRosterManager.h>
+#include <QXmppVersionManager.h>
+#include <QXmppVersionIq.h>
+#include <QXmppMucManager.h>
+#include <QXmppTransferManager.h>
+#include <QXmppDiscoveryManager.h>
+#include <QXmppConfiguration.h>
+#include <QXmppClient.h>
+#include <QXmppMessage.h>
+#include <QXmppEntityTimeManager.h>
+#include <QXmppEntityTimeIq.h>
 
 #include <QObject>
 #include <QTimer>

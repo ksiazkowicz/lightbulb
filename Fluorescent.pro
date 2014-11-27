@@ -56,15 +56,16 @@ DEFINES += BUILDDATE=\"\\\"$$DATE\\\"\"
 
 OTHER_FILES += README.md platforms/global/qml/*.* \
     platforms/symbian/qml/Dialogs/AttachmentDialog.qml \
-    qtc_packaging/debian_harmattan/rules \
-    qtc_packaging/debian_harmattan/README \
-    qtc_packaging/debian_harmattan/manifest.aegis \
-    qtc_packaging/debian_harmattan/copyright \
-    qtc_packaging/debian_harmattan/control \
-    qtc_packaging/debian_harmattan/compat \
-    qtc_packaging/debian_harmattan/changelog
+#    qtc_packaging/debian_harmattan/rules \
+#    qtc_packaging/debian_harmattan/README \
+#    qtc_packaging/debian_harmattan/manifest.aegis \
+#    qtc_packaging/debian_harmattan/copyright \
+#    qtc_packaging/debian_harmattan/control \
+#    qtc_packaging/debian_harmattan/compat \
+#    qtc_packaging/debian_harmattan/changelog
+    platforms/symbian/qml/Components/EventSettingDelegate.qml
 
-#include(qmlpp.pri)
+include(qmlpp.pri)
 
 symbian {
     TARGET.UID3 = 0xE00AC666
@@ -98,7 +99,7 @@ symbian {
     include(qmlapplicationviewer/qmlapplicationviewer.pri)
     qtcAddDeployment()
 
-    #qmlPreprocessFolder(platforms/global, @QtQuick1, 1.1)
+    qmlPreprocessFolder(platforms/global, @QtQuick1, 1.1)
 
     OTHER_FILES += platforms/symbian/qml/Dialogs/*.* \
                    platforms/symbian/qml/*.* \
@@ -136,8 +137,8 @@ symbian {
         include(deployment.pri)
     }
     packagesExist(qxmpp_d) {
-        include(../qxmpp/qxmpp.pri)
-        QMAKE_LIBDIR += ../qxmpp/src
+        #include(../qxmpp/qxmpp.pri)
+        #QMAKE_LIBDIR += ../qxmpp/src
         INCLUDEPATH += $$QXMPP_INCLUDEPATH
         LIBS += $$QXMPP_LIBS
     }

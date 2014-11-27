@@ -139,6 +139,7 @@
         <file alias="RosterItemDelegate.qml">symbian/qml/Components/RosterItemDelegate.qml</file>
         <file alias="AccountDelegate.qml">symbian/qml/Components/AccountDelegate.qml</file>
         <file alias="SettingField.qml">symbian/qml/Components/SettingField.qml</file>
+        <file alias="EventSettingDelegate.qml">symbian/qml/Components/EventSettingDelegate.qml</file>
     </qresource>
     <qresource prefix="/networks">
         <file alias="2G">symbian/images/networks/2G.svg</file>

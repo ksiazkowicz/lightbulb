@@ -24,406 +24,67 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import QtQuick 1.1
 import com.nokia.symbian 1.1
+import "../Components"
 
 Item {
     height: content.height
 
     property string invertStuff: main.platformInverted ? "_inverse" : ""
 
+    ListModel {
+        id: settingListModel
+        ListElement {
+            title: "Incoming message";
+            description: "Haptics feedback, sound notification or popup will happen when receiving an incoming message if enabled.";
+            eventSettingName: "MsgRecv";
+            enableVibra: true
+            enableSound: true
+            enablePopup: true
+        }
+        ListElement {
+            title: "Outgoing message";
+            description: "Haptics feedback or sound notification will happen when your message is sent."
+            eventSettingName: "MsgSent";
+            enablePopup: false;
+            enableVibra: true
+            enableSound: true
+        }
+        ListElement {
+            title: "Connection";
+            description: "Sound notification will be played or popup will appear when connection state changes, if enabled.";
+            eventSettingName: "NotifyConn";
+            enableVibra: false;
+            enablePopup: true;
+            enableSound: true;
+        }
+        ListElement {
+            title: "Subscription";
+            description: "Haptics feedback, sound notification or popup will happen when receiving a subscription request, if enabled.";
+            eventSettingName: "MsgSub";
+            enableVibra: true
+            enableSound: true
+            enablePopup: true
+        }
+        ListElement {
+            title: "Attention request";
+            description: "Haptics feedback, sound notification or popup will happen when another user requests your attention if enabled.";
+            eventSettingName: "Attention";
+            enableVibra: true
+            enableSound: true
+            enablePopup: true
+        }
+    }
+
     Column {
         id: content
         width: parent.width
         spacing: 5
 
-        Item {
-            width: parent.width
-            height: msgRecvSettings.height * 2
-            Text {
-                anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: msgRecvSettings.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
-                color: main.textColor
-                property string color2: main.platformInverted ? "#333333" : "#888888"
-                text: qsTr("Incoming message") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("Haptics feedback, sound notification or popup will happen when receiving an incoming message if enabled.") + "</font>"
-                font.pixelSize: 20
-                wrapMode: Text.WordWrap
-            }
-            ButtonRow {
-                id: msgRecvSettings
-                anchors { right: parent.right; rightMargin: 10; top: parent.top }
-                ToolButton {
-                    id: vibrMsgRecv
-                    iconSource: selected ? ":/Events/vibra" + invertStuff : ":/Events/vibra_disabled" + invertStuff
-                    property bool selected: settings.gBool("notifications","vibraMsgRecv")
-                    platformInverted: main.platformInverted
-                    onClicked: {
-                        if (selected) selected = false; else selected = true;
-                        settings.sBool(selected,"notifications","vibraMsgRecv")
-                    }
-                }
-                ToolButton {
-                    id: soundMsgRecv
-                    iconSource: selected ? ":/Events/alarm" + invertStuff : ":/Events/alarm_disabled" + invertStuff
-                    property bool selected: settings.gBool("notifications","soundMsgRecv")
-                    platformInverted: main.platformInverted
-                    onClicked: {
-                        if (selected) selected = false; else selected = true;
-                        settings.sBool(selected,"notifications","soundMsgRecv")
-                    }
-                }
-                ToolButton {
-                    id: usePopupRecv
-                    iconSource: selected ? ":/Events/popup" + invertStuff : ":/Events/popup_disabled" + invertStuff
-                    property bool selected: settings.gBool("notifications","popupMsgRecv")
-                    platformInverted: main.platformInverted
-                    onClicked: {
-                        if (selected) selected = false; else selected = true;
-                        settings.sBool(selected,"notifications","popupMsgRecv")
-                    }
-                }
-            }
-            ButtonRow {
-                width: msgRecvSettings.width
-                anchors { right: parent.right; rightMargin: 10; top: msgRecvSettings.bottom }
-                ToolButton {
-                    id: button
-                    width: parent.width/3
-                    iconSource: "toolbar-settings"
-                    platformInverted: main.platformInverted
-                    onClicked: dialog.createWithProperties("qrc:/dialogs/Settings/Vibration", {"currentlyEditedParameter" : "vibraMsgRecv"})
-                }
-                ToolButton {
-                    width: parent.width/3
-                    iconSource: "toolbar-settings"
-                    platformInverted: main.platformInverted
-                    onClicked: {
-                        var filename = avkon.openFileSelectionDlg();
-                        if (filename != "") settings.sStr(filename,"notifications","soundMsgRecvFile")
-                    }
-                    onPlatformPressAndHold: {
-                        var filename = avkon.openFileSelectionDlg(true,true,"Z:\\data\\sounds\\digital");
-                        if (filename != "") settings.sStr(filename,"notifications","soundMsgRecvFile")
-                    }
-                }
-                ToolButton {
-                    enabled: false
-                    platformInverted: main.platformInverted
-                    height: button.height
-                    width: parent.width/3
-                }
-            }
-        }
-
-        Rectangle {
-            height: 1
-            anchors { left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
-            color: main.textColor
-            opacity: 0.2
-        }
-
-        Item {
-            width: parent.width
-            height: msgSentSettings.height * 2
-
-            Text {
-                anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: msgSentSettings.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
-                color: main.textColor
-                property string color2: main.platformInverted ? "#333333" : "#888888"
-                text: qsTr("Outgoing message") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("Haptics feedback or sound notification will happen when your message is sent.") + "</font>"
-                font.pixelSize: 20
-                wrapMode: Text.WordWrap
-            }
-
-            ButtonRow {
-                id: msgSentSettings
-                anchors { right: parent.right; rightMargin: 10; top: parent.top }
-                ToolButton {
-                    id: vibrMsgSent
-                    iconSource: selected ? ":/Events/vibra" + invertStuff : ":/Events/vibra_disabled" + invertStuff
-                    property bool selected: settings.gBool("notifications","vibraMsgSent")
-                    platformInverted: main.platformInverted
-                    onClicked: {
-                        if (selected) selected = false; else selected = true;
-                        settings.sBool(selected,"notifications","vibraMsgSent")
-                    }
-                }
-                ToolButton {
-                    id: soundMsgSent
-                    iconSource: selected ? ":/Events/alarm" + invertStuff : ":/Events/alarm_disabled" + invertStuff
-                    property bool selected: settings.gBool("notifications","soundMsgSent")
-                    platformInverted: main.platformInverted
-                    onClicked: {
-                        if (selected) selected = false; else selected = true;
-                        settings.sBool(selected,"notifications","soundMsgSent")
-                    }
-                }
-            }
-            ButtonRow {
-                width: msgSentSettings.width
-                anchors { right: parent.right; rightMargin: 10; top: msgSentSettings.bottom }
-                ToolButton {
-                    width: parent.width/3
-                    iconSource: "toolbar-settings"
-                    platformInverted: main.platformInverted
-                    onClicked: dialog.createWithProperties("qrc:/dialogs/Settings/Vibration", {"currentlyEditedParameter" : "vibraMsgSent"})
-                }
-                ToolButton {
-                    width: parent.width/3
-                    iconSource: "toolbar-settings"
-                    platformInverted: main.platformInverted
-                    onPlatformPressAndHold: {
-                        var filename = avkon.openFileSelectionDlg(true,true,"Z:\\data\\sounds\\digital");
-                        if (filename != "") settings.sStr(filename,"notifications","soundMsgSentFile")
-                    }
-                    onClicked: {
-                        var filename = avkon.openFileSelectionDlg();
-                        if (filename != "") settings.sStr(filename,"notifications","soundMsgSentFile")
-                    }
-                }
-            }
-        }
-
-        Rectangle {
-            height: 1
-            anchors { left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
-            color: main.textColor
-            opacity: 0.2
-        }
-
-        Item {
-            width: parent.width
-            height: msgRecvSettings.height * 2
-
-            Text {
-                anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: notifyConnectionSettings.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
-                color: main.textColor
-                property string color2: main.platformInverted ? "#333333" : "#888888"
-                text: qsTr("Connection") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("Sound notification will be played or popup will appear when connection state changes, if enabled.") + "</font>"
-                font.pixelSize: 20
-                wrapMode: Text.WordWrap
-            }
-
-            ButtonRow {
-                id: notifyConnectionSettings
-                anchors { right: parent.right; rightMargin: 10; top: parent.top }
-                ToolButton {
-                    id: soundNotifyConn
-                    iconSource: selected ? ":/Events/alarm" + invertStuff : ":/Events/alarm_disabled" + invertStuff
-                    property bool selected: settings.gBool("notifications","soundNotifyConn")
-                    platformInverted: main.platformInverted
-                    onClicked: {
-                        if (selected) selected = false; else selected = true;
-                        settings.sBool(selected,"notifications","soundNotifyConn")
-                    }
-                }
-                ToolButton {
-                    id: notifyOnline
-                    iconSource: selected ? ":/Events/popup" + invertStuff : ":/Events/popup_disabled" + invertStuff
-                    property bool selected: settings.gBool("notifications","popupNotifyConn")
-                    platformInverted: main.platformInverted
-                    onClicked: {
-                        if (selected) selected = false; else selected = true;
-                        settings.sBool(selected,"notifications","popupNotifyConn")
-                    }
-                }
-            }
-            ButtonRow {
-                width: notifyConnectionSettings.width
-                anchors { right: parent.right; rightMargin: 10; top: notifyConnectionSettings.bottom }
-                ToolButton {
-                    width: parent.width/2
-                    iconSource: "toolbar-settings"
-                    platformInverted: main.platformInverted
-                    onClicked: {
-                        var filename = avkon.openFileSelectionDlg();
-                        if (filename != "") settings.sStr(filename,"notifications","soundNotifyConnFile")
-                    }
-                    onPlatformPressAndHold: {
-                        var filename = avkon.openFileSelectionDlg(true,true,"Z:\\data\\sounds\\digital");
-                        if (filename != "") settings.sStr(filename,"notifications","soundNotifyConnFile")
-                    }
-                }
-                ToolButton {
-                    enabled: false
-                    platformInverted: main.platformInverted
-                    height: parent.height
-                    width: parent.width/2
-                }
-            }
-        }
-
-        Rectangle {
-            height: 1
-            anchors { left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
-            color: main.textColor
-            opacity: 0.2
-        }
-
-        Item {
-            width: parent.width
-            height: msgRecvSettings.height * 2
-
-            Text {
-                anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: msgSubSettings.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
-                color: main.textColor
-                property string color2: main.platformInverted ? "#333333" : "#888888"
-                text: qsTr("Subscription") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("Haptics feedback, sound notification or popup will happen when receiving a subscription request, if enabled.") + "</font>"
-                font.pixelSize: 20
-                wrapMode: Text.WordWrap
-            }
-
-            ButtonRow {
-                id: msgSubSettings
-                anchors { right: parent.right; rightMargin: 10; top: parent.top }
-                ToolButton {
-                    id: vibrMsgSub
-                    iconSource: selected ? ":/Events/vibra" + invertStuff : ":/Events/vibra_disabled" + invertStuff
-                    property bool selected: settings.gBool("notifications","vibraMsgSub")
-                    platformInverted: main.platformInverted
-                    onClicked: {
-                        if (selected) selected = false; else selected = true;
-                        settings.sBool(selected,"notifications","vibraMsgSub")
-                    }
-                }
-                ToolButton {
-                    id: soundMsgSub
-                    iconSource: selected ? ":/Events/alarm" + invertStuff : ":/Events/alarm_disabled" + invertStuff
-                    property bool selected: settings.gBool("notifications","soundMsgSub")
-                    platformInverted: main.platformInverted
-                    onClicked: {
-                        if (selected) selected = false; else selected = true;
-                        settings.sBool(selected,"notifications","soundMsgSub")
-                    }
-                }
-                ToolButton {
-                    id: subInfo
-                    iconSource: selected ? ":/Events/popup" + invertStuff : ":/Events/popup_disabled" + invertStuff
-                    property bool selected: settings.gBool("notifications","popupMsgSub")
-                    platformInverted: main.platformInverted
-                    onClicked: {
-                        if (selected) selected = false; else selected = true;
-                        settings.sBool(selected,"notifications","popupMsgSub")
-                    }
-                }
-            }
-            ButtonRow {
-                width: msgSubSettings.width
-                anchors { right: parent.right; rightMargin: 10; top: msgSubSettings.bottom }
-                ToolButton {
-                    id: button2
-                    width: parent.width/3
-                    iconSource: "toolbar-settings"
-                    platformInverted: main.platformInverted
-                    onClicked: dialog.createWithProperties("qrc:/dialogs/Settings/Vibration", {"currentlyEditedParameter" : "vibraMsgSub"})
-                }
-                ToolButton {
-                    width: parent.width/3
-                    iconSource: "toolbar-settings"
-                    platformInverted: main.platformInverted
-                    onClicked: {
-                        var filename = avkon.openFileSelectionDlg();
-                        if (filename != "") settings.sStr(filename,"notifications","soundMsgSubFile")
-                    }
-                    onPlatformPressAndHold: {
-                        var filename = avkon.openFileSelectionDlg(true,true,"Z:\\data\\sounds\\digital");
-                        if (filename != "") settings.sStr(filename,"notifications","soundMsgSubFile")
-                    }
-                }
-                ToolButton {
-                    enabled: false
-                    height: button2.height
-                    platformInverted: main.platformInverted
-                    width: parent.width/3
-                }
-            }
-        }
-
-        Rectangle {
-            height: 1
-            anchors { left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
-            color: main.textColor
-            opacity: 0.2
-        }
-
-        Item {
-            width: parent.width
-            height: attentionSettings.height * 2
-            Text {
-                anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: attentionSettings.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
-                color: main.textColor
-                property string color2: main.platformInverted ? "#333333" : "#888888"
-                text: qsTr("Attention request") + "<br /><font color='" + color2 + "' size='14px'>" + qsTr("Haptics feedback, sound notification or popup will happen when another user requests your attention if enabled.") + "</font>"
-                font.pixelSize: 20
-                wrapMode: Text.WordWrap
-            }
-            ButtonRow {
-                id: attentionSettings
-                anchors { right: parent.right; rightMargin: 10; top: parent.top }
-                ToolButton {
-                    id: vibrAttention
-                    iconSource: selected ? ":/Events/vibra" + invertStuff : ":/Events/vibra_disabled" + invertStuff
-                    property bool selected: settings.gBool("notifications","vibraAttention")
-                    platformInverted: main.platformInverted
-                    onClicked: {
-                        if (selected) selected = false; else selected = true;
-                        settings.sBool(selected,"notifications","vibraAttention")
-                    }
-                }
-                ToolButton {
-                    id: soundAttention
-                    iconSource: selected ? ":/Events/alarm" + invertStuff : ":/Events/alarm_disabled" + invertStuff
-                    property bool selected: settings.gBool("notifications","soundAttention")
-                    platformInverted: main.platformInverted
-                    onClicked: {
-                        if (selected) selected = false; else selected = true;
-                        settings.sBool(selected,"notifications","soundAttention")
-                    }
-                }
-                ToolButton {
-                    id: usePopupAttention
-                    iconSource: selected ? ":/Events/popup" + invertStuff : ":/Events/popup_disabled" + invertStuff
-                    property bool selected: settings.gBool("notifications","popupAttention")
-                    platformInverted: main.platformInverted
-                    onClicked: {
-                        if (selected) selected = false; else selected = true;
-                        settings.sBool(selected,"notifications","popupAttention")
-                    }
-                }
-            }
-            ButtonRow {
-                width: attentionSettings.width
-                anchors { right: parent.right; rightMargin: 10; top: attentionSettings.bottom }
-                ToolButton {
-                    width: parent.width/3
-                    iconSource: "toolbar-settings"
-                    platformInverted: main.platformInverted
-                    onClicked: dialog.createWithProperties("qrc:/dialogs/Settings/Vibration", {"currentlyEditedParameter" : "vibraAttention"})
-                }
-                ToolButton {
-                    width: parent.width/3
-                    iconSource: "toolbar-settings"
-                    platformInverted: main.platformInverted
-                    onClicked: {
-                        var filename = avkon.openFileSelectionDlg();
-                        if (filename != "") settings.sStr(filename,"notifications","soundAttentionFile")
-                    }
-                    onPlatformPressAndHold: {
-                        var filename = avkon.openFileSelectionDlg(true,true,"Z:\\data\\sounds\\digital");
-                        if (filename != "") settings.sStr(filename,"notifications","soundAttentionFile")
-                    }
-                }
-                ToolButton {
-                    enabled: false
-                    platformInverted: main.platformInverted
-                    height: button.height
-                    width: parent.width/3
-                }
-            }
-        }
-
-        Rectangle {
-            height: 1
-            anchors { left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5 }
-            color: main.textColor
-            opacity: 0.2
+        Repeater {
+            id: eventsList
+            model: settingListModel
+            anchors { left: parent.left; right: parent.right }
+            delegate: EventSettingDelegate { width: content.width }
         }
 
         Item {
