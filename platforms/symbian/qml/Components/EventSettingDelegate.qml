@@ -83,6 +83,7 @@ Item {
         }
         ToolButton {
             enabled: false
+            visible: enablePopup
             platformInverted: main.platformInverted
             height: button.height
             width: parent.width/3
