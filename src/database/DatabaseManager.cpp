@@ -165,6 +165,16 @@ bool DatabaseManager::deleteContact()
     return ret;
 }
 
+bool DatabaseManager::removeContactCache() {
+      bool ret = false;
+      QSqlQuery query(db);
+      if (databaseOpen)
+          ret = query.exec("DELETE FROM roster");
+
+      emit finished();
+      return ret;
+}
+
 bool DatabaseManager::insertMessage()
 {
     QStringList params = parameters;

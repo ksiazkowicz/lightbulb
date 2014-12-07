@@ -457,8 +457,13 @@ void MyXmppClient::initRoster() {
           vCardManager->requestVCard( bareJid );
         }
 
+      // prepare groups
+      QStringList groups_tmp = rosterManager->getRosterEntry(bareJid).groups().toList();
+      QString groups = groups_tmp.join(", ");
+      qDebug() << "groups for" << bareJid << groups;
+
       // inform contact list manager that there is something cool coming
-      contacts->addContact(m_accountId,bareJid,name);
+      contacts->addContact(m_accountId,bareJid,name,true,false,groups);
     }
 
   // check if our cache is available, if there isn't - request it
@@ -483,7 +488,11 @@ void MyXmppClient::itemAdded(const QString &bareJid ) {
       this->initPresence( bareJid, resource );
     }
 
-  contacts->addContact(m_accountId,bareJid,"");
+  // prepare groups
+  QStringList groups_tmp = rosterManager->getRosterEntry(bareJid).groups().toList();
+  QString groups = groups_tmp.join(", ");
+
+  contacts->addContact(m_accountId,bareJid,"",true,false,groups);
 }
 
 void MyXmppClient::itemChanged(const QString &bareJid ) {

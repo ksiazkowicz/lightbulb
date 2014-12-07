@@ -42,7 +42,8 @@ public:
         AccountId,
         ItemId,
         SortData,
-        IsFavorite
+        IsFavorite,
+        Groups
       };
 
 public:

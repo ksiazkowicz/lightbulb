@@ -31,7 +31,7 @@ signals:
   void favUserStatusChanged(QString accountId, QString bareJid, QString name, QString description);
   
 public slots:
-  void addContact(QString acc, QString jid, QString name, bool updateDatabase = true, bool isFavorite = false);
+  void addContact(QString acc, QString jid, QString name, bool updateDatabase = true, bool isFavorite = false, QString groups = "");
   void changePresence(QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus, bool initializationState);
   void changeName(QString m_accountId,QString bareJid,QString name);
   void rememberResource(QString m_accountId, QString bareJid, QString resource);
@@ -41,6 +41,7 @@ public slots:
   bool setContactFavState(QString acc, QString bareJid, bool favState);
 
   void cleanupCache(QString acc, QStringList bareJids);
+  bool removeCache();
 
   void changeFilter(QString regexp) { filter->setFilterRegExp(regexp); }
 

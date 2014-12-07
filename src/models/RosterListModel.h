@@ -52,6 +52,7 @@ public:
     names[RosterItemModel::AccountId] = "accountId";
     names[RosterItemModel::ItemId] = "itemId";
     names[RosterItemModel::IsFavorite] = "favorite";
+    names[RosterItemModel::Groups] = "groups";
 
     #if QT_VERSION < 0x050000
     this->setRoleNames(names);

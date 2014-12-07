@@ -36,7 +36,7 @@ Item {
         }
         Text {
             id: txtJid
-            text: (favorite == "1" ? "★ <font color='#efb813'>" : "")  + _contactName + (favorite == "1" ? "</font>" : "") + ((statusText !== "") ? (" · <font color='"+main.midColor+"'><i>" + statusText + "</i></font>") : "")
+            text: (favorite == "1" ? "★ <font color='#efb813'>" : "")  + _contactName + (favorite == "1" ? "</font>" : "") + ((typeof groups !== 'undefined') ? ("<i> (" + groups + ")</i>") : "") + ((statusText !== "") ? (" · <font color='"+main.midColor+"'><i>" + statusText + "</i></font>") : "")
             anchors.verticalCenter: parent.verticalCenter
             onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
             wrapMode: Text.WordWrap

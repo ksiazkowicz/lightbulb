@@ -57,9 +57,14 @@ void ContactListManager::cleanupCache(QString acc, QStringList bareJids) {
     database->updateRoster();
 }
 
+bool ContactListManager::removeCache() {
+  database->executeQuery(QStringList() << "removeContactCache");
+  return true;
+}
+
 // contact list management code
 
-void ContactListManager::addContact(QString acc, QString jid, QString name, bool updateDatabase,bool isFavorite) {
+void ContactListManager::addContact(QString acc, QString jid, QString name, bool updateDatabase,bool isFavorite, QString groups) {
   // don't debug it while pulling data from cache, it's a mess T_T
   if (updateDatabase)
     qDebug() << "ContactListManager::addContact() called for" << qPrintable(jid) << "at" << qPrintable(acc);
@@ -72,10 +77,14 @@ void ContactListManager::addContact(QString acc, QString jid, QString name, bool
           item->set(name,RosterItemModel::Name);
         emit contactNameChanged(acc,jid,name);
       }
+      if (item->data(RosterItemModel::Groups).toString() != groups) {
+          item->set(groups,RosterItemModel::Groups);
+        }
       return;
   }
   // nope, append it
   RosterItemModel* contact = new RosterItemModel(name,jid,"","qrc:/presence/offline","",acc);
+  contact->set(groups,RosterItemModel::Groups);
 
   contact->set(QString::number(isFavorite),RosterItemModel::IsFavorite);
   roster->append(contact);

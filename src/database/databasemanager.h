@@ -81,6 +81,7 @@ public:
         bool insertContact();
         bool deleteContact();
         bool updateContact();
+        bool removeContactCache();
 
         void getLastError();
     };

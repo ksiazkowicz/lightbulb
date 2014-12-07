@@ -64,6 +64,7 @@ public:
     /* --- diagnostics --- */
     Q_INVOKABLE bool dbRemoveDb();
     Q_INVOKABLE bool cleanCache();
+    Q_INVOKABLE bool cleanContactsCache() { return contacts->removeCache(); }
     Q_INVOKABLE bool cleanCache(QString path);
     Q_INVOKABLE bool resetSettings();
 

@@ -7,58 +7,54 @@ Item {
     height: msgRecvSettings.height * 2
 
     Text {
-        anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: msgRecvSettings.left; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; }
+        anchors { left: parent.left; top: parent.top; topMargin: platformStyle.paddingSmall; right: msgRecvSettings.left; rightMargin: platformStyle.paddingSmall; leftMargin: platformStyle.paddingSmall }
         color: main.textColor
         property string color2: main.platformInverted ? "#333333" : "#888888"
-        text: title + "<br /><font color='" + color2 + "' size='14px'>" + description + "</font>"
-        font.pixelSize: 20
+        text: title + "<br /><font color='" + color2 + "' size='"+platformStyle.fontSizeSmall+"px'>" + description + "</font>"
+        font.pixelSize: platformStyle.fontSizeMedium
         wrapMode: Text.WordWrap
     }
     ButtonRow {
         id: msgRecvSettings
-        anchors { right: parent.right; rightMargin: 10; top: parent.top }
+        anchors { right: parent.right; rightMargin: platformStyle.paddingSmall; top: parent.top }
         ToolButton {
             visible: enableVibra;
             enabled: visible;
-            id: vibrMsgRecv
             iconSource: selected ? ":/Events/vibra" + invertStuff : ":/Events/vibra_disabled" + invertStuff
             property bool selected: settings.gBool("notifications","vibra"+eventSettingName)
             platformInverted: main.platformInverted
             onClicked: {
-                if (selected) selected = false; else selected = true;
+                selected = !selected;
                 settings.sBool(selected,"notifications","vibra"+eventSettingName)
             }
         }
         ToolButton {
-            id: soundMsgRecv
             visible: enableSound;
             enabled: visible
             iconSource: selected ? ":/Events/alarm" + invertStuff : ":/Events/alarm_disabled" + invertStuff
             property bool selected: settings.gBool("notifications","sound"+eventSettingName)
             platformInverted: main.platformInverted
             onClicked: {
-                if (selected) selected = false; else selected = true;
+                selected = !selected;
                 settings.sBool(selected,"notifications","sound"+eventSettingName)
             }
         }
         ToolButton {
-            id: usePopupRecv
             visible: enablePopup;
             enabled: visible;
             iconSource: selected ? ":/Events/popup" + invertStuff : ":/Events/popup_disabled" + invertStuff
             property bool selected: settings.gBool("notifications","popup"+eventSettingName)
             platformInverted: main.platformInverted
             onClicked: {
-                if (selected) selected = false; else selected = true;
+                selected = !selected;
                 settings.sBool(selected,"notifications","popup"+eventSettingName)
             }
         }
     }
     ButtonRow {
         width: msgRecvSettings.width
-        anchors { right: parent.right; rightMargin: 10; top: msgRecvSettings.bottom }
+        anchors { right: parent.right; rightMargin: platformStyle.paddingSmall; top: msgRecvSettings.bottom }
         ToolButton {
-            id: button
             visible: enableVibra
             enabled: visible
             width: parent.width/3
@@ -85,13 +81,13 @@ Item {
             enabled: false
             visible: enablePopup
             platformInverted: main.platformInverted
-            height: button.height
+            height: msgRecvSettings.height
             width: parent.width/3
         }
     }
     Rectangle {
         height: 1
-        anchors { left: parent.left; right: parent.right; leftMargin: 5; rightMargin: 5; bottom: parent.bottom }
+        anchors { left: parent.left; right: parent.right; leftMargin: platformStyle.paddingSmall; rightMargin: platformStyle.paddingSmall; bottom: parent.bottom }
         color: main.textColor
         opacity: 0.2
     }

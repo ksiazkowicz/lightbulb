@@ -164,6 +164,28 @@ Item {
         }
 
         Button {
+            text: "Clean contact list cache"
+            platformInverted: main.platformInverted
+            anchors { left: parent.left; right: parent.right }
+            onClicked: {
+                if (xmppConnectivity.cleanContactsCache()) {
+                    notify.postInfo("Contact list cache cleaned")
+                    if (!vars.isRestartRequired) vars.isRestartRequired = true;
+                } else notify.postError("Unable to clean contact list cache.")
+            }
+        }
+
+        Text {
+            width: parent.width
+            color: main.textColor
+            anchors { left: parent.left; right: parent.right }
+            font.pixelSize: platformStyle.fontSizeSmall
+            text: "Useful option if there is something wrong with your contact list cache."
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignJustify
+        }
+
+        Button {
             id: moveFolderSelectionDlg
             text: "Change cache directory"
             platformInverted: main.platformInverted
