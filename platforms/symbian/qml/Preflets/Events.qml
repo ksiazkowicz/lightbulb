@@ -81,6 +81,22 @@ Item {
             enableSound: true
             enablePopup: true
         }
+        ListElement {
+            title: "Incoming transfer";
+            description: "Haptics feedback, sound notification or popup will happen when file is received.";
+            eventSettingName: "TransRecv";
+            enableVibra: true
+            enableSound: true
+            enablePopup: true
+        }
+        ListElement {
+            title: "MUC Chat Invitation";
+            description: "Haptics feedback, sound notification or popup will happen when MUC chat invitation is received.";
+            eventSettingName: "MUCInv";
+            enableVibra: true
+            enableSound: true
+            enablePopup: true
+        }
     }
 
     Column {

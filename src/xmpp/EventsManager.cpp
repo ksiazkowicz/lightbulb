@@ -167,10 +167,6 @@ void EventsManager::appendUserStatusChange(QString accountId, QString bareJid, Q
   item->setData(QVariant((int)EventItemModel::FavUserStatusChange),EventItemModel::Type);
   item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
 
-  // try to push a system notification
-  this->pushSystemNotification((EventItemModel::EventTypes)item->getData(EventItemModel::Type).toInt(),item->getData(EventItemModel::Name).toString(),item->getData(EventItemModel::Description).toString());
-
-
   // and append it at the top of the list
   events->insertRow(0,item);
   events->countWasChanged();
