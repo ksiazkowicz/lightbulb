@@ -41,7 +41,6 @@ void EventsManager::pushSystemNotification(EventItemModel::EventTypes type, QStr
   switch (type) {
     case EventItemModel::UnreadMessage: emit pushedSystemNotification("MsgRecv",title,description); break;
     case EventItemModel::AttentionRequest: emit pushedSystemNotification("Attention",title,"requested your attention~!"); break;
-
     case EventItemModel::AppUpdate: emit pushedSystemNotification("AppUpdate",title,description); break;
     case EventItemModel::SubscriptionRequest: emit pushedSystemNotification("MsgSub",title,description); break;
     case EventItemModel::ConnectionState: emit pushedSystemNotification("NotifyConn",title,description); break;
@@ -116,6 +115,9 @@ void EventsManager::appendSubscription(QString accountId,QString bareJid) {
   item->setData(QVariant((int)EventItemModel::SubscriptionRequest),EventItemModel::Type);
   item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
 
+  // try to push a system notification
+  this->pushSystemNotification((EventItemModel::EventTypes)item->getData(EventItemModel::Type).toInt(),item->getData(EventItemModel::Name).toString(),item->getData(EventItemModel::Description).toString());
+
   // and append it at the top of the list
   events->insertRow(0,item);
   events->countWasChanged();
@@ -138,6 +140,9 @@ void EventsManager::appendStatusChange(QString accountId, QString name, QString 
   item->setData(QVariant(description),EventItemModel::Description);
   item->setData(QVariant((int)EventItemModel::ConnectionState),EventItemModel::Type);
   item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
+
+  // try to push a system notification
+  this->pushSystemNotification((EventItemModel::EventTypes)item->getData(EventItemModel::Type).toInt(),item->getData(EventItemModel::Name).toString(),item->getData(EventItemModel::Description).toString());
 
   // and append it at the top of the list
   events->insertRow(0,item);
@@ -162,6 +167,10 @@ void EventsManager::appendUserStatusChange(QString accountId, QString bareJid, Q
   item->setData(QVariant((int)EventItemModel::FavUserStatusChange),EventItemModel::Type);
   item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
 
+  // try to push a system notification
+  this->pushSystemNotification((EventItemModel::EventTypes)item->getData(EventItemModel::Type).toInt(),item->getData(EventItemModel::Name).toString(),item->getData(EventItemModel::Description).toString());
+
+
   // and append it at the top of the list
   events->insertRow(0,item);
   events->countWasChanged();
@@ -184,6 +193,10 @@ void EventsManager::appendError(QString accountId, QString name, QString errorSt
   item->setData(QVariant(errorString),EventItemModel::Description);
   item->setData(QVariant((int)EventItemModel::ConnectionError),EventItemModel::Type);
   item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
+
+  // try to push a system notification
+  this->pushSystemNotification((EventItemModel::EventTypes)item->getData(EventItemModel::Type).toInt(),item->getData(EventItemModel::Name).toString(),item->getData(EventItemModel::Description).toString());
+
 
   // and append it at the top of the list
   events->insertRow(0,item);
@@ -213,6 +226,10 @@ void EventsManager::appendUpdate(bool updateAvailable, QString version, QString 
   item->setData(QVariant((int)EventItemModel::AppUpdate),EventItemModel::Type);
   item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
 
+  // try to push a system notification
+  this->pushSystemNotification((EventItemModel::EventTypes)item->getData(EventItemModel::Type).toInt(),item->getData(EventItemModel::Name).toString(),item->getData(EventItemModel::Description).toString());
+
+
   // and append it at the top of the list
   events->insertRow(0,item);
   events->countWasChanged();
@@ -233,6 +250,10 @@ void EventsManager::appendTransferJob(QString accountId, QString bareJid, QStrin
     item->setData(QVariant((int)EventItemModel::OutcomingTransfer),EventItemModel::Type);
 
   item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
+
+  // try to push a system notification
+  this->pushSystemNotification((EventItemModel::EventTypes)item->getData(EventItemModel::Type).toInt(),item->getData(EventItemModel::Name).toString(),item->getData(EventItemModel::Description).toString());
+
 
   // and append it at the top of the list
   events->insertRow(0,item);
@@ -256,6 +277,10 @@ void EventsManager::appendMUCInvitation(QString accountId, QString bareJid, QStr
   item->setData(QVariant(sender),EventItemModel::Name);
   item->setData(QVariant((int)EventItemModel::MUCinvite),EventItemModel::Type);
   item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
+
+  // try to push a system notification
+  this->pushSystemNotification((EventItemModel::EventTypes)item->getData(EventItemModel::Type).toInt(),item->getData(EventItemModel::Name).toString(),item->getData(EventItemModel::Description).toString());
+
 
   // and append it at the top of the list
   events->insertRow(0,item);

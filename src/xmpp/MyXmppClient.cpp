@@ -85,6 +85,7 @@ void MyXmppClient::connectToXmppServer() {
   xmppConfig.setAutoAcceptSubscriptions(false);
   xmppConfig.setSaslAuthMechanism("DIGEST-MD5");
   xmppConfig.setUseSASLAuthentication(true);
+  xmppConfig.setIgnoreSslErrors(true);
   xmppConfig.setStreamSecurityMode(QXmppConfiguration::TLSRequired);
 
   if (!m_host.isEmpty())

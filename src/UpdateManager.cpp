@@ -35,7 +35,7 @@ UpdateManager::UpdateManager(QObject *parent) :
 }
 
 void UpdateManager::checkForUpdate() {
-  httpStuff->get(QNetworkRequest(QUrl("https://ksiazkowicz.github.io/lightbulb/fluorescent_version.txt")));
+  httpStuff->get(QNetworkRequest(QUrl("http://ksiazkowicz.github.io/lightbulb/fluorescent_version.txt")));
 }
 
 QString UpdateManager::getLatestVersion() { return replyData.split(";")[0]; }

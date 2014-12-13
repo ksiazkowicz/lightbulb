@@ -73,6 +73,13 @@ Item {
             enableSound: true
             enablePopup: true
         }
+        ListElement {
+            title: "Application update";
+            description: "Sound notification or popup will happen when app is updated.";
+            eventSettingName: "AppUpdate";
+            enableSound: true
+            enablePopup: true
+        }
     }
 
     Column {
