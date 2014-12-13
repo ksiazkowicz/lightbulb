@@ -180,7 +180,7 @@ Page {
             onClicked: {
                 var grid,vName,icon;
                 grid = accGRID != "" ? accGRID : settings.generateGRID();
-                vName = name.value == "" ? xmppConnectivity.generateAccountName(host,login.value) : name.value
+                vName = name.value == "" ? xmppConnectivity.generateAccountName(serverDetails.value.split(":")[0],login.value) : name.value
                 switch (selectionDialog.selectedIndex) {
                     case 0: icon = "Facebook"; break;
                     case 1: icon = "Hangouts"; break;
