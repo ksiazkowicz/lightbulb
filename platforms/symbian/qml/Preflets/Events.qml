@@ -77,6 +77,7 @@ Item {
             title: "Application update";
             description: "Sound notification or popup will happen when app is updated.";
             eventSettingName: "AppUpdate";
+            enableVibra: false
             enableSound: true
             enablePopup: true
         }

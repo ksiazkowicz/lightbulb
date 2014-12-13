@@ -219,16 +219,14 @@ void EventsManager::appendUpdate(bool updateAvailable, QString version, QString 
 
   if (updateAvailable) {
     item->setData(QVariant("Update to <b>"+version+"</b> is available (" + date + "). <b>Tap to open</b>."),EventItemModel::Description);
+    this->pushSystemNotification(EventItemModel::AppUpdate,"Update for Lightbulb is available",version+" ("+date+")");
   } else {
     item->setData(QVariant("Lightbulb is up to date. ^^"),EventItemModel::Description);
+    this->pushSystemNotification(EventItemModel::AppUpdate,"No updates for","Lightbulb are available");
   }
 
   item->setData(QVariant((int)EventItemModel::AppUpdate),EventItemModel::Type);
   item->setData(QVariant(QDateTime::currentDateTime()),EventItemModel::Date);
-
-  // try to push a system notification
-  this->pushSystemNotification((EventItemModel::EventTypes)item->getData(EventItemModel::Type).toInt(),item->getData(EventItemModel::Name).toString(),item->getData(EventItemModel::Description).toString());
-
 
   // and append it at the top of the list
   events->insertRow(0,item);
