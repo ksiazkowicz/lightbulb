@@ -77,7 +77,7 @@ Page {
             id: licenseStuff
             width: parent.width
             text: qsTr("This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under certain conditions. See GPL v3 license for details.")
-            anchors { top: buttons.bottom; topMargin: 14; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
+            anchors { top: githubBtn.bottom; topMargin: 14; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
             font.bold: true
             wrapMode: Text.WordWrap
             font.pixelSize: platformStyle.fontSizeSmall
@@ -109,6 +109,13 @@ Page {
                 platformInverted: main.platformInverted
                 onClicked: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SA8DZYA7PUCCU&lc=US"})
             }
+        }
+        Button {
+            id: githubBtn
+            text: "Fork me on GitHub"
+            anchors { horizontalCenter: parent.horizontalCenter; top: buttons.bottom; topMargin: platformStyle.paddingMedium }
+            platformInverted: main.platformInverted
+            onClicked: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": "https://github.com/ksiazkowicz/lightbulb"})
         }
     }
 
