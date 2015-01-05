@@ -72,8 +72,14 @@ Page {
 
                         Repeater { delegate: AccountDelegate {} model: settings.accounts }
 
+                        Component.onCompleted: console.log(settings.accounts.count())
+
                         // retarded fix for UI being misaligned when there are no accounts
-                        Rectangle { width: 1; color: "transparent";  height: platformStyle.graphicSizeMedium }
+                        Rectangle {
+                            width: settings.accounts.count() > 0 ? 0 : 1;
+                            color: "transparent";
+                            height: settings.accounts.count() > 0 ? 0 : platformStyle.graphicSizeMedium
+                        }
                     }
                 }
 

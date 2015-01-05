@@ -85,7 +85,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     #endif
 
     // if Symbian, initialize my cool debugger
-    #ifdef Q_OS_SYMBIAN && Q_CUSTOM_DEBUG
+    #ifdef Q_CUSTOM_DEBUG
     debugger.initLog();
     qInstallMsgHandler(debug);
     #endif
