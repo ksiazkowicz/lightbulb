@@ -440,9 +440,7 @@ void MyXmppClient::initRoster() {
   contacts->cleanupCache(m_accountId,listBareJids);
 
   // iterate through the list
-  for( int j=0; j < listBareJids.length(); j++ ) {
-      QString bareJid = listBareJids.at(j);
-
+  foreach (const QString &bareJid, listBareJids) {
       // prepare cache
       cacheIM->addCacheJid(bareJid);
 
@@ -460,8 +458,15 @@ void MyXmppClient::initRoster() {
 
       // prepare groups
       QStringList groups_tmp = rosterManager->getRosterEntry(bareJid).groups().toList();
+
+      // iterate through group list and add 'em all to cache
+      foreach (const QString &str, groups_tmp) {
+               if (!rosterGroups.contains(str))
+                   rosterGroups += str;
+           }
+
+      // it really sucks that I handle this in such dumb way but whateva'
       QString groups = groups_tmp.join(", ");
-      qDebug() << "groups for" << bareJid << groups;
 
       // inform contact list manager that there is something cool coming
       contacts->addContact(m_accountId,bareJid,name,true,false,groups);
@@ -484,10 +489,8 @@ void MyXmppClient::initRoster() {
 void MyXmppClient::itemAdded(const QString &bareJid ) {
   QStringList resourcesList = rosterManager->getResources( bareJid );
 
-  for( int L = 0; L<resourcesList.length(); L++ ) {
-      QString resource = resourcesList.at(L);
-      this->initPresence( bareJid, resource );
-    }
+  foreach (const QString &resource,resourcesList)
+      this->initPresence( bareJid, resource);
 
   // prepare groups
   QStringList groups_tmp = rosterManager->getRosterEntry(bareJid).groups().toList();
@@ -628,11 +631,12 @@ void MyXmppClient::mucTopicChangeSlot(QString subject) {
 
 void MyXmppClient::permissionsReceived(const QList<QXmppMucItem> &permissions) {
   qDebug() << "received permissions;" << permissions.count();
-  for (int i=0;i<permissions.count();i++) {
-      QString nameString = permissions.at(i).nick() + " (" + permissions.at(i).jid() + ")";
+
+  foreach (const QXmppMucItem permItem,permissions) {
+      QString nameString = permItem.nick() + " (" + permItem.jid() + ")";
       qDebug() << "Permissions for" << qPrintable(nameString);
-      qDebug() << "Role:" << permissions.at(i).roleToString(permissions.at(i).role());
-      qDebug() << "Affiliation:" << permissions.at(i).affiliationToString(permissions.at(i).affiliation());
+      qDebug() << "Role:" << permItem.roleToString(permItem.role());
+      qDebug() << "Affiliation:" << permItem.affiliationToString(permItem.affiliation());
     }
 }
 
@@ -705,18 +709,18 @@ void MyXmppClient::itemsReceived(const QXmppDiscoveryIq &items) {
   // get list model for services
   ServiceListModel *cache = this->services(items.from());
 
-  for (int i=0;i<items.items().count();i++) {
+  foreach (const QXmppDiscoveryIq::Item discItem,items.items()) {
       // check if item already exists
-      item = (ServiceItemModel*)cache->find(items.items().at(i).jid());
+      item = (ServiceItemModel*)cache->find(discItem.jid());
 
       // it doesn't, create a new one and append it
       if (item == 0) {
-          item = new ServiceItemModel(items.items().at(i).name(),items.items().at(i).jid(),items.items().at(i).node());
+          item = new ServiceItemModel(discItem.name(),discItem.jid(),discItem.node());
           cache->append(item);
         }
 
       // request additional info for this node
-      serviceDiscovery->requestInfo(items.items().at(i).jid());
+      serviceDiscovery->requestInfo(discItem.jid());
     }
 }
 
@@ -818,13 +822,16 @@ void MyXmppClient::acceptTransfer(int jobId, QString path) {
 
   // check if path exists, if not, use something else
   if (path == "" || path == "false" || !QFile::exists(path)) {
-      for (int i=0; i<defaultPaths.count(); i++) {
-          if (QFile::exists(defaultPaths.at(i))) {
-            recvPath = defaultPaths.at(i);
+      // ITERAAATEEEEEE
+      foreach (const QString t_path,defaultPaths) {
+          // found some crap, test it
+          if (QFile::exists(t_path)) {
+            recvPath = t_path;
             break;
           }
+          // nope nope nope
         }
-    } else { recvPath = path; }
+    } else recvPath = path;
 
   if (recvPath == "") return; // TODO: show an error if path is useless
 

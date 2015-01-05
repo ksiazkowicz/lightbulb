@@ -77,7 +77,7 @@ void ContactListManager::addContact(QString acc, QString jid, QString name, bool
           item->set(name,RosterItemModel::Name);
         emit contactNameChanged(acc,jid,name);
       }
-      if (item->data(RosterItemModel::Groups).toString() != groups) {
+      if (item->data(RosterItemModel::Groups).toString() != groups && groups != "") { // retarded hackfix for that stupid bug
           item->set(groups,RosterItemModel::Groups);
         }
       return;

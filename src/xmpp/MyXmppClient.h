@@ -84,6 +84,8 @@ class MyXmppClient : public QObject
     EventsManager *events;
     MyCache* cacheIM;
 
+    QStringList rosterGroups;
+
 public :
     bool disableAvatarCaching;
     bool legacyAvatarCaching;
