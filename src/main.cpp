@@ -68,9 +68,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QGuiApplication>
 #endif
 
-#ifdef Q_OS_SYMBIAN
 FluorescentLogger debugger;
-#endif
 
 void debug(QtMsgType type, const char *msg) {
   debugger.debug(type,msg);

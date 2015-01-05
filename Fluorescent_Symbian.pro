@@ -28,8 +28,6 @@ DATE = $$system(date /t) # might break on something else than winshit, damn you 
 DEFINES += VERSION=\"\\\"$$VERSION\\\"\"
 DEFINES += BUILDDATE=\"\\\"$$DATE\\\"\"
 
-DEFINES += Q_CUSTOM_DEBUG
-
 OTHER_FILES += README.md platforms/global/qml/*.*
 
 symbian {
