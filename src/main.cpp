@@ -84,11 +84,20 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     QApplication* app = new QApplication(argc, argv);
     #endif
 
-    // if Symbian, initialize my cool debugger
-    #ifdef Q_CUSTOM_DEBUG
-    debugger.initLog();
-    qInstallMsgHandler(debug);
-    #endif
+    // initialize settings
+    Settings settings;
+
+    // if enabled, save debug log to file
+    if (settings.gBool("advanced","logToFile")) {
+      debugger.start();
+      debugger.initLog();
+      #if QT_VERSION < 0x050000
+      qInstallMsgHandler(debug);
+      #else
+      qInstallMessageHandler(debug);
+      #endif
+    }
+
 
     // if Q_OS_SYMBIAN, display a splashscreen
     #ifdef Q_OS_SYMBIAN
@@ -144,8 +153,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     UpdateManager updater;
     viewer->rootContext()->setContextProperty("updater",&updater);
 
-    // initialize settings
-    Settings settings;
+    // register settings
     viewer->rootContext()->setContextProperty("settings",&settings);
 
     // initialize xmppconnectivity

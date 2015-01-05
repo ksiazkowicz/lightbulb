@@ -103,6 +103,17 @@ Item {
             }
         }
 
+        CheckBox {
+            id: logToFileEnable
+            text: qsTr("Enable logging to file")
+            checked: settings.gBool("advanced","logToFile")
+            platformInverted: main.platformInverted
+            onCheckedChanged: {
+                settings.sBool(checked,"advanced","logToFile")
+                if (!vars.isRestartRequired) vars.isRestartRequired = true;
+            }
+        }
+
         SettingField {
             id: tiVisibleMsgLimit
             settingLabel: "Visible messages limit"

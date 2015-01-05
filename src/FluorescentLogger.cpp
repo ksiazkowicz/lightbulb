@@ -2,11 +2,15 @@
 // http://www.qt-coding.com/2013/08/06/tip-of-the-day-redirect-qdebug-to-a-file/
 #include "FluorescentLogger.h"
 #include <QDebug>
+#include <QDir>
 
 FluorescentLogger::FluorescentLogger(QObject *parent) :
   QObject(parent)
 {
-  debugLog = new QFile("C:\\Data\\LightbulbLog.txt");
+}
+
+void FluorescentLogger::start() {
+  debugLog = new QFile(QDir::homePath() + QDir::separator() + "LightbulbLog.txt");
   debugLog->open(QIODevice::WriteOnly | QIODevice::Append);
 }
 

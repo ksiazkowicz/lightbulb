@@ -15,6 +15,8 @@ class FluorescentLogger : public QObject
 public:
   explicit FluorescentLogger(QObject *parent = 0);
 
+  void start();
+
   void debug(QtMsgType type, const char *msg);
   void initLog();
   
