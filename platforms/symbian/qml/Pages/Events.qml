@@ -71,6 +71,9 @@ Page {
                         spacing: platformStyle.paddingSmall
 
                         Repeater { delegate: AccountDelegate {} model: settings.accounts }
+
+                        // retarded fix for UI being misaligned when there are no accounts
+                        Rectangle { width: 1; color: "transparent";  height: platformStyle.graphicSizeMedium }
                     }
                 }
 
