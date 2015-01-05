@@ -403,11 +403,15 @@ void MyXmppClient::setStatus( StatusXmpp __status) {
     }
 }
 
-void MyXmppClient::setPresence( StatusXmpp status, QString textStatus ) { //Q_INVOKABLE
+void MyXmppClient::setPresence(StatusXmpp status, QString textStatus) { //Q_INVOKABLE
   qDebug() << "MyXmppClient:: setPresence() called";
 
-  setStatus( status );
-  setStatusText( textStatus );
+  // hackfix for messed up infinite loop (I hate 'em)
+  if (xmppClient->state() == QXmppClient::DisconnectedState && status == Offline)
+    return;
+
+  setStatus(status);
+  setStatusText(textStatus);
 }
 
 // ---------- roster management --------------------------------------------------------------------------------------------------
