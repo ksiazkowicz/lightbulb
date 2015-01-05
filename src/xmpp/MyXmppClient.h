@@ -297,6 +297,12 @@ private slots:
         default: typeStr = ""; break;
         }
 
+      // quick fix for "Socket disconnected" not being handled
+      if (text == "Socket disconnected") {
+          this->setPresence(Offline, m_statusText);
+          emit errorHappened(m_accountId,"Socket disconnected");
+        }
+
       qDebug().nospace() << "MyXmppClient(): [" << qPrintable(typeStr) << "] " << text;
     }
 

@@ -25,8 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "MyXmppClient.h"
 
-const bool xmppDebugEnabled = true;
-
 MyXmppClient::MyXmppClient(MyCache *lCache,ContactListManager *lContacts, EventsManager *lEvents) : QObject(0) {
   xmppClient = new QXmppClient( this );
   QObject::connect( xmppClient, SIGNAL(stateChanged(QXmppClient::State)), this, SLOT(clientStateChanged(QXmppClient::State)) );
@@ -60,8 +58,7 @@ MyXmppClient::MyXmppClient(MyCache *lCache,ContactListManager *lContacts, Events
                     this, SLOT(initVCard(const QXmppVCardIq &)),
                     Qt::UniqueConnection  );
 
-  if (xmppDebugEnabled)
-    connect(xmppClient,SIGNAL(logMessage(QXmppLogger::MessageType,QString)),this,SLOT(logMessageReceived(QXmppLogger::MessageType,QString)));
+  connect(xmppClient,SIGNAL(logMessage(QXmppLogger::MessageType,QString)),this,SLOT(logMessageReceived(QXmppLogger::MessageType,QString)));
 }
 
 MyXmppClient::~MyXmppClient() {
