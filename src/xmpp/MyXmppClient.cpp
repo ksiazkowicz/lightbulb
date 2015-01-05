@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "MyXmppClient.h"
 
-const bool xmppDebugEnabled = false;
+const bool xmppDebugEnabled = true;
 
 MyXmppClient::MyXmppClient(MyCache *lCache,ContactListManager *lContacts, EventsManager *lEvents) : QObject(0) {
   xmppClient = new QXmppClient( this );
