@@ -420,7 +420,7 @@ int XmppConnectivity::getGlobalUnreadCount() {
   ChatsItemModel* currentChat;
   for (int i=0;i<chats->rowCount();i++) {
       currentChat = (ChatsItemModel*)chats->getElementByID(i);
-      count = count+ currentChat->unread();
+      count += currentChat->unread();
     }
   currentChat = 0;
   return count;
@@ -562,10 +562,11 @@ void XmppConnectivity::setGlobalAway() {
 
 void XmppConnectivity::restoreAllPrevStatuses() {
     // iterate through list
-    for (int i=0; i<autoAwayCache.count(); i++) {
+    foreach (const QString accountId,autoAwayCache) {
         // call "restorePreviousStatus" for every account
-        this->restorePreviousStatus(autoAwayCache.at(i));
+        this->restorePreviousStatus(accountId);
       }
+
     // reset the cache
     autoAwayCache.clear();
     restoringNeeded = false;
