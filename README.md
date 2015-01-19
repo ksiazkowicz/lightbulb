@@ -28,6 +28,6 @@ Lots of UI elements are based on **Nokia Icon Toolkit** to maintain native desig
 - Core - builds fine and even works
 - UI - work-in-progress, lots of placeholders, nothing usable, really
 - System integration: 
---* notifications in BlackBerry hub
+  * notifications in BlackBerry hub
 - Deployment - fine, thanks
 - Runs? - yup, I'm surprised as well
