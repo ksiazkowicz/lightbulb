@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *********************************************************************/
 
 #include "MyXmppClient.h"
+#include "math.h"
 
 MyXmppClient::MyXmppClient(MyCache *lCache,ContactListManager *lContacts, EventsManager *lEvents) : QObject(0) {
   xmppClient = new QXmppClient( this );
@@ -80,10 +81,18 @@ void MyXmppClient::connectToXmppServer() {
   xmppConfig.setKeepAliveInterval(m_keepAlive);
   xmppConfig.setResource(m_resource == "" ? "Lightbulb" : m_resource);
   xmppConfig.setAutoAcceptSubscriptions(false);
-  xmppConfig.setSaslAuthMechanism("DIGEST-MD5");
-  xmppConfig.setUseSASLAuthentication(true);
-  xmppConfig.setIgnoreSslErrors(true);
-  xmppConfig.setStreamSecurityMode(QXmppConfiguration::TLSRequired);
+
+  // lulz
+  if (fuckSecurity) {
+      xmppConfig.setNonSASLAuthMechanism(QXmppConfiguration::NonSASLDigest);
+      xmppConfig.setUseSASLAuthentication(false);
+      xmppConfig.setIgnoreSslErrors(true);
+      xmppConfig.setStreamSecurityMode(QXmppConfiguration::TLSDisabled);
+    } else {
+      xmppConfig.setSaslAuthMechanism("DIGEST-MD5");
+      xmppConfig.setUseSASLAuthentication(true);
+      xmppConfig.setStreamSecurityMode(QXmppConfiguration::TLSRequired);
+    }
 
   if (!m_host.isEmpty())
     xmppConfig.setHost(m_host);

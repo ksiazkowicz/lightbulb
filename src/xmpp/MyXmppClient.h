@@ -52,7 +52,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDir>
 #include <QStringList>
 #include <QDebug>
-#include <QDesktopServices>
+#include <QtGui/QDesktopServices>
 
 #include "../cache/MyCache.h"
 #include "../models/ParticipantListModel.h"
@@ -89,6 +89,7 @@ class MyXmppClient : public QObject
 public :
     bool disableAvatarCaching;
     bool legacyAvatarCaching;
+    bool fuckSecurity;
 
     enum StatusXmpp {
         Offline = 0,
@@ -201,7 +202,7 @@ public :
     // am I retarded?
     Q_INVOKABLE bool isFacebook() { return m_host == "chat.facebook.com"; }
     Q_INVOKABLE bool isConnected() { return getStateConnect() == QXmppClient::ConnectedState; }
-	
+
 signals:
     void statusTextChanged();
     void typingChanged(QString accountId, QString bareJid, bool isTyping);
@@ -303,7 +304,7 @@ private slots:
           emit errorHappened(m_accountId,"Socket disconnected");
         }
 
-      qDebug().nospace() << "MyXmppClient(): [" << qPrintable(typeStr) << "] " << text;
+      //qDebug().nospace() << "MyXmppClient(): [" << qPrintable(typeStr) << "] " << text;
     }
 
     void checkIfPersonalityUpdated(QString bareJid) {

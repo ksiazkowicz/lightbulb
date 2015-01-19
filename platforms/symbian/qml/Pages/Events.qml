@@ -72,8 +72,6 @@ Page {
 
                         Repeater { delegate: AccountDelegate {} model: settings.accounts }
 
-                        Component.onCompleted: console.log(settings.accounts.count())
-
                         // retarded fix for UI being misaligned when there are no accounts
                         Rectangle {
                             width: settings.accounts.count() > 0 ? 0 : 1;

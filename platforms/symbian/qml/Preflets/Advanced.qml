@@ -108,9 +108,20 @@ Item {
             text: qsTr("Enable logging to file")
             checked: settings.gBool("advanced","logToFile")
             platformInverted: main.platformInverted
-            onCheckedChanged: {
+            onCheckedChanged: if (settings.gBool("advanced","logToFile") != checked) { // no need to run this when app starts
                 settings.sBool(checked,"advanced","logToFile")
                 if (!vars.isRestartRequired) vars.isRestartRequired = true;
+            }
+        }
+
+        CheckBox {
+            id: fuckSecurity
+            text: qsTr("Force insecure auth")
+            checked: settings.gBool("advanced","fuckSecurity")
+            platformInverted: main.platformInverted
+            onCheckedChanged: {
+                settings.sBool(checked,"advanced","fuckSecurity")
+                xmppConnectivity.updateFuckSecuritySetting(checked)
             }
         }
 

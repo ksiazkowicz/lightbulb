@@ -112,6 +112,7 @@ public slots:
     Q_INVOKABLE void pushSystemError(QString errorString) { events->appendError("{SYSTEM}","System",errorString); }
     Q_INVOKABLE void pushUpdate(QString version, QString date) { events->appendUpdate(true,version,date); }
     Q_INVOKABLE void pushNoUpdate() { events->appendUpdate(false); }
+    Q_INVOKABLE void notificationSystemTest() { emit pushedSystemNotification("sex","drugs","rock&roll"); }
 
     Q_INVOKABLE QString getAvatarByJid(QString bareJid) { return lCache->getAvatarCache(bareJid); }
 
@@ -150,6 +151,7 @@ public slots:
 	
     Q_INVOKABLE void updateAvatarCachingSetting(bool setting);
     Q_INVOKABLE void updateLegacyAvatarCachingSetting(bool setting);
+    Q_INVOKABLE void updateFuckSecuritySetting(bool setting);
     Q_INVOKABLE void updateKeepAliveSetting(int keepAlive);
 
     Q_INVOKABLE void updateMyData(QString jid);

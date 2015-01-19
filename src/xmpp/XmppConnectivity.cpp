@@ -52,6 +52,8 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
   connect(events,SIGNAL(pushedSystemNotification(QString,QString,QString)),this,SIGNAL(pushedSystemNotification(QString,QString,QString)));
   connect(contacts,SIGNAL(favUserStatusChanged(QString,QString,QString,QString)),events,SLOT(appendUserStatusChange(QString,QString,QString,QString)));
 
+  qDebug() << "Found" << lSettings->accountsCount() << "accounts";
+
   for (int i=0; i<lSettings->accountsCount(); i++)
       initializeAccount(lSettings->getAccount(i)->grid(),lSettings->getAccount(i));
 }
@@ -109,8 +111,10 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
       clients->value(index)->setPresence(MyXmppClient::Online,lSettings->get("behavior","lastStatus").toString());
     }
 
+  // load advanced settings
   clients->value(index)->disableAvatarCaching = lSettings->get("behavior","disableAvatarCaching").toBool();
   clients->value(index)->legacyAvatarCaching = lSettings->get("behavior","legacyAvatarCaching").toBool();
+  clients->value(index)->fuckSecurity = lSettings->get("advanced","fuckSecurity").toBool();
 
   delete account;
   return true;
@@ -451,6 +455,14 @@ void XmppConnectivity::updateKeepAliveSetting(int keepAlive) {
   for (i = clients->begin(); i != clients->end(); i++) {
       if (clients->value(i.key()) != 0)
         clients->value(i.key())->setKeepAlive(keepAlive);
+    }
+}
+
+void XmppConnectivity::updateFuckSecuritySetting(bool setting) {
+  QMap<QString,MyXmppClient*>::iterator i;
+  for (i = clients->begin(); i != clients->end(); i++) {
+      if (clients->value(i.key()) != 0)
+        clients->value(i.key())->fuckSecurity = setting;
     }
 }
 
