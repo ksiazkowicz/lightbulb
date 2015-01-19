@@ -25,48 +25,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QtGui/QPixmap>
 #include <QUrl>
 
-// import different QML stuff for Qt 5 and Qt 4
-#if QT_VERSION < 0x050000
 #include <QtDeclarative/QDeclarativeContext>
 #include <QtDeclarative/QDeclarativeView>
 #include <QtDeclarative/qdeclarative.h>
 #include <qmlapplicationviewer.h>
-#else
-#include <QQmlApplicationEngine>
-#include <QtQml>
-#endif
 
-#include "xmpp/MyXmppClient.h"
+#include "../xmpp/MyXmppClient.h"
 
-#include "models/AccountsListModel.h"
-#include "models/RosterItemFilter.h"
-#include "models/MsgListModel.h"
-#include "models/NetworkCfgListModel.h"
-#include "models/ParticipantListModel.h"
-#include "models/EventListModel.h"
-#include "models/ServiceListModel.h"
+#include "../models/AccountsListModel.h"
+#include "../models/RosterItemFilter.h"
+#include "../models/MsgListModel.h"
+#include "../models/NetworkCfgListModel.h"
+#include "../models/ParticipantListModel.h"
+#include "../models/EventListModel.h"
+#include "../models/ServiceListModel.h"
 
-#include "cache/QMLVCard.h"
-#include "database/Settings.h"
+#include "../cache/QMLVCard.h"
+#include "../database/Settings.h"
 
-#ifdef Q_OS_SYMBIAN
-#include "QAvkonHelper.h"
+#include "../avkon/QAvkonHelper.h"
 #include <QSplashScreen>
-#include "FluorescentLogger.h"
-#endif
+#include "../FluorescentLogger.h"
 
-#include "database/DatabaseManager.h"
-#include "xmpp/XmppConnectivity.h"
-#include "EmoticonParser.h"
-#include "UpdateManager.h"
-#include "avkon/NetworkManager.h"
-#include "database/MigrationManager.h"
-#include "xmpp/EventsManager.h"
-
-#ifdef Q_OS_SAILFISH
-#include <sailfishapp.h>
-#include <QGuiApplication>
-#endif
+#include "../database/DatabaseManager.h"
+#include "../xmpp/XmppConnectivity.h"
+#include "../EmoticonParser.h"
+#include "../UpdateManager.h"
+#include "../avkon/NetworkManager.h"
+#include "../database/MigrationManager.h"
+#include "../xmpp/EventsManager.h"
 
 FluorescentLogger debugger;
 
@@ -76,11 +63,7 @@ void debug(QtMsgType type, const char *msg) {
 
 Q_DECL_EXPORT int main(int argc, char *argv[]) {
     // initialize QApplication
-    #ifdef Q_OS_SAILFISH
-    QGuiApplication *app = SailfishApp::application(argc,argv);
-    #else
     QApplication* app = new QApplication(argc, argv);
-    #endif
 
     // initialize settings
     Settings settings;
@@ -89,19 +72,13 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     if (settings.gBool("advanced","logToFile")) {
       debugger.start();
       debugger.initLog();
-      #if QT_VERSION < 0x050000
       qInstallMsgHandler(debug);
-      #else
-      qInstallMessageHandler(debug);
-      #endif
     }
 
 
-    // if Q_OS_SYMBIAN, display a splashscreen
-    #ifdef Q_OS_SYMBIAN
+    // display a splashscreen
     QSplashScreen *splash = new QSplashScreen(QPixmap(":/splash"));
     splash->show();
-    #endif
 
     // expose C++ classes to QML
     qmlRegisterType<Settings>("lightbulb", 1, 0, "Settings" );
@@ -120,24 +97,13 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     qmlRegisterUncreatableType<MyXmppClient>("lightbulb", 1, 0, "XmppClient", "Use XmppConnectivity.useClient(accountId) instead" );
     qmlRegisterUncreatableType<EventsManager>("lightbulb", 1, 0, "EventsManager", "Use XmppConnectivity.events" );
 
-    #if QT_VERSION < 0x050000
     QmlApplicationViewer* viewer = new QmlApplicationViewer();
-    #else
-    #ifdef Q_OS_SAILFISH
-    QQuickView *viewer = SailfishApp::createView();
-    QObject::connect(viewer->engine(), SIGNAL(quit()), app, SLOT(quit()));
-    #else
-    QQmlApplicationEngine* viewer = new QQmlApplicationEngine();
-    #endif
-    #endif
 
-    #ifdef Q_OS_SYMBIAN
     CAknAppUi* appUi = dynamic_cast<CAknAppUi*> (CEikonEnv::Static()->AppUi());
     QAvkonHelper avkon(viewer,appUi);
     viewer->rootContext()->setContextProperty("avkon", &avkon);
 
     qmlRegisterType<ClipboardAdapter>("lightbulb", 1, 0, "Clipboard" );
-    #endif
 
     // initialize emoticon parser
     EmoticonParser parser;
@@ -158,8 +124,6 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     XmppConnectivity xmpp;
     viewer->rootContext()->setContextProperty("xmppConnectivity",&xmpp);
 
-
-    #if QT_VERSION < 0x050000
     // Symbian workarounds
     viewer->rootContext()->setContextProperty("appVersion",QString(VERSION).mid(1,5));
     viewer->rootContext()->setContextProperty("buildDate",QString(BUILDDATE).mid(1,10));
@@ -169,21 +133,14 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     viewer->viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
     viewer->viewport()->setAttribute(Qt::WA_NoSystemBackground);
     viewer->setProperty("orientationMethod", 1);
-    #else
-    // Qt5 cool stuff
-    viewer->rootContext()->setContextProperty("appVersion",VERSION);
-    viewer->rootContext()->setContextProperty("buildDate",BUILDDATE);
-    #endif
 
     // initialize main page and fullscreen mode
     viewer->setSource(QUrl(QLatin1String("qrc:/qml/main.qml")));
     viewer->showFullScreen();
 
     // ok, done, hide the splashscreen
-    #ifdef Q_OS_SYMBIAN
     splash->finish(viewer);
     splash->deleteLater();
-    #endif
 
     return app->exec();
 }

@@ -29,7 +29,7 @@
 #ifndef SERVICEITEMFILTER_H
 #define SERVICEITEMFILTER_H
 
-#include <QSortFilterProxyModel>
+#include <QtGui/QSortFilterProxyModel>
 #include "ServiceItemModel.h"
 
 class ServiceItemFilter : public QSortFilterProxyModel

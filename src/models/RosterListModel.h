@@ -27,8 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define ROSTERLISTMODEL_H
 
 #include "rosteritemmodel.h"
-#include "QModelIndexList"
-#include "QStandardItemModel"
+#include <QtCore/QModelIndexList>
+#include <QtGui/QStandardItemModel>
 #include <QDebug>
 
 class RosterListModel : public QStandardItemModel

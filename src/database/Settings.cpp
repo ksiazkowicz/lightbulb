@@ -29,156 +29,173 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDebug>
 
 QString Settings::cacheFolder;
+
+#ifdef Q_OS_BLACKBERRY
+QString Settings::confFile = QDir::currentPath() + QDir::separator() + "data/Settings.conf";
+#else
 QString Settings::confFile = QDir::currentPath() + QDir::separator() + "Settings.conf";
+#endif
 
 Settings::Settings(QObject *parent) : QSettings(Settings::confFile, QSettings::NativeFormat , parent) {
-    alm = new AccountsListModel(this);
-    this->initListOfAccounts();
+  alm = new AccountsListModel(this);
+  this->initListOfAccounts();
 
-    cacheFolder = QDir::currentPath() + QDir::separator() + QString("cache");
+#ifdef Q_OS_BLACKBERRY
+  cacheFolder = QDir::currentPath() + QDir::separator() + QString("data/cache");
+#else
+  cacheFolder = QDir::currentPath() + QDir::separator() + QString("cache");
+#endif
 
-    if (get("paths","cache") != "")
-      cacheFolder = get("paths","cache").toString();
+  if (get("paths","cache") != "")
+    cacheFolder = get("paths","cache").toString();
 }
 
 /*************************** (generic settings) **************************/
 QVariant Settings::get(QString group, QString key) {
-    beginGroup( group );
-    QVariant ret = value(key,false);
-    endGroup();
-    return ret;
+  beginGroup( group );
+  QVariant ret = value(key,false);
+  endGroup();
+  return ret;
 }
 void Settings::set(QVariant data, QString group, QString key) {
-    beginGroup(group);
-    setValue(key,data);
-    endGroup();
+  beginGroup(group);
+  setValue(key,data);
+  endGroup();
+
+  this->sync();
 }
 
 /******** ACCOUNT RELATED SHIT *******/
 QStringList Settings::getListAccounts() {
-    beginGroup( "accounts" );
-    QStringList acc = value( "accounts", QStringList() ).toStringList();
-    endGroup();
-    return acc;
+  beginGroup( "accounts" );
+  QStringList acc = value( "accounts", QStringList() ).toStringList();
+  endGroup();
+  return acc;
 }
 /*-------------------*/
 void Settings::addAccount( const QString &acc ) {
-    beginGroup( "accounts" );
-    QVariant retList = value( "accounts", QStringList() );
-    QStringList sl = retList.toStringList();
-    if( sl.indexOf(acc) < 0 ) {
-        sl.append(acc);
-        setValue( "accounts", QVariant(sl) );
+  beginGroup( "accounts" );
+  QVariant retList = value( "accounts", QStringList() );
+  QStringList sl = retList.toStringList();
+  if( sl.indexOf(acc) < 0 ) {
+      sl.append(acc);
+      setValue( "accounts", QVariant(sl) );
     }
-    endGroup();
-    emit accountAdded(acc);
+  endGroup();
+  emit accountAdded(acc);
+
+  this->sync();
 }
 void Settings::removeAccount( const QString &acc ) {
-    // remove account from config file
-    beginGroup(acc);
-    remove("");
-    endGroup();
+  // remove account from config file
+  beginGroup(acc);
+  remove("");
+  endGroup();
 
-    // remove account from list
-    beginGroup( "accounts" );
-    QVariant retList = value( "accounts", QStringList() );
-    QStringList sl = retList.toStringList();
-    int index = sl.indexOf(acc);
-    if( index >= 0 ) {
-        sl.removeOne(acc);
-        setValue( "accounts", QVariant(sl) );
+  // remove account from list
+  beginGroup( "accounts" );
+  QVariant retList = value( "accounts", QStringList() );
+  QStringList sl = retList.toStringList();
+  int index = sl.indexOf(acc);
+  if( index >= 0 ) {
+      sl.removeOne(acc);
+      setValue( "accounts", QVariant(sl) );
     }
-    endGroup();
+  endGroup();
 
-    int indxItem = -1;
-    AccountsItemModel *itemExists = (AccountsItemModel*)alm->find( acc, indxItem );
-    if( itemExists ) if( indxItem >= 0 ) alm->takeRow( indxItem );
-    emit accountsListChanged();
-    emit accountRemoved(acc);
+  int indxItem = -1;
+  AccountsItemModel *itemExists = (AccountsItemModel*)alm->find( acc, indxItem );
+  if( itemExists ) if( indxItem >= 0 ) alm->takeRow( indxItem );
+  emit accountsListChanged();
+  emit accountRemoved(acc);
+
+  this->sync();
 }
 
 void Settings::initListOfAccounts() {
-    beginGroup( "accounts" );
-    QStringList listAcc = value("accounts",QStringList()).toStringList();
-    endGroup();
+  beginGroup( "accounts" );
+  QStringList listAcc = value("accounts",QStringList()).toStringList();
+  endGroup();
 
-    alm->clear();
+  alm->clear();
 
-    QStringList::const_iterator itr = listAcc.begin();
-    while ( itr != listAcc.end() ) {
-        QString grid = *itr;
-        itr++;
+  QStringList::const_iterator itr = listAcc.begin();
+  while ( itr != listAcc.end() ) {
+      QString grid = *itr;
+      itr++;
 
-        QString name = get(grid,"name").toString();
-        QString icon = get(grid,"icon").toString();
-        QString jid = get(grid,"jid").toString();
-        QString passwd = get(grid,"passwd").toString();
+      QString name = get(grid,"name").toString();
+      QString icon = get(grid,"icon").toString();
+      QString jid = get(grid,"jid").toString();
+      QString passwd = get(grid,"passwd").toString();
 
-        QString host = get(grid,"host").toString();
-        int port = get(grid,"port").toInt();
-        QString resource = get(grid,"resource").toString();
-        bool isManuallyHostPort = get(grid,"use_host_port").toBool();
+      QString host = get(grid,"host").toString();
+      int port = get(grid,"port").toInt();
+      QString resource = get(grid,"resource").toString();
+      bool isManuallyHostPort = get(grid,"use_host_port").toBool();
 
-        AccountsItemModel *aim = new AccountsItemModel( grid, name, icon, jid, passwd, resource, host, port, isManuallyHostPort, this );
-        alm->append(aim);
+      AccountsItemModel *aim = new AccountsItemModel( grid, name, icon, jid, passwd, resource, host, port, isManuallyHostPort, this );
+      alm->append(aim);
     }
-    emit accountsListChanged();
+  emit accountsListChanged();
 }
 
 void Settings::setAccount(
-        QString _grid, QString _name, QString _icon,
-        QString _jid,
-        QString _pass,
-        bool _connectOnStart,
-        QString _resource,
-        QString _host,
-        QString _port,
-        bool manuallyHostPort) //Q_INVOKABLE
+    QString _grid, QString _name, QString _icon,
+    QString _jid,
+    QString _pass,
+    bool _connectOnStart,
+    QString _resource,
+    QString _host,
+    QString _port,
+    bool manuallyHostPort) //Q_INVOKABLE
 {
-    bool isNew = false;
-    beginGroup( "accounts" );
+  bool isNew = false;
+  beginGroup( "accounts" );
 
-    QVariant retList = value( "accounts", QStringList() );
-    QStringList sl = retList.toStringList();
-    if( sl.indexOf(_grid) < 0 )
-        isNew = true;
-    endGroup();
+  QVariant retList = value( "accounts", QStringList() );
+  QStringList sl = retList.toStringList();
+  if( sl.indexOf(_grid) < 0 )
+    isNew = true;
+  endGroup();
 
-    set(QVariant(_name),_grid,"name");
-    set(QVariant(_icon),_grid,"icon");
-    set(QVariant(_jid),_grid,"jid");
-    set(QVariant(_pass),_grid,"passwd");
+  set(QVariant(_name),_grid,"name");
+  set(QVariant(_icon),_grid,"icon");
+  set(QVariant(_jid),_grid,"jid");
+  set(QVariant(_pass),_grid,"passwd");
 
-    set(QVariant(_resource),_grid,"resource");
-    set(QVariant(_host),_grid,"host");
-    set(QVariant(manuallyHostPort),_grid,"use_host_port");
-    set(QVariant(_connectOnStart),_grid,"connectOnStart");
+  set(QVariant(_resource),_grid,"resource");
+  set(QVariant(_host),_grid,"host");
+  set(QVariant(manuallyHostPort),_grid,"use_host_port");
+  set(QVariant(_connectOnStart),_grid,"connectOnStart");
 
-    bool ok = false;
-    int p = _port.toInt(&ok);
-    if( ok ) { set( QVariant(p), _grid, "port" ); }
+  bool ok = false;
+  int p = _port.toInt(&ok);
+  if( ok ) { set( QVariant(p), _grid, "port" ); }
 
-    AccountsItemModel* account;
+  AccountsItemModel* account;
 
-    if (isNew) {
-        account = new AccountsItemModel();
-        account->setGRID(_grid);
+  if (isNew) {
+      account = new AccountsItemModel();
+      account->setGRID(_grid);
     } else
-        account = (AccountsItemModel*)alm->find(_grid);
+    account = (AccountsItemModel*)alm->find(_grid);
 
-    account->setHost(_host);
-    account->setIcon(_icon);
-    account->setJid(_jid);
-    account->setPasswd(_pass);
-    account->setManuallyHostPort(manuallyHostPort);
-    account->setPort(p);
+  account->setHost(_host);
+  account->setIcon(_icon);
+  account->setJid(_jid);
+  account->setPasswd(_pass);
+  account->setManuallyHostPort(manuallyHostPort);
+  account->setPort(p);
 
-    if (isNew) {
+  if (isNew) {
       alm->append(account);
       emit accountsListChanged();
       addAccount(_grid);
     } else
-      emit accountEdited(_grid);
+    emit accountEdited(_grid);
+
+  this->sync();
 }
 
 AccountsItemModel* Settings::getAccount(int index) {
@@ -202,9 +219,9 @@ AccountsItemModel* Settings::getAccountByID(QString grid) {
 }
 
 int Settings::getAccountId(QString grid) {
-    return getListAccounts().indexOf(grid);
+  return getListAccounts().indexOf(grid);
 }
 
 QString Settings::getJidByIndex(int index) {
-    return getListAccounts().at(index);
+  return getListAccounts().at(index);
 }

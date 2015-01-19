@@ -41,6 +41,8 @@
 
 const quint8 RTP_VERSION = 0x02;
 
+using namespace std;
+
 /// Parses an RTP packet.
 ///
 /// \param ba

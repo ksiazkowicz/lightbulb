@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef SERVICEITEMMODEL_H
 #define SERVICEITEMMODEL_H
 
-#include "QStandardItem"
+#include <QtGui/QStandardItem>
 
 class ServiceItemModel : public QStandardItem
 {

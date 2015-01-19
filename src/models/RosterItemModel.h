@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef ROSTERITEMMODEL_H
 #define ROSTERITEMMODEL_H
 
-#include "QStandardItem"
+#include <QtGui/QStandardItem>
 #include <QDebug>
 
 class RosterItemModel : public QStandardItem

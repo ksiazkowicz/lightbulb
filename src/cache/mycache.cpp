@@ -24,73 +24,76 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "mycache.h"
 #include <QBuffer>
-#include <QImageReader>
+#include <QtGui/QImageReader>
 #include <QFile>
 #include <QDebug>
 
 MyCache::MyCache(QString path, QObject *parent) : StoreVCard(parent) {
-    cachePath = (path == "" || path == "false") ? QDir::currentPath() + QString("/cache") : path;
-
-    this->setCachePath( cachePath );
+#ifdef Q_OS_BLACKBERRY
+  cachePath = (path == "" || path == "false") ? QDir::currentPath() + QString("/data/cache") : path;
+#else
+  cachePath = (path == "" || path == "false") ? QDir::currentPath() + QString("/cache") : path;
+#endif
+  this->setCachePath( cachePath );
 }
 
 bool MyCache::createHomeDir() const {
-    bool retValue = false;
+  bool retValue = false;
 
-    QDir cD(cachePath);
-    if (cD.exists() == false) {
-        if (!cD.mkdir(cachePath+"/")) {
-            qDebug() << "trying" << cachePath;
-            qCritical() << "Error: Cannot create cache directory!" << cachePath;
-            return retValue;
+  QDir cD(cachePath);
+  if (cD.exists() == false) {
+      if (!cD.mkdir(cachePath+"/")) {
+          qDebug() << "trying" << cachePath;
+          qCritical() << "Error: Cannot create cache directory!" << cachePath;
+          return retValue;
         }
     }
 
-    retValue = true;
-    return retValue;
+  retValue = true;
+  return retValue;
 }
 
 
 bool MyCache::addCacheJid(const QString &jid) {
-    if( this->existsCacheJid(jid) )
-        return true;
+  if( this->existsCacheJid(jid) )
+    return true;
 
-    QString jidCache = cachePath + "\\" + jid;
-    QDir jD( jidCache );
-    if( ! jD.mkdir(jidCache) ) {
-        qCritical() << "Error: Cannot create cache directory: " << jidCache;
-        return false;
+  QString jidCache = cachePath + "\\" + jid;
+  QDir jD( jidCache );
+  if( ! jD.mkdir(jidCache) ) {
+      qCritical() << "Error: Cannot create cache directory: " << jidCache;
+      return false;
     }
 
-    return true;
+  return true;
 }
 
 bool MyCache::setAvatarCache(QString jid, const QByteArray &avatar) {
-    if (!this->existsCacheJid(jid))
-      return false;
-
-    QBuffer buffer;
-    buffer.setData( avatar );
-    buffer.open(QIODevice::ReadOnly);
-    QImageReader imageReader(&buffer);
-    QImage avatarImage = imageReader.read();
-
-    QString avatarJid = cachePath + "/" + jid + "/" + QString("avatar.png");
-
-    if (avatarImage.size() != QSize(0,0)) {
-      if( avatarImage.save(avatarJid) ) {
-        qDebug() << "avatar saved properly to" << avatarJid;
-        emit avatarUpdated(jid);
-        return true;
-      } else qDebug() << "brick T_T occured while trying to save avatar to" << avatarJid;
-    }
+  if (!this->existsCacheJid(jid))
     return false;
+
+  QBuffer buffer;
+  buffer.setData( avatar );
+  buffer.open(QIODevice::ReadOnly);
+  QImageReader imageReader(&buffer);
+  QImage avatarImage = imageReader.read();
+
+  QString avatarJid = cachePath + "/" + jid + "/" + QString("avatar.png");
+
+  if (avatarImage.size() != QSize(0,0)) {
+      if( avatarImage.save(avatarJid) ) {
+          qDebug() << "avatar saved properly to" << avatarJid;
+          emit avatarUpdated(jid);
+          return true;
+        } else qDebug() << "brick T_T occured while trying to save avatar to" << avatarJid;
+    }
+  return false;
 }
 
 QString MyCache::getAvatarCache(const QString &jid) const {
-    QString avatarJid = cachePath + "/" + jid + "/" + QString("avatar.png");
-    if (QFile::exists(avatarJid))
-      return "file:///" + avatarJid;
+  QString avatarJid = cachePath + "/" + jid + "/" + QString("avatar.png");
+  if (QFile::exists(avatarJid))
+    return "file:///" + avatarJid;
 
-    return "qrc:/avatar";
+  return "qrc:/avatar";
 }

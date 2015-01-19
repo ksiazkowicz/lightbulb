@@ -10,8 +10,12 @@ FluorescentLogger::FluorescentLogger(QObject *parent) :
 }
 
 void FluorescentLogger::start() {
+#ifdef Q_OS_BLACKBERRY
+  debugLog = new QFile("/sdcard/fluorescentlog.txt");
+#else
   debugLog = new QFile(QDir::homePath() + QDir::separator() + "LightbulbLog.txt");
-  debugLog->open(QIODevice::WriteOnly | QIODevice::Append);
+#endif
+  debugLog->open(QIODevice::WriteOnly);
 }
 
 void FluorescentLogger::initLog() {

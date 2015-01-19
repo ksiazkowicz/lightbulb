@@ -26,8 +26,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define SERVICELISTMODEL_H
 
 #include "serviceitemmodel.h"
-#include "QModelIndexList"
-#include "QStandardItemModel"
+#include <QtCore/QModelIndexList>
+#include <QtGui/QStandardItemModel>
 
 class ServiceListModel : public QStandardItemModel
 {
