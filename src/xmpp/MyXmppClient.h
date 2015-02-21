@@ -68,6 +68,7 @@ class MyXmppClient : public QObject
     Q_OBJECT
     Q_DISABLE_COPY( MyXmppClient )
     Q_PROPERTY(bool isConnected READ isConnected NOTIFY connectingChanged)
+    Q_PROPERTY(QStringList groups READ getGroups NOTIFY groupsChanged)
 
 
     QXmppClient *xmppClient;
@@ -122,6 +123,7 @@ public :
     Q_INVOKABLE bool addContact(QString bareJid, QString nick, QString group, bool sendSubscribe);
     Q_INVOKABLE bool removeContact( QString bareJid ) { return rosterManager->removeItem( bareJid ); }
     Q_INVOKABLE bool renameContact(QString bareJid, QString name) { return rosterManager->renameItem( bareJid, name ); }
+    Q_INVOKABLE bool setContactGroup(QString bareJid, QString group);
 
     /*--- subscribe ---*/
     Q_INVOKABLE bool subscribe (const QString bareJid) { return rosterManager->subscribe(bareJid); }
@@ -207,6 +209,8 @@ signals:
     void statusTextChanged();
     void typingChanged(QString accountId, QString bareJid, bool isTyping);
     void contactStatusChanged(QString accountId, QString bareJid);
+
+    void groupsChanged();
 
     // related to XmppConnectivity class
     void updateContact(QString m_accountId,QString bareJid,QString property,int count);
@@ -311,6 +315,8 @@ private slots:
       if (bareJid == m_myjid)
         emit iFoundYourParentsGoddamit(m_myjid);
     }
+
+    QStringList getGroups() { return rosterGroups; }
 
 private:
     // functions

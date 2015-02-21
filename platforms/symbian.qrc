@@ -46,6 +46,7 @@
         <file alias="MUC/Query">symbian/qml/Dialogs/MucQueryDialog.qml</file>
         <file alias="Services/Ask">symbian/qml/Dialogs/ServicesDialog.qml</file>
         <file alias="Attachment">symbian/qml/Dialogs/AttachmentDialog.qml</file>
+        <file alias="Contact/Group">symbian/qml/Dialogs/GroupChangeDialog.qml</file>
     </qresource>
     <qresource prefix="/pages">
         <file alias="About">symbian/qml/Pages/AboutPage.qml</file>

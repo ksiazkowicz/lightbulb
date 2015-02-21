@@ -51,6 +51,9 @@ MyXmppClient::MyXmppClient(MyCache *lCache,ContactListManager *lContacts, Events
   contacts = lContacts;
   events = lEvents;
 
+  // add empty group to list, I hope it works
+  rosterGroups << QString("");
+
   entityTime = xmppClient->findExtension<QXmppEntityTimeManager>();
   connect(entityTime,SIGNAL(timeReceived(QXmppEntityTimeIq)),this,SLOT(entityTimeReceivedSlot(QXmppEntityTimeIq)));
 
@@ -530,6 +533,13 @@ bool MyXmppClient::addContact( QString bareJid, QString nick, QString group, boo
         if( sendSubscribe ) rosterManager->subscribe( bareJid );
     }
     return result;
+}
+
+bool MyXmppClient::setContactGroup(QString bareJid, QString group) {
+  QString nick = contacts->getPropertyByJid(m_accountId,bareJid,"name");
+
+  this->addContact(bareJid,nick,group,false);
+  contacts->addContact(m_accountId,bareJid,nick,false,false,group);
 }
 
 // --------- XEP-0202: Entity Time ------------------------------------------------------------------------------------------------

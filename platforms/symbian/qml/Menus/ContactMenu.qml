@@ -74,6 +74,14 @@ ContextMenu {
             onClicked: dialog.createWithProperties("qrc:/dialogs/Contact/Rename",{"accountId": accountId,"contactName": contactName, "contactJid": contactJid})
         }
         MenuItem {
+            text: qsTr("Set group")
+            platformInverted: main.platformInverted
+            enabled: !(isFacebook || !isConnected)
+            height: enabled ? privateStyle.menuItemHeight : 0
+            clip: true
+            onClicked: dialog.createWithProperties("qrc:/dialogs/Contact/Group",{"accountId": accountId,"contactJid": contactJid})
+        }
+        MenuItem {
             text: "Archive"
             platformInverted: main.platformInverted
             onClicked: pageStack.replace("qrc:/pages/Conversation",{"accountId": accountId,"contactName":contactName,"contactJid":contactJid,"isInArchiveMode":true})
