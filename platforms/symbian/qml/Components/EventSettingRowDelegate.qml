@@ -33,6 +33,7 @@ Item {
             iconSource: "toolbar-settings"
 			visible: settingType == "popup" ? false : enabled
 			enabled: visible
+            anchors.verticalCenter: parent.verticalCenter
 			platformInverted: main.platformInverted
 			onClicked: {
 				if (settingType == "sound") {

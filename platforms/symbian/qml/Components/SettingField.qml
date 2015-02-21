@@ -20,7 +20,7 @@ Rectangle {
 
     MouseArea {
         anchors.fill: parent;
-        onClicked: dataInputField.focus = true;
+        onClicked: { dataInputField.focus = false; dataInputField.focus = true; }
     }
 
     Column {
@@ -50,7 +50,6 @@ Rectangle {
                 // set splitscreenY
                 main.splitscreenY = isMovementRequired ? Math.abs(posAndSpace - visibleSpace + settingField.height) : 0
             }
-
 
             Text {
                 color: parent.color

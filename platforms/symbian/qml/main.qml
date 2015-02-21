@@ -131,6 +131,31 @@ PageStackWindow {
     Clipboard           { id: clipboard }
     Notifications       { id: notify }
 
+    /*********************** busy overlay ***************************/
+
+    property bool forceBusyOverlay: false;
+
+    Rectangle {
+        id: busyOverlay
+        color: "black"
+        anchors.fill: parent
+        opacity: 0.5
+        visible: pageStack.busy || forceBusyOverlay
+
+        BusyIndicator {
+            anchors.centerIn: parent;
+            visible: parent.visible
+            width: platformStyle.graphicSizeLarge; height: platformStyle.graphicSizeLarge
+            running: visible
+        }
+
+        states: [
+            State { when: visible; PropertyChanges { target: busyOverlay; opacity: 0.5 } },
+            State { when: !visible; PropertyChanges { target: busyOverlay; opacity: 0.0 } }
+        ]
+        transitions: Transition { NumberAnimation { property: "opacity"; duration: 500 } }
+    }
+
     /************************( stuff to do when running this app )*****************************/
     Component.onCompleted: {
         avkon.switchToApp = settings.gBool("behavior","linkInDiscrPopup")
