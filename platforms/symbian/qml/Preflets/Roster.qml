@@ -87,6 +87,7 @@ Item {
               vars.rosterLayoutAvatar = checked;
            }
         }
+
         Text {
             id: rosterItemHeightText
             text: "Roster item height (" + rosterItemHeight.value + " px)"

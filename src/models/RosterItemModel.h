@@ -67,13 +67,20 @@ public:
       }
 
       void set(const QString &data,userRoles role) {
+        // leave groups empty if contact is favorite
+        if (this->data(IsFavorite).toBool() && role == Groups)
+          return;
+
+        if (role == IsFavorite)
+          setData(QVariant(""),Groups);
+
         // if data is different, set it
         if (this->data(role).toString() != data)
           setData(QVariant(data),role);
         else return;
 
         // if changed data which affects sort data
-        if (role == Name || role == Jid || role == Presence || role == IsFavorite)
+        if (role == Name || role == Jid || role == Presence || role == IsFavorite || role == Groups)
           updateSortData();
       }
 
@@ -81,11 +88,12 @@ public:
         QString newSortData;
 
         // append 0 if contact is favorite
-        if (data(IsFavorite).toBool() == true)
+        if (data(IsFavorite).toBool())
           newSortData += "0";
         else newSortData += "1";
 
         // append presence priority, name and jid
+        newSortData += data(Groups).toString();
         newSortData += QString::number(presencePriority(data(Presence).toString()));
         newSortData += data(Name).toString();
         newSortData += data(Jid).toString();

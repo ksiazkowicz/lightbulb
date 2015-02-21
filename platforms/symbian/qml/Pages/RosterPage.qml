@@ -44,6 +44,22 @@ Page {
         anchors { top: parent.top; left: parent.left; right: parent.right; bottom: rosterSearch.top; }
         model: xmppConnectivity.roster
         delegate: RosterItemDelegate {width: rosterView.width }
+
+        section.property: "groups"
+        section.delegate: Rectangle {
+            width: rosterView.width
+            height: section != "" ? 32 : 0
+            color: "gray"
+            Text {
+                text: section
+                font.pixelSize: platformStyle.fontSizeSmall
+                font.bold: true
+                color: "white"
+                visible: section != ""
+                anchors { left: parent.left; leftMargin: platformStyle.paddingMedium; verticalCenter: parent.verticalCenter }
+            }
+        }
+
     }
 
     ScrollBar {
