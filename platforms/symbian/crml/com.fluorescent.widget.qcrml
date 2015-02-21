@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<repository target="RProperty" uidValue="0xE00AC666">
+    <key int="0x001" ref="Fluorescent/widget/unreadCount"></key>
+	
+    <key int="0x002" ref="Fluorescent/widget/chat1/name"></key>
+	<key int="0x003" ref="Fluorescent/widget/chat2/name"></key>
+	<key int="0x004" ref="Fluorescent/widget/chat3/name"></key>
+	<key int="0x005" ref="Fluorescent/widget/chat4/name"></key>
+	
+	<key int="0x006" ref="Fluorescent/widget/chat1/status"></key>
+	<key int="0x007" ref="Fluorescent/widget/chat2/status"></key>
+	<key int="0x008" ref="Fluorescent/widget/chat3/status"></key>
+	<key int="0x009" ref="Fluorescent/widget/chat4/status"></key>
+	
+	<key int="0x00A" ref="Fluorescent/widget/chat1/unreadCount"></key>
+	<key int="0x00B" ref="Fluorescent/widget/chat2/unreadCount"></key>
+	<key int="0x00C" ref="Fluorescent/widget/chat3/unreadCount"></key>
+	<key int="0x00D" ref="Fluorescent/widget/chat4/unreadCount"></key>
+	
+	<key int="0x00E" ref="Fluorescent/widget/fav1/name"></key>
+	<key int="0x00F" ref="Fluorescent/widget/fav2/name"></key>
+	<key int="0x011" ref="Fluorescent/widget/fav3/name"></key>
+	<key int="0x012" ref="Fluorescent/widget/fav4/name"></key>
+	
+	<key int="0x013" ref="Fluorescent/widget/fav1/status"></key>
+	<key int="0x014" ref="Fluorescent/widget/fav2/status"></key>
+	<key int="0x015" ref="Fluorescent/widget/fav3/status"></key>
+	<key int="0x016" ref="Fluorescent/widget/fav4/status"></key>
+	
+	<key int="0x017" ref="Fluorescent/widget/fav1/unreadCount"></key>
+	<key int="0x018" ref="Fluorescent/widget/fav2/unreadCount"></key>
+	<key int="0x019" ref="Fluorescent/widget/fav3/unreadCount"></key>
+	<key int="0x01A" ref="Fluorescent/widget/fav4/unreadCount"></key>
+	
+	<key int="0x01B" ref="Fluorescent/widget/lastSChange1/name"></key>
+	<key int="0x01C" ref="Fluorescent/widget/lastSChange2/name"></key>
+	<key int="0x01D" ref="Fluorescent/widget/lastSChange3/name"></key>
+	<key int="0x01E" ref="Fluorescent/widget/lastSChange4/name"></key>
+	
+	<key int="0x01F" ref="Fluorescent/widget/lastSChange1/status"></key>
+	<key int="0x021" ref="Fluorescent/widget/lastSChange2/status"></key>
+	<key int="0x022" ref="Fluorescent/widget/lastSChange3/status"></key>
+	<key int="0x023" ref="Fluorescent/widget/lastSChange4/status"></key>
+	
+	<key int="0x024" ref="Fluorescent/widget/lastSChange1/unreadCount"></key>
+	<key int="0x025" ref="Fluorescent/widget/lastSChange2/unreadCount"></key>
+	<key int="0x026" ref="Fluorescent/widget/lastSChange3/unreadCount"></key>
+	<key int="0x027" ref="Fluorescent/widget/lastSChange4/unreadCount"></key>
+	
+</repository>

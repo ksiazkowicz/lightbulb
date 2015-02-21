@@ -55,6 +55,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "../database/MigrationManager.h"
 #include "../xmpp/EventsManager.h"
 
+#include "../avkon/DataPublisher.h"
+
 FluorescentLogger debugger;
 
 void debug(QtMsgType type, const char *msg) {
@@ -74,7 +76,6 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
       debugger.initLog();
       qInstallMsgHandler(debug);
     }
-
 
     // display a splashscreen
     QSplashScreen *splash = new QSplashScreen(QPixmap(":/splash"));
@@ -121,8 +122,12 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     viewer->rootContext()->setContextProperty("settings",&settings);
 
     // initialize xmppconnectivity
-    XmppConnectivity xmpp;
-    viewer->rootContext()->setContextProperty("xmppConnectivity",&xmpp);
+    XmppConnectivity *xmpp = new XmppConnectivity();
+    viewer->rootContext()->setContextProperty("xmppConnectivity",xmpp);
+
+    // initialize DataPublisher
+    DataPublisher *publisher = new DataPublisher("");
+    QObject::connect(xmpp,SIGNAL(unreadCountChanged(int)),publisher,SLOT(unreadCountChanged(int)));
 
     // Symbian workarounds
     viewer->rootContext()->setContextProperty("appVersion",QString(VERSION).mid(1,5));

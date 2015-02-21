@@ -22,7 +22,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *********************************************************************/
 
 #include <QtGui/QApplication>
-#include <QtGui/QSplashScreen>
 #include <QtGui/QPixmap>
 #include <QtDeclarative/QDeclarativeContext>
 #include <QtDeclarative/QDeclarativeView>
@@ -32,13 +31,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Settings.h"
 #include "LightbulbHSWidget.h"
+#include "QAvkonHelper.h"
 #include "SkinSelectorHandler.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-
-    QSplashScreen *splash = new QSplashScreen(QPixmap(":/splash"));
-    splash->show();
 
     // expose C++ classes to QML
     qmlRegisterType<Settings>("lightbulb", 1, 0, "Settings" );
@@ -47,6 +44,9 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
 
     // initialize viewer and set it parameters
     QmlApplicationViewer viewer;
+    CAknAppUi* appUi = dynamic_cast<CAknAppUi*> (CEikonEnv::Static()->AppUi());
+    QAvkonHelper avkon(&viewer,appUi);
+    viewer.rootContext()->setContextProperty("avkon", &avkon);
 
     viewer.setAttribute(Qt::WA_OpaquePaintEvent);
     viewer.setAttribute(Qt::WA_NoSystemBackground);
@@ -57,8 +57,6 @@ Q_DECL_EXPORT int main(int argc, char *argv[]) {
     viewer.setSource( QUrl(QLatin1String("qrc:/qml/main.qml")) );
     viewer.showFullScreen();
 
-    splash->finish(&viewer);
-    splash->deleteLater();
-
     return app.exec();
 }
+

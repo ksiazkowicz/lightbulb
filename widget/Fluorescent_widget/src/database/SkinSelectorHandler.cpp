@@ -36,9 +36,9 @@ SkinSelectorHandler::SkinSelectorHandler(QObject *parent) :
 
 void SkinSelectorHandler::loadAvailableSkins() {
     QStringList skins;
-    QDir dir("C:\\data\\.config\\Fluorescent\\widgets");
+    QDir dir("C:\\data\\.config\\Lightbulb\\widgets");
 
-    if (dir.exists("C:\\data\\.config\\Fluorescent\\widgets")) {
+    if (dir.exists("C:\\data\\.config\\Lightbulb\\widgets")) {
         Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst)) {
             if (info.isDir() && dir.exists(info.absoluteFilePath() + "/settings.txt")) {
                 QString skinName = getSkinName(info.baseName());
@@ -54,7 +54,7 @@ void SkinSelectorHandler::loadAvailableSkins() {
 }
 
 QString SkinSelectorHandler::getSkinName(QString path) {
-    skinVerifier = new QSettings("C:\\data\\.config\\Fluorescent\\widgets\\" + path + "\\settings.txt",QSettings::NativeFormat);
+    skinVerifier = new QSettings("C:\\data\\.config\\Lightbulb\\widgets\\" + path + "\\settings.txt",QSettings::NativeFormat);
     skinVerifier->beginGroup("Details");
     QString skinName = skinVerifier->value("name","-!-404-!-").toString();
     skinVerifier->endGroup();

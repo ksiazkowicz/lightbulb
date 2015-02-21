@@ -21,10 +21,12 @@ public:
 signals:
   
 public slots:
-  void dataChanged(QString key, QVariant &value);
+  void dataChanged(QString key, QVariant value);
+  void unreadCountChanged(int count);
 
 private:
   QValueSpacePublisher *publish;
+  int unreadCount;
   
 };
 

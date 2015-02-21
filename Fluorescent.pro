@@ -131,6 +131,11 @@ symbian {
     include(qmlapplicationviewer/qmlapplicationviewer.pri)
     qtcAddDeployment()
 
+    crmlFiles.sources = platforms/symbian/crml/com.fluorescent.widget.qcrml
+    crmlFiles.path = /resource/qt/crml
+
+    DEPLOYMENT += crmlFiles
+
     qmlPreprocessFolder(platforms/global, @QtQuick1, 1.1)
 
     OTHER_FILES += platforms/symbian/qml/Dialogs/*.* \

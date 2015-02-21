@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QString>
 #include <QLibrary>
 
-const QString DLLName("HSWidgetPlugin0xE00AC666.dll");
+const QString DLLName("HSWidgetPlugin0xE22AC600.dll");
 
 /**
  * Defines the events that may take place for a homescreen widget.

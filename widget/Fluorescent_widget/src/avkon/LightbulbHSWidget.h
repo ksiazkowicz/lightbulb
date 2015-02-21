@@ -44,14 +44,14 @@ public:
     Q_INVOKABLE void publishWidget();
     Q_INVOKABLE void removeWidget() { widget->RemoveWidget(); }
     Q_INVOKABLE bool changeRow(int rowNumber, QString name, int presence,QString accountIcon, int unreadCount, bool renderIfUpdated=true);
-    Q_INVOKABLE void postWidget(int unreadCount, int presence, bool showGlobalUnreadCnt, bool showChatUnreadCnt, bool showStatus, QString accountIcon );
+    Q_INVOKABLE void postWidget(int unreadCount, bool showGlobalUnreadCnt, bool showChatUnreadCnt);
     Q_INVOKABLE void loadSkin(QString path);
     Q_INVOKABLE void renderWidget();
     void bringToFront();
 signals:
-    void HomescreenUpdated();
+    void homescreenUpdated();
 public slots:
-    void handleEvent(QHSWidget*, QHSEvent aEvent ) { publishWidget(); }
+    void handleEvent(QHSWidget*, QHSEvent aEvent ) { publishWidget(); emit homescreenUpdated(); }
     void handleItemEvent(QHSWidget*, QString aTemplateItemName,
                              QHSItemEvent aEvent);
 private:
@@ -72,6 +72,7 @@ private:
     QSvgRenderer* account_facebook;
     QSvgRenderer* account_hangouts;
     QSvgRenderer* account_generic;
+    QSvgRenderer* fluorescent;
     QSvgRenderer* unreadMark;
 
     QPainter*     painter;
@@ -85,7 +86,6 @@ private:
     bool        useNonBuiltInUnreadMark;
     bool        useNonBuiltInAccountIcons;
     bool        showUnreadMarkText;
-    bool        showSmallAccountIcon;
     bool        showContactAccountIcon;
     QPoint      presencePosition;
     QPoint      contactsPosition;
@@ -115,12 +115,9 @@ private:
 
     // widget data
     WidgetDataModel* widgetData;
-    int mPresence;
     int unreadMsgCount;
-    QString accountsIcon;
 
     // widget settings
-    bool showMyPresence;
     bool showGlobalUnreadCount;
     bool showContactUnreadCount;
 };

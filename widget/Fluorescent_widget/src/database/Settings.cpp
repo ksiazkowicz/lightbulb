@@ -1,6 +1,6 @@
 /********************************************************************
 
-src/database/Settings.h
+src/database/Settings.cpp
 -- holds settings of the app and accounts details
 
 Copyright (c) 2013 Maciej Janiszewski
@@ -22,28 +22,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 *********************************************************************/
 
-#ifndef MYSETTINGS_H
-#define MYSETTINGS_H
+#include "Settings.h"
 
-#include <QSettings>
 #include <QDir>
 #include <QDebug>
 
-class Settings : public QSettings
-{
-    Q_OBJECT
-    Q_DISABLE_COPY( Settings )
+QString Settings::cacheFolder;
+QString Settings::confFile = QDir::currentPath() + QDir::separator() + "Settings.conf";
 
-public:
-    explicit Settings(QObject *parent = 0);
+Settings::Settings(QObject *parent) : QSettings(Settings::confFile, QSettings::NativeFormat , parent) {
+    cacheFolder = QDir::currentPath() + QDir::separator() + QString("cache");
 
-    static QString appName;
-    static QString confFolder;
-    static QString confFile;
+    if (get("paths","cache") != "")
+      cacheFolder = get("paths","cache").toString();
+}
 
-    Q_INVOKABLE QVariant get(QString group, QString key);
-    Q_INVOKABLE void     set(QVariant data, QString group, QString key);
-    
-};
-
-#endif // MYSETTINGS_H
+/*************************** (generic settings) **************************/
+QVariant Settings::get(QString group, QString key) {
+    beginGroup( group );
+    QVariant ret = value( key, false );
+    endGroup();
+    return ret;
+}
+void     Settings::set(QVariant data, QString group, QString key) {
+    beginGroup(group);
+    setValue(key,data);
+    endGroup();
+}
