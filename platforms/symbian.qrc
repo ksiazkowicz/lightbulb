@@ -140,6 +140,7 @@
         <file alias="AccountDelegate.qml">symbian/qml/Components/AccountDelegate.qml</file>
         <file alias="SettingField.qml">symbian/qml/Components/SettingField.qml</file>
         <file alias="EventSettingDelegate.qml">symbian/qml/Components/EventSettingDelegate.qml</file>
+        <file alias="EventSettingRowDelegate.qml">symbian/qml/Components/EventSettingRowDelegate.qml</file>
     </qresource>
     <qresource prefix="/networks">
         <file alias="2G">symbian/images/networks/2G.svg</file>
@@ -160,6 +161,7 @@
         <file alias="defaultSkin/infoIcon">symbian/images/convo/infoIcon.svg</file>
         <file alias="defaultSkin/errorIcon">symbian/images/convo/errorIcon.svg</file>
         <file alias="defaultSkin/alertIcon">symbian/images/convo/alertIcon.svg</file>
+        <file alias="defaultSkin/mapIcon">symbian/images/convo/mapIcon.svg</file>
     </qresource>
     <qresource prefix="/smileys">
         <file alias="angry">global/images/smileys/angry.png</file>
