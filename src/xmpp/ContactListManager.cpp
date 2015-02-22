@@ -30,7 +30,12 @@ void ContactListManager::restoreCache() {
     for (int i=0;i<database->sqlRoster->rowCount();i++) {
         // if contact found, add it to list
         QSqlRecord record = database->sqlRoster->record(i);
-        this->addContact(record.value("id_account").toString(),record.value("jid").toString(),record.value("name").toString(),false,record.value("isFavorite").toBool());
+
+        // but wait, maybe it's already there
+        RosterItemModel *item = roster->find(record.value("id_account").toString() + ";" + record.value("jid").toString());
+
+        if (item == 0) // it's not :D
+          this->addContact(record.value("id_account").toString(),record.value("jid").toString(),record.value("name").toString(),false,record.value("isFavorite").toBool());
     }
 
     // disconnect the signal, we want it to be done just once in a lifetime~!
@@ -71,13 +76,14 @@ void ContactListManager::addContact(QString acc, QString jid, QString name, bool
 
   // first, check if contact isn't already on the contact list
   RosterItemModel *item = roster->find( acc + ";" + jid );
+
   if (item != 0) {
       // yup, it is, update the name if required, then
       if (item->data(RosterItemModel::Name).toString() != name) {
           item->set(name,RosterItemModel::Name);
         emit contactNameChanged(acc,jid,name);
       }
-      if (item->data(RosterItemModel::Groups).toString() != groups && groups != "") { // retarded hackfix for that stupid bug
+      if (item->data(RosterItemModel::Groups).toString() != groups) {
           item->set(groups,RosterItemModel::Groups);
         }
       return;
@@ -85,7 +91,6 @@ void ContactListManager::addContact(QString acc, QString jid, QString name, bool
   // nope, append it
   RosterItemModel* contact = new RosterItemModel(name,jid,"","qrc:/presence/offline","",acc);
   contact->set(groups,RosterItemModel::Groups);
-
   contact->set(QString::number(isFavorite),RosterItemModel::IsFavorite);
   roster->append(contact);
   roster->sort(0);
