@@ -85,28 +85,6 @@ Item {
               xmppConnectivity.contactGroupingEnabled = checked
            }
         }
-
-        Text {
-            id: rosterItemHeightText
-            text: "Roster item height (" + rosterItemHeight.value + " px)"
-            color: main.textColor
-        }
-        Slider {
-                id: rosterItemHeight
-                stepSize: 1
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: content.width-20
-                maximumValue: 128
-                //minimumValue: 24
-                value: settings.gInt("ui", "rosterItemHeight")
-                orientation: 1
-                platformInverted: main.platformInverted
-
-                onValueChanged: {
-                    settings.sInt(value,"ui", "rosterItemHeight")
-                    vars.rosterItemHeight = value;
-                }
-            }
     }
 }
 
