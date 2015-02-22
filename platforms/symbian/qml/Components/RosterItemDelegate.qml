@@ -13,7 +13,7 @@ Item {
     function favEnd(fav) { return fav === "1" ? "</font>" : ""; }
 
     function groupTag(groups) { return (typeof groups !== 'undefined' && groups !== '' && vars.showGroupTag) ? ("<i> (" + groups + ")</i>") : ""; }
-    function statusTxt(text) { return (text !== "") ? (" · <font color='"+main.midColor+"'><i>" + text + "</i></font>") : ""; }
+    function statusTxt(text) { return (text !== "" && vars.showContactStatusText) ? (" · <font color='"+main.midColor+"'><i>" + text + "</i></font>") : ""; }
     function subTagBegin(type) { return (type == 0) ? "<s>" : ""; }
     function subTagEnd(type) { return (type == 0) ? "</s>" : ""; }
 
@@ -75,6 +75,6 @@ Item {
     MouseArea {
         anchors.fill: parent
         onClicked: pageStack.replace("qrc:/pages/Conversation",{"accountId": accountId,"contactName":_contactName,"contactJid":jid,"isInArchiveMode":false,"contactResource":resource})
-        onPressAndHold: dialog.createWithProperties("qrc:/menus/Roster/Contact",{"accountId": accountId,"contactName":_contactName,"contactJid":jid,"isFavorite":favorite,"contactGroup":groups})
+        onPressAndHold: dialog.createWithProperties("qrc:/menus/Roster/Contact",{"accountId": accountId,"contactName":_contactName,"contactJid":jid,"isFavorite":favorite,"contactGroup":groups,"subscriptionType":subscriptionType})
     }
 }

@@ -29,9 +29,7 @@ import "../Components"
 
 Page {
     id: rosterPage
-    onStatusChanged: if (rosterPage.status === PageStatus.Inactive) {
-                         xmppConnectivity.setFilter("");
-                     }
+    onStatusChanged: if (rosterPage.status === PageStatus.Inactive) { xmppConnectivity.setFilter(""); rosterSearch.text = ""; }
 
     property string selectedJid
 

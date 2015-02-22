@@ -35,6 +35,7 @@ ContextMenu {
     property string contactGroup: ""
     property bool isFavorite: false
     property bool shouldICareAnyway: false
+    property int subscriptionType: 3
 
     property bool isFacebook: xmppConnectivity.useClient(accountId).isFacebook()
     property bool isConnected: xmppConnectivity.useClient(accountId).isConnected
@@ -117,26 +118,19 @@ ContextMenu {
             }
         }
         MenuItem {
-            text: qsTr("Subscribe")
+            text: subscriptionType != 3 ? qsTr("Subscribe") : qsTr("Unsubscribe")
             platformInverted: main.platformInverted
             enabled: !(isFacebook || !isConnected)
             height: enabled ? privateStyle.menuItemHeight : 0
             clip: true
             onClicked: {
-                xmppConnectivity.useClient(accountId).subscribe(contactJid)
-                avkon.showPopup("Sent sub. request to",contactName)
-            }
-        }
-        MenuItem {
-            text: qsTr("Unsubscribe")
-            platformInverted: main.platformInverted
-            enabled: !(isFacebook || !isConnected)
-            height: enabled ? privateStyle.menuItemHeight : 0
-            clip: true
-            onClicked: {
-                contactMenu.close()
-                xmppConnectivity.useClient(accountId).unsubscribe(contactJid)
-                avkon.showPopup(contactName,"is no longer subscribed")
+                if (subscriptionType != 3) {
+                    xmppConnectivity.useClient(accountId).subscribe(contactJid)
+                    avkon.showPopup("Sent sub. request to",contactName)
+                } else {
+                    xmppConnectivity.useClient(accountId).unsubscribe(contactJid)
+                    avkon.showPopup(contactName,"is no longer subscribed")
+                }
             }
         }
     }
