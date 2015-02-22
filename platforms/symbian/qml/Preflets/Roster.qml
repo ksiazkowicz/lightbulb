@@ -32,31 +32,6 @@ Item {
         spacing: 5
         anchors { top: parent.top; topMargin: 10; left: parent.left; leftMargin: 10; right: parent.right; rightMargin: 10 }
         CheckBox {
-           id: markUnread
-           text: qsTr("Mark contacts with unread msg.")
-           checked: settings.gBool("ui", "markUnread")
-           platformInverted: main.platformInverted
-           onCheckedChanged: {
-              settings.sBool(checked,"ui", "markUnread")
-               if (!checked) {
-                   unreadCount.enabled = false;
-                   unreadCount.checked = false;
-               } else unreadCount.enabled = true;
-               vars.markUnread = checked;
-           }
-        }
-        CheckBox {
-           id: unreadCount
-           text: qsTr("Show unread count")
-           enabled: markUnread.checked
-           checked: settings.gBool("ui", "showUnreadCount")
-           platformInverted: main.platformInverted
-           onCheckedChanged: {
-              settings.sBool(checked,"ui", "showUnreadCount")
-              vars.showUnreadCount = checked;
-           }
-        }
-        CheckBox {
            id: hideOffline
            text: qsTr("Hide Offline contacts")
            platformInverted: main.platformInverted
@@ -85,6 +60,29 @@ Item {
            onCheckedChanged: {
               settings.sBool(checked,"ui", "rosterLayoutAvatar")
               vars.rosterLayoutAvatar = checked;
+           }
+        }
+
+        CheckBox {
+           id: showGroupTag
+           text: qsTr("Show group tag")
+           platformInverted: main.platformInverted
+           checked: settings.gBool("ui", "rosterGroupTag")
+           onCheckedChanged: {
+              settings.sBool(checked,"ui", "rosterGroupTag")
+              vars.showGroupTag = checked;
+           }
+        }
+
+        CheckBox {
+           id: groupContacts
+           text: qsTr("Group contacts")
+           platformInverted: main.platformInverted
+           checked: settings.gBool("ui", "rosterGroupContacts")
+           onCheckedChanged: {
+              settings.sBool(checked,"ui", "rosterGroupContacts")
+              vars.groupContacts = checked;
+              xmppConnectivity.contactGroupingEnabled = checked
            }
         }
 

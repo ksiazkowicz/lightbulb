@@ -43,11 +43,14 @@ public:
         ItemId,
         SortData,
         IsFavorite,
-        Groups
+        Groups,
+        SubscriptionType
       };
 
 public:
       RosterItemModel();
+
+      bool groupContacts;
 
       explicit RosterItemModel( const QString &_contactName,
                                              const QString &_contactJid,
@@ -92,8 +95,11 @@ public:
           newSortData += "0";
         else newSortData += "1";
 
+        // append group name
+        if (groupContacts)
+          newSortData += data(Groups).toString();
+
         // append presence priority, name and jid
-        newSortData += data(Groups).toString();
         newSortData += QString::number(presencePriority(data(Presence).toString()));
         newSortData += data(Name).toString();
         newSortData += data(Jid).toString();

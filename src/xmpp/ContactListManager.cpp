@@ -69,7 +69,7 @@ bool ContactListManager::removeCache() {
 
 // contact list management code
 
-void ContactListManager::addContact(QString acc, QString jid, QString name, bool updateDatabase,bool isFavorite, QString groups) {
+void ContactListManager::addContact(QString acc, QString jid, QString name, bool updateDatabase,bool isFavorite, QString groups, int subscriptionType) {
   // don't debug it while pulling data from cache, it's a mess T_T
   if (updateDatabase)
     qDebug() << "ContactListManager::addContact() called for" << qPrintable(jid) << "at" << qPrintable(acc);
@@ -86,12 +86,20 @@ void ContactListManager::addContact(QString acc, QString jid, QString name, bool
       if (item->data(RosterItemModel::Groups).toString() != groups) {
           item->set(groups,RosterItemModel::Groups);
         }
+
+      if (subscriptionType != 8)
+        item->set(QString::number(subscriptionType),RosterItemModel::SubscriptionType);
+
       return;
   }
   // nope, append it
   RosterItemModel* contact = new RosterItemModel(name,jid,"","qrc:/presence/offline","",acc);
   contact->set(groups,RosterItemModel::Groups);
   contact->set(QString::number(isFavorite),RosterItemModel::IsFavorite);
+
+  if (subscriptionType != 8)
+    contact->set(QString::number(subscriptionType),RosterItemModel::SubscriptionType);
+
   roster->append(contact);
   roster->sort(0);
 
@@ -140,6 +148,24 @@ void ContactListManager::changeName(QString accountId,QString bareJid,QString na
 
   roster->sort(0);
   emit contactNameChanged(accountId,bareJid,name);
+}
+
+void ContactListManager::changeGroups(QString accountId,QString bareJid,QString groups) {
+  RosterItemModel *contact = roster->find(accountId + ";" + bareJid);
+
+  if (contact != 0)
+    contact->set(groups,RosterItemModel::Groups);
+
+  roster->sort(0);
+}
+
+void ContactListManager::changeSubscriptionType(QString accountId,QString bareJid,int subscriptionType) {
+  RosterItemModel *contact = roster->find(accountId + ";" + bareJid);
+
+  if (contact != 0)
+    contact->set(QString::number(subscriptionType),RosterItemModel::SubscriptionType);
+
+  roster->sort(0);
 }
 
 void ContactListManager::rememberResource(QString accountId, QString bareJid, QString resource) {

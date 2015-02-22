@@ -54,6 +54,7 @@ class XmppConnectivity : public QObject
     Q_PROPERTY(int messagesLimit READ getMsgLimit WRITE setMsgLimit NOTIFY msgLimitChanged )
 
     Q_PROPERTY(bool offlineContactsVisibility READ getVisibility WRITE setVisibility NOTIFY visibilityChanged)
+    Q_PROPERTY(bool contactGroupingEnabled READ getGrouping WRITE setGrouping NOTIFY groupingChanged)
 public:
     explicit XmppConnectivity(QObject *parent = 0);
     ~XmppConnectivity();
@@ -87,6 +88,7 @@ signals:
     void msgLimitChanged();
     void widgetDataChanged();
     void visibilityChanged();
+    void groupingChanged();
 
     void unreadCountChanged(int delta);
 
@@ -148,6 +150,9 @@ public slots:
     Q_INVOKABLE bool getVisibility()           { return contacts->getOfflineContactsState(); }
     Q_INVOKABLE void rememberContactResource(QString m_accountId, QString bareJid, QString resource) { contacts->rememberResource(m_accountId,bareJid,resource); }
     Q_INVOKABLE QString restoreResource(QString m_accountId, QString bareJid) { return contacts->restoreResource(m_accountId,bareJid); }
+
+    Q_INVOKABLE void setGrouping(bool state)   { contacts->setGroupContactsState(state); emit rosterChanged(); }
+    Q_INVOKABLE bool getGrouping()             { return contacts->getGroupContactsState(); }
 	
     Q_INVOKABLE void updateAvatarCachingSetting(bool setting);
     Q_INVOKABLE void updateLegacyAvatarCachingSetting(bool setting);

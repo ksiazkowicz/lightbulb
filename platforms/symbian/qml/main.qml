@@ -160,6 +160,7 @@ PageStackWindow {
     Component.onCompleted: {
         avkon.switchToApp = settings.gBool("behavior","linkInDiscrPopup")
         xmppConnectivity.offlineContactsVisibility = !vars.hideOffline
+        xmppConnectivity.contactGroupingEnabled = vars.groupContacts
         avkon.setAppHiddenState(settings.gBool("behavior","hideFromTaskMgr"));
 
         var recvFilesPath = settings.gStr("paths","recvFiles");

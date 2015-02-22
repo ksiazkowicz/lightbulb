@@ -172,6 +172,7 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard) {
 
   // set nickname
   QXmppRosterIq::Item itemRoster = rosterManager->getRosterEntry( bareJid );
+
   QString nickName = vCard.nickName();
   if( (!nickName.isEmpty()) && (!nickName.isNull()) && (itemRoster.name().isEmpty()) ) {
       qDebug() << "MyXmppClient::initPresence: updating name for"<< bareJid;
@@ -215,7 +216,7 @@ bool MyXmppClient::sendMessage(QString bareJid, QString resource, QString msgBod
 
   QString jid = bareJid;
   if( resource == "" && !rosterManager->getResources(bareJid).contains(resource) )
-      jid += "/resource";
+    jid += "/resource";
   else
     jid += "/" + resource;
 
@@ -259,16 +260,16 @@ void MyXmppClient::messageReceivedSlot( const QXmppMessage &xmppMsg ) {
 
   // chat state support, don't trigger that if JID is empty or it's ours
   if (bareJid_from != "" && bareJid_from != m_myjid) {
-    switch (xmppMsg.state()) {
-      case QXmppMessage::Active: /* app doesn't handle it because why should it anyway */ break;
-      case QXmppMessage::Inactive: /* app doesn't handle it because why should it anyway */ break;
-      case QXmppMessage::Gone:
-        emit insertMessage(m_accountId,bareJid_from,"has left the conversation.",messageDate,0,4,QXmppUtils::jidToResource(xmppMsg.from()));
-        break;
-      case QXmppMessage::Composing: emit typingChanged(m_accountId,bareJid_from, true); break;
-      case QXmppMessage::Paused: emit typingChanged(m_accountId,bareJid_from, false); break;
-      case QXmppMessage::None: break;
-      }
+      switch (xmppMsg.state()) {
+        case QXmppMessage::Active: /* app doesn't handle it because why should it anyway */ break;
+        case QXmppMessage::Inactive: /* app doesn't handle it because why should it anyway */ break;
+        case QXmppMessage::Gone:
+          emit insertMessage(m_accountId,bareJid_from,"has left the conversation.",messageDate,0,4,QXmppUtils::jidToResource(xmppMsg.from()));
+          break;
+        case QXmppMessage::Composing: emit typingChanged(m_accountId,bareJid_from, true); break;
+        case QXmppMessage::Paused: emit typingChanged(m_accountId,bareJid_from, false); break;
+        case QXmppMessage::None: break;
+        }
     }
 
   if (xmppMsg.isAttentionRequested()) {
@@ -474,15 +475,18 @@ void MyXmppClient::initRoster() {
 
       // iterate through group list and add 'em all to cache
       foreach (const QString &str, groups_tmp) {
-               if (!rosterGroups.contains(str))
-                   rosterGroups += str;
-           }
+          if (!rosterGroups.contains(str))
+            rosterGroups += str;
+        }
 
       // it really sucks that I handle this in such dumb way but whateva'
       QString groups = groups_tmp.join(", ");
 
+      // get subscription type
+      int subscriptionType = (int)rosterManager->getRosterEntry(bareJid).subscriptionType();
+
       // inform contact list manager that there is something cool coming
-      contacts->addContact(m_accountId,bareJid,name,true,false,groups);
+      contacts->addContact(m_accountId,bareJid,name,true,false,groups,subscriptionType);
     }
 
   // check if our cache is available, if there isn't - request it
@@ -503,65 +507,107 @@ void MyXmppClient::itemAdded(const QString &bareJid ) {
   QStringList resourcesList = rosterManager->getResources( bareJid );
 
   foreach (const QString &resource,resourcesList)
-      this->initPresence( bareJid, resource);
+    this->initPresence( bareJid, resource);
 
   // prepare groups
   QStringList groups_tmp = rosterManager->getRosterEntry(bareJid).groups().toList();
   QString groups = groups_tmp.join(", ");
 
-  contacts->addContact(m_accountId,bareJid,"",true,false,groups);
+  // prepare subscription type
+  int subscriptionType = (int)rosterManager->getRosterEntry(bareJid).subscriptionType();
+
+  contacts->addContact(m_accountId,bareJid,"",true,false,groups,subscriptionType);
 }
 
 void MyXmppClient::itemChanged(const QString &bareJid ) {
-  QXmppRosterIq::Item rosterEntry = rosterManager->getRosterEntry( bareJid );
+  // get item
+  QXmppRosterIq::Item rosterEntry = rosterManager->getRosterEntry(bareJid);
+
+  // update name
   contacts->changeName(m_accountId,bareJid,rosterEntry.name());
+
+  // update subscription type
+  int subscriptionType = (int)rosterEntry.subscriptionType();
+  contacts->changeSubscriptionType(m_accountId,bareJid,subscriptionType);
+
+  // update groups
+  QStringList groups_tmp = rosterEntry.groups().toList();
+  QString groups = groups_tmp.join(", ");
+  contacts->changeGroups(m_accountId,bareJid,groups);
 }
 
 void MyXmppClient::itemRemoved(const QString &bareJid ) {
   contacts->removeContact(m_accountId,bareJid);
 }
 
-bool MyXmppClient::addContact( QString bareJid, QString nick, QString group, bool sendSubscribe ) {
-    bool result = false;
-    if( rosterManager ) {
-        QSet<QString> gr;
-        QString n;
-        if( !(group.isEmpty() || group.isNull()) )  { gr.insert( group ); }
-        if( !(nick.isEmpty() || nick.isNull()) )  { n = nick; }
-        result = rosterManager->addItem(bareJid, n, gr );
+bool MyXmppClient::addContact(QString bareJid, QString nick, QString group, bool sendSubscribe) {
+  // if it's a new group, append it
+  if (!rosterGroups.contains(group))
+    rosterGroups += group;
 
-        if( sendSubscribe ) rosterManager->subscribe( bareJid );
+  // assume it failed if it didn't succeed ~Paulo Coelho
+  bool result = false;
+
+  // check if Roster Manager is available
+  if (rosterManager) {
+      // convert QString to QSet.
+      QSet<QString> gr;
+
+      // if group is not empty, insert it to QSet
+      if (!group.isEmpty())
+        gr.insert(group);
+
+      // attempt to add item
+      result = rosterManager->addItem(bareJid, nick, gr);
+
+      // send subscription request if enabled
+      if (sendSubscribe)
+        rosterManager->subscribe(bareJid);
     }
-    return result;
+
+  // that's it
+  return result;
 }
 
 bool MyXmppClient::setContactGroup(QString bareJid, QString group) {
+  // get name from the contact list manager (I could pass it as an argument for this function, but whatever)
   QString nick = contacts->getPropertyByJid(m_accountId,bareJid,"name");
 
+  // re-add contact
   this->addContact(bareJid,nick,group,false);
-  contacts->addContact(m_accountId,bareJid,nick,false,false,group);
 }
 
 // --------- XEP-0202: Entity Time ------------------------------------------------------------------------------------------------
 
 void MyXmppClient::requestContactTime(const QString bareJid, QString resource) {
   // provides support for XEP-0202: Entity Time
+
+  // get jid with resource
   QString jid = bareJid + "/" + resource;
 
+  // if resource is empty, use the first one you can find
   if (resource == "") {
       QStringList resources = rosterManager->getResources(bareJid);
       if (resources.count() > 0)
         jid += resources.value(0);
     }
 
+  // request time
   entityTime->requestTime(jid);
-  qDebug() << "Requested entity time for" << jid;
 }
 
 void MyXmppClient::entityTimeReceivedSlot(const QXmppEntityTimeIq &entity) {
+  // check if received entity is something we expected
   if (entity.type() == QXmppIq::Result) {
+      // convert string to UTC and add timezone offset string (+2 and all that)
       QString time = entity.utc().toString(("hh:mm:ss")) + " " + QXmppUtils::timezoneOffsetToString(entity.tzo());
-      emit entityTimeReceived(m_accountId,QXmppUtils::jidToBareJid(entity.from()),QXmppUtils::jidToResource(entity.from()),time);
+
+      // I hate myself for not using separate variables for all that data, killing code clarity which was already dead
+      QString bareJid = QXmppUtils::jidToBareJid(entity.from());
+      QString resource = QXmppUtils::jidToResource(entity.from());
+
+      // let 'em know we received it
+      emit entityTimeReceived(m_accountId,bareJid,resource,time);
     }
 }
 
@@ -569,34 +615,53 @@ void MyXmppClient::entityTimeReceivedSlot(const QXmppEntityTimeIq &entity) {
 
 void MyXmppClient::requestContactVersion(const QString bareJid, QString resource) {
   // provides support for XEP-0092: Software Version
+
+  // get jid with resource
   QString jid = bareJid + "/" + resource;
 
+  // if resource is empty, use the first one you can find
   if (resource == "") {
       QStringList resources = rosterManager->getResources(bareJid);
       if (resources.count() > 0)
         jid += resources.value(0);
     }
 
+  // request version
   xmppClient->versionManager().requestVersion(jid);
-  qDebug() << "Requested version for" << jid;
 }
 
 void MyXmppClient::versionReceivedSlot(const QXmppVersionIq &version) {
+  // check if received entity is something we expected
   if (version.type() == QXmppIq::Result) {
-      QString versionStr = version.name() + " " + version.version() + (version.os() != "" ? "@" + version.os() : QString());;
-      emit versionReceived(m_accountId,QXmppUtils::jidToBareJid(version.from()),QXmppUtils::jidToResource(version.from()),versionStr);
+      // build a cool string with blackjack and hookers:
+      // [app name] [app version]@[operating system]
+      // ex. Lightbulb 0.4@Symbian
+      QString versionStr = version.name() + " " + version.version() + (version.os() != "" ? "@" + version.os() : QString());
+
+      // I hate myself for not using separate variables for all that data, killing code clarity which was already dead
+      QString bareJid = QXmppUtils::jidToBareJid(version.from());
+      QString resource = QXmppUtils::jidToResource(version.from());
+
+      // let 'em know we received it
+      emit versionReceived(m_accountId,bareJid,resource,versionStr);
     }
 }
 
 // ---------- muc support --------------------------------------------------------------------------------------------------------
 
 void MyXmppClient::joinMUCRoom(QString room, QString nick, QString password) {
-  qDebug() << "MyXmppClient::joinMUCRoom(): attempting to join" << room;
+  // make a pointer for QXmppMucRoom
   QXmppMucRoom *mucRoom;
 
+  // check if we already have this room in the cache
   if (!mucRooms.contains(room)) {
+      // nope, create a new object using mucManager
       mucRoom = mucManager->addRoom(room);
+
+      // append it to list of rooms
       mucRooms.insert(room,mucRoom);
+
+      // CONNECT LOTS OF SIGNALZ!!!11
       connect(mucRoom,SIGNAL(joined()),this,SLOT(mucJoinedSlot()));
       connect(mucRoom,SIGNAL(subjectChanged(QString)),this,SLOT(mucTopicChangeSlot(QString)));
       connect(mucRoom,SIGNAL(error(QXmppStanza::Error)),this,SLOT(mucErrorSlot(QXmppStanza::Error)));
@@ -606,37 +671,48 @@ void MyXmppClient::joinMUCRoom(QString room, QString nick, QString password) {
       connect(mucRoom,SIGNAL(kicked(QString,QString)),this,SLOT(mucKickedSlot(QString,QString)));
       connect(mucRoom,SIGNAL(nameChanged(QString)),this,SLOT(mucRoomNameChangedSlot(QString)));
     } else {
+      // just set mucRoom to the previous one
       mucRoom = mucRooms.value(room);
     }
 
+  // check if we have a cache of participants in this room
   if (!mucParticipants.contains(room)) {
+      // nope, we don't, make a new model
       ParticipantListModel* participants = new ParticipantListModel();
+      // and add it to the cache
       mucParticipants.insert(room,participants);
     }
 
+  // set parameters and attempt to join the room
   mucRoom->setPassword(password);
   mucRoom->setNickName(nick);
   mucRoom->join();
 }
 
 void MyXmppClient::mucJoinedSlot() {
+  // get the room which sent the slot
   QXmppMucRoom* room = (QXmppMucRoom*)sender();
 
-  qDebug() << "Requesting permissions";
+  // request permissions
   room->requestPermissions();
 
+  // let 'em know we joined the room
   emit mucRoomJoined(m_accountId,room->jid());
-
-  qDebug() << room->name();
 }
 
 void MyXmppClient::leaveMUCRoom(QString room) {
+  // get the room object based on name
   QXmppMucRoom *mucRoom = mucRooms.value(room);
+
+  // leav it
   mucRoom->leave();
 }
 
 QString MyXmppClient::getMUCNick(QString room) {
+  // get the room object based on name
   QXmppMucRoom *mucRoom = mucRooms.value(room);
+
+  // return own nick name
   return mucRoom->nickName();
 }
 
@@ -669,9 +745,9 @@ void MyXmppClient::mucKickedSlot(const QString &jid, const QString &reason) {
   QXmppMucRoom* room = (QXmppMucRoom*)sender();
   QString body = "[[ERR]] You've been [[bold]]kicked out[[/bold]] of the room";
   if (reason != "") {
-    body += ". Reason: [[bold]]" + reason + "[[/bold]]";
-    events->appendError(m_accountId,room->name(),"You've been kicked out of the room. Reason: "+reason);
-  } else events->appendError(m_accountId,room->name(),"You've been kicked out of the room");
+      body += ". Reason: [[bold]]" + reason + "[[/bold]]";
+      events->appendError(m_accountId,room->name(),"You've been kicked out of the room. Reason: "+reason);
+    } else events->appendError(m_accountId,room->name(),"You've been kicked out of the room");
   emit insertMessage(m_accountId,room->jid(),body,QDateTime::currentDateTime().toString("dd-MM-yy hh:mm:ss"),0,4,QXmppUtils::jidToResource(jid));
 }
 void MyXmppClient::mucRoomNameChangedSlot(const QString &name) {
@@ -749,26 +825,26 @@ void MyXmppClient::infoReceived(const QXmppDiscoveryIq &iq) {
   // check if contains @
   if (iq.from().contains("@")) {
       path = iq.from().split("@")[1];
-  } else {
+    } else {
       // the most. terrible. solution. EVER.
       path = iq.from().right(iq.from().length() - (iq.from().split(".")[0].length()+1));
-  }
+    }
 
   // find a service item model
   ServiceItemModel *item = services(path)->find(QXmppUtils::jidToBareJid(iq.from()));
 
   // if item found, update with node features
   if (item != 0) {
-    foreach (const QXmppDiscoveryIq::Identity &identity, iq.identities()) {
-      item->set(identity.category(),ServiceItemModel::Features);
-      item->set(identity.type(),ServiceItemModel::Type);
+      foreach (const QXmppDiscoveryIq::Identity &identity, iq.identities()) {
+          item->set(identity.category(),ServiceItemModel::Features);
+          item->set(identity.type(),ServiceItemModel::Type);
 
-      // if item is a bytestreams proxy, update the data
-      if (identity.type() == "bytestreams" && path == m_host && identity.category() == "proxy") {
-          defaultTransferProxy = iq.from();
-      }
+          // if item is a bytestreams proxy, update the data
+          if (identity.type() == "bytestreams" && path == m_host && identity.category() == "proxy") {
+              defaultTransferProxy = iq.from();
+            }
+        }
     }
-   }
 }
 
 ServiceListModel* MyXmppClient::services(QString jid) {
@@ -815,12 +891,12 @@ void MyXmppClient::sendAFile(QString bareJid, QString resource, QString path) {
 
   // check if bytestreams proxy is available
   if (!defaultTransferProxy.isEmpty()) {
-    transferManager->setSupportedMethods(QXmppTransferJob::AnyMethod);
-    transferManager->setProxy(defaultTransferProxy);
-  } else {
-    // force inband as we don't know the JID of bytestreams proxy
-    transferManager->setSupportedMethods(QXmppTransferJob::InBandMethod);
-  }
+      transferManager->setSupportedMethods(QXmppTransferJob::AnyMethod);
+      transferManager->setProxy(defaultTransferProxy);
+    } else {
+      // force inband as we don't know the JID of bytestreams proxy
+      transferManager->setSupportedMethods(QXmppTransferJob::InBandMethod);
+    }
 
   // send a file
   QXmppTransferJob *job = transferManager->sendFile(jid,path);
@@ -846,9 +922,9 @@ void MyXmppClient::acceptTransfer(int jobId, QString path) {
       foreach (const QString t_path,defaultPaths) {
           // found some crap, test it
           if (QFile::exists(t_path)) {
-            recvPath = t_path;
-            break;
-          }
+              recvPath = t_path;
+              break;
+            }
           // nope nope nope
         }
     } else recvPath = path;
@@ -856,7 +932,7 @@ void MyXmppClient::acceptTransfer(int jobId, QString path) {
   if (recvPath == "") return; // TODO: show an error if path is useless
 
   if (job != NULL && job->state() == QXmppTransferJob::OfferState)
-      job->accept(recvPath + job->fileName());
+    job->accept(recvPath + job->fileName());
 }
 
 void MyXmppClient::abortTransfer(int jobId) {
@@ -900,7 +976,7 @@ void MyXmppClient::transferError(QXmppTransferJob::Error error) {
     }
 
   if (errorString != "") {
-    events->appendError(m_accountId,contacts->getPropertyByJid(m_accountId,QXmppUtils::jidToBareJid(job->jid()),"name"),errorString);
-    events->removeTransferJob(m_accountId,jobId);
+      events->appendError(m_accountId,contacts->getPropertyByJid(m_accountId,QXmppUtils::jidToBareJid(job->jid()),"name"),errorString);
+      events->removeTransferJob(m_accountId,jobId);
     }
 }

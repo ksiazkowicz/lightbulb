@@ -31,9 +31,13 @@ signals:
   void favUserStatusChanged(QString accountId, QString bareJid, QString name, QString description);
   
 public slots:
-  void addContact(QString acc, QString jid, QString name, bool updateDatabase = true, bool isFavorite = false, QString groups = "");
+  void addContact(QString acc, QString jid, QString name, bool updateDatabase = true, bool isFavorite = false, QString groups = "", int subscriptionType = 8);
   void changePresence(QString m_accountId,QString bareJid,QString resource,QString picStatus,QString txtStatus, bool initializationState);
+
   void changeName(QString m_accountId,QString bareJid,QString name);
+  void changeGroups(QString m_accountId,QString bareJid,QString groups);
+  void changeSubscriptionType(QString m_accountId, QString bareJid, int subscriptionType);
+
   void rememberResource(QString m_accountId, QString bareJid, QString resource);
   Q_INVOKABLE QString restoreResource(QString m_accountId, QString bareJid);
   void removeContact(QString acc,QString bareJid);
@@ -48,6 +52,9 @@ public slots:
   void setOfflineContactsState(bool state) { filter->setShowOfflineContacts(state); showOfflineContacts = state; }
   bool getOfflineContactsState()           { return showOfflineContacts;  }
 
+  void setGroupContactsState(bool state) { roster->setContactGrouping(state); contactGroupingEnabled = state; }
+  bool getGroupContactsState()           { return contactGroupingEnabled;  }
+
 private slots:
   void restoreCache();
 
@@ -59,6 +66,7 @@ private:
   Settings* settings;
 
   bool showOfflineContacts;
+  bool contactGroupingEnabled;
   
 };
 

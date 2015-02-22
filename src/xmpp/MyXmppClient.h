@@ -303,10 +303,10 @@ private slots:
         }
 
       // quick fix for "Socket disconnected" not being handled
-      if (text == "Socket disconnected") {
+      /*if (text == "Socket disconnected") {
           this->setPresence(Offline, m_statusText);
           emit errorHappened(m_accountId,"Socket disconnected");
-        }
+        }*/ // this workaround sucks, kill it for now, we need a better way to debug this shit
 
       //qDebug().nospace() << "MyXmppClient(): [" << qPrintable(typeStr) << "] " << text;
     }

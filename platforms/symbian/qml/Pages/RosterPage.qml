@@ -48,14 +48,14 @@ Page {
         section.property: "groups"
         section.delegate: Rectangle {
             width: rosterView.width
-            height: section != "" ? 32 : 0
+            height: section != "" && vars.groupContacts ? 32 : 0
             color: "gray"
             Text {
                 text: section
                 font.pixelSize: platformStyle.fontSizeSmall
                 font.bold: true
                 color: "white"
-                visible: section != ""
+                visible: section != "" && vars.groupContacts
                 anchors { left: parent.left; leftMargin: platformStyle.paddingMedium; verticalCenter: parent.verticalCenter }
             }
         }

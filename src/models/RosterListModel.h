@@ -53,6 +53,7 @@ public:
     names[RosterItemModel::ItemId] = "itemId";
     names[RosterItemModel::IsFavorite] = "favorite";
     names[RosterItemModel::Groups] = "groups";
+    names[RosterItemModel::SubscriptionType] = "subscriptionType";
 
     #if QT_VERSION < 0x050000
     this->setRoleNames(names);
@@ -61,7 +62,7 @@ public:
     #endif
   }
 
-  Q_INVOKABLE void append( RosterItemModel *item ) { this->appendRow((QStandardItem*)item); }
+  Q_INVOKABLE void append( RosterItemModel *item ) { item->groupContacts = contactGrouping; this->appendRow((QStandardItem*)item); }
   Q_INVOKABLE int count() { return this->rowCount(); }
 
   RosterItemModel* find(const QString &id) const {
@@ -83,6 +84,23 @@ public:
   bool checkIfExists(const QString &id) const {
     return this->find(id) != NULL;
   }
+
+  void setContactGrouping(bool state) {
+    // set contact grouping to state
+    contactGrouping = state;
+
+    // update every object with this data
+    RosterItemModel* tmp;
+    for (int row=0; row < this->rowCount(); row++) {
+        tmp = (RosterItemModel*)this->itemFromIndex(this->index(row,0));
+        if (tmp) {
+          tmp->groupContacts = state;
+          tmp->updateSortData();
+        }
+      }
+  }
+
+  bool contactGrouping;
 
 
 signals:

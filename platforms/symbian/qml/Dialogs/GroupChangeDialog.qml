@@ -1,14 +1,9 @@
-// import QtQuick 1.0 // to target S60 5th Edition or Maemo 5
-import QtQuick 1.1
-import com.nokia.symbian 1.1
-import lightbulb 1.0
-
 /********************************************************************
 
-qml/Dialogs/AccessPointsDialog.qml
--- Dialog for selecting Internet Access Point
+qml/Dialogs/GroupChangeDialog.qml
+-- Dialog which enables user to change contacts group
 
-Copyright (c) 2014 Maciej Janiszewski
+Copyright (c) 2015 Maciej Janiszewski
 
 This file is part of Lightbulb.
 
@@ -37,72 +32,140 @@ CommonDialog {
     platformInverted: main.platformInverted
     height: data.contentHeight+3*platformStyle.graphicSizeMedium > parent.height-(platformStyle.graphicSizeMedium+platformStyle.paddingLarge) ? parent.height - (platformStyle.graphicSizeMedium+platformStyle.paddingLarge) : data.contentHeight+3*platformStyle.graphicSizeMedium
 
-    buttonTexts: ["Add group"]
+    buttonTexts: ["Custom group","Cancel"]
+
+    signal unselectAll;
 
     // Code for dynamic load
     Component.onCompleted: {
         open();
-        isCreated = true }
-    property bool isCreated: false
-    property string accountId: ""
-    property string contactName: ""
-    property string contactJid:  ""
+        isCreated = true
+    }
+    property bool isCreated:      false
+    property string accountId:    ""
+    property string contactName:  ""
+    property string contactJid:   ""
+    property string contactGroup: ""
 
-    onStatusChanged: { if (isCreated && dlgGroups.status === DialogStatus.Closed) { dlgGroups.destroy() } }
+    onButtonClicked: if (index === 0) {
+                         main.splitscreenY = 0;
+                         customGroup.isCreated = true
+                         customGroup.open();
+                     }
+
+    onStatusChanged: { if (isCreated && dlgGroups.status === DialogStatus.Closed && customGroup.status === DialogStatus.Closed) { dlgGroups.destroy() } }
 
     content: ListView {
-                id: data
-                anchors.fill: parent
-                highlightFollowsCurrentItem: false
-                model: xmppConnectivity.useClient(accountId).groups
-                delegate: Component {
-                    Rectangle {
-                        id: itemConfig
-                        height: platformStyle.graphicSizeMedium
-                        width: parent.width
-                        gradient: gr_normal
+        id: data
+        anchors.fill: parent
+        highlightFollowsCurrentItem: false
+        model: xmppConnectivity.useClient(accountId).groups
+        delegate: Component {
+            Rectangle {
+                id: groupItem
+                height: platformStyle.graphicSizeMedium
+                width: parent.width
+                gradient: gr_normal
 
-                        property bool checked;
+                // item highlighting
+                function unselect() { checked = false }
+                Connections { target: dlgGroups; onUnselectAll: unselect(); }
+                property bool checked: contactGroup == modelData
 
-                        Gradient {
-                            id: gr_normal
-                            GradientStop { position: 0; color: "transparent" }
-                            GradientStop { position: 1; color: "transparent" }
-                        }
-                        Gradient {
-                            id: gr_press
-                            GradientStop { position: 0; color: "#1C87DD" }
-                            GradientStop { position: 1; color: "#51A8FB" }
-                        }
+                Gradient {
+                    id: gr_normal
+                    GradientStop { position: 0; color: "transparent" }
+                    GradientStop { position: 1; color: "transparent" }
+                }
+                Gradient {
+                    id: gr_press
+                    GradientStop { position: 0; color: "#1C87DD" }
+                    GradientStop { position: 1; color: "#51A8FB" }
+                }
 
-                        Text {
-                            id: textConfig
-                            text: modelData != "" ? modelData : "<i>-- none --</i>"
-                            font.pixelSize: platformStyle.fontSizeMedium
-                            anchors { left: parent.left; leftMargin: platformStyle.graphicSizeMedium+platformStyle.paddingLarge; verticalCenter: parent.verticalCenter; }
-                            color: main.textColor
-                            font.bold: false
-                        }
-                        states: State {
-                            name: "Current"
-                            when: checked
-                            PropertyChanges { target: itemConfig; gradient: gr_press }
-                            PropertyChanges { target: textConfig; color: platformStyle.colorNormalLight }
-                            PropertyChanges { target: textConfig; font.bold: true }
-                        }
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: {
-                                parent.checked = true
-                                xmppConnectivity.useClient(accountId).setContactGroup(contactJid,modelData)
-                                dlgGroups.close()
-                                /*settings.sInt(id,"behavior", "internetAccessPoint")
-                                network.currentIAP = id
-                                settings.sBool(true,"behavior","isIAPSet")
-                                dlgIAP.close()*/
-                            } //onClicked
-                        } //MouseArea
+                Text {
+                    id: groupText
+                    text: modelData != "" ? modelData : "<i>-- none --</i>"
+                    font.pixelSize: platformStyle.fontSizeMedium
+                    anchors { left: parent.left; leftMargin: platformStyle.graphicSizeMedium+platformStyle.paddingLarge; verticalCenter: parent.verticalCenter; }
+                    color: main.textColor
+                    font.bold: false
+                }
+                states: [ State {
+                        when: checked
+                        PropertyChanges { target: groupItem; gradient: gr_press }
+                        PropertyChanges { target: groupText; color: platformStyle.colorNormalLight }
+                        PropertyChanges { target: groupText; font.bold: true }
+                    },
+                    State {
+                        when: !checked
+                        PropertyChanges { target: groupItem; gradient: gr_normal }
+                        PropertyChanges { target: groupText; color: main.textColor }
+                        PropertyChanges { target: groupText; font.bold: false }
                     }
-                } //Component
+                ]
+
+                //
+                Image {
+                    anchors { left: parent.left; verticalCenter: parent.verticalCenter; leftMargin: platformStyle.paddingLarge }
+                    source: checked ? "qrc:/toolbar/ok" + (main.platformInverted ? "_inverse" : "") : ""
+                    sourceSize { width: platformStyle.graphicSizeSmall; height: platformStyle.graphicSizeSmall }
+                    width: platformStyle.graphicSizeSmall
+                    height: platformStyle.graphicSizeSmall
+                }
+
+
+                MouseArea {
+                    id: groupTapArea
+                    anchors.fill: parent
+                    onClicked: {
+                        // unselect all
+                        dlgGroups.unselectAll()
+
+                        // highlight the item
+                        parent.checked = true
+
+                        // change group
+                        xmppConnectivity.useClient(accountId).setContactGroup(contactJid,modelData)
+
+                        // show popup to let user know we've changed something
+                        if (modelData != "")
+                            avkon.showPopup(contactName,"moved to group " + modelData)
+                        else
+                            avkon.showPopup(contactName,"removed from group " + contactGroup)
+
+                        // close dialog
+                        dlgGroups.close()
+                    } //onClicked
+                } //MouseArea
             }
+        } //Component
+    }
+
+
+    CommonDialog {
+        id: customGroup
+        titleText: qsTr("Custom group name")
+        platformInverted: main.platformInverted
+
+        buttonTexts: [qsTr("OK"), qsTr("Cancel")]
+
+        // Code for dynamic load
+        property bool isCreated: false
+
+        onStatusChanged: if (isCreated && customGroup.status === DialogStatus.Closed) { dlgGroups.destroy(); customGroup.destroy() }
+
+        onButtonClicked: {
+            if ((index === 0) && (newGroup.text != "" ))
+                xmppConnectivity.useClient(accountId).setContactGroup(contactJid,newGroup.text)
+        }
+
+        content: TextField {
+            id: newGroup
+            text: contactGroup
+            placeholderText: qsTr("Enter group name")
+            width: parent.width - 2*platformStyle.paddingLarge
+            anchors { centerIn: parent }
+        }
+    }
 }

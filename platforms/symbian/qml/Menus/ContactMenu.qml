@@ -32,6 +32,7 @@ ContextMenu {
     property string contactName: ""
     property string contactJid:  ""
     property string accountId: ""
+    property string contactGroup: ""
     property bool isFavorite: false
     property bool shouldICareAnyway: false
 
@@ -79,7 +80,7 @@ ContextMenu {
             enabled: !(isFacebook || !isConnected)
             height: enabled ? privateStyle.menuItemHeight : 0
             clip: true
-            onClicked: dialog.createWithProperties("qrc:/dialogs/Contact/Group",{"accountId": accountId,"contactJid": contactJid})
+            onClicked: dialog.createWithProperties("qrc:/dialogs/Contact/Group",{"accountId": accountId, "contactJid": contactJid, "contactName": contactName, "contactGroup": contactGroup})
         }
         MenuItem {
             text: "Archive"

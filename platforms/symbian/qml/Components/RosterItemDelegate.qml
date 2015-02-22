@@ -9,6 +9,14 @@ Item {
 
     property bool shouldBeOpaque: xmppConnectivity.getStatusByIndex(accountId) !== 0
 
+    function favBegin(fav) { return fav === "1" ? "★ <font color='#efb813'>" : ""; }
+    function favEnd(fav) { return fav === "1" ? "</font>" : ""; }
+
+    function groupTag(groups) { return (typeof groups !== 'undefined' && groups !== '' && vars.showGroupTag) ? ("<i> (" + groups + ")</i>") : ""; }
+    function statusTxt(text) { return (text !== "") ? (" · <font color='"+main.midColor+"'><i>" + text + "</i></font>") : ""; }
+    function subTagBegin(type) { return (type == 0) ? "<s>" : ""; }
+    function subTagEnd(type) { return (type == 0) ? "</s>" : ""; }
+
     Row {
         id: row
         width: parent.width-20
@@ -42,7 +50,7 @@ Item {
         }
         Text {
             id: txtJid
-            text: (favorite == "1" ? "★ <font color='#efb813'>" : "")  + _contactName + (favorite == "1" ? "</font>" : "") /*+ ((typeof groups !== 'undefined' && groups !== '') ? ("<i> (" + groups + ")</i>") : "")*/ + ((statusText !== "") ? (" · <font color='"+main.midColor+"'><i>" + statusText + "</i></font>") : "")
+            text: favBegin(favorite) + subTagBegin(subscriptionType) + _contactName + subTagEnd(subscriptionType) + favEnd(favorite) + groupTag(groups) + statusTxt(statusText)
             anchors.verticalCenter: parent.verticalCenter
             onLinkActivated: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": link})
             wrapMode: Text.WordWrap
@@ -67,6 +75,6 @@ Item {
     MouseArea {
         anchors.fill: parent
         onClicked: pageStack.replace("qrc:/pages/Conversation",{"accountId": accountId,"contactName":_contactName,"contactJid":jid,"isInArchiveMode":false,"contactResource":resource})
-        onPressAndHold: dialog.createWithProperties("qrc:/menus/Roster/Contact",{"accountId": accountId,"contactName":_contactName,"contactJid":jid,"isFavorite":favorite})
+        onPressAndHold: dialog.createWithProperties("qrc:/menus/Roster/Contact",{"accountId": accountId,"contactName":_contactName,"contactJid":jid,"isFavorite":favorite,"contactGroup":groups})
     }
 }

@@ -54,4 +54,6 @@ Item {
     property string                  selectedJid: ""
     property bool                    awaitingContext: false
     property string                  dialogQmlFile: ""
+	property bool					 showGroupTag: settings.gBool("ui", "rosterGroupTag")
+	property bool					 groupContacts: settings.gBool("ui", "rosterGroupContacts")
 }

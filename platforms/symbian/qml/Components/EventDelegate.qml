@@ -39,8 +39,8 @@ Flickable {
 
     Connections {
         target: xmppConnectivity.useClient(accountID)
-        onProgressChanged: { if (jobId == transferJob) transferProgress = progress; console.log("progress changed to "+progress)}
-        onTransferStateChanged: { if (jobId == transferJob) transferState = state; console.log("state changed to "+state)}
+        onProgressChanged: if (jobId == transferJob) transferProgress = progress;
+        onTransferStateChanged: if (jobId == transferJob) transferState = state;
     }
 
     function getIcon() {
@@ -67,8 +67,8 @@ Flickable {
         case 38: if (updater.isUpdateAvailable) dialog.createWithProperties("qrc:/menus/UrlContext", {"url": updater.updateUrl}); break;
         case 40: {
             switch (transferState) {
-             case 0: xmppConnectivity.useClient(accountID).acceptTransfer(transferJob,vars.receivedFilesPath); break;
-             case 3: xmppConnectivity.useClient(accountID).openLocalTransferPath(transferJob); break;
+            case 0: xmppConnectivity.useClient(accountID).acceptTransfer(transferJob,vars.receivedFilesPath); break;
+            case 3: xmppConnectivity.useClient(accountID).openLocalTransferPath(transferJob); break;
             }
             break;
         }
@@ -92,7 +92,7 @@ Flickable {
         case 33: {
             if (description.substring(0,7) == "Current")
                 return ("qrc:/presence/" + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accountID)));
-            }; break;
+        }; break;
         case 37: return xmppConnectivity.getPropertyByJid(accountID,"presence",bareJid);
         default: return "";
         }
@@ -106,20 +106,27 @@ Flickable {
         case 38: // app update
         case 39: return description; // connection error
 
-        case 34: return "Tap to subscribe contact.";
+        case 34: return "Tap to subscribe contact."; // sub request
         case 35: return "I invited you to join chat at " + bareJid; // muc invite
 
         case 40: // incoming transfer
         case 41: { // outcoming transfer
             switch (transferState) {
             case 0: if (type == 41) return filename + ". Waiting for user."; else return filename + ". Tap to <b>accept</b>."
-            case 1:
-            case 2:
-            case 3: return filename;
+            case 1: case 2: case 3: return filename;
             }
         }
         case 36: return (count > 1) ? "You received " + count + " attention requests" : "You received an attention request."; // attention request
         default: return "";
+        }
+    }
+
+    function getSecondRow() {
+        switch (type) {
+        case 32: case 33: case 35: case 36: case 37: case 38: case 39:
+                                                                  return name
+                                                              case 40: case 41:
+                                                                           return transferState == 3 ? "Finished." + (type == 40 ? " Tap to <b>open</b>." : "") : transferState == 1 ? "Connecting..." :  name
         }
     }
 
@@ -166,43 +173,43 @@ Flickable {
             color: "transparent"
         }
         Image {
-                id: icon
-                width: parent.height
-                height: parent.height
-                sourceSize { height: height; width: width }
+            id: icon
+            width: parent.height
+            height: parent.height
+            sourceSize { height: height; width: width }
+            smooth: true
+            source: getIcon()
+
+            Rectangle { anchors.fill: parent; color: (type == 32 || type == 37) ? "black" : "transparent"; z: -1 }
+            Image {
+                anchors.fill: parent
                 smooth: true
-                source: getIcon()
+                source: main.platformInverted ? "qrc:/avatar-mask_inverse" : "qrc:/avatar-mask"
+                sourceSize { width: 64; height: 64 }
+                visible: (type == 32 && icon.source != "qrc:/muc") || (type == 37)
+            }
+            Image {
+                id: mark
+                z: 1
+                anchors { bottom: parent.bottom; right: parent.right }
+                width: type == 32 ? 64 : 24
+                height: width
+                sourceSize { height: height; width: width }
+                source: type == 32 ? "qrc:/unread-count" : (type == 33 || type == 37) ? getMiniIcon() : ""
+                visible: (type == 32) || (type == 33) || (type == 37)
 
-                Rectangle { anchors.fill: parent; color: (type == 32 || type == 37) ? "black" : "transparent"; z: -1 }
-                Image {
-                    anchors.fill: parent
-                    smooth: true
-                    source: main.platformInverted ? "qrc:/avatar-mask_inverse" : "qrc:/avatar-mask"
-                    sourceSize { width: 64; height: 64 }
-                    visible: (type == 32 && icon.source != "qrc:/muc") || (type == 37)
-                }
-                Image {
-                    id: mark
-                    z: 1
-                    anchors { bottom: parent.bottom; right: parent.right }
-                    width: type == 32 ? 64 : 24
-                    height: width
-                    sourceSize { height: height; width: width }
-                    source: type == 32 ? "qrc:/unread-count" : (type == 33 || type == 37) ? getMiniIcon() : ""
-                    visible: (type == 32) || (type == 33) || (type == 37)
-
-                    Text {
-                        visible: type == 32
-                        width: 20; height: width
-                        color: platformStyle.colorNormalLight
-                        text: type == 32 ? xmppConnectivity.getUnreadCount(accountID,bareJid)+1 : ""
-                        verticalAlignment: Text.AlignVCenter
-                        horizontalAlignment: Text.AlignHCenter
-                        anchors { right: parent.right; bottom: parent.bottom }
-                        font.pixelSize: width*0.72
-                    }
+                Text {
+                    visible: type == 32
+                    width: 20; height: width
+                    color: platformStyle.colorNormalLight
+                    text: type == 32 ? xmppConnectivity.getUnreadCount(accountID,bareJid)+1 : ""
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                    anchors { right: parent.right; bottom: parent.bottom }
+                    font.pixelSize: width*0.72
                 }
             }
+        }
         ProgressBar {
             minimumValue: 0
             maximumValue: 100
@@ -217,47 +224,45 @@ Flickable {
         Column {
             anchors { left: icon.right; leftMargin: platformStyle.paddingSmall; right: wrapper.right; rightMargin: platformStyle.paddingSmall; verticalCenter: wrapper.verticalCenter }
             height: text.height + platformStyle.paddingSmall + descriptionRow.height
-                Text {
-                    id: text
-                    color: main.textColor
-                    width: mainPage.width - 25 - 90
-                    maximumLineCount: 2
-                    font.pixelSize: 18
-                    text: getDescription()
-                    wrapMode: Text.Wrap
-                    elide: Text.ElideRight
-                }
-                Row {
-                    id: descriptionRow
-                    anchors { left: parent.left; right: parent.right }
-                    spacing: platformStyle.paddingSmall
-                    height: text.font.pixelSize
+            Text {
+                id: text
+                color: main.textColor
+                width: mainPage.width - 25 - 90
+                maximumLineCount: 2
+                font.pixelSize: 18
+                text: getDescription()
+                wrapMode: Text.Wrap
+                elide: Text.ElideRight
+            }
+            Row {
+                id: descriptionRow
+                anchors { left: parent.left; right: parent.right }
+                spacing: platformStyle.paddingSmall
+                height: text.font.pixelSize
 
-                    Text {
-                        color: main.midColor
-                        text: transferState == 3 ? "Finished." + (type == 40 ? " Tap to <b>open</b>." : "") : transferState == 1 ? "Connecting..." :  name
-                        width: parent.width-parent.spacing-dateText.paintedWidth
-                        horizontalAlignment: Text.AlignJustify
-                        font.pixelSize: parent.height
-                        elide: Text.ElideRight
-                        maximumLineCount: 1
-                        clip: true
-                        visible: !progressEnabled
-                    }
-                    Text {
-                        id: dateText
-                        text: Qt.formatDateTime(date, "~hh:mm")
-                        color: main.midColor
-                        font.pixelSize: parent.height
-                        horizontalAlignment: Text.AlignRight
-                        font.italic: true
-                        visible: !progressEnabled
-                    }
+                Text {
+                    color: main.midColor
+                    text: getSecondRow()
+                    width: parent.width-parent.spacing-dateText.paintedWidth
+                    horizontalAlignment: Text.AlignJustify
+                    font.pixelSize: parent.height
+                    elide: Text.ElideRight
+                    maximumLineCount: 1
+                    clip: true
+                    visible: !progressEnabled
                 }
+                Text {
+                    id: dateText
+                    text: Qt.formatDateTime(date, "~hh:mm")
+                    color: main.midColor
+                    font { pixelSize: parent.height; italic: true }
+                    horizontalAlignment: Text.AlignRight
+                    visible: !progressEnabled
+                }
+            }
         }
         MouseArea {
-            id: maAccItem
-            anchors { fill: parent }
+            anchors.fill: parent
             onClicked: makeAction()
         }
     }
