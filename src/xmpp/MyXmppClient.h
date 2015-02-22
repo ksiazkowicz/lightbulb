@@ -69,6 +69,7 @@ class MyXmppClient : public QObject
     Q_DISABLE_COPY( MyXmppClient )
     Q_PROPERTY(bool isConnected READ isConnected NOTIFY connectingChanged)
     Q_PROPERTY(QStringList groups READ getGroups NOTIFY groupsChanged)
+    Q_PROPERTY(QStringList xmlLog READ getLog NOTIFY logChanged)
 
 
     QXmppClient *xmppClient;
@@ -212,6 +213,8 @@ signals:
 
     void groupsChanged();
 
+    void logChanged();
+
     // related to XmppConnectivity class
     void updateContact(QString m_accountId,QString bareJid,QString property,int count);
     void insertMessage(QString m_accountId,QString bareJid,QString body,QString date,int mine,int type,QString resource);
@@ -302,6 +305,9 @@ private slots:
         default: typeStr = ""; break;
         }
 
+      // update xmlLog
+      xmlLog.append("["+typeStr+"] "+text);
+
       // quick fix for "Socket disconnected" not being handled
       /*if (text == "Socket disconnected") {
           this->setPresence(Offline, m_statusText);
@@ -331,6 +337,9 @@ private:
     QString m_host;
     int m_port;
     QString m_resource;
+
+    QStringList xmlLog;
+    QStringList getLog() { return xmlLog; }
 
     QString m_accountId;
     QMap<QString,ServiceListModel*> servicesCache;

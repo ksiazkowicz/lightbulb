@@ -247,4 +247,5 @@ SOURCES += src/xmpp/MyXmppClient.cpp \
         HEADERS += src/FluorescentLogger.h
 
 OTHER_FILES += \
-    platforms/symbian/qml/Dialogs/GroupChangeDialog.qml
+    platforms/symbian/qml/Dialogs/GroupChangeDialog.qml \
+    platforms/symbian/qml/Pages/XMLConsole.qml

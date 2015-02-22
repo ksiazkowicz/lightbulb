@@ -47,6 +47,11 @@ Menu {
             onClicked: main.pageStack.push( "qrc:/pages/Preferences" )
         }
         MenuItem {
+            text: qsTr("XML Console")
+            platformInverted: main.platformInverted
+            onClicked: main.pageStack.push( "qrc:/pages/XMLConsole" )
+        }
+        MenuItem {
             text: qsTr("Check for update")
             platformInverted: main.platformInverted
             onClicked: updater.checkForUpdate();

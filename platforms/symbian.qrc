@@ -61,6 +61,7 @@
         <file alias="Conversation">symbian/qml/Pages/ConversationPage.qml</file>
         <file alias="LogView">symbian/qml/Pages/LogPage.qml</file>
         <file alias="Services">symbian/qml/Pages/ServicesPage.qml</file>
+        <file alias="XMLConsole">symbian/qml/Pages/XMLConsole.qml</file>
     </qresource>
     <qresource prefix="/toolbar">
         <file alias="close">symbian/images/toolbar/toolbar-close.svg</file>
