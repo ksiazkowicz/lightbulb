@@ -94,7 +94,7 @@ void MyXmppClient::connectToXmppServer() {
     } else {
       xmppConfig.setSaslAuthMechanism("DIGEST-MD5");
       xmppConfig.setUseSASLAuthentication(true);
-      xmppConfig.setStreamSecurityMode(QXmppConfiguration::TLSRequired);
+      xmppConfig.setStreamSecurityMode(QXmppConfiguration::TLSEnabled);
     }
 
   if (!m_host.isEmpty())
