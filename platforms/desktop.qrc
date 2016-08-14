@@ -16,6 +16,7 @@
     </qresource>
     <qresource prefix="/Components">
         <file alias="AccountItem.qml">desktop/qml/Components/AccountItem.qml</file>
+        <file alias="SettingField.qml">desktop/qml/Components/SettingField.qml</file>
     </qresource>
     <qresource prefix="/Dialogs"/>
     <qresource prefix="/FirstRun"/>

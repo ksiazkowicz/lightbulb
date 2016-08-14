@@ -24,7 +24,7 @@ void FluorescentLogger::initLog() {
 
   // begin log
   logWriter << "---------------" << endl;
-  logWriter << "Fluorescent " << QString(VERSION).mid(1,5) << ". Built on: " << QString(BUILDDATE).mid(1,10) << endl;
+  logWriter << "Fluorescent " << QString("0.4.0").mid(1,5) << ". Built on: " << QString("00-00-0000").mid(1,10) << endl;
   logWriter << "This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under certain conditions. See GPL v3 license for details." << endl;
   logWriter << "Log started on: " << QDateTime::currentDateTime().toString("dd/MM/yyyy hh:mm:ss") << endl;
   logWriter << "----" << endl;

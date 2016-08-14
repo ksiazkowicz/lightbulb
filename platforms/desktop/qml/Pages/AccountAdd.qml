@@ -1,9 +1,11 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.1
 import "../Components"
 
 Page {
     id: accAddPage
+    property alias stack: accAddPage.parent
 
     property string accGRID: ""
     property string pageName: accGRID !== "" ? qsTr("Editing ") + xmppConnectivity.getAccountName(accGRID) : "New account"
@@ -11,11 +13,11 @@ Page {
     Component.onCompleted: {
         if (accGRID != "") {
             if (settings.gStr(accGRID,'host') == "chat.facebook.com")
-                selectionDialog.selectedIndex = 0;
+                serverSelection.currentIndex = 0;
             else if (settings.gStr(accGRID,'host') == "talk.google.com")
-                selectionDialog.selectedIndex = 1;
+                serverSelection.currentIndex = 1;
             else
-                selectionDialog.selectedIndex = 2;
+                serverSelection.currentIndex = 2;
 
             name.value = settings.gStr(accGRID,'name')
             login.value = settings.gStr(accGRID,'jid')
@@ -36,49 +38,35 @@ Page {
 
         flickableDirection: Flickable.VerticalFlick
 
-        Column {
+        ColumnLayout {
             id: contentPage
             width: accAddPage.width - flickArea.anchors.rightMargin - flickArea.anchors.leftMargin
             spacing: 5
-            SelectionListItem {
+            Label {
+                text: "Server"
+            }
+
+            ComboBox {
                 id: serverSelection
-                platformInverted: main.platformInverted
-                subTitle: selectionDialog.selectedIndex >= 0
-                          ? selectionDialog.model.get(selectionDialog.selectedIndex).name
-                          : "FB Chat, GTalk or manual"
                 anchors { left: parent.left; right: parent.right }
-                title: "Server"
-
-                onClicked: { selectionDialog.open() }
-
-                SelectionDialog {
-                    id: selectionDialog
-                    titleText: "Available options"
-                    selectedIndex: -1
-                    platformInverted: main.platformInverted
-                    model: ListModel {
-                        ListElement { name: "Facebook Chat" }
-                        ListElement { name: "Google Talk" }
-                        ListElement { name: "Generic XMPP server" }
-                    }
-                    onSelectedIndexChanged: {
-                        password.value = ""
-                        switch (selectionDialog.selectedIndex) {
-                            case 0: {
-                                login.value = "@chat.facebook.com";
-                                serverDetails.value = "chat.facebook.com:5222";
-                                break;
-                            }
-                            case 1: {
-                                login.value = "@gmail.com";
-                                serverDetails.value = "talk.google.com:5222";
-                                break;
-                            }
-                            case 2: {
-                                login.value = "";
-                                serverDetails.value = "";
-                                break;
-                            }
+                model: ["Facebook Chat", "Google Talk", "Generic XMPP server"]
+                onCurrentIndexChanged: {
+                    password.value = ""
+                    switch (serverSelection.currentIndex) {
+                        case 0: {
+                            login.value = "@chat.facebook.com";
+                            serverDetails.value = "chat.facebook.com:5222";
+                            break;
+                        }
+                        case 1: {
+                            login.value = "@gmail.com";
+                            serverDetails.value = "talk.google.com:5222";
+                            break;
+                        }
+                        case 2: {
+                            login.value = "";
+                            serverDetails.value = "";
+                            break;
                         }
                     }
                 }
@@ -94,14 +82,14 @@ Page {
                 id: login
                 settingLabel: "Login"
                 placeholder: "login@server.com"
-                enabled: selectionDialog.selectedIndex != -1
+                enabled: serverSelection.currentIndex != -1
                 width: parent.width
             }
 
             SettingField {
                 id: password
                 settingLabel: "Password"
-                enabled: selectionDialog.selectedIndex != -1
+                enabled: serverSelection.currentIndex != -1
                 width: parent.width
                 echoMode: TextInput.Password
             }
@@ -110,7 +98,7 @@ Page {
                 id: resource
                 settingLabel: "Resource (optional)"
                 placeholder: "(default: Lightbulb)"
-                enabled: selectionDialog.selectedIndex != -1
+                enabled: serverSelection.currentIndex != -1
                 width: parent.width
             }
 
@@ -118,7 +106,7 @@ Page {
                 id: serverDetails
                 settingLabel: "Server details"
                 placeholder: "talk.google.com:5222"
-                enabled: selectionDialog.selectedIndex == 2
+                enabled: serverSelection.currentIndex == 2
                 visible: enabled
                 width: parent.width
                 height: visible ? 66 : 0
@@ -129,39 +117,41 @@ Page {
             CheckBox {
                id: goOnline
                text: qsTr("Go online on startup")
-               enabled: selectionDialog.selectedIndex != -1
+               enabled: serverSelection.currentIndex != -1
                checked: settings.gBool(accGRID,'connectOnStart')
-               platformInverted: main.platformInverted
             }
         }
     }
 
     /******************************************/
 
-    tools: ToolBarLayout {
-        ToolButton {
-            platformInverted: main.platformInverted
-            iconSource: "toolbar-back"
-            onClicked: {
-                pageStack.replace( "qrc:/pages/Accounts" )
-                main.splitscreenY = 0
+    footer: ToolBar {
+        RowLayout {
+            anchors.fill: parent
+            ToolButton {
+                text: "\uE72B"
+                font.family: "Segoe MDL2 Assets"
+                enabled: stack.depth > 1
+                onClicked: stack.replace("qrc:/Pages/AccountPage")
             }
-        }
-        ToolButton {
-            iconSource: main.platformInverted ? "qrc:/toolbar/ok_inverse" : "qrc:/toolbar/ok"
-            enabled: login.value !== "" && password.value !== "" && selectionDialog.selectedIndex != -1
-            onClicked: {
-                var grid,vName,icon;
-                grid = accGRID != "" ? accGRID : settings.generateGRID();
-                vName = name.value == "" ? xmppConnectivity.generateAccountName(serverDetails.value.split(":")[0],login.value) : name.value
-                switch (selectionDialog.selectedIndex) {
-                    case 0: icon = "Facebook"; break;
-                    case 1: icon = "Hangouts"; break;
-                    case 2: icon = "XMPP"; break;
-                }
+            Item { Layout.fillWidth: true }
+            ToolButton {
+                text: "\uE73E"
+                font.family: "Segoe MDL2 Assets"
+                enabled: login.value !== "" && password.value !== "" && serverSelection.currentIndex != -1
+                onClicked: {
+                    var grid,vName,icon;
+                    grid = accGRID != "" ? accGRID : settings.generateGRID();
+                    vName = name.value == "" ? xmppConnectivity.generateAccountName(serverDetails.value.split(":")[0],login.value) : name.value
+                    switch (serverSelection.currentIndex) {
+                        case 0: icon = "facebook"; break;
+                        case 1: icon = "hangouts"; break;
+                        case 2: icon = "xmpp"; break;
+                    }
 
-                settings.setAccount(grid,vName,icon,login.value, password.value,goOnline.checked,resource.value,serverDetails.value.split(":")[0],serverDetails.value.split(":")[1],true)
-                pageStack.pop()
+                    settings.setAccount(grid,vName,icon,login.value, password.value,goOnline.checked,resource.value,serverDetails.value.split(":")[0],serverDetails.value.split(":")[1],true)
+                    stack.pop()
+                }
             }
         }
     }

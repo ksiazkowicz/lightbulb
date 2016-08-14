@@ -37,67 +37,10 @@ ApplicationWindow {
     height: 700
     Universal.accent: Universal.Violet
 
-    footer: ToolBar {
-            RowLayout {
-                anchors.fill: parent
-                ToolButton {
-                    text: qsTr("\u25C0 %1").arg(Qt.application.name)
-                    enabled: stack.depth > 1
-                    onClicked: stack.pop()
-                }
-                Item { Layout.fillWidth: true }
-                ToolButton {
-                    text: qsTr("Hehe")
-                    onClicked: xmppConnectivity.useClient("jiddupa2").connectToXmppServer()
-                }
-                ToolButton {
-                    id: menuButton
-                    text: "\uE712"
-                    font.family: "Segoe MDL2 Assets"
-                    onClicked: mainMenu.open()
-
-                    Menu {
-                        y: -mainMenu.height
-                        id: mainMenu
-                        MenuItem {
-                            text: qsTr("Join a MUC")
-                            onClicked: dialog.createWithContext("qrc:/dialogs/MUC/Join")
-                        }
-                        MenuItem {
-                            text: qsTr("Browse services")
-                            onClicked: dialog.createWithContext("qrc:/dialogs/Services/Ask")
-                        }
-                        MenuItem {
-                            text: qsTr("Preferences")
-                            onClicked: stack.push( "qrc:/pages/Preferences" )
-                        }
-                        MenuItem {
-                            text: qsTr("XML Console")
-                            onClicked: stack.push( "qrc:/pages/XMLConsole" )
-                        }
-                        MenuItem {
-                            text: qsTr("About...")
-                            onClicked: stack.push( "qrc:/Pages/AboutPage" )
-                        }
-                        MenuItem {
-                            text: qsTr("Exit")
-                            onClicked: {
-                                Qt.quit()
-                            }
-                        }
-                        MenuItem {
-                            text: qsTr("Accounts")
-                            onClicked: stack.push("qrc:/Pages/AccountPage")
-                        }
-                    }
-                }
-            }
-        }
-
-        StackView {
-            id: stack
-            anchors.fill: parent
-        }
+    StackView {
+        id: stack
+        anchors.fill: parent
+    }
 
     Item {
         property int                     globalUnreadCount: 0
@@ -163,12 +106,12 @@ ApplicationWindow {
         target: xmppConnectivity
         onUnreadCountChanged: vars.globalUnreadCount = vars.globalUnreadCount+delta
         onXmppConnectingChanged: {
-            if (xmppConnectivity.useClient(accountId).getStateConnect() == 1)
+            /*if (xmppConnectivity.useClient(accountId).getStateConnect() == 1)
                 main.color = "yellow";
             if (xmppConnectivity.useClient(accountId).getStateConnect() == 0)
                 main.color = "red";
             if (xmppConnectivity.useClient(accountId).getStateConnect() == 2)
-                main.color = "green";
+                main.color = "green";*/
         }
         onXmppErrorHappened: if (settings.gBool("behavior", "reconnectOnError"))
                                 dialog.createWithProperties("qrc:/dialogs/Status/Reconnect",{"accountId": accountId})
@@ -231,4 +174,10 @@ ApplicationWindow {
             vars.dialogQmlFile = qmlFile;
         }
     }
+
+    /*ToolBar {
+        z: -10
+        anchors { bottom: parent.bottom; left: parent.left; right: parent.right; }
+        RowLayout { }
+    }*/
 }

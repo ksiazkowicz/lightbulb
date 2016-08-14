@@ -241,6 +241,8 @@ signals:
     void progressChanged(int jobId, int progress);
     void transferStateChanged(int jobId, int state);
 
+    void dupaChanged();
+
 public slots:
     void clientStateChanged(QXmppClient::State state);
 

@@ -1,8 +1,23 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.1
 
 Page {
     id: aboutPage
+    property alias stack: aboutPage.parent
+
+    footer: ToolBar {
+            RowLayout {
+                anchors.fill: parent
+                ToolButton {
+                    text: "\uE72B"
+                    font.family: "Segoe MDL2 Assets"
+                    enabled: stack.depth > 1
+                    onClicked: stack.pop()
+                }
+                Item { Layout.fillWidth: true }
+            }
+        }
 
     Flickable {
         id: about

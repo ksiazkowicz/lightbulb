@@ -1,9 +1,13 @@
 import QtQuick 2.3
 import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.1
 import lightbulb 1.0
 import "../Components"
 
 Page {
+    id: page
+    property alias stack: page.parent
+
     Component {
             id: componentAccountItem
 
@@ -15,10 +19,9 @@ Page {
                     text: xmppConnectivity.getAccountName(accGRID)
                     icon: "qrc:/accounts/" + xmppConnectivity.getAccountIcon(accGRID)
 
-                    onEditButtonClick: main.stack.replace( "qrc:/Pages/AccountAdd", {"accGRID":accGRID})
+                    onEditButtonClick: stack.replace( "qrc:/Pages/AccountAdd", {"accGRID":accGRID})
                     onRemoveButtonClick: {
-                        if (avkon.displayAvkonQueryDialog("Remove","Are you sure you want to remove account " + accJid + "?"))
-                            settings.removeAccount(accGRID)
+                        settings.removeAccount(accGRID)
                     }
                 }
 
@@ -33,11 +36,6 @@ Page {
         font.bold: true
         anchors { top: parent.top; left: parent.left; margins: 20; }
     }
-    Button {
-        anchors { top: parent.top; right: parent.right; }
-        text: "doda"
-        onClicked: parent.parent.parent.replace("qrc:/Pages/AccountAdd")
-    }
 
     ListView {
         id: listViewAccounts
@@ -45,4 +43,24 @@ Page {
         delegate: componentAccountItem
         model: settings.accounts
     }
+
+    footer: ToolBar {
+            RowLayout {
+                anchors.fill: parent
+                ToolButton {
+                    text: "\uE72B"
+                    font.family: "Segoe MDL2 Assets"
+                    enabled: page.stack.depth > 1
+                    onClicked: stack.pop()
+                }
+                Item { Layout.fillWidth: true }
+                ToolButton {
+                    id: menuButton
+                    text: "\uE710"
+                    font.family: "Segoe MDL2 Assets"
+                    onClicked: stack.replace("qrc:/Pages/AccountAdd")
+
+                }
+            }
+        }
 }

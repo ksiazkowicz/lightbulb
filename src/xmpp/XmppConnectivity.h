@@ -44,6 +44,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "ContactListManager.h"
 #include "EventsManager.h"
 
+#include <QTimer>
+
 class XmppConnectivity : public QObject
 {
     Q_OBJECT
@@ -55,6 +57,7 @@ class XmppConnectivity : public QObject
 
     Q_PROPERTY(bool offlineContactsVisibility READ getVisibility WRITE setVisibility NOTIFY visibilityChanged)
     Q_PROPERTY(bool contactGroupingEnabled READ getGrouping WRITE setGrouping NOTIFY groupingChanged)
+    Q_PROPERTY(int dupa READ getDupa NOTIFY dupaChanged)
 public:
     explicit XmppConnectivity(QObject *parent = 0);
     ~XmppConnectivity();
@@ -72,8 +75,13 @@ public:
     //
     Q_INVOKABLE QString generateAccountName(QString host,QString jid);
     Q_INVOKABLE QString getAccountName(QString grid);
+    Q_INVOKABLE QString getFirstGrid();
     Q_INVOKABLE QString getAccountIcon(QString grid);
     Q_INVOKABLE int getGlobalUnreadCount();
+
+    int dupa = 0;
+    bool istnienia = false;
+    Q_INVOKABLE int getDupa() { return dupa; }
 
 signals:
     void personalityChanged();
@@ -90,6 +98,8 @@ signals:
     void visibilityChanged();
     void groupingChanged();
 
+    void initready();
+
     void unreadCountChanged(int delta);
 
     // MyXmppClient ones
@@ -104,6 +114,8 @@ signals:
     void pushedSystemNotification(QString type, QString title, QString description);
 
     void avatarUpdatedForJid(QString bareJid);
+
+    void dupaChanged();
     
 public slots:
     void handleXmppStatusChange (const QString accountId);
@@ -183,6 +195,8 @@ public slots:
     Q_INVOKABLE void restoreAllPrevStatuses();
     Q_INVOKABLE bool isRestoringNeeded() { return restoringNeeded; }
 
+    void changeDupa();
+
 private:
     QString currentClient;
     QMap<QString,MyXmppClient*> *clients;
@@ -214,6 +228,8 @@ private:
     EventsManager* getEvents() { return events; }
 
     void plusUnreadChatMsg(QString accountId,QString bareJid);
+
+    QTimer *jebac;
 };
 
 #endif // XMPPCONNECTIVITY_H

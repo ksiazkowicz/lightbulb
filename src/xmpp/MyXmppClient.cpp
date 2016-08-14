@@ -38,7 +38,7 @@ MyXmppClient::MyXmppClient(MyCache *lCache,ContactListManager *lContacts, Events
 
   versionManager = xmppClient->findExtension<QXmppVersionManager>();
   versionManager->setClientName("Lightbulb");
-  versionManager->setClientVersion(QString(VERSION).mid(1,5));
+  versionManager->setClientVersion(QString("0.4.0").mid(1,5));
   connect(versionManager,SIGNAL(versionReceived(QXmppVersionIq)),this,SLOT(versionReceivedSlot(QXmppVersionIq)));
 
   rosterManager = 0;

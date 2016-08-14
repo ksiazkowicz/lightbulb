@@ -57,6 +57,16 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
   for (int i=0; i<lSettings->accountsCount(); i++)
       initializeAccount(lSettings->getAccount(i)->grid(),lSettings->getAccount(i));
 
+  jebac = new QTimer();
+  jebac->connect(jebac, SIGNAL(timeout()), this, SLOT(changeDupa()));
+  jebac->start(1000);
+
+}
+
+void XmppConnectivity::changeDupa() {
+    dupa++;
+    qDebug() << "dupa" << dupa;
+    emit dupaChanged();
 }
 
 XmppConnectivity::~XmppConnectivity() {  
@@ -118,7 +128,21 @@ bool XmppConnectivity::initializeAccount(QString index, AccountsItemModel* accou
   clients->value(index)->fuckSecurity = lSettings->get("advanced","fuckSecurity").toBool();
 
   delete account;
+
+  emit initready();
+  istnienia = true;
   return true;
+}
+
+QString XmppConnectivity::getFirstGrid() {
+    qDebug() << "bool istnienia" << istnienia;
+    if (!istnienia) return "";
+
+    if (lSettings->accountsCount() > 0) {
+        return lSettings->getAccount(1)->grid();
+    } else {
+        return "";
+    }
 }
 
 /* --- diagnostics --- */

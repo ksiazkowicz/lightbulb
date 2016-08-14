@@ -96,8 +96,8 @@ int main(int argc, char *argv[]) {
     viewer->rootContext()->setContextProperty("xmppConnectivity",&xmpp);
 
     // Qt5 cool stuff
-    viewer->rootContext()->setContextProperty("appVersion",VERSION);
-    viewer->rootContext()->setContextProperty("buildDate",BUILDDATE);
+    viewer->rootContext()->setContextProperty("appVersion","0.4.0");
+    viewer->rootContext()->setContextProperty("buildDate","00-00-0000");
 
     // set universal style
     QQuickStyle::setStyle("Universal");
