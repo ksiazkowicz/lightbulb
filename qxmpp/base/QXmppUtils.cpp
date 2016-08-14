@@ -124,8 +124,7 @@ QDateTime QXmppUtils::datetimeFromString(const QString &str)
     // process milliseconds
     if (tzPos > 20 && str.at(19) == '.')
     {
-        QString millis = (str.mid(20, tzPos - 20) + "000");
-        millis = millis.left(3);
+        QString millis = QString(str.mid(20, tzPos - 20) + "000").left(3);
         dt = dt.addMSecs(millis.toInt());
     }
 

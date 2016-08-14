@@ -24,19 +24,114 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *********************************************************************/
 
 import QtQuick 2.0
-import QtQuick.Controls 1.2
+import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.1
+import QtQuick.Controls.Universal 2.0
 import lightbulb 1.0
 
 ApplicationWindow {
     id: main
     visible: true
-    width: 320
-    minimumWidth: 320
-    height: 480
-    minimumHeight: 200
-    title: qsTr("Lightbulb")
+    Universal.theme: Universal.Dark
+    width: 500
+    height: 700
+    Universal.accent: Universal.Violet
 
-    Globals {
+    footer: ToolBar {
+            RowLayout {
+                anchors.fill: parent
+                ToolButton {
+                    text: qsTr("\u25C0 %1").arg(Qt.application.name)
+                    enabled: stack.depth > 1
+                    onClicked: stack.pop()
+                }
+                Item { Layout.fillWidth: true }
+                ToolButton {
+                    text: qsTr("Hehe")
+                    onClicked: xmppConnectivity.useClient("jiddupa2").connectToXmppServer()
+                }
+                ToolButton {
+                    id: menuButton
+                    text: "\uE712"
+                    font.family: "Segoe MDL2 Assets"
+                    onClicked: mainMenu.open()
+
+                    Menu {
+                        y: -mainMenu.height
+                        id: mainMenu
+                        MenuItem {
+                            text: qsTr("Join a MUC")
+                            onClicked: dialog.createWithContext("qrc:/dialogs/MUC/Join")
+                        }
+                        MenuItem {
+                            text: qsTr("Browse services")
+                            onClicked: dialog.createWithContext("qrc:/dialogs/Services/Ask")
+                        }
+                        MenuItem {
+                            text: qsTr("Preferences")
+                            onClicked: stack.push( "qrc:/pages/Preferences" )
+                        }
+                        MenuItem {
+                            text: qsTr("XML Console")
+                            onClicked: stack.push( "qrc:/pages/XMLConsole" )
+                        }
+                        MenuItem {
+                            text: qsTr("About...")
+                            onClicked: stack.push( "qrc:/Pages/AboutPage" )
+                        }
+                        MenuItem {
+                            text: qsTr("Exit")
+                            onClicked: {
+                                Qt.quit()
+                            }
+                        }
+                        MenuItem {
+                            text: qsTr("Accounts")
+                            onClicked: stack.push("qrc:/Pages/AccountPage")
+                        }
+                    }
+                }
+            }
+        }
+
+        StackView {
+            id: stack
+            anchors.fill: parent
+        }
+
+    Item {
+        property int                     globalUnreadCount: 0
+        property string                  lastStatus: settings.gBool("behavior", "lastStatusText") ? settings.gStr("behavior","lastStatusText") : ""
+        signal                           statusChanged
+        property int                     lastUsedStatus: 0
+        signal                           statusTextChanged
+        property bool                    isActive: true
+        property string                  context: ""
+
+        // auto-away
+        property bool                    autoAway: settings.gBool("behavior","autoAway")
+        property int                     autoAwayTime: settings.gInt("behavior","autoAwayTime")
+
+        // settings
+        property bool                    areEmoticonsDisabled: settings.gBool("behavior","disableEmoticons")
+        property int                     keepAliveInterval: settings.gInt("behavior","keepAliveInterval")
+        property string                  defaultMUCNick: settings.gStr("behavior","defaultMUCNick")
+        property string                  receivedFilesPath: settings.gStr("paths","recvFiles")
+
+        property bool                    isRestartRequired: false
+        property bool                    isBlinkingOverrideEnabled: false
+
+        // roster
+        property bool                    hideOffline: settings.gBool("ui","hideOffline")
+        property int                     rosterItemHeight: settings.gInt("ui","rosterItemHeight")
+        property bool                    showContactStatusText: settings.gBool("ui","showContactStatusText")
+        property bool                    rosterLayoutAvatar: settings.gBool("ui","rosterLayoutAvatar")
+        property string                  selectedJid: ""
+        property bool                    awaitingContext: false
+        property string                  dialogQmlFile: ""
+        property bool					 showGroupTag: settings.gBool("ui", "rosterGroupTag")
+        property bool					 groupContacts: settings.gBool("ui", "rosterGroupContacts")
+
         id: vars
         onAwaitingContextChanged: {
             if (!awaitingContext && dialogQmlFile != "") {
@@ -46,6 +141,7 @@ ApplicationWindow {
         }
 
     }
+
     function openChat(account,name,jid,type) {
         //pageStack.push("qrc:/pages/Conversation",{"accountId":account,"contactName":name,"contactJid":jid,"isInArchiveMode":false,"chatType":type})
     }
@@ -58,39 +154,34 @@ ApplicationWindow {
         property int blinkStatus: 0
         onTriggered: {
             if (vars.globalUnreadCount>0 || vars.isBlinkingOverrideEnabled) {
-                if (blinkStatus < 4) { avkon.notificationBlink(settings.gInt("notifications", "blinkScreenDevice")); blinkStatus++ } else { if (blinkStatus > 6) { blinkStatus = 0} else { blinkStatus++ } }
+                //if (blinkStatus < 4) { avkon.notificationBlink(settings.gInt("notifications", "blinkScreenDevice")); blinkStatus++ } else { if (blinkStatus > 6) { blinkStatus = 0} else { blinkStatus++ } }
             } else { blinkStatus = 0; blink.running = false }
-        }
-    }
-
-    Connections         {
-        target: Qt.application
-        onActiveChanged: {
-            if (Qt.application.active) {
-                vars.isActive = true
-                blink.running = false
-            } else {
-                vars.isActive = false
-                if ((vars.globalUnreadCount>0 || vars.isBlinkingOverrideEnabled) && settings.gBool("behavior", "wibblyWobblyTimeyWimeyStuff")) blink.running = true
-            }
         }
     }
 
     Connections {
         target: xmppConnectivity
         onUnreadCountChanged: vars.globalUnreadCount = vars.globalUnreadCount+delta
+        onXmppConnectingChanged: {
+            if (xmppConnectivity.useClient(accountId).getStateConnect() == 1)
+                main.color = "yellow";
+            if (xmppConnectivity.useClient(accountId).getStateConnect() == 0)
+                main.color = "red";
+            if (xmppConnectivity.useClient(accountId).getStateConnect() == 2)
+                main.color = "green";
+        }
         onXmppErrorHappened: if (settings.gBool("behavior", "reconnectOnError"))
                                 dialog.createWithProperties("qrc:/dialogs/Status/Reconnect",{"accountId": accountId})
         onXmppSubscriptionReceived: {
-            if (avkon.displayAvkonQueryDialog("Subscription (" + getAccountName(accountId) + ")", qsTr("Do you want to accept subscription request from ") + bareJid + qsTr("?")))
+            /*if (avkon.displayAvkonQueryDialog("Subscription (" + getAccountName(accountId) + ")", qsTr("Do you want to accept subscription request from ") + bareJid + qsTr("?")))
                 xmppConnectivity.useClient(accountId).acceptSubscription(bareJid)
             else
-                xmppConnectivity.useClient(accountId).rejectSubscription(bareJid)
+                xmppConnectivity.useClient(accountId).rejectSubscription(bareJid)*/
         }
-        onMucInvitationReceived: {
+        /*onMucInvitationReceived: {
             if (avkon.displayAvkonQueryDialog("Invitation (" + getAccountName(accountId) + ")", invSender + " invites you to chatroom " + bareJid + qsTr(". Do you want to join?")))
                 dialog.createWithProperties("qrc:/dialogs/MUC/Join",{"accountId":accountId,"mucJid":bareJid})
-        }
+        }*/
     }
 
     Connections {
@@ -100,41 +191,25 @@ ApplicationWindow {
         onAccountEdited: xmppConnectivity.accountModified(accId)
     }
 
-    Connections {
-        target: updater
-        onUpdateFound: xmppConnectivity.pushUpdate(version, date)
-        onVersionUpToDate: xmppConnectivity.pushNoUpdate()
-        onErrorOccured: xmppConnectivity.pushSystemError("Update check failed. "+errorString)
-    }
-
-    NetworkManager  {
-        id: network
-        currentIAP: settings.gInt("behavior","internetAccessPoint");
-    }
-
     ListModel           { id: listModelResources }
-    Notifications       { id: notify }
 
     /************************( stuff to do when running this app )*****************************/
     Component.onCompleted: {
 		xmppConnectivity.offlineContactsVisibility = !vars.hideOffline
 
         if (!settings.gBool("main","not_first_run")) {
-            //if (migration.isMigrationPossible()) {
-                //if (avkon.displayAvkonQueryDialog("Migration","Fluorescent detected a settings file from older version of the app, would you like the app to import them?"))
-                   // pageStack.push("qrc:/pages/Migration")
-                //else
-                   // pageStack.push("qrc:/pages/FirstRun")
-            //} else
-               //pageStack.push("qrc:/pages/FirstRun")
+            //pageStack.push("qrc:/pages/FirstRun")
         } else {
             settings.sStr(appVersion,"main","last_used_rel")
 
-            if (!settings.gBool("behavior","isIAPSet"))
-                dialog.create("qrc:/dialogs/AccessPointSelector")
+            //if (!settings.gBool("behavior","isIAPSet"))
+            //    dialog.create("qrc:/dialogs/AccessPointSelector")
             //pageStack.push("qrc:/pages/Events")
         }
+
+        stack.push("qrc:/Pages/MainPage")
     }
+
     /****************************( Dialog windows, menus and stuff)****************************/
 
     QtObject  {

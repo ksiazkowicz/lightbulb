@@ -62,6 +62,7 @@ public:
         delete m_prototype;
         clear();
       }
+  Q_INVOKABLE ListItem* get(int id) { return getElementByID(id); }
   int rowCount(const QModelIndex &parent = QModelIndex()) const {
       Q_UNUSED(parent);
       return m_list.size();
@@ -184,7 +185,7 @@ private slots:
         emit dataChanged(index, index);
     }
 
-private:
+protected:
   ListItem* m_prototype;
   QList<ListItem*> m_list;
 };

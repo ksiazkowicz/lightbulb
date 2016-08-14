@@ -56,6 +56,7 @@ XmppConnectivity::XmppConnectivity(QObject *parent) :
 
   for (int i=0; i<lSettings->accountsCount(); i++)
       initializeAccount(lSettings->getAccount(i)->grid(),lSettings->getAccount(i));
+
 }
 
 XmppConnectivity::~XmppConnectivity() {  

@@ -29,7 +29,7 @@
 #ifndef ROSTERITEMFILTER_H
 #define ROSTERITEMFILTER_H
 
-#include <QtGui/QSortFilterProxyModel>
+#include <QSortFilterProxyModel>
 #include "RosterItemModel.h"
 
 class RosterItemFilter : public QSortFilterProxyModel

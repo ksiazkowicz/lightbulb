@@ -1,5 +1,5 @@
 # Header files
-HEADERS += \
+INSTALL_HEADERS += \
     qxmpp/client/QXmppArchiveManager.h \
     qxmpp/client/QXmppBookmarkManager.h \
     qxmpp/client/QXmppCallManager.h \

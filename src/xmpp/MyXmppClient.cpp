@@ -45,7 +45,6 @@ MyXmppClient::MyXmppClient(MyCache *lCache,ContactListManager *lContacts, Events
   mucManager = 0;
   transferManager = 0;
   serviceDiscovery = 0;
-  graph = 0;
   cacheIM = lCache;
 
   contacts = lContacts;
@@ -81,21 +80,10 @@ void MyXmppClient::connectToXmppServer() {
 
   xmppConfig.setJid(m_myjid);
   xmppConfig.setPassword(m_password);
-  xmppConfig.setKeepAliveInterval(m_keepAlive);
+  xmppConfig.setKeepAliveInterval(60);
   xmppConfig.setResource(m_resource == "" ? "Lightbulb" : m_resource);
   xmppConfig.setAutoAcceptSubscriptions(false);
-
-  // lulz
-  if (fuckSecurity) {
-      xmppConfig.setNonSASLAuthMechanism(QXmppConfiguration::NonSASLDigest);
-      xmppConfig.setUseSASLAuthentication(false);
-      xmppConfig.setIgnoreSslErrors(true);
-      xmppConfig.setStreamSecurityMode(QXmppConfiguration::TLSDisabled);
-    } else {
-      xmppConfig.setSaslAuthMechanism("DIGEST-MD5");
-      xmppConfig.setUseSASLAuthentication(true);
-      xmppConfig.setStreamSecurityMode(QXmppConfiguration::TLSEnabled);
-    }
+  xmppConfig.setStreamSecurityMode(QXmppConfiguration::TLSDisabled);
 
   if (!m_host.isEmpty())
     xmppConfig.setHost(m_host);
@@ -103,6 +91,7 @@ void MyXmppClient::connectToXmppServer() {
     xmppConfig.setPort(m_port);
 
   // initialize MUC manager if account is not facebook
+  /*
   if (!mucManager && xmppConfig.host() != "chat.facebook.com") {
       qDebug() << "MyXmppClient::connectToXmppServer(): initializing MUC manager";
       mucManager = new QXmppMucManager();
@@ -115,7 +104,7 @@ void MyXmppClient::connectToXmppServer() {
       transferManager = new QXmppTransferManager();
       xmppClient->addExtension(transferManager);
       connect(transferManager,SIGNAL(fileReceived(QXmppTransferJob*)),this,SLOT(incomingTransfer(QXmppTransferJob*)));
-    }
+    }*/
 
   // initialize service discovery if account is not facebook
   if (!serviceDiscovery && xmppConfig.host() != "chat.facebook.com") {
@@ -128,13 +117,6 @@ void MyXmppClient::connectToXmppServer() {
       serviceDiscovery->setClientCategory("phone");
       connect(serviceDiscovery,SIGNAL(itemsReceived(QXmppDiscoveryIq)),this,SLOT(itemsReceived(QXmppDiscoveryIq)),Qt::UniqueConnection);
       connect(serviceDiscovery,SIGNAL(infoReceived(QXmppDiscoveryIq)),this,SLOT(infoReceived(QXmppDiscoveryIq)),Qt::UniqueConnection);
-    }
-
-  // initialize profile pic downloader if account is facebook
-  if (!graph && xmppConfig.host() == "chat.facebook.com") {
-      qDebug() << "MyXmppClient::connectToXmppServer(): initializing Graph API extension";
-      graph = new GraphAPIExtensions(cacheIM);
-      connect(graph,SIGNAL(avatarDownloaded(QString)),this,SLOT(checkIfPersonalityUpdated(QString)),Qt::UniqueConnection);
     }
 
   xmppClient->connectToServer(xmppConfig);
@@ -181,12 +163,10 @@ void MyXmppClient::initVCard(const QXmppVCardIq &vCard) {
 
   // check if caching is disabled
   if (!disableAvatarCaching) {
-      if (!isFacebook() || legacyAvatarCaching) {
-          QString avatarFile = cacheIM->getAvatarCache( bareJid );
-          if ((avatarFile.isEmpty() || avatarFile == "qrc:/avatar") && vCard.photo() != "")
-            cacheIM->setAvatarCache( bareJid, vCard.photo() );
-        } else graph->downloadProfilePic(bareJid);
-    }
+    QString avatarFile = cacheIM->getAvatarCache( bareJid );
+    if ((avatarFile.isEmpty() || avatarFile == "qrc:/avatar") && vCard.photo() != "")
+        cacheIM->setAvatarCache( bareJid, vCard.photo() );
+  }
 
   dataVCard.nickName = nickName;
   dataVCard.firstName = vCard.firstName();
@@ -575,6 +555,8 @@ bool MyXmppClient::setContactGroup(QString bareJid, QString group) {
 
   // re-add contact
   this->addContact(bareJid,nick,group,false);
+
+  return true;
 }
 
 // --------- XEP-0202: Entity Time ------------------------------------------------------------------------------------------------

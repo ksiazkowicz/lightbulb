@@ -56,7 +56,7 @@ public:
     bool isAuthenticated() const;
     bool isConnected() const;
 
-    QSslSocket *socket() const { return QXmppStream::socket(); };
+    QSslSocket *socket() const { return QXmppStream::socket(); }
     QXmppStanza::Error::Condition xmppStreamError();
 
     QXmppConfiguration& configuration();
@@ -76,6 +76,9 @@ signals:
 
     /// This signal is emitted when an IQ is received.
     void iqReceived(const QXmppIq&);
+
+    /// This signal is emitted when SSL errors are encountered.
+    void sslErrors(const QList<QSslError> &errors);
 
 protected:
     /// \cond

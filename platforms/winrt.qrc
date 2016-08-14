@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="qml/main.qml">winrt/qml/main.qml</file>
+        <file>global/qml/Globals.qml</file>
+        <file>global/qml/Notifications.qml</file>
+    </qresource>
+</RCC>

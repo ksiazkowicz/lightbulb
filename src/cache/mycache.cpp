@@ -27,13 +27,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QtGui/QImageReader>
 #include <QFile>
 #include <QDebug>
+#include <QStandardPaths>
 
 MyCache::MyCache(QString path, QObject *parent) : StoreVCard(parent) {
-#ifdef Q_OS_BLACKBERRY
-  cachePath = (path == "" || path == "false") ? QDir::currentPath() + QString("/data/cache") : path;
-#else
-  cachePath = (path == "" || path == "false") ? QDir::currentPath() + QString("/cache") : path;
-#endif
+  cachePath = (path == "" || path == "false") ? QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation) + QString("/cache") : path;
   this->setCachePath( cachePath );
 }
 

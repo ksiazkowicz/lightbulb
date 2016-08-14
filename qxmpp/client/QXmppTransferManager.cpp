@@ -204,6 +204,7 @@ public:
     QString requestId;
     QXmppTransferJob::State state;
     QTime transferStart;
+    bool deviceIsOwn;
 
     // file meta-data
     QXmppTransferFileInfo fileInfo;
@@ -225,6 +226,7 @@ QXmppTransferJobPrivate::QXmppTransferJobPrivate()
     iodevice(0),
     method(QXmppTransferJob::NoMethod),
     state(QXmppTransferJob::OfferState),
+    deviceIsOwn(false),
     ibbSequence(0),
     socksSocket(0)
 {
@@ -426,7 +428,7 @@ void QXmppTransferJob::terminate(QXmppTransferJob::Error cause)
     d->state = FinishedState;
 
     // close IO device
-    if (d->iodevice)
+    if (d->iodevice && d->deviceIsOwn)
         d->iodevice->close();
 
     // close socket
@@ -1282,14 +1284,19 @@ void QXmppTransferManager::_q_jobStateChanged(QXmppTransferJob::State state)
     emit jobStarted(job);
 }
 
-/// Send file to a remote party.
+/// Sends the file at \a filePath to a remote party.
 ///
 /// The remote party will be given the choice to accept or refuse the transfer.
 ///
+/// Returns 0 if the \a jid is not valid or if the file at \a filePath cannot be read.
+///
+/// \note The recipient's \a jid must be a full JID with a resource, for instance "user@host/resource".
+///
+
 QXmppTransferJob *QXmppTransferManager::sendFile(const QString &jid, const QString &filePath, const QString &description)
 {
-    if (jid.isEmpty()) {
-        warning("Refusing to send file to an empty jid");
+    if (QXmppUtils::jidToResource(jid).isEmpty()) {
+        warning("The file recipient's JID must be a full JID");
         return 0;
     }
 
@@ -1302,7 +1309,7 @@ QXmppTransferJob *QXmppTransferManager::sendFile(const QString &jid, const QStri
     fileInfo.setDescription(description);
 
     // open file
-    QIODevice *device = new QFile(filePath);
+    QIODevice *device = new QFile(filePath, this);
     if (!device->open(QIODevice::ReadOnly))
     {
         warning(QString("Could not read from %1").arg(filePath));
@@ -1326,21 +1333,28 @@ QXmppTransferJob *QXmppTransferManager::sendFile(const QString &jid, const QStri
 
     // create job
     QXmppTransferJob *job = sendFile(jid, device, fileInfo);
-    job->setLocalFileUrl(filePath);
+    job->setLocalFileUrl(QUrl::fromLocalFile(filePath));
+    job->d->deviceIsOwn = true;
     return job;
 }
 
-/// Send file to a remote party.
+/// Sends the file in \a device to a remote party.
 ///
 /// The remote party will be given the choice to accept or refuse the transfer.
 ///
+/// Returns 0 if the \a jid is not valid.
+///
+/// \note The recipient's \a jid must be a full JID with a resource, for instance "user@host/resource".
+/// \note The ownership of the \a device should be managed by the caller.
+///
+
 QXmppTransferJob *QXmppTransferManager::sendFile(const QString &jid, QIODevice *device, const QXmppTransferFileInfo &fileInfo, const QString &sid)
 {
     bool check;
     Q_UNUSED(check);
 
-    if (jid.isEmpty()) {
-        warning("Refusing to send file to an empty jid");
+    if (QXmppUtils::jidToResource(jid).isEmpty()) {
+        warning("The file recipient's JID must be a full JID");
         return 0;
     }
 
@@ -1351,8 +1365,6 @@ QXmppTransferJob *QXmppTransferManager::sendFile(const QString &jid, QIODevice *
         job->d->sid = sid;
     job->d->fileInfo = fileInfo;
     job->d->iodevice = device;
-    if (device)
-        device->setParent(job);
 
     // check file is open
     if (!device || !device->isReadable())

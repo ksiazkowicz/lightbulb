@@ -21,6 +21,7 @@
  *
  */
 
+#include "../../src/winrt/QNetworkProxy.h"
 #include <QNetworkProxy>
 #include <QSslSocket>
 

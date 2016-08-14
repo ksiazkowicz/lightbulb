@@ -31,9 +31,9 @@
 #  define QXMPP_EXPORT
 #else
 #  if defined(QXMPP_BUILD)
-#    define QXMPP_EXPORT Q_DECL_EXPORT
+#    define QXMPP_EXPORT
 #  else
-#    define QXMPP_EXPORT Q_DECL_IMPORT
+#    define QXMPP_EXPORT
 #  endif
 #endif
 
@@ -52,7 +52,7 @@
 /// available.
 ///
 
-#define QXMPP_VERSION 0x000801
+#define QXMPP_VERSION 0x000903
 
 QXMPP_EXPORT QString QXmppVersion();
 

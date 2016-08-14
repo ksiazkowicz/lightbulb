@@ -23,28 +23,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *********************************************************************/
 
 #include "Settings.h"
+#include <QStandardPaths>
 
 #include <QDir>
 #include "../models/AccountsListModel.h"
 #include <QDebug>
 
 QString Settings::cacheFolder;
+QString Settings::confFile = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation) + QDir::separator() + "Settings.conf";
 
-#ifdef Q_OS_BLACKBERRY
-QString Settings::confFile = QDir::currentPath() + QDir::separator() + "data/Settings.conf";
-#else
-QString Settings::confFile = QDir::currentPath() + QDir::separator() + "Settings.conf";
-#endif
-
-Settings::Settings(QObject *parent) : QSettings(Settings::confFile, QSettings::NativeFormat , parent) {
+Settings::Settings(QObject *parent) : QSettings(Settings::confFile, QSettings::IniFormat , parent) {
   alm = new AccountsListModel(this);
   this->initListOfAccounts();
 
-#ifdef Q_OS_BLACKBERRY
-  cacheFolder = QDir::currentPath() + QDir::separator() + QString("data/cache");
-#else
-  cacheFolder = QDir::currentPath() + QDir::separator() + QString("cache");
-#endif
+  cacheFolder = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation) + QDir::separator() + QString("cache");
 
   if (get("paths","cache") != "")
     cacheFolder = get("paths","cache").toString();

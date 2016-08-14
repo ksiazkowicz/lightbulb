@@ -57,7 +57,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "../cache/MyCache.h"
 #include "../models/ParticipantListModel.h"
 #include "../models/ParticipantItemModel.h"
-#include "../api/GraphAPIExtensions.h"
 #include "ContactListManager.h"
 #include "EventsManager.h"
 #include "../models/ServiceListModel.h"
@@ -80,7 +79,6 @@ class MyXmppClient : public QObject
     QXmppDiscoveryManager *serviceDiscovery;
     QXmppEntityTimeManager *entityTime;
     QXmppVersionManager *versionManager;
-    GraphAPIExtensions *graph;
 
     ContactListManager *contacts;
     EventsManager *events;
@@ -307,6 +305,8 @@ private slots:
 
       // update xmlLog
       xmlLog.append("["+typeStr+"] "+text);
+
+      qDebug() << "[" << typeStr << "]" << text;
 
       // quick fix for "Socket disconnected" not being handled
       /*if (text == "Socket disconnected") {

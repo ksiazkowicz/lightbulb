@@ -29,9 +29,13 @@
 #include "QXmppLogger.h"
 #include "QXmppJingleIq.h"
 
+class CandidatePair;
 class QDataStream;
 class QUdpSocket;
 class QTimer;
+class QXmppIceComponentPrivate;
+class QXmppIceConnectionPrivate;
+class QXmppIcePrivate;
 
 /// \internal
 ///
@@ -49,14 +53,14 @@ public:
         Send         = 0x6,
         Data         = 0x7,
         CreatePermission = 0x8,
-        ChannelBind  = 0x9,
+        ChannelBind  = 0x9
     };
 
     enum ClassType {
         Request    = 0x000,
         Indication = 0x010,
         Response   = 0x100,
-        Error      = 0x110,
+        Error      = 0x110
     };
 
     QXmppStunMessage();
@@ -154,118 +158,6 @@ private:
     QString m_username;
 };
 
-/// \internal
-///
-/// The QXmppStunTransaction class represents a STUN transaction.
-///
-
-class QXMPP_EXPORT QXmppStunTransaction : public QXmppLoggable
-{
-    Q_OBJECT
-
-public:
-    QXmppStunTransaction(const QXmppStunMessage &request, QObject *parent);
-    QXmppStunMessage request() const;
-    QXmppStunMessage response() const;
-
-signals:
-    void finished();
-    void writeStun(const QXmppStunMessage &request);
-
-public slots:
-    void readStun(const QXmppStunMessage &response);
-
-private slots:
-    void retry();
-
-private:
-    QXmppStunMessage m_request;
-    QXmppStunMessage m_response;
-    QTimer *m_retryTimer;
-    int m_tries;
-};
-
-/// \internal
-///
-/// The QXmppTurnAllocation class represents a TURN allocation as defined
-/// by RFC 5766 Traversal Using Relays around NAT (TURN).
-///
-
-class QXMPP_EXPORT QXmppTurnAllocation : public QXmppLoggable
-{
-    Q_OBJECT
-
-public:
-    enum AllocationState
-    {
-        UnconnectedState,
-        ConnectingState,
-        ConnectedState,
-        ClosingState,
-    };
-
-    QXmppTurnAllocation(QObject *parent = 0);
-    ~QXmppTurnAllocation();
-
-    QHostAddress relayedHost() const;
-    quint16 relayedPort() const;
-    AllocationState state() const;
-
-    void setServer(const QHostAddress &host, quint16 port = 3478);
-    void setUser(const QString &user);
-    void setPassword(const QString &password);
-
-    qint64 writeDatagram(const QByteArray &data, const QHostAddress &host, quint16 port);
-
-signals:
-    /// \brief This signal is emitted once TURN allocation succeeds.
-    void connected();
-
-    /// \brief This signal is emitted when a data packet is received.
-    void datagramReceived(const QByteArray &data, const QHostAddress &host, quint16 port);
-
-    /// \brief This signal is emitted when TURN allocation fails.
-    void disconnected();
-
-public slots:
-    void connectToHost();
-    void disconnectFromHost();
-
-private slots:
-    void readyRead();
-    void refresh();
-    void refreshChannels();
-    void transactionFinished();
-    void writeStun(const QXmppStunMessage &message);
-
-private:
-    void handleDatagram(const QByteArray &datagram, const QHostAddress &host, quint16 port);
-    void setState(AllocationState state);
-
-    QUdpSocket *socket;
-    QTimer *m_timer;
-    QTimer *m_channelTimer;
-    QString m_password;
-    QString m_username;
-    QHostAddress m_relayedHost;
-    quint16 m_relayedPort;
-    QHostAddress m_turnHost;
-    quint16 m_turnPort;
-
-    // channels
-    typedef QPair<QHostAddress, quint16> Address;
-    quint16 m_channelNumber;
-    QMap<quint16, Address> m_channels;
-
-    // state
-    quint32 m_lifetime;
-    QByteArray m_key;
-    QString m_realm;
-    QByteArray m_nonce;
-    AllocationState m_state;
-    QList<QXmppStunTransaction*> m_transactions;
-};
-
 /// \brief The QXmppIceComponent class represents a piece of a media stream
 /// requiring a single transport address, as defined by RFC 5245
 /// (Interactive Connectivity Establishment).
@@ -275,27 +167,11 @@ class QXMPP_EXPORT QXmppIceComponent : public QXmppLoggable
     Q_OBJECT
 
 public:
-    QXmppIceComponent(QObject *parent=0);
     ~QXmppIceComponent();
-    void setIceControlling(bool controlling);
-    void setStunServer(const QHostAddress &host, quint16 port);
-    void setTurnServer(const QHostAddress &host, quint16 port);
-    void setTurnUser(const QString &user);
-    void setTurnPassword(const QString &password);
-
-    QList<QXmppJingleCandidate> localCandidates() const;
-    void setLocalUser(const QString &user);
-    void setLocalPassword(const QString &password);
 
     int component() const;
-    void setComponent(int component);
-
-    bool addRemoteCandidate(const QXmppJingleCandidate &candidate);
-    void setRemoteUser(const QString &user);
-    void setRemotePassword(const QString &password);
-
     bool isConnected() const;
-    void setSockets(QList<QUdpSocket*> sockets);
+    QList<QXmppJingleCandidate> localCandidates() const;
 
     static QList<QHostAddress> discoverAddresses();
     static QList<QUdpSocket*> reservePorts(const QList<QHostAddress> &addresses, int count, QObject *parent = 0);
@@ -307,10 +183,11 @@ public slots:
 
 private slots:
     void checkCandidates();
-    void checkStun();
-    void handleDatagram(const QByteArray &datagram, const QHostAddress &host, quint16 port, QUdpSocket *socket = 0);
-    void readyRead();
+    void handleDatagram(const QByteArray &datagram, const QHostAddress &host, quint16 port);
     void turnConnected();
+    void transactionFinished();
+    void updateGatheringState();
+    void writeStun(const QXmppStunMessage &request);
 
 signals:
     /// \brief This signal is emitted once ICE negotiation succeeds.
@@ -319,69 +196,64 @@ signals:
     /// \brief This signal is emitted when a data packet is received.
     void datagramReceived(const QByteArray &datagram);
 
+    /// \internal This signal is emitted when the gathering state of local candidates changes.
+    void gatheringStateChanged();
+
     /// \brief This signal is emitted when the list of local candidates changes.
     void localCandidatesChanged();
 
 private:
-    class Pair {
-    public:
-        Pair(int component, bool controlling);
-        quint64 priority() const;
-        QString toString() const;
+    QXmppIceComponent(int component, QXmppIcePrivate *config, QObject *parent=0);
 
-        QIODevice::OpenMode checked;
-        QXmppJingleCandidate remote;
-        QXmppJingleCandidate reflexive;
-        QByteArray transaction;
-        QUdpSocket *socket;
-
-    private:
-        int m_component;
-        bool m_controlling;
-    };
-
-    Pair *addRemoteCandidate(QUdpSocket *socket, const QHostAddress &host, quint16 port, quint32 priority);
-    qint64 writeStun(const QXmppStunMessage &message, QXmppIceComponent::Pair *pair);
-
-    int m_component;
-
-    QList<QXmppJingleCandidate> m_localCandidates;
-    QString m_localUser;
-    QString m_localPassword;
-
-    Pair *m_activePair;
-    Pair *m_fallbackPair;
-    bool m_iceControlling;
-    QList<Pair*> m_pairs;
-    quint32 m_peerReflexivePriority;
-    QString m_remoteUser;
-    QString m_remotePassword;
-
-    QList<QUdpSocket*> m_sockets;
-    QTimer *m_timer;
-
-    // STUN server
-    QByteArray m_stunId;
-    QHostAddress m_stunHost;
-    quint16 m_stunPort;
-    QTimer *m_stunTimer;
-    int m_stunTries;
-
-    // TURN server
-    QXmppTurnAllocation *m_turnAllocation;
-    bool m_turnConfigured;
+    QXmppIceComponentPrivate *d;
+    friend class QXmppIceComponentPrivate;
+    friend class QXmppIceConnection;
 };
 
 /// \brief The QXmppIceConnection class represents a set of UDP sockets
 /// capable of performing Interactive Connectivity Establishment (RFC 5245).
 ///
+/// A typical example is:
+///
+/// \code
+/// QXmppIceConnection *connection = new QXmppIceConnection();
+/// connection->setIceControlling(true);
+/// connection->addComponent(1);
+///
+/// // if needed, set STUN / TURN configuration
+/// // connection->setStunServer(..);
+/// // connection->setTurnServer(..);
+///
+/// // start listening
+/// connection->bind(QXmppIceComponent::discoverAddresses());
+///
+/// // receive remote information: user, password, candidates
+/// // ...
+///
+/// // set remote information and start connecting
+/// connection->setRemoteUser("foo");
+/// connection->setRemoteUser("bar");
+/// connection->addRemoteCandidate(..);
+/// connection->connectToHost();
+///
+/// \endcode
 
 class QXMPP_EXPORT QXmppIceConnection : public QXmppLoggable
 {
     Q_OBJECT
+    Q_ENUMS(GatheringState)
+    Q_PROPERTY(QXmppIceConnection::GatheringState gatheringState READ gatheringState NOTIFY gatheringStateChanged)
 
 public:
+    enum GatheringState
+    {
+        NewGatheringState,
+        BusyGatheringState,
+        CompleteGatheringState
+    };
+
     QXmppIceConnection(QObject *parent = 0);
+    ~QXmppIceConnection();
 
     QXmppIceComponent *component(int component);
     void addComponent(int component);
@@ -389,9 +261,7 @@ public:
 
     QList<QXmppJingleCandidate> localCandidates() const;
     QString localUser() const;
-    void setLocalUser(const QString &user);
     QString localPassword() const;
-    void setLocalPassword(const QString &password);
 
     void addRemoteCandidate(const QXmppJingleCandidate &candidate);
     void setRemoteUser(const QString &user);
@@ -405,12 +275,17 @@ public:
     bool bind(const QList<QHostAddress> &addresses);
     bool isConnected() const;
 
+    GatheringState gatheringState() const;
+
 signals:
     /// \brief This signal is emitted once ICE negotiation succeeds.
     void connected();
 
     /// \brief This signal is emitted when ICE negotiation fails.
     void disconnected();
+
+    /// \brief This signal is emitted when the gathering state of local candidates changes.
+    void gatheringStateChanged();
 
     /// \brief This signal is emitted when the list of local candidates changes.
     void localCandidatesChanged();
@@ -421,20 +296,11 @@ public slots:
 
 private slots:
     void slotConnected();
+    void slotGatheringStateChanged();
     void slotTimeout();
 
 private:
-    QTimer *m_connectTimer;
-    bool m_iceControlling;
-    QMap<int, QXmppIceComponent*> m_components;
-    QString m_localUser;
-    QString m_localPassword;
-    QHostAddress m_stunHost;
-    quint16 m_stunPort;
-    QHostAddress m_turnHost;
-    quint16 m_turnPort;
-    QString m_turnUser;
-    QString m_turnPassword;
+    QXmppIceConnectionPrivate *d;
 };
 
 #endif

@@ -1,6 +1,0 @@
-[Desktop Entry]
-Type=Application
-X-Nemo-Application-Type=silica-qt5
-Exec=Exec=invoker -s --type=silica-qt5 -G /usr/bin/fluorescent %U
-Name=Fluorescent
-

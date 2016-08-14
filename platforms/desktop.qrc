@@ -1,5 +1,24 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="qml/main.qml">desktop/qml/main.qml</file>
+        <file alias="main.qml">desktop/qml/main.qml</file>
+        <file alias="Lightbulb.svg">global/images/Fluorescent.svg</file>
     </qresource>
+    <qresource prefix="/Pages">
+        <file alias="AccountPage">desktop/qml/Pages/AccountPage.qml</file>
+        <file alias="MainPage">desktop/qml/Pages/MainPage.qml</file>
+        <file alias="AboutPage">desktop/qml/Pages/AboutPage.qml</file>
+        <file alias="AccountAdd">desktop/qml/Pages/AccountAdd.qml</file>
+    </qresource>
+    <qresource prefix="/accounts">
+        <file alias="facebook">symbian/images/accounts/Facebook.svg</file>
+        <file alias="hangouts">symbian/images/accounts/Hangouts.svg</file>
+        <file alias="xmpp">symbian/images/accounts/XMPP.svg</file>
+    </qresource>
+    <qresource prefix="/Components">
+        <file alias="AccountItem.qml">desktop/qml/Components/AccountItem.qml</file>
+    </qresource>
+    <qresource prefix="/Dialogs"/>
+    <qresource prefix="/FirstRun"/>
+    <qresource prefix="/Menus"/>
+    <qresource prefix="/Preflets"/>
 </RCC>

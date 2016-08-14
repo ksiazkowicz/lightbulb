@@ -1,5 +1,5 @@
 # Header files
-HEADERS += \
+INSTALL_HEADERS += \
     qxmpp/base/QXmppArchiveIq.h \
     qxmpp/base/QXmppBindIq.h \
     qxmpp/base/QXmppBookmarkSet.h \
@@ -24,7 +24,9 @@ HEADERS += \
     qxmpp/base/QXmppResultSet.h \
     qxmpp/base/QXmppRosterIq.h \
     qxmpp/base/QXmppRpcIq.h \
+    qxmpp/base/QXmppRtcpPacket.h \
     qxmpp/base/QXmppRtpChannel.h \
+    qxmpp/base/QXmppRtpPacket.h \
     qxmpp/base/QXmppSessionIq.h \
     qxmpp/base/QXmppSocks.h \
     qxmpp/base/QXmppStanza.h \
@@ -38,7 +40,8 @@ HEADERS += \
 HEADERS += \
     qxmpp/base/QXmppCodec_p.h \
     qxmpp/base/QXmppSasl_p.h \
-    qxmpp/base/QXmppStreamInitiationIq_p.h
+    qxmpp/base/QXmppStreamInitiationIq_p.h \
+    qxmpp/base/QXmppStun_p.h
 
 # Source files
 SOURCES += \
@@ -67,7 +70,9 @@ SOURCES += \
     qxmpp/base/QXmppResultSet.cpp \
     qxmpp/base/QXmppRosterIq.cpp \
     qxmpp/base/QXmppRpcIq.cpp \
+    qxmpp/base/QXmppRtcpPacket.cpp \
     qxmpp/base/QXmppRtpChannel.cpp \
+    qxmpp/base/QXmppRtpPacket.cpp \
     qxmpp/base/QXmppSasl.cpp \
     qxmpp/base/QXmppSessionIq.cpp \
     qxmpp/base/QXmppSocks.cpp \
@@ -83,7 +88,7 @@ SOURCES += \
 # DNS
 qt_version = $$QT_MAJOR_VERSION
 contains(qt_version, 4) {
-    HEADERS += qxmpp/base/qdnslookup.h qxmpp/base/qdnslookup_p.h
+    INSTALL_HEADERS += qxmpp/base/qdnslookup.h qxmpp/base/qdnslookup_p.h
     SOURCES += qxmpp/base/qdnslookup.cpp
     android:SOURCES += qxmpp/base/qdnslookup_stub.cpp
     else:symbian:SOURCES += qxmpp/base/qdnslookup_symbian.cpp
