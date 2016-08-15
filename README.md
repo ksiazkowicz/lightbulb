@@ -23,6 +23,13 @@ Lots of UI elements are based on **Nokia Icon Toolkit** to maintain native desig
 - Deployment - ??
 - Runs? - last time I tried it, it kinda did, uhm
 
+**UWP (Qt 5/QtQuick Controls 2)**
+
+- Core - builds fine
+- UI - work-in-progress
+- Deployment - it depends
+- Runs? - yup, sockets are broken though
+
 **BlackBerry (Qt 4/Cascades)**
 
 - Core - builds fine and even works

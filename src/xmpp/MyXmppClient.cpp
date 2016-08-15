@@ -83,7 +83,18 @@ void MyXmppClient::connectToXmppServer() {
   xmppConfig.setKeepAliveInterval(60);
   xmppConfig.setResource(m_resource == "" ? "Lightbulb" : m_resource);
   xmppConfig.setAutoAcceptSubscriptions(false);
-  xmppConfig.setStreamSecurityMode(QXmppConfiguration::TLSDisabled);
+
+  // lulz
+    if (fuckSecurity) {
+        xmppConfig.setNonSASLAuthMechanism(QXmppConfiguration::NonSASLDigest);
+        xmppConfig.setUseSASLAuthentication(false);
+        xmppConfig.setIgnoreSslErrors(true);
+        xmppConfig.setStreamSecurityMode(QXmppConfiguration::TLSDisabled);
+      } else {
+        xmppConfig.setSaslAuthMechanism("DIGEST-MD5");
+        xmppConfig.setUseSASLAuthentication(true);
+        xmppConfig.setStreamSecurityMode(QXmppConfiguration::TLSEnabled);
+      }
 
   if (!m_host.isEmpty())
     xmppConfig.setHost(m_host);

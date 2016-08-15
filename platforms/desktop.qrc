@@ -2,6 +2,8 @@
     <qresource prefix="/">
         <file alias="main.qml">desktop/qml/main.qml</file>
         <file alias="Lightbulb.svg">global/images/Fluorescent.svg</file>
+        <file alias="avatar-mask">symbian/images/avatar_mask.svg</file>
+        <file alias="avatar">symbian/images/avatar.png</file>
     </qresource>
     <qresource prefix="/Pages">
         <file alias="AccountPage">desktop/qml/Pages/AccountPage.qml</file>
@@ -17,9 +19,26 @@
     <qresource prefix="/Components">
         <file alias="AccountItem.qml">desktop/qml/Components/AccountItem.qml</file>
         <file alias="SettingField.qml">desktop/qml/Components/SettingField.qml</file>
+        <file alias="PlatformStyle.qml">desktop/qml/Components/PlatformStyle.qml</file>
+        <file alias="AccountDelegate.qml">desktop/qml/Components/AccountDelegate.qml</file>
+        <file alias="EventDelegate.qml">desktop/qml/Components/EventDelegate.qml</file>
+        <file alias="ChatDelegate.qml">desktop/qml/Components/ChatDelegate.qml</file>
+        <file alias="qmldir">desktop/qml/Components/qmldir</file>
+        <file alias="Helper.qml">desktop/qml/Components/Helper.qml</file>
     </qresource>
-    <qresource prefix="/Dialogs"/>
+    <qresource prefix="/Dialogs">
+        <file alias="Status/Change">desktop/qml/Dialogs/Status/ChangeStatus.qml</file>
+    </qresource>
     <qresource prefix="/FirstRun"/>
     <qresource prefix="/Menus"/>
     <qresource prefix="/Preflets"/>
+    <qresource prefix="/Presence">
+        <file alias="away">symbian/images/presence/presence-away.svg</file>
+        <file alias="busy">symbian/images/presence/presence-busy.svg</file>
+        <file alias="chatty">symbian/images/presence/presence-chatty.svg</file>
+        <file alias="offline">symbian/images/presence/presence-offline.svg</file>
+        <file alias="online">symbian/images/presence/presence-online.svg</file>
+        <file alias="unknown">symbian/images/presence/presence-unknown.svg</file>
+        <file alias="xa">symbian/images/presence/presence-xa.svg</file>
+    </qresource>
 </RCC>

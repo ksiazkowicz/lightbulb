@@ -50,12 +50,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "../avkon/NetworkManager.h"
 #include "../xmpp/EventsManager.h"
 
-#include "../winrt/brokensocket.h"
-
 
 int main(int argc, char *argv[]) {
     // initialize QApplication
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    //QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication* app = new QGuiApplication(argc, argv);
 
     // initialize settings
@@ -64,12 +62,12 @@ int main(int argc, char *argv[]) {
     // expose C++ classes to QML
     qmlRegisterType<Settings>("lightbulb", 1, 0, "Settings" );
     qmlRegisterType<QMLVCard>("lightbulb", 1, 0, "XmppVCard" );
-    //qmlRegisterType<NetworkManager>("lightbulb", 1, 0, "NetworkManager" );
+    qmlRegisterType<NetworkManager>("lightbulb", 1, 0, "NetworkManager" );
 
     qmlRegisterUncreatableType<SqlQueryModel>("lightbulb", 1, 0, "SqlQuery", "");
     qmlRegisterUncreatableType<AccountsListModel>("lightbulb", 1, 0, "AccountsList", "Use settings.accounts instead");
     qmlRegisterUncreatableType<RosterItemFilter>("lightbulb",1,0,"RosterModel","");
-    //qmlRegisterUncreatableType<NetworkCfgListModel>("lightbulb",1,0,"NetworkCfgListModel","just use NetworkManager.connections");
+    qmlRegisterUncreatableType<NetworkCfgListModel>("lightbulb",1,0,"NetworkCfgListModel","just use NetworkManager.connections");
     qmlRegisterUncreatableType<ParticipantListModel>("lightbulb",1,0,"ParticipantListModel","just use NetworkManager.connections");
     qmlRegisterUncreatableType<ChatsListModel>("lightbulb",1,0,"ChatsModel","because I say so, who cares?");
     qmlRegisterUncreatableType<MsgListModel>("lightbulb", 1, 0, "MsgModel", "because sliced bread is awesome");
@@ -97,14 +95,12 @@ int main(int argc, char *argv[]) {
 
     // Qt5 cool stuff
     viewer->rootContext()->setContextProperty("appVersion","0.4.0");
-    viewer->rootContext()->setContextProperty("buildDate","00-00-0000");
+    viewer->rootContext()->setContextProperty("buildDate","today");
 
     // set universal style
     QQuickStyle::setStyle("Universal");
 
     viewer->load(QUrl(QLatin1String("qrc:/main.qml")));
-
-    BrokenSocket socket;
 
     return app->exec();
 }

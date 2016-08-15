@@ -22,20 +22,17 @@
 
 # global Qt bits
 QT += network sql core quickcontrols2
-CONFIG += windeployqt
 
 winrt {
+    CONFIG += windeployqt
     winphone:equals(WINSDK_VER, 8.0) {
-    WINRT_MANIFEST.capabilities += ID_CAP_NETWORKING
+        WINRT_MANIFEST.capabilities += ID_CAP_NETWORKING
     } else {
-    WINRT_MANIFEST.capabilities += internetClient
+        WINRT_MANIFEST.capabilities += internetClient
     }
 }
 
 VERSION = 0.4.0
-DATE = $$system(date /t) # might break on something else than winshit, damn you people who fuck standards
-DEFINES += VERSION=\"\\\"$$VERSION\\\"\"
-DEFINES += BUILDDATE=\"\\\"$$DATE\\\"\"
 
 # import qxmpp
 include(qxmpp/qxmpp.pri)
@@ -44,11 +41,6 @@ INCLUDEPATH += qxmpp/base/ qxmpp/client
 # desktop support
 RESOURCES += platforms/desktop.qrc
 SOURCES   += src/desktop/main.cpp
-
-# If your application uses the Qt Mobility libraries, uncomment the following
-# lines and add the respective components to the MOBILITY variable.
-#CONFIG += mobility
-#MOBILITY += mutlimedia feedback systeminfo
 
 SOURCES += src/xmpp/MyXmppClient.cpp \
            src/cache/MyCache.cpp \
@@ -65,8 +57,7 @@ SOURCES += src/xmpp/MyXmppClient.cpp \
            src/xmpp/EventsManager.cpp \
            src/models/RosterItemFilter.cpp \
            src/models/ServiceItemFilter.cpp \
-           src/winrt/QNetworkProxy.cpp \
-           src/winrt/brokensocket.cpp
+           src/winrt/QNetworkProxy.cpp
 
 HEADERS += src/xmpp/MyXmppClient.h \
         src/cache/MyCache.h \
@@ -100,9 +91,8 @@ HEADERS += src/xmpp/MyXmppClient.h \
         src/models/ServiceItemModel.h \
         src/models/ServiceListModel.h \
         src/models/ServiceItemFilter.h \
-        src/winrt/QNetworkProxy.h \
-        src/winrt/brokensocket.h
+        src/winrt/QNetworkProxy.h
 
-        # Fluorescent Logger
-        SOURCES += src/FluorescentLogger.cpp
-        HEADERS += src/FluorescentLogger.h
+# Fluorescent Logger
+SOURCES += src/FluorescentLogger.cpp
+HEADERS += src/FluorescentLogger.h

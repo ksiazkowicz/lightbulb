@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Controls.Universal 2.0
 import QtQuick.Layouts 1.1
+import "."
 
 Item {
     id: root
@@ -27,7 +28,7 @@ Item {
             verticalCenter: parent.verticalCenter
         }
 
-        sourceSize { width: 48; height: 48 }
+        sourceSize { width: PlatformStyle.graphicSizeMedium; height: PlatformStyle.graphicSizeMedium }
     }
 
     Label {
@@ -36,9 +37,9 @@ Item {
 
         anchors {
             left: accountIcon.right
-            leftMargin: 15
+            leftMargin: PlatformStyle.paddingMedium
             right: groupButtons.left
-            rightMargin: 15
+            rightMargin: PlatformStyle.paddingMedium
             verticalCenter: parent.verticalCenter
         }
 

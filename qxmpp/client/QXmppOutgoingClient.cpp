@@ -117,25 +117,25 @@ void QXmppOutgoingClientPrivate::connectToHost(const QString &host, quint16 port
     q->info(QString("Connecting to %1:%2").arg(host, QString::number(port)));
 
     // override CA certificates if requested
-    //if (!config.caCertificates().isEmpty())
-    //    q->socket()->setCaCertificates(config.caCertificates());
+    if (!config.caCertificates().isEmpty())
+        q->socket()->setCaCertificates(config.caCertificates());
 
     // respect proxy
     //q->socket()->setProxy(config.networkProxy());
 
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 8, 0))
     // set the name the SSL certificate should match
-    //q->socket()->setPeerVerifyName(config.domain());
+    q->socket()->setPeerVerifyName(config.domain());
 #endif
 
     // connect to host
     const QXmppConfiguration::StreamSecurityMode localSecurity = q->configuration().streamSecurityMode();
     if (localSecurity == QXmppConfiguration::LegacySSL) {
-        //if (!q->socket()->supportsSsl()) {
-        //    q->warning("Not connecting as legacy SSL was requested, but SSL support is not available");
-        //    return;
-        //}
-        //q->socket()->connectToHostEncrypted(host, port, QIODevice::ReadWrite, QAbstractSocket::IPv4Protocol);
+        if (!q->socket()->supportsSsl()) {
+            q->warning("Not connecting as legacy SSL was requested, but SSL support is not available");
+            return;
+        }
+        q->socket()->connectToHostEncrypted(host, port, QIODevice::ReadWrite, QAbstractSocket::IPv4Protocol);
     } else {
         q->socket()->connectToHost(host, port, QIODevice::ReadWrite, QAbstractSocket::IPv4Protocol);
     }
@@ -280,8 +280,8 @@ void QXmppOutgoingClient::socketSslErrors(const QList<QSslError> &errors)
     emit sslErrors(errors);
 
     // if configured, ignore the errors
-    //if (configuration().ignoreSslErrors())
-        //socket()->ignoreSslErrors();
+    if (configuration().ignoreSslErrors())
+        socket()->ignoreSslErrors();
 }
 
 void QXmppOutgoingClient::socketError(QAbstractSocket::SocketError socketError)
@@ -355,14 +355,14 @@ void QXmppOutgoingClient::handleStanza(const QDomElement &nodeRecv)
         QXmppStreamFeatures features;
         features.parse(nodeRecv);
 
-        if (true)//if (!socket()->isEncrypted())
+        if (!socket()->isEncrypted())
         {
             // determine TLS mode to use
             const QXmppConfiguration::StreamSecurityMode localSecurity = configuration().streamSecurityMode();
             const QXmppStreamFeatures::Mode remoteSecurity = features.tlsMode();
-            if (true)/*if (!socket()->supportsSsl() &&
+            if (!socket()->supportsSsl() &&
                 (localSecurity == QXmppConfiguration::TLSRequired ||
-                 remoteSecurity == QXmppStreamFeatures::Required))*/
+                 remoteSecurity == QXmppStreamFeatures::Required))
             {
                 warning("Disconnecting as TLS is required, but SSL support is not available");
                 disconnectFromHost();
@@ -376,10 +376,9 @@ void QXmppOutgoingClient::handleStanza(const QDomElement &nodeRecv)
                 return;
             }
 
-            /*if (socket()->supportsSsl() &&
+            if (socket()->supportsSsl() &&
                 localSecurity != QXmppConfiguration::TLSDisabled &&
-                remoteSecurity != QXmppStreamFeatures::Disabled)*/
-            if (true)
+                remoteSecurity != QXmppStreamFeatures::Disabled)
             {
                 // enable TLS as it is support by both parties
                 sendData("<starttls xmlns='urn:ietf:params:xml:ns:xmpp-tls'/>");
@@ -510,7 +509,7 @@ void QXmppOutgoingClient::handleStanza(const QDomElement &nodeRecv)
         if(nodeRecv.tagName() == "proceed")
         {
             debug("Starting encryption");
-            //socket()->startClientEncryption();
+            socket()->startClientEncryption();
             return;
         }
     }

@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.1
+import "../Components"
 
 Page {
     id: aboutPage
@@ -40,7 +41,7 @@ Page {
             text: "Fluorescent IM " + appVersion + " α"
             anchors { top: logo.bottom; topMargin: 5; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
             horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: 20
+            font.pixelSize: PlatformStyle.fontSizeMedium*1.3
         }
 
         Label {
@@ -48,7 +49,7 @@ Page {
             anchors { top: programName.bottom; leftMargin: 10; rightMargin: 10; left: parent.left; right: parent.right }
             wrapMode: Text.Wrap
             text: "coded with ♥ and coffee\nbuilt on " + buildDate
-            font.pixelSize: 13
+            font.pixelSize: PlatformStyle.fontSizeSmall
             horizontalAlignment: Text.AlignHCenter
         }
 
@@ -59,7 +60,7 @@ Page {
             anchors { top: githubBtn.bottom; topMargin: 14; horizontalCenterOffset: 0; horizontalCenter: parent.horizontalCenter }
             font.bold: true
             wrapMode: Text.WordWrap
-            font.pixelSize: 13
+            font.pixelSize: PlatformStyle.fontSizeSmall
             horizontalAlignment: Text.AlignHCenter
             color: "red"
         }
@@ -70,13 +71,13 @@ Page {
             width: parent.width
             anchors { top: names.bottom; topMargin: 24; horizontalCenter: parent.horizontalCenter }
             wrapMode: Text.WordWrap
-            font.pixelSize: 13
+            font.pixelSize: PlatformStyle.fontSizeSmall
             horizontalAlignment: Text.AlignHCenter
         }
         Row {
             id: buttons
             anchors { horizontalCenter: parent.horizontalCenter; top: niceInfo.bottom; topMargin: 14 }
-            spacing: 20
+            spacing: PlatformStyle.paddingMedium
             Button {
                 text: "Contributors"
                 onClicked: dialog.create("qrc:/dialogs/Contributors")
@@ -89,7 +90,7 @@ Page {
         Button {
             id: githubBtn
             text: "Fork me on GitHub"
-            anchors { horizontalCenter: parent.horizontalCenter; top: buttons.bottom; topMargin: 20 }
+            anchors { horizontalCenter: parent.horizontalCenter; top: buttons.bottom; topMargin: PlatformStyle.paddingMedium }
             onClicked: dialog.createWithProperties("qrc:/menus/UrlContext", {"url": "https://github.com/ksiazkowicz/lightbulb"})
         }
     }
@@ -99,7 +100,7 @@ Page {
             top: parent.top
             bottom: parent.bottom
             right: parent.right
-            margins: 18
+            margins: PlatformStyle.paddingSmall - 2
         }
         orientation: Qt.Vertical
     }

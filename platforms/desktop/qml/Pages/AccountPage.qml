@@ -50,7 +50,7 @@ Page {
                 ToolButton {
                     text: "\uE72B"
                     font.family: "Segoe MDL2 Assets"
-                    enabled: page.stack.depth > 1
+                    enabled: stack.depth > 1
                     onClicked: stack.pop()
                 }
                 Item { Layout.fillWidth: true }

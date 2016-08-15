@@ -1,0 +1,87 @@
+/********************************************************************
+
+qml/Dialogs/VibrationSettings.qml
+-- Dialog in which you can configure vibration parameters
+
+Copyright (c) 2013 Maciej Janiszewski
+
+This file is part of Lightbulb.
+
+Lightbulb is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*********************************************************************/
+
+import QtQuick 1.1
+import com.nokia.symbian 1.1
+import lightbulb 1.0
+
+CommonDialog {
+    id: vibrationSettings
+    titleText: qsTr("Vibration settings")
+    privateCloseIcon: true
+    height: 250
+    platformInverted: main.platformInverted
+
+    property string currentlyEditedParameter: ""
+
+    // Code for dynamic load
+    Component.onCompleted: {
+        open();
+        isCreated = true }
+    property bool isCreated: false
+
+    onStatusChanged: { if (isCreated && vibrationSettings.status === DialogStatus.Closed) { vibrationSettings.destroy() } }
+
+    content: Item {
+        width: parent.width-20
+        anchors.horizontalCenter: parent.horizontalCenter
+        Column {
+            spacing: platformStyle.paddingSmall
+            width: parent.width
+            anchors { topMargin: spacing; bottomMargin: spacing; fill: parent }
+
+            Text {
+                text: qsTr("Intensity") + " (" + intensitySlider.value + "%)"
+                color: main.textColor
+            }
+            Slider {
+                id: intensitySlider
+                stepSize: 1
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: parent.width
+                maximumValue: 100
+                value: settings.gInt("notifications", currentlyEditedParameter + "Intensity")
+                orientation: 1
+                platformInverted: main.platformInverted
+                onValueChanged: settings.sInt(value,"notifications", currentlyEditedParameter + "Intensity")
+            }
+            Text {
+                text: qsTr("Duration") + " (" + durationSlider.value + " ms)"
+                color: main.textColor
+            }
+            Slider {
+                id: durationSlider
+                stepSize: 10
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: parent.width
+                minimumValue: 500
+                maximumValue: 10000
+                value: settings.gInt("notifications", currentlyEditedParameter + "Duration")
+                orientation: 1
+                platformInverted: main.platformInverted
+                onValueChanged: settings.sInt(value,"notifications", currentlyEditedParameter + "Duration")
+            }
+        }
+    }
+}

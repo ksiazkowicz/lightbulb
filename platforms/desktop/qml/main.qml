@@ -165,7 +165,9 @@ ApplicationWindow {
         }
         function createWithProperties(qmlfile, properties){
             c=Qt.createComponent(qmlfile);
-            c.createObject(main, properties)
+
+            var newObject = c.createObject(main, properties);
+
         }
         function createWithContext(qmlFile) {
             c=Qt.createComponent("qrc:/dialogs/AccountSwitcher")
@@ -175,9 +177,7 @@ ApplicationWindow {
         }
     }
 
-    /*ToolBar {
-        z: -10
-        anchors { bottom: parent.bottom; left: parent.left; right: parent.right; }
-        RowLayout { }
-    }*/
+    NetworkManager {
+        id: network
+    }
 }

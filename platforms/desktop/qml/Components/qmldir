@@ -1,0 +1,2 @@
+singleton PlatformStyle 1.0 PlatformStyle.qml
+singleton Helper 1.0 Helper.qml
