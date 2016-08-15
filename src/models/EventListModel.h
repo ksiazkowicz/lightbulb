@@ -34,12 +34,50 @@ class EventListModel : public ListModel
     Q_PROPERTY(int count READ getCount NOTIFY countChanged)
 
 public:
+    enum Roles {
+      Jid = Qt::UserRole+1,
+      Text,
+      Name,
+      Type,
+      Description,
+      Account,
+      Date,
+      TransferJob,
+      Filename,
+      Filetype,
+      Count
+    };
+
     explicit EventListModel( QObject *parent = 0) :ListModel( new EventItemModel, parent ) { }
 
     void append(EventItemModel *item) { this->appendRow(item); }
     void countWasChanged() { emit countChanged(); }
 
     Q_INVOKABLE int getCount() { return this->rowCount(); }
+
+    QVariant EventListModel::data(const QModelIndex & index, int role) const {
+        if (index.row() < 0 || index.row() >= m_list.count())
+            return QVariant();
+
+        return ((EventItemModel*)m_list[index.row()])->data(role);
+    }
+
+protected:
+    QHash<int, QByteArray> roleNames() const {
+        QHash<int, QByteArray> names;
+        names[Jid] = "bareJid";
+        names[Text] = "text";
+        names[Name] = "name";
+        names[Type] = "type";
+        names[Description] = "description";
+        names[Account] = "accountID";
+        names[Date] = "date";
+        names[TransferJob] = "transferJob";
+        names[Filename] = "filename";
+        names[Filetype] = "filetype";
+        names[Count] = "count";
+        return names;
+    }
 
 signals:
     void countChanged();

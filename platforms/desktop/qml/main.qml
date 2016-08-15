@@ -86,7 +86,7 @@ ApplicationWindow {
     }
 
     function openChat(account,name,jid,type) {
-        //pageStack.push("qrc:/pages/Conversation",{"accountId":account,"contactName":name,"contactJid":jid,"isInArchiveMode":false,"chatType":type})
+        stack.push("qrc:/Pages/Conversation",{"accountId":account,"contactName":name,"contactJid":jid,"isInArchiveMode":false,"chatType":type})
     }
 
     Timer {

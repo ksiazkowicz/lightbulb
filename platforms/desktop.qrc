@@ -10,6 +10,8 @@
         <file alias="MainPage">desktop/qml/Pages/MainPage.qml</file>
         <file alias="AboutPage">desktop/qml/Pages/AboutPage.qml</file>
         <file alias="AccountAdd">desktop/qml/Pages/AccountAdd.qml</file>
+        <file alias="RosterPage">desktop/qml/Pages/RosterPage.qml</file>
+        <file alias="Conversation">desktop/qml/Pages/Conversation.qml</file>
     </qresource>
     <qresource prefix="/accounts">
         <file alias="facebook">symbian/images/accounts/Facebook.svg</file>
@@ -25,6 +27,17 @@
         <file alias="ChatDelegate.qml">desktop/qml/Components/ChatDelegate.qml</file>
         <file alias="qmldir">desktop/qml/Components/qmldir</file>
         <file alias="Helper.qml">desktop/qml/Components/Helper.qml</file>
+        <file alias="RosterItemDelegate.qml">desktop/qml/Components/RosterItemDelegate.qml</file>
+        <file alias="Convo/ArchiveDelegate">desktop/qml/Components/ConvoArchiveDelegate.qml</file>
+        <file alias="Convo/IncomingDelegate">desktop/qml/Components/ConvoIncomingMsgDelegate.qml</file>
+        <file alias="Convo/InformationDelegate">desktop/qml/Components/ConvoInformationDelegate.qml</file>
+        <file alias="Convo/OutcomingDelegate">desktop/qml/Components/ConvoOutcomingMsgDelegate.qml</file>
+        <file>desktop/qml/Components/DetailsItem.qml</file>
+        <file>desktop/qml/Components/EventSettingDelegate.qml</file>
+        <file>desktop/qml/Components/EventSettingRowDelegate.qml</file>
+        <file>desktop/qml/Components/HeaderButton.qml</file>
+        <file>desktop/qml/Components/LineItem.qml</file>
+        <file>desktop/qml/Components/MucParticipantDelegate.qml</file>
     </qresource>
     <qresource prefix="/Dialogs">
         <file alias="Status/Change">desktop/qml/Dialogs/Status/ChangeStatus.qml</file>

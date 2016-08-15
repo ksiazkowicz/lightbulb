@@ -33,11 +33,41 @@ class ChatsListModel : public ListModel
     Q_OBJECT
 
 public:
+    enum Roles {
+        roleAccount = Qt::UserRole+1,
+        roleName,
+        roleResource,
+        roleJid,
+        roleMsg,
+        roleType,
+        roleUnreadMsg
+      };
+
     explicit ChatsListModel( QObject *parent = 0) :ListModel( new ChatsItemModel, parent ) {}
 
     Q_INVOKABLE void append( ChatsItemModel *item ) { this->appendRow( item ); }
     Q_INVOKABLE void remove( int index ) { this->removeRow( index ); }
     Q_INVOKABLE int count() { return this->rowCount(); }
+
+    QVariant ChatsListModel::data(const QModelIndex & index, int role) const {
+        if (index.row() < 0 || index.row() >= m_list.count())
+            return QVariant();
+
+        return ((ChatsItemModel*)m_list[index.row()])->data(role);
+    }
+
+protected:
+    QHash<int, QByteArray> roleNames() const {
+        QHash<int, QByteArray> names;
+        names[roleAccount] = "account";
+        names[roleName] = "name";
+        names[roleResource] = "resource";
+        names[roleJid] = "jid";
+        names[roleMsg] = "chatMsg";
+        names[roleType] = "chatType";
+        names[roleUnreadMsg] = "unreadMsg";
+        return names;
+    }
 
 signals:
     void chatsChanged();

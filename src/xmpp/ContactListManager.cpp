@@ -93,7 +93,7 @@ void ContactListManager::addContact(QString acc, QString jid, QString name, bool
       return;
   }
   // nope, append it
-  RosterItemModel* contact = new RosterItemModel(name,jid,"","qrc:/presence/offline","",acc);
+  RosterItemModel* contact = new RosterItemModel(name,jid,"","qrc:/Presence/offline","",acc);
   contact->set(groups,RosterItemModel::Groups);
   contact->set(QString::number(isFavorite),RosterItemModel::IsFavorite);
 
@@ -124,10 +124,10 @@ void ContactListManager::changePresence(QString accountId,QString bareJid,QStrin
       // if user is someone cool, push the status change notification
       if (contact->data(RosterItemModel::IsFavorite).toBool() && isStatusDifferent && !initializationState) {
           QString description = "";
-          if (picStatus == "qrc:/presence/online" || picStatus == "qrc:/presence/chatty") description = "I'm online. ^^";
-          if (picStatus == "qrc:/presence/offline") description = "I just went offline. :c";
-          if (picStatus == "qrc:/presence/away" || picStatus == "qrc:/presence/xa") description = "I'm away.";
-          if (picStatus == "qrc:/presence/busy") description = "I'm busy.";
+          if (picStatus == "qrc:/Presence/online" || picStatus == "qrc:/Presence/chatty") description = "I'm online. ^^";
+          if (picStatus == "qrc:/Presence/offline") description = "I just went offline. :c";
+          if (picStatus == "qrc:/Presence/away" || picStatus == "qrc:/Presence/xa") description = "I'm away.";
+          if (picStatus == "qrc:/Presence/busy") description = "I'm busy.";
 
           if (description != "" && settings->gBool("notifications","notifyStatusChange"))
             emit favUserStatusChanged(accountId,bareJid,contact->data(RosterItemModel::Name).toString(),description);
@@ -236,8 +236,8 @@ void ContactListManager::clearPresenceForAccount(QString accountId) {
   for (int i=0;i<roster->count();i++) {
       element = (RosterItemModel*)roster->itemFromIndex(roster->index(i,0));
       if (element != 0 && element->data(RosterItemModel::AccountId).toString() == accountId) {
-        element->set("qrc:/presence/offline",RosterItemModel::Presence);
-        emit forceXmppPresenceChanged(accountId,element->data(RosterItemModel::Jid).toString(),element->data(RosterItemModel::Resource).toString(),"qrc:/presence/offline",element->data(RosterItemModel::StatusText).toString());
+        element->set("qrc:/Presence/offline",RosterItemModel::Presence);
+        emit forceXmppPresenceChanged(accountId,element->data(RosterItemModel::Jid).toString(),element->data(RosterItemModel::Resource).toString(),"qrc:/Presence/offline",element->data(RosterItemModel::StatusText).toString());
       }
     }
   roster->sort(0);

@@ -108,12 +108,12 @@ public:
       }
 
       int presencePriority(QString presence) const {
-        if (presence == "qrc:/presence/chatty") return 0;
-        if (presence == "qrc:/presence/online") return 1;
-        if (presence == "qrc:/presence/away") return 2;
-        if (presence == "qrc:/presence/xa") return 3;
-        if (presence == "qrc:/presence/busy") return 4;
-        if (presence == "qrc:/presence/offline") return 5;
+        if (presence == "qrc:/Presence/chatty") return 0;
+        if (presence == "qrc:/Presence/online") return 1;
+        if (presence == "qrc:/Presence/away") return 2;
+        if (presence == "qrc:/Presence/xa") return 3;
+        if (presence == "qrc:/Presence/busy") return 4;
+        if (presence == "qrc:/Presence/offline") return 5;
       }
 };
 

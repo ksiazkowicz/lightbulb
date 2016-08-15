@@ -353,14 +353,14 @@ QString MyXmppClient::getPicPresence( const QXmppPresence &presence ) const {
   QString picPresenceName;
   QXmppPresence::Type status = presence.type();
   if( status != QXmppPresence::Available )
-    picPresenceName = "qrc:/presence/offline";
+    picPresenceName = "qrc:/Presence/offline";
   else {
       QXmppPresence::AvailableStatusType availableStatus = presence.availableStatusType();
-      if( availableStatus == QXmppPresence::Online ) picPresenceName = "qrc:/presence/online";
-      else if ( availableStatus == QXmppPresence::Chat ) picPresenceName = "qrc:/presence/chatty";
-      else if ( availableStatus == QXmppPresence::Away ) picPresenceName = "qrc:/presence/away";
-      else if ( availableStatus == QXmppPresence::XA ) picPresenceName = "qrc:/presence/xa";
-      else if ( availableStatus == QXmppPresence::DND ) picPresenceName = "qrc:/presence/busy";
+      if( availableStatus == QXmppPresence::Online ) picPresenceName = "qrc:/Presence/online";
+      else if ( availableStatus == QXmppPresence::Chat ) picPresenceName = "qrc:/Presence/chatty";
+      else if ( availableStatus == QXmppPresence::Away ) picPresenceName = "qrc:/Presence/away";
+      else if ( availableStatus == QXmppPresence::XA ) picPresenceName = "qrc:/Presence/xa";
+      else if ( availableStatus == QXmppPresence::DND ) picPresenceName = "qrc:/Presence/busy";
     }
 
   return picPresenceName;

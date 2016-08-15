@@ -9,6 +9,8 @@ import "../Components"
 Page {
     id: mainPage
     property alias stack: mainPage.parent
+    property color textColor: "white"
+    property color midColor: "gray"
 
     Connections {
         target: xmppConnectivity
@@ -162,7 +164,7 @@ Page {
                     width: height
                     text: "\uE710"
                     font.family: "Segoe MDL2 Assets"
-                    onClicked: stack.push( "qrc:/Pages/Roster" )
+                    onClicked: stack.push( "qrc:/Pages/RosterPage" )
                 }
             }
             Repeater {

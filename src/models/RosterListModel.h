@@ -36,31 +36,22 @@ class RosterListModel : public QStandardItemModel
   Q_OBJECT
 
 public:
-  explicit RosterListModel( QObject *parent = 0) :QStandardItemModel(parent) {
-  #if QT_VERSION >= 0x050000
-    }
-    QHash<int,QByteArray> roleNames() {
-  #endif
+    enum Roles {
+        Name = Qt::UserRole+1,
+        Jid,
+        Resource,
+        Presence,
+        StatusText,
+        Avatar,
+        AccountId,
+        ItemId,
+        SortData,
+        IsFavorite,
+        Groups,
+        SubscriptionType
+      };
 
-    QHash<int, QByteArray> names;
-    names[RosterItemModel::Name] = "name";
-    names[RosterItemModel::Jid] = "jid";
-    names[RosterItemModel::Resource] = "resource";
-    names[RosterItemModel::Presence] = "presence";
-    names[RosterItemModel::StatusText] = "statusText";
-    names[RosterItemModel::Avatar] = "avatar";
-    names[RosterItemModel::AccountId] = "accountId";
-    names[RosterItemModel::ItemId] = "itemId";
-    names[RosterItemModel::IsFavorite] = "favorite";
-    names[RosterItemModel::Groups] = "groups";
-    names[RosterItemModel::SubscriptionType] = "subscriptionType";
-
-    #if QT_VERSION < 0x050000
-    this->setRoleNames(names);
-    #else
-    return names;
-    #endif
-  }
+  explicit RosterListModel( QObject *parent = 0) :QStandardItemModel(parent) {}
 
   Q_INVOKABLE void append( RosterItemModel *item ) { item->groupContacts = contactGrouping; this->appendRow((QStandardItem*)item); }
   Q_INVOKABLE int count() { return this->rowCount(); }
@@ -102,6 +93,29 @@ public:
 
   bool contactGrouping;
 
+  QVariant RosterListModel::data(const QModelIndex & index, int role) const {
+      if (index.row() < 0 || index.row() >= this->rowCount())
+          return QVariant();
+
+      return ((RosterItemModel*)this->itemFromIndex(index))->data(role);
+  }
+
+protected:
+    QHash<int, QByteArray> roleNames() const {
+      QHash<int, QByteArray> names;
+      names[Name] = "name";
+      names[Jid] = "jid";
+      names[Resource] = "resource";
+      names[Presence] = "presence";
+      names[StatusText] = "statusText";
+      names[Avatar] = "avatar";
+      names[AccountId] = "accountId";
+      names[ItemId] = "itemId";
+      names[IsFavorite] = "favorite";
+      names[Groups] = "groups";
+      names[SubscriptionType] = "subscriptionType";
+      return names;
+    }
 
 signals:
   void rosterChanged();

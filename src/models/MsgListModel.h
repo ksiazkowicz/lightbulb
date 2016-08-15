@@ -35,6 +35,15 @@ class MsgListModel : public ListModel
     Q_OBJECT
     
 public:
+    enum Roles {
+        roleMsgText = Qt::UserRole+1,
+        roleDateTime,
+        roleIsMine,
+        roleMsgType,
+        roleMsgResource,
+        roleUnreadState
+      };
+
     explicit MsgListModel( QObject *parent = 0) :ListModel( new MsgItemModel, parent ) {}
 
     Q_INVOKABLE void append( MsgItemModel *item ) { this->appendRow( item ); }
@@ -55,6 +64,19 @@ public:
 
 signals:
     void messagesChanged();
+
+protected:
+    QHash<int, QByteArray> roleNames() const {
+        QHash<int, QByteArray> names;
+        names[roleMsgText] = "msgText";
+        names[roleDateTime] = "dateTime";
+        names[roleIsMine] = "isMine";
+        names[roleMsgType] = "msgType";
+        names[roleMsgResource] = "msgResource";
+        names[roleUnreadState] = "msgUnreadState";
+        return names;
+    }
+
 };
 
 #endif // MSGLISTMODEL_H
