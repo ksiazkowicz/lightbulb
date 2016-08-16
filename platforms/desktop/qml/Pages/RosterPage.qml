@@ -31,8 +31,11 @@ Page {
     id: rosterPage
 
     property string selectedJid
-
-    property string pageName: "Contacts"
+    Rectangle {
+        anchors.fill: parent
+        color: "#1f1f1f"
+        z: -10
+    }
 
     /*******************************************************************************/
 
@@ -83,11 +86,6 @@ Page {
     footer: ToolBar {
         RowLayout {
             anchors.fill: parent
-            ToolButton {
-                text: "\uE72B"
-                font.family: "Segoe MDL2 Assets"
-                onClicked: stack.pop()
-            }
             Item { Layout.fillWidth: true }
             ToolButton {
                 text: "\uE710"

@@ -58,11 +58,11 @@ Item {
 
             opacity: shouldBeOpaque ? 1.0 : 0.5
 
-            Connections {
+            /*Connections {
                 target: xmppConnectivity
                 onAvatarUpdatedForJid: if (bareJid == jid) avatarIcon.source = xmppConnectivity.getAvatarByJid(jid)
                 onXmppStatusChanged: shouldBeOpaque = xmppConnectivity.getStatusByIndex(accountId) !== 0
-            }
+            }*/
         }
         Label {
             id: txtJid
@@ -87,7 +87,7 @@ Item {
 
     MouseArea {
         anchors.fill: parent
-        onClicked: stack.replace("qrc:/Pages/Conversation",{"accountId": accountId,"contactName":_contactName,"contactJid":jid,"isInArchiveMode":false,"contactResource":resource})
+        onClicked: mainStack.replace("qrc:/Pages/Conversation",{"accountId": accountId,"contactName":_contactName,"contactJid":jid,"isInArchiveMode":false,"contactResource":resource})
         onPressAndHold: dialog.createWithProperties("qrc:/menus/Roster/Contact",{"accountId": accountId,"contactName":_contactName,"contactJid":jid,"isFavorite":favorite,"contactGroup":groups,"subscriptionType":subscriptionType})
     }
 }

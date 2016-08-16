@@ -62,29 +62,51 @@ ApplicationWindow {
                 onClicked: drawer.open()
                 implicitWidth: 48; implicitHeight: 48;
             }
+            ToolButton {
+                implicitWidth: 48; implicitHeight: 48;
+                text: "\uE780"
+                font.pixelSize: 16
+                font.family: "Segoe MDL2 Assets"
+                onClicked: sideStack.replace( "qrc:/Pages/RosterPage" )
+            }
+            ToolButton {
+                implicitWidth: 48; implicitHeight: 48;
+                text: "\uE8BD"
+                font.pixelSize: 16
+                font.family: "Segoe MDL2 Assets"
+                onClicked: sideStack.replace( "qrc:/Pages/MainPage" )
+            }
 
             Item { Layout.fillHeight: true }
             ToolButton {
                 text: "\uE713"
                 font.family: "Segoe MDL2 Assets"
-                onClicked: stack.push("qrc:/Pages/AccountPage")
+                onClicked: mainStack.push("qrc:/Pages/AccountPage")
                 font.pixelSize: 16
                 implicitWidth: 48; implicitHeight: 48;
             }
 
             AccountHamburgerPersonality {}
             Repeater { delegate: AccountHamburgerDelegate { } model: settings.accounts }
-
-
-            ScrollIndicator.vertical: ScrollIndicator { }
         }
+    }
+
+    StackView {
+        id: sideStack
+        width: 320
+        anchors { left: drawer.right; top: parent.top; bottom: parent.bottom; }
+        pushEnter: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
+        pushExit: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
+        popEnter: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
+        popExit: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
+
     }
 
 
     StackView {
-        id: stack
-        width: main.width - 48
-        anchors { left: drawer.right; top: parent.top; bottom: parent.bottom; }
+        id: mainStack
+        width: main.width - sideStack.width - 48
+        anchors { left: sideStack.right; top: parent.top; bottom: parent.bottom; }
         pushEnter: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
         pushExit: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
         popEnter: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
@@ -135,7 +157,7 @@ ApplicationWindow {
     }
 
     function openChat(account,name,jid,type) {
-        stack.push("qrc:/Pages/Conversation",{"accountId":account,"contactName":name,"contactJid":jid,"isInArchiveMode":false,"chatType":type})
+        mainStack.push("qrc:/Pages/Conversation",{"accountId":account,"contactName":name,"contactJid":jid,"isInArchiveMode":false,"chatType":type})
     }
 
     Timer {
@@ -199,7 +221,7 @@ ApplicationWindow {
             //pageStack.push("qrc:/pages/Events")
         }
 
-        stack.push("qrc:/Pages/MainPage")
+        sideStack.push("qrc:/Pages/MainPage")
     }
 
     /****************************( Dialog windows, menus and stuff)****************************/
@@ -224,9 +246,5 @@ ApplicationWindow {
             vars.awaitingContext = true;
             vars.dialogQmlFile = qmlFile;
         }
-    }
-
-    NetworkManager {
-        id: network
     }
 }

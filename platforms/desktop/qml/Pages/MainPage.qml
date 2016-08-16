@@ -12,6 +12,12 @@ Page {
     property color textColor: "white"
     property color midColor: "gray"
 
+    Rectangle {
+        anchors.fill: parent
+        color: "#1f1f1f"
+        z: -10
+    }
+
     Flickable {
         anchors { fill: parent; margins: PlatformStyle.paddingSmall; bottomMargin: 0; topMargin: 0 }
         contentWidth: width
@@ -25,13 +31,12 @@ Page {
 
             Row {
                 anchors { left: parent.left; right: parent.right }
-                height: 50
+                height: 48
                 Label {
                     height: parent.height
                     width: parent.width - clearBtn.width
-                    text: qsTr("Events")
-                    font { pixelSize: 22; bold: true }
-                    opacity: 0.7
+                    text: qsTr("EVENTS")
+                    font { bold: true }
                     verticalAlignment: Text.AlignVCenter
                 }
                 ToolButton {
@@ -73,22 +78,13 @@ Page {
 
             Row {
                 anchors { left: parent.left; right: parent.right }
-                height: 50
+                height: 48
                 Label {
                     height: parent.height
-                    width: parent.width - chatBtn.width
-                    text: qsTr("Chats")
-                    font { pixelSize: 22; bold: true }
-                    opacity: 0.7
+                    width: parent.width
+                    text: qsTr("CHATS")
+                    font { bold: true }
                     verticalAlignment: Text.AlignVCenter
-                }
-                ToolButton {
-                    id: chatBtn
-                    height: parent.height
-                    width: height
-                    text: "\uE710"
-                    font.family: "Segoe MDL2 Assets"
-                    onClicked: stack.push( "qrc:/Pages/RosterPage" )
                 }
             }
             Repeater {
@@ -138,6 +134,7 @@ Page {
                 Menu {
                     y: -mainMenu.height
                     id: mainMenu
+                    x: -width+68
                     MenuItem {
                         text: qsTr("Join a MUC")
                         onClicked: dialog.createWithContext("qrc:/Dialogs/MUC/Join")
@@ -148,15 +145,15 @@ Page {
                     }
                     MenuItem {
                         text: qsTr("Preferences")
-                        onClicked: stack.push( "qrc:/Pages/Preferences" )
+                        onClicked: mainStack.push( "qrc:/Pages/Preferences" )
                     }
                     MenuItem {
                         text: qsTr("XML Console")
-                        onClicked: stack.push( "qrc:/Pages/XMLConsole" )
+                        onClicked: mainStack.push( "qrc:/Pages/XMLConsole" )
                     }
                     MenuItem {
                         text: qsTr("About...")
-                        onClicked: stack.push( "qrc:/Pages/AboutPage" )
+                        onClicked: mainStack.push( "qrc:/Pages/AboutPage" )
                     }
                     MenuItem {
                         text: qsTr("Exit")
@@ -166,5 +163,4 @@ Page {
             }
         }
     }
-
 }
