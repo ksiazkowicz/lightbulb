@@ -22,6 +22,7 @@
 
 # global Qt bits
 QT += network sql core quickcontrols2
+TEMPLATE = vcapp
 
 winrt {
     CONFIG += windeployqt
