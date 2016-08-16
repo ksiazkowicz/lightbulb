@@ -7,23 +7,11 @@ Page {
     id: aboutPage
     property alias stack: aboutPage.parent
 
-    footer: ToolBar {
-            RowLayout {
-                anchors.fill: parent
-                ToolButton {
-                    text: "\uE72B"
-                    font.family: "Segoe MDL2 Assets"
-                    enabled: stack.depth > 1
-                    onClicked: stack.pop()
-                }
-                Item { Layout.fillWidth: true }
-            }
-        }
-
     Flickable {
         id: about
         flickableDirection: Flickable.VerticalFlick
         anchors.fill: parent
+        anchors.margins: 40
 
         contentHeight: logo.height + 32 + programName.height + 5 + names.height + niceInfo.height + 24 + buttons.height + 64 + licenseStuff.height
         Image {

@@ -37,11 +37,24 @@ ApplicationWindow {
     width: 1024
     height: 700
     Universal.accent: Universal.Amber
+    property string textColor: "white"
+    property string midColor: "gray"
+
+    function switch_sidepages(page) {
+        if (page == "roster") {
+            rosterSwitcher.selected = true
+            eventsSwitcher.selected = false
+        }
+        if (page == "events") {
+            rosterSwitcher.selected = false
+            eventsSwitcher.selected = true
+        }
+    }
 
     Rectangle {
         id: drawer
         property bool isOpen: false
-        color: "#1f1f1f"
+        color: "#2B2B2B"
         width: isOpen ? Math.min(main.width, 200) : 48
         anchors {
             top: parent.top; bottom: parent.bottom; left: parent.left;
@@ -62,21 +75,44 @@ ApplicationWindow {
                 onClicked: drawer.open()
                 implicitWidth: 48; implicitHeight: 48;
             }
-            ToolButton {
-                implicitWidth: 48; implicitHeight: 48;
-                text: "\uE780"
-                font.pixelSize: 16
-                font.family: "Segoe MDL2 Assets"
-                onClicked: sideStack.replace( "qrc:/Pages/RosterPage" )
+            Rectangle {
+                id: rosterSwitcher
+                height: 48
+                width: 200
+                property bool selected: false
+                color: selected ? "#1f1f1f" : "transparent"
+                ToolButton {
+                    id: rosterBtn
+                    implicitWidth: 48; implicitHeight: 48;
+                    text: "\uE780"
+                    font.pixelSize: 16
+                    font.family: "Segoe MDL2 Assets"
+                    onClicked: { sideStack.replace( "qrc:/Pages/RosterPage" ); switch_sidepages("roster"); }
+                }
+                Label {
+                    anchors { left: rosterBtn.right; verticalCenter: parent.verticalCenter }
+                    text: "Contacts"
+                }
             }
-            ToolButton {
-                implicitWidth: 48; implicitHeight: 48;
-                text: "\uE8BD"
-                font.pixelSize: 16
-                font.family: "Segoe MDL2 Assets"
-                onClicked: sideStack.replace( "qrc:/Pages/MainPage" )
+            Rectangle {
+                id: eventsSwitcher
+                height: 48
+                width: 200
+                property bool selected: true
+                color: selected ? "#1f1f1f" : "transparent"
+                ToolButton {
+                    id: eventsBtn
+                    implicitWidth: 48; implicitHeight: 48;
+                    text: "\uE8BD"
+                    font.pixelSize: 16
+                    font.family: "Segoe MDL2 Assets"
+                    onClicked: { sideStack.replace( "qrc:/Pages/MainPage" ); switch_sidepages("events"); }
+                }
+                Label {
+                    anchors { left: eventsBtn.right; verticalCenter: parent.verticalCenter }
+                    text: "Events"
+                }
             }
-
             Item { Layout.fillHeight: true }
             ToolButton {
                 text: "\uE713"
@@ -99,6 +135,8 @@ ApplicationWindow {
         pushExit: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
         popEnter: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
         popExit: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
+        replaceEnter: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
+        replaceExit: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
 
     }
 
@@ -111,6 +149,8 @@ ApplicationWindow {
         pushExit: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
         popEnter: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
         popExit: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
+        replaceEnter: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
+        replaceExit: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
     }
 
     Item {

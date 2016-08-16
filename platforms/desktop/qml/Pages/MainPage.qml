@@ -9,8 +9,6 @@ import "../Components"
 Page {
     id: mainPage
     property alias stack: mainPage.parent
-    property color textColor: "white"
-    property color midColor: "gray"
 
     Rectangle {
         anchors.fill: parent

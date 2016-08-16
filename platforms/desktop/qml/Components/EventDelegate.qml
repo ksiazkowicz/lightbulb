@@ -125,9 +125,9 @@ Flickable {
     function getSecondRow() {
         switch (type) {
         case 32: case 33: case 35: case 36: case 37: case 38: case 39:
-                                                                  return name
-                                                              case 40: case 41:
-                                                                           return transferState == 3 ? "Finished." + (type == 40 ? " Tap to <b>open</b>." : "") : transferState == 1 ? "Connecting..." :  name
+            return name
+        case 40: case 41:
+            return transferState == 3 ? "Finished." + (type == 40 ? " Tap to <b>open</b>." : "") : transferState == 1 ? "Connecting..." :  name
         }
     }
 
@@ -202,7 +202,6 @@ Flickable {
                 Label {
                     visible: type == 32
                     width: 20; height: width
-                    color: PlatformStyle.colorNormalLight
                     text: type == 32 ? xmppConnectivity.getUnreadCount(accountID,bareJid)+1 : ""
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
