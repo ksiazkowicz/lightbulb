@@ -84,7 +84,7 @@ Page {
         clip: true
 
         delegate: Loader {
-            source: isInArchiveMode ? "qrc:/Components/Convo/ArchiveDelegate" : (msgType == 4 ? "qrc:/Components/Convo/InformationDelegate" : (isMine ? "qrc:/Components/Convo/OutcomingDelegate" : ":/Components/Convo/IncomingDelegate"))
+            source: isInArchiveMode ? "qrc:/Components/Convo/ArchiveDelegate" : (msgType == 4 ? "qrc:/Components/Convo/InformationDelegate" : (isMine ? "qrc:/Components/Convo/OutcomingDelegate" : "qrc:/Components/Convo/IncomingDelegate"))
             property string _msgText: msgText
             property string _msgResource: !isInArchiveMode ? msgResource : ""
             property int _msgType: !isInArchiveMode ? msgType : 0
@@ -233,6 +233,7 @@ Page {
                 }
                 onPressAndHold: xmppConnectivity.closeChat(accountId,contactJid)
             }
+            Item { Layout.fillWidth: true }
             ToolButton {
                 id: toolBarButtonSend
                 text: "\uE724"
@@ -241,6 +242,7 @@ Page {
                 enabled: msgInputField.text != "" && isConnected
                 onClicked: sendMessage()
             }
+            Item { Layout.fillWidth: true }
             ToolButton {
                 text: "\uE723"
                 font.family: "Segoe MDL2 Assets"
@@ -250,7 +252,7 @@ Page {
                     dialog.createWithProperties("qrc:/dialogs/Attachment",{"accountId":accountId,"contactJid":contactJid,"contactResource":contactResource,"isFacebook":isFacebook})
                 }
             }
-
+            Item { Layout.fillWidth: true }
             ToolButton {
                 text: "\uE712"
                 font.family: "Segoe MDL2 Assets"

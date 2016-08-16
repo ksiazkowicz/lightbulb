@@ -295,7 +295,7 @@ void XmppConnectivity::plusUnreadChatMsg(QString accountId,QString bareJid) {
 }
 
 void XmppConnectivity::resetUnreadMessages(QString accountId, QString bareJid) {
-  qDebug() << "XmppConnectivity::resetUnreadMessages() for"<<accountId<<bareJid<<
+  /*qDebug() << "XmppConnectivity::resetUnreadMessages() for"<<accountId<<bareJid<<
               "called";
   ChatsItemModel *itemExists = (ChatsItemModel*)chats->find(accountId + ";" + bareJid);
   int delta = 0;
@@ -323,7 +323,7 @@ void XmppConnectivity::resetUnreadMessages(QString accountId, QString bareJid) {
               else delta++;
             }
         }
-    }
+    }*/
 }
 
 int XmppConnectivity::getUnreadCount(QString accountId, QString bareJid) {

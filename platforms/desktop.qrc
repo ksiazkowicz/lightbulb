@@ -54,4 +54,15 @@
         <file alias="unknown">symbian/images/presence/presence-unknown.svg</file>
         <file alias="xa">symbian/images/presence/presence-xa.svg</file>
     </qresource>
+    <qresource prefix="/convo">
+        <file alias="defaultSkin/alertIcon">symbian/images/convo/alertIcon.svg</file>
+        <file alias="defaultSkin/incoming">symbian/images/convo/bubble_incTriangle.png</file>
+        <file alias="defaultSkin/outcoming">symbian/images/convo/bubble_outTriangle.png</file>
+        <file alias="defaultSkin/errorIcon">symbian/images/convo/errorIcon.svg</file>
+        <file alias="defaultSkin/infoIcon">symbian/images/convo/infoIcon.svg</file>
+        <file alias="defaultSkin/logBeginOverlay">symbian/images/convo/logBeginOverlay.svg</file>
+        <file alias="defaultSkin/logEndOverlay">symbian/images/convo/logEndOverlay.svg</file>
+        <file alias="defaultSkin/mapIcon">symbian/images/convo/mapIcon.svg</file>
+        <file alias="defaultSkin/unreadIcon">symbian/images/convo/symMsgUnreadIcon.png</file>
+    </qresource>
 </RCC>
