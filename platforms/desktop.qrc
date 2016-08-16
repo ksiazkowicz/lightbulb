@@ -3,7 +3,7 @@
         <file alias="main.qml">desktop/qml/main.qml</file>
         <file alias="Lightbulb.svg">global/images/Fluorescent.svg</file>
         <file alias="avatar-mask">symbian/images/avatar_mask.svg</file>
-        <file alias="avatar">symbian/images/avatar.png</file>
+        <file alias="avatar">desktop/images/user-48.png</file>
     </qresource>
     <qresource prefix="/Pages">
         <file alias="AccountPage">desktop/qml/Pages/AccountPage.qml</file>
@@ -38,6 +38,8 @@
         <file>desktop/qml/Components/HeaderButton.qml</file>
         <file>desktop/qml/Components/LineItem.qml</file>
         <file>desktop/qml/Components/MucParticipantDelegate.qml</file>
+        <file alias="AccountHamburgerDelegate.qml">desktop/qml/Components/AccountHamburgerDelegate.qml</file>
+        <file alias="AccountHamburgerPersonality.qml">desktop/qml/Components/AccountHamburgerPersonality.qml</file>
     </qresource>
     <qresource prefix="/Dialogs">
         <file alias="Status/Change">desktop/qml/Dialogs/Status/ChangeStatus.qml</file>

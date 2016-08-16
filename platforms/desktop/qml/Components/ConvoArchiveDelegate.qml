@@ -59,9 +59,9 @@ Item {
                     pageStack.currentPage.endID = _id
                     return;
                 }
-                if (avkon.displayAvkonQueryDialog("Archive view","Shall I mark it as end of log? (if 'no' replied, it will be treated as beginning)")) {
+                /*if (avkon.displayAvkonQueryDialog("Archive view","Shall I mark it as end of log? (if 'no' replied, it will be treated as beginning)")) {
                       pageStack.currentPage.endID = _id
-                } else pageStack.currentPage.beginID = _id;
+                } else pageStack.currentPage.beginID = _id;*/
             }
         }
     }

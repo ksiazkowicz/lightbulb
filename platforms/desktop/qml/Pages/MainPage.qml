@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.5
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.1
 import QtQuick.Controls.Universal 2.0
@@ -12,20 +12,6 @@ Page {
     property color textColor: "white"
     property color midColor: "gray"
 
-    Connections {
-        target: xmppConnectivity
-        onPersonalityChanged: {
-            vCardHandler.loadVCard(settings.gStr("behavior","personality"))
-            avatar.source = xmppConnectivity.getAvatarByJid(settings.gStr("behavior","personality"))
-        }
-    }
-
-    XmppVCard {
-        id: vCardHandler
-        Component.onCompleted: loadVCard(settings.gStr("behavior","personality"))
-        onVCardChanged: if (fullname !== "") name.text = fullname
-    }
-
     Flickable {
         anchors { fill: parent; margins: PlatformStyle.paddingSmall; bottomMargin: 0; topMargin: 0 }
         contentWidth: width
@@ -36,72 +22,6 @@ Page {
             id: mainView
             anchors { left: parent.left; right: parent.right }
             spacing: 5
-
-            Item { height: 5; width: 1}
-
-            Item {
-                id: account
-                anchors { left: parent.left; right: parent.right }
-                height: 64 + (accounts.height-48) + PlatformStyle.paddingSmall*2
-
-                Image {
-                    id: avatar
-                    clip: true
-                    width: 64; height: 64
-                    smooth: true
-                    source: xmppConnectivity.getAvatarByJid(settings.gStr("behavior","personality"))
-
-                    Rectangle { anchors.fill: parent; color: "black"; z: -1 }
-
-                    Image {
-                        anchors.fill: parent
-                        smooth: true
-                        sourceSize { width: 64; height: 64 }
-                        source: "qrc:/avatar-mask"
-                    }
-                }
-
-                ColumnLayout {
-                    anchors { left: avatar.right; leftMargin: PlatformStyle.paddingMedium; top: parent.top; right: accountsSettings.left; rightMargin: PlatformStyle.paddingMedium}
-                    Label {
-                        id: name
-                        text: qsTr("Me")
-                        width: parent.width
-                        font.pixelSize: 24
-                    }
-                    Grid {
-                        id: accounts
-                        width: parent.width
-                        spacing: PlatformStyle.paddingSmall
-
-                        Repeater { delegate: AccountDelegate {} model: settings.accounts }
-
-                        // retarded fix for UI being misaligned when there are no accounts
-                        Rectangle {
-                            width: settings.accounts.count() > 0 ? 0 : 1;
-                            color: "transparent";
-                            height: settings.accounts.count() > 0 ? 0 : PlatformStyle.graphicSizeMedium
-                        }
-                    }
-                }
-
-                ToolButton {
-                    id: accountsSettings
-                    anchors { right: parent.right; verticalCenter: account.verticalCenter }
-                    width: 50
-                    height: 50
-                    text: "\uE713"
-                    font.family: "Segoe MDL2 Assets"
-                    onClicked: stack.push( "qrc:/Pages/AccountPage" )
-                }
-            }
-
-            Rectangle {
-                height: 1
-                anchors { left: parent.left; right: parent.right }
-                color: "white"
-                opacity: 0.15
-            }
 
             Row {
                 anchors { left: parent.left; right: parent.right }
@@ -127,8 +47,12 @@ Page {
                 anchors { left: parent.left; right: parent.right }
                 delegate: EventDelegate { width: mainView.width }
             }
-            Item {
-                height: eventsList.model.count > 0 ? 0 : 64
+            Rectangle {
+                id: eventLabel
+                height: 64
+                visible: eventsList.model.count <= 0
+                color: "transparent"
+                clip: true
                 anchors { left: parent.left; right: parent.right }
                 Label {
                     text: "No unread events ^^"
@@ -168,8 +92,26 @@ Page {
                 }
             }
             Repeater {
+                id: chatsList
                 model: xmppConnectivity.chats
                 delegate: ChatDelegate { width: mainView.width }
+            }
+
+            Rectangle {
+                id: chatsLabel
+                height: 64
+                visible: chatsList.model.count <= 0
+                color: "transparent"
+                clip: true
+                anchors { left: parent.left; right: parent.right }
+                Label {
+                    text: "No unread chats ^^"
+                    anchors { horizontalCenter: parent.horizontalCenter; verticalCenter: parent.verticalCenter }
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 21
+                    opacity: 0.5
+                    visible: parent.height > 0
+                }
             }
 
             /*move: Transition {

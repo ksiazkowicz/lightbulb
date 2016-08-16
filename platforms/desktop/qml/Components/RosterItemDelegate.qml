@@ -2,6 +2,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.1
+import QtGraphicalEffects 1.0
 import lightbulb 1.0
 import "."
 
@@ -26,22 +27,34 @@ Item {
         spacing: 10
         anchors.horizontalCenter: parent.horizontalCenter
         height: rosterItemDelegate.height
-        Image {
-            id: avatarIcon
-            anchors { top: parent.top; topMargin: 4 }
-            sourceSize { width: PlatformStyle.graphicSizeMedium; height: PlatformStyle.graphicSizeMedium }
-            smooth: true
-            width: PlatformStyle.graphicSizeMedium; height: PlatformStyle.graphicSizeMedium
-            source: xmppConnectivity.getAvatarByJid(jid)
-            Rectangle { anchors.fill: parent; color: "black"; z: -1 }
-            Image {
-                anchors.fill: parent
-                sourceSize { width: PlatformStyle.graphicSizeMedium; height: PlatformStyle.graphicSizeMedium }
-                width: PlatformStyle.graphicSizeMedium; height: PlatformStyle.graphicSizeMedium
-                smooth: true
-                source: "qrc:/avatar-mask"
-                opacity: 1.0
+        Item {
+            height: rosterItemDelegate.height
+            width: rosterItemDelegate.height
+            Rectangle {
+                id: avatarContainer
+                width: 48; height: parent.height;
+                anchors { left: parent.left; top: parent.top; }
+                color: "transparent"
             }
+
+            Image {
+                id: avatar
+                width: 32; height: 32
+                source: xmppConnectivity.getAvatarByJid(jid)
+                fillMode: Image.PreserveAspectCrop
+                visible: false
+            }
+
+            Rectangle {
+                id: mask
+                anchors { fill: parent; leftMargin: 8; rightMargin: 8; topMargin: 8; bottomMargin: 8; }
+                color: "black"
+                radius: 48
+                clip: true
+                visible: false
+            }
+
+            OpacityMask { anchors.fill: mask; source: avatar; maskSource: mask }
 
             opacity: shouldBeOpaque ? 1.0 : 0.5
 
@@ -59,7 +72,7 @@ Item {
             wrapMode: Text.WordWrap
             font.pixelSize: 16
             clip: true
-            width: row.width - avatarIcon.width - imgPresence.width - row.spacing*2
+            width: row.width - mask.width*2 - imgPresence.width - row.spacing*2
 
             opacity: shouldBeOpaque ? 1.0 : 0.5
         }

@@ -37,7 +37,12 @@ MyCache::MyCache(QString path, QObject *parent) : StoreVCard(parent) {
 bool MyCache::createHomeDir() const {
   bool retValue = false;
 
-  QDir cD(cachePath);
+  QDir cD(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation));
+  if (cD.exists() == false) {
+      cD.mkdir(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation));
+  }
+
+  cD = QDir(cachePath);
   if (cD.exists() == false) {
       if (!cD.mkdir(cachePath+"/")) {
           qDebug() << "trying" << cachePath;

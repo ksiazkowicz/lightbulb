@@ -8,6 +8,7 @@ QtObject {
     property int fontSizeSmall : 18
     property int graphicSizeLarge : 70
     property int graphicSizeMedium : 50
+    property int graphicSizeHamburger: 40
     property int graphicSizeSmall : 30
     property int graphicSizeTiny : 20
     property int paddingLarge : 12

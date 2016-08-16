@@ -79,7 +79,7 @@ Flickable {
 
     function makeAltAction() {
         switch (type) {
-        case 32: { xmppConnectivity.resetUnreadMessages(accountID,bareJid); avkon.stopNotification(); break; }
+        case 32: { xmppConnectivity.resetUnreadMessages(accountID,bareJid); break; }
         case 34: xmppConnectivity.useClient(accountID).rejectSubscription(bareJid); return true;
         case 40:
         case 41: xmppConnectivity.useClient(accountID).abortTransfer(transferJob); break;
@@ -92,7 +92,7 @@ Flickable {
         switch (type) {
         case 33: {
             if (description.substring(0,7) == "Current")
-                return ("qrc:/Presence/" + notify.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accountID)));
+                return ("qrc:/Presence/" + Helper.getStatusNameByIndex(xmppConnectivity.getStatusByIndex(accountID)));
         }; break;
         case 37: return xmppConnectivity.getPropertyByJid(accountID,"presence",bareJid);
         default: return "";

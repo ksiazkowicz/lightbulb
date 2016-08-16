@@ -308,7 +308,7 @@ private slots:
       // update xmlLog
       xmlLog.append("["+typeStr+"] "+text);
 
-      qDebug() << "[" << typeStr << "]" << text;
+      //qDebug() << "[" << typeStr << "]" << text;
 
       // quick fix for "Socket disconnected" not being handled
       /*if (text == "Socket disconnected") {

@@ -28,18 +28,67 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.1
 import QtQuick.Controls.Universal 2.0
 import lightbulb 1.0
+import "Components"
 
 ApplicationWindow {
     id: main
     visible: true
     Universal.theme: Universal.Dark
-    width: 500
+    width: 1024
     height: 700
-    Universal.accent: Universal.Violet
+    Universal.accent: Universal.Amber
+
+    Rectangle {
+        id: drawer
+        property bool isOpen: false
+        color: "#1f1f1f"
+        width: isOpen ? Math.min(main.width, 200) : 48
+        anchors {
+            top: parent.top; bottom: parent.bottom; left: parent.left;
+        }
+
+        function open() {
+            isOpen = !isOpen;
+        }
+
+        ColumnLayout {
+            id: listView
+            anchors.fill: parent
+
+            ToolButton {
+                text: "\uE700"
+                font.family: "Segoe MDL2 Assets"
+                font.pixelSize: 16
+                onClicked: drawer.open()
+                implicitWidth: 48; implicitHeight: 48;
+            }
+
+            Item { Layout.fillHeight: true }
+            ToolButton {
+                text: "\uE713"
+                font.family: "Segoe MDL2 Assets"
+                onClicked: stack.push("qrc:/Pages/AccountPage")
+                font.pixelSize: 16
+                implicitWidth: 48; implicitHeight: 48;
+            }
+
+            AccountHamburgerPersonality {}
+            Repeater { delegate: AccountHamburgerDelegate { } model: settings.accounts }
+
+
+            ScrollIndicator.vertical: ScrollIndicator { }
+        }
+    }
+
 
     StackView {
         id: stack
-        anchors.fill: parent
+        width: main.width - 48
+        anchors { left: drawer.right; top: parent.top; bottom: parent.bottom; }
+        pushEnter: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
+        pushExit: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
+        popEnter: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
+        popExit: Transition { PropertyAnimation { property: "opacity"; from: 1; to: 1; duration: 0}}
     }
 
     Item {
